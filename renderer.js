@@ -1,10 +1,27 @@
 // This file is required by the index.html file and will
 // be executed in the renderer process for that window.
 // All of the Node.js APIs are available in this process.
+const ipc = require('electron').ipcRenderer
+
+//handles event from the save button
 document.getElementById('save').addEventListener("click", buttonPush);
 function buttonPush () {
-alert('Saving')
+ipc.send('test-message', 'Saving')
 };
+
+// Handles the event from the open button
+// Uses synchronous call for now 
+document.getElementById('open').addEventListener("click", openFile);
+function openFile () {
+let file = ipc.sendSync('open-file')
+console.log('on renderer side' , file)
+document.getElementById('title').value = file.title
+document.getElementById('greeting').value = file.greeting
+document.getElementById('content').value = file.content
+document.getElementById('signature').value = file.signature
+};
+
+
 
 // Adds and avenue to do the DOM
 document.getElementById('add').addEventListener("click", addAvenue);

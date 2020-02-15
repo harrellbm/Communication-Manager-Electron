@@ -1,15 +1,16 @@
 // Modules to control application life and create native browser window
 const {app, BrowserWindow} = require('electron')
+const ipc = require('electron').ipcMain
+const fs = require('fs')
 const debug = require('electron-debug')
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
-debug();
 
-let mainWindow
+/*let mainWindow
 (async () => {
 	await app.whenReady();
 	mainWindow = new BrowserWindow();
-})();
+})();*/
 
 function createWindow () {
   // Create the browser window.
@@ -60,3 +61,14 @@ app.on('activate', function () {
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.
+
+ipc.on('test-message', function (event, arg) {
+  console.log(arg)
+})
+
+ipc.on('open-file', function (event, arg) {
+  let rawData = fs.readFileSync('data.json')
+  let fileData = JSON.parse(rawData)
+  console.log(fileData)
+  event.returnValue = fileData
+})
