@@ -62,8 +62,16 @@ app.on('activate', function () {
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.
 
-ipc.on('test-message', function (event, arg) {
-  console.log(arg)
+ipc.on('save', function (event, arg) {
+  file = JSON.stringify(arg)
+  console.log("made it to main", file)
+  fs.writeFile('data.json', file, function (err) {
+    if (err) throw err;
+    console.log('Replaced!')
+  })
+  /*if (arg[title]){
+
+  }*/
 })
 
 ipc.on('open-file', function (event, arg) {

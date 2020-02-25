@@ -4,26 +4,36 @@
 const ipc = require('electron').ipcRenderer
 
 //handles event from the save button
-document.getElementById('save').addEventListener("click", buttonPush);
-function buttonPush () {
-ipc.send('test-message', 'Saving')
+document.getElementById('save').addEventListener("click", saveFile);
+function saveFile () {
+  let titleValue = document.getElementById('title').value
+  let greetingValue = document.getElementById('greeting').value
+  let contentValue = document.getElementById('content').value
+  let signatureValue = document.getElementById('signature').value
+  var file = {
+    title: titleValue,
+    greeting: greetingValue,
+    content: contentValue,
+    signature: signatureValue
+  }
+  ipc.send('save', file)
 };
 
 // Handles the event from the open button
 // Uses synchronous call for now 
 document.getElementById('open').addEventListener("click", openFile);
 function openFile () {
-let file = ipc.sendSync('open-file')
-console.log('on renderer side' , file)
-document.getElementById('title').value = file.title
-document.getElementById('greeting').value = file.greeting
-document.getElementById('content').value = file.content
-document.getElementById('signature').value = file.signature
+  let file = ipc.sendSync('open-file')
+  console.log('on renderer side' , file)
+  document.getElementById('title').value = file.title
+  document.getElementById('greeting').value = file.greeting
+  document.getElementById('content').value = file.content
+  document.getElementById('signature').value = file.signature
 };
 
 
 
-// Adds and avenue to do the DOM
+// Adds an avenue to do the DOM
 document.getElementById('add').addEventListener("click", addAvenue);
 var avenueCount = 0;
 function addAvenue () {
