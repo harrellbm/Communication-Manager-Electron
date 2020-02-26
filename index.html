@@ -6,57 +6,44 @@
     <title>Message Editor</title>
   </head>
   <body>
-    <table class="row">
-      <tr>
-        <td>
-          <p class="tag">
-            <text>Title:</text>
-            <input type="text" id="title" value="" spellcheck="true">
-          </p>
-        </td>
-        <td>
-          <p class="tag">
-            <text>Avenue</text>
-            <input type="button" id="add" value="add">
-          </p>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <p>
-            <text>Greeting</text>
-            <br/>
-            <textarea type="text" id="greeting" value="" spellcheck="true"></textarea>
-          </p>
-          <p>
-            <text>Content</text>
-            <br/>
-            <textarea type="text" id="content" value="" spellcheck="true"></textarea>
-            <!--add with css overflow-y: scroll; height="100px" resize="none"-->
-          </p>
-          <p>
-            <text>Signature</text>
-            <br>
-            <textarea type="text" id="signature" value=""></textarea>
-            <br/>
+    <div class="wrapper">
+      <p class="tag">
+        <text>Title:</text>
+        <input type="text" id="title" value="" spellcheck="true">
+      <p class="tag">
+        <text>Avenue</text>
+        <input type="button" id="add" value="add">
+      </p>
+      <p>
+        <text>Greeting</text>
+        <textarea type="text" id="greeting" value="" spellcheck="true"></textarea>
+      </p>
 
-          </p>
-        <!-- <button id="2" type="button" onclick="buttonPush()">Save</button>
-        <script type="text/javascript" src="./renderer.js"></script> -->
-        </td>
-        <td>
-          <div id="avenueIn"></div>
-        </td>
-      </tr>
-      <tr id="bottom">
-        <td colspan="2">
-          <p>
-            <input type="button" id="save" value="Save">
-            <input type="button" id="open" value="Open">
-          </p>
-        </td>
-      </tr>
-    </table>
+      <p>
+        <text>Content</text>
+        <textarea type="text" id="content" value="" spellcheck="true"></textarea>
+        <!--add with css overflow-y: scroll; height="100px" resize="none"-->
+      </p>
+      <p>
+        <text>Signature</text>
+        <textarea type="text" id="signature" value=""></textarea>
+      </p>
+      <!-- <button id="2" type="button" onclick="buttonPush()">Save</button>
+      <script type="text/javascript" src="./renderer.js"></script> -->
+      <div id="avenueIn"></div>
+      <p id="bottom">
+        <input type="button" id="save" value="Save">
+        <input type="button" id="open" value="Open">
+      </p>
+    </div>
+    <div class="wrappere">
+      <div id="item1">1</div>
+      <div id="item2">2</div>
+      <div id="item3">3</div>
+      <div id="item4">4</div>
+      <div id="item5">5</div>
+      <div id="item6">6</div>
+    </div>
   </body>
   <script type="text/javascript" src="renderer.js"></script>
 </html>
