@@ -22,27 +22,27 @@
 
 }
 #item1{
-  background-color: brown;
+  background-color: rgba(108, 16, 214, 0.973);
   grid-row-start: 1;
   grid-row-end: 3;
 }
 
 #item2{
-  background-color: green;
+  background-color: rgba(24, 192, 24, 0.979);
 }
 #item3{
-  background-color: red;
+  background-color: rgb(224, 36, 36);
 }
 #item4{
-  background-color: pink;
+  background-color: rgb(250, 179, 191);
   grid-column-start: 2;
   grid-column-end: 4;
 }
 #item5{
-  background-color: purple;
+  background-color: rgb(128, 0, 128);
 }
 #item6{
-  background-color: yellow;
+  background-color: rgb(255, 255, 0);
 }
 table{
   width: 100%;
@@ -51,12 +51,12 @@ table{
 
 td{
   width: 50%;
-  border: groove black 1px;
+  border: groove rgb(0, 0, 0) 1px;
 }
 
 p{
   text-align: center;
-  background-color: lightblue;
+  background-color: rgb(139, 203, 224);
   margin: 0px;
 }
 
