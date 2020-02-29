@@ -1,9 +1,12 @@
 class Message {
     constuctor(){
         // Person is a list value so that multiple people can be added
-        self.message_dict = {'title': '', 'greeting': '', 'content': '', 'signature': ''}
-        self.avenue_types = ['Other', 'Email', 'Text', 'Social Media', 'Handout', 'Poster']
-        self.avenue_count = 0
+        this.title = '';
+        this.greeting = '';
+        this.content = '';
+        this.signature ='';
+        this.avenue_types = ['Other', 'Email', 'Text', 'Social Media', 'Handout', 'Poster']
+        this.avenue_count = 0
     }
 /*
     change_title(self, new_title){  // TODO: need data validation
