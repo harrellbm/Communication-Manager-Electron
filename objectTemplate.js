@@ -8,6 +8,10 @@ class Message {
      this.avenue_types = ['Other', 'Email', 'Text', 'Social Media', 'Handout', 'Poster']
      this.avenue_count = 0
         }
+    
+    change_title(new_title){  // TODO: need data validation
+            this.title = new_title
+        }
     };
 
 function createMessage () {
@@ -18,11 +22,7 @@ module.exports = {
     createMessage
 }
 /*
-    change_title(self, new_title){  // TODO: need data validation
-        self.message_dict['title'] = new_title
-    }
-
-     change_greeting(self, new_greeting){  // TODO: need data validation
+    change_greeting(self, new_greeting){  // TODO: need data validation
         self.message_dict['greeting'] = new_greeting
     }
 

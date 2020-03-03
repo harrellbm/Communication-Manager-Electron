@@ -1,46 +1,32 @@
 const expect = require('chai').expect;
 var templates = require('../objectTemplate.js')
 
-var numbers = [1, 2, 3, 4, 5];
-
 describe('#Message', function() {
-    
-    it('should return true', () => {
-        expect(numbers).to.be.an('array').that.includes(2);
-        expect(numbers).to.have.lengthOf(5);
+    /*
+    Tests all methods of the message class
+    */
+
+    // Initiate Message - need to finish 
+    it('should have all initial message object keys', () => {
+        let test_message = templates.createMessage()
+        console.log(test_message)
+        expect(test_message).to.include.keys('title', 'greeting', 'content', 'signature', 'avenue_types', 'avenue_count')
     })
 
-    it('should be an object', () => {
-        var message1 = templates.createMessage()
-        console.log(message1)
+    // test change title method 
+    it('should have a new title', () => {
+        let test_message = templates.createMessage()
+        let new_title = 'This is a new Title'
+        test_message.change_title(new_title)
+        console.log(test_message)
+        expect(test_message.title).to.be.a('string').includes('This is a new Title')
     })
 
 })
 
-/*class TestMessage(unittest.TestCase):
-    """
-    Tests all methods of the message class
-    """
+/*       
 
-    # Initiate Message
-    def test_init(self):
-        test_message = template.Message()
-
-        self.assertIsInstance(test_message, template.Message)
-
-    def test_change_title(self):
-        test_message = template.Message()
-
-        new_avenue_1 = template.Avenue(['test', 'test'])
-        new_avenue_2 = template.Avenue(['test', 'test'])
-        new_avenue_3 = template.Avenue(['test', 'test'])
-
-        test_message.add_avenue(new_avenue_1, new_avenue_2, new_avenue_3)
-        new_title = 'This is a new Title'
-        test_message.change_title(new_title)
-
-        self.assertIn(new_title, test_message.message_dict.values())
-
+    
     def test_change_greeting(self):
         test_message = template.Message()
 
