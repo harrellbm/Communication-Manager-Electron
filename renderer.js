@@ -2,6 +2,7 @@
 // be executed in the renderer process for that window.
 // All of the Node.js APIs are available in this process.
 const ipc = require('electron').ipcRenderer
+const templates = require('./objectTemplate.js')
 
 //handles event from the save button
 document.getElementById('save').addEventListener("click", saveFile);

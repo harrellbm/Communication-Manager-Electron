@@ -1,13 +1,22 @@
 class Message {
-    constuctor(){
-        // Person is a list value so that multiple people can be added
-        this.title = '';
-        this.greeting = '';
-        this.content = '';
-        this.signature ='';
-        this.avenue_types = ['Other', 'Email', 'Text', 'Social Media', 'Handout', 'Poster']
-        this.avenue_count = 0
-    }
+    constructor () {
+     // Person is a list value so that multiple people can be added
+     this.title = '';
+     this.greeting = '';
+     this.content = '';
+     this.signature ='';
+     this.avenue_types = ['Other', 'Email', 'Text', 'Social Media', 'Handout', 'Poster']
+     this.avenue_count = 0
+        }
+    };
+
+function createMessage () {
+    return new Message()
+}
+
+module.exports = {
+    createMessage
+}
 /*
     change_title(self, new_title){  // TODO: need data validation
         self.message_dict['title'] = new_title
@@ -155,7 +164,6 @@ class Message {
         // then pulls unique greeting and signature oF applicable and puts it all into a condensed dictionary
      }
      */
-    }
 /*
 // TODO: update tests with new avenue_type, description, and key element
 class Avenue{
@@ -187,7 +195,7 @@ class Campaign{
 
     // TODO: delete message
     }
-*/
+
 class Profile{
      constructor(){}
-    }
+    }*/
