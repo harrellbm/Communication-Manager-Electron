@@ -1,8 +1,10 @@
 // This file is required by the index.html file and will
 // be executed in the renderer process for that window.
 // All of the Node.js APIs are available in this process.
+//this is the js file for the message manager tab
 const ipc = require('electron').ipcRenderer
 const templates = require('./objectTemplate.js')
+
 
 //handles event from the save button
 document.getElementById('save').addEventListener("click", saveFile);
@@ -31,8 +33,6 @@ function openFile () {
   document.getElementById('content').value = file.content
   document.getElementById('signature').value = file.signature
 };
-
-
 
 // Adds an avenue to do the DOM
 document.getElementById('add').addEventListener("click", addAvenue);
