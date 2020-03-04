@@ -14,12 +14,34 @@ class Message {
         }
     };
 
+// Constructor wrapper for exporting 
 function createMessage () {
     return new Message()
 }
 
+// onstructor for Avenue object.  All methods are held within the Message object  
+class Avenue {
+    constructor(gui_id) {
+       // date is an array so that multiple dates can be added
+       // Sent is whether the message is sent or not
+       // gui_id holds the output ids for this avenue specifically, they should be entered as an array upon initialization
+       this.avenue_type = '';
+       this.description = '';
+       this.person = [];
+       this.date = [];
+       this.sent = false;
+       this.gui_ids = gui_id
+    }
+   }
+
+// Constructor wrapper for exporting 
+function createAvenue (gui_id) {
+    return new Avenue(gui_id)
+}
+
 module.exports = {
-    createMessage
+    createMessage,
+    createAvenue,
 }
 /*
     change_greeting(self, new_greeting){  // TODO: need data validation
@@ -165,17 +187,7 @@ module.exports = {
      }
      */
 /*
-// TODO: update tests with new avenue_type, description, and key element
-class Avenue{
-     constructor( gui_keys){
-        // date is a list so that multiple dates can be added
-        // Sent is whether the message is sent or not
-        // Keys holds the output keys for this avenue specifically, they should be entered as a list upon initialization
-        self.avenue_dict = {'avenue_type': '', 'description': '', 'person': [''], 'date': [''], 'sent': False,
-                            'gui_keys': gui_keys}
-     }
 
-    }
 
 
 class Campaign{

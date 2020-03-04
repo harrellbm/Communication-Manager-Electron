@@ -1,25 +1,52 @@
 const expect = require('chai').expect;
 var templates = require('../objectTemplate.js')
 
-describe('#Message', function() {
+describe("Message object", function() {
     /*
     Tests all methods of the message class
     */
-
+    var test_message;
+    
+    this.beforeEach( function () {
+        test_message = templates.createMessage()
+    })
     // Initiate Message - need to finish 
     it('should have all initial message object keys', () => {
-        let test_message = templates.createMessage()
-        console.log(test_message)
+        //console.log(test_message)
         expect(test_message).to.include.keys('title', 'greeting', 'content', 'signature', 'avenue_types', 'avenue_count')
+        expect(test_message.title, 'title is not a string').is.a('string');
+        expect(test_message.greeting, 'greeting is not a string').is.a('string');
+        expect(test_message.content, 'content is not a string').is.a('string');
+        expect(test_message.signature, 'signature is not a string').is.a('string');
+        expect(test_message.avenue_types, 'avenue_types is not an array').is.a('array');
+        expect(test_message.avenue_count, 'avenue_count is not a number').is.a('number');
     })
 
     // test change title method 
     it('should have a new title', () => {
-        let test_message = templates.createMessage()
         let new_title = 'This is a new Title'
         test_message.change_title(new_title)
-        console.log(test_message)
-        expect(test_message.title).to.be.a('string').includes('This is a new Title')
+        //console.log(test_message)
+        expect(test_message.title).to.be.a('string').that.includes('This is a new Title')
+    })
+
+})
+
+describe("Avenue object", function () {
+    /*
+    Test Avenue constructor
+    */
+   it('should have all initial Avenue object keys', function () {
+       let test_avenue = templates.createAvenue(['test', 'left', 'right']);
+       console.log(test_avenue);
+       expect(test_avenue, 'Missing a key').to.include.keys('avenue_type', 'description', 'person', 'date', 'sent', 'gui_ids')
+       expect(test_avenue.avenue_type, 'avenue_type is not a string').is.a('string');
+       expect(test_avenue.description, 'descrition is not a string').is.a('string');
+       expect(test_avenue.person, 'person is not an array').is.an('array');
+       expect(test_avenue.date, 'date is not an array').is.an('array');
+       expect(test_avenue.sent, 'sent is not a boolean').is.an('boolean');
+       expect(test_avenue.gui_ids, 'gui_ids are not an array').is.an('array');
+
     })
 
 })
