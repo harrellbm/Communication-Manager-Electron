@@ -17,9 +17,8 @@
 }*/
 .wrapper{
   display: grid;
-  grid-template-columns: 300px 300px;
-  grid-template-rows: 30px 150px 150px 150px 20px;
-
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 30px 1fr 1fr 1fr 30px;
 }
 
 p{
@@ -39,7 +38,9 @@ textarea{
   grid-row-end: 5;
   grid-column-start: 2;
   grid-column-end: 3;
+  max-height: 25rem;
   overflow-y: scroll;
+  padding: 1pt;
 }
 #bottom{
   grid-column-start: 1;
@@ -52,8 +53,6 @@ textarea{
 
 .avenue{
   display: grid;
-  grid-template-columns: 200px, 200px, 200px, 200px;
-  grid-template-rows: 100px, 100px;
 }
 
 #avenue_type{
