@@ -27,10 +27,10 @@ p{
   margin: 0px;
 }
 
-textarea{
+.message{
   resize: none;
-  width: 90%;
   height: 8em;
+  width: 90%;
 }
 #avenueIn{
   vertical-align: top;
