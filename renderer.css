@@ -27,11 +27,15 @@ p{
   margin: 0px;
 }
 
-.message{
+textarea{
   resize: none;
+}
+
+.message{
   height: 8em;
   width: 90%;
 }
+
 #avenueIn{
   vertical-align: top;
   grid-row-start: 2;
@@ -53,34 +57,37 @@ p{
 
 .avenue{
   display: grid;
+  grid-template-columns: 6rem 1fr 1fr 1fr 1.4rem;
+  grid-template-rows: 1.4rem 1.5rem 2rem;
+
 }
 
 #avenue_type{
   grid-column-start: 1;
   grid-column-end: 2;
-  grid-row-start: 1;
-  grid-row-end: 2;
+  grid-row-start: 2;
+  grid-row-end: 3;
 }
 
 #description_title{
   grid-column-start: 2;
   grid-column-end: 3;
-  grid-row-start: 1;
-  grid-row-end: 2;
+  grid-row-start: 2;
+  grid-row-end: 3;
 }
 
 #persons_title{
   grid-column-start: 3;
   grid-column-end: 4;
-  grid-row-start: 1;
-  grid-row-end: 2;
+  grid-row-start: 2;
+  grid-row-end: 3;
 }
 
 #date_title{
   grid-column-start: 4;
   grid-column-end:5;
-  grid-row-start: 1;
-  grid-row-end: 2;
+  grid-row-start: 2;
+  grid-row-end: 3;
 }
 .dropdown{
   position: relative;
@@ -89,7 +96,7 @@ p{
 
 .dropbtn{
   background-color: #8ff;
-  padding: 16px;
+  padding: 0.2rem;
 }
 .dropdown-content{
   display: none;
@@ -100,4 +107,39 @@ p{
 
 .dropdown:hover .dropdown-content{
   display:block;
+}
+
+#sent_box{
+  grid-column-start: 1;
+  grid-column-end: 2;
+  grid-row-start: 3;
+  grid-row-end: 4;
+}
+
+#description{
+  grid-column-start: 2;
+  grid-column-end: 3;
+  grid-row-start: 3;
+  grid-row-end: 4;
+}
+
+#persons{
+  grid-column-start: 3;
+  grid-column-end: 4;
+  grid-row-start: 3;
+  grid-row-end: 4;
+}
+
+#dates{
+  grid-column-start: 4;
+  grid-column-end: 5;
+  grid-row-start: 3;
+  grid-row-end: 4;
+}
+
+#delete{
+  grid-column-start: 5;
+  grid-column-end: 6;
+  grid-row-start: 1;
+  grid-row-end: 2;
 }
