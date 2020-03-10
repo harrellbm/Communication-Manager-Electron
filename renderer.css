@@ -1,30 +1,18 @@
-/*.left{
-  position: fixed;
-  float: left;
-  left: auto;
-  width: 50%;
-  border-width: 5px;
-  border-style: groove;
-}
-.right{
-  position: fixed;
-  float: left;
-  right: auto;
-  padding-left: 5px;
-  width: 50%;
-  border-width: 5px;
-  border-style: groove;
-}*/
 .wrapper{
   display: grid;
   grid-template-columns: 1fr 1fr;
-  grid-template-rows: 30px 1fr 1fr 1fr 30px;
+  grid-template-rows: 30px 30px 1fr 30px 1fr 30px 1fr 30px;
+  background-color: rgb(139, 203, 224);
 }
 
 p{
   text-align: center;
   background-color: rgb(139, 203, 224);
   margin: 0px;
+}
+
+.tag{
+  padding: 0.3rem;
 }
 
 textarea{
@@ -36,20 +24,64 @@ textarea{
   width: 90%;
 }
 
+#greeting_title{
+  grid-row-start: 2;
+  grid-row-end: 3;
+  grid-column-start: 1;
+  grid-column-end: 2;
+}
+
+#greeting{
+  grid-row-start: 3;
+  grid-row-end: 4;
+  grid-column-start: 1;
+  grid-column-end: 2;
+}
+
+#content_title{
+  grid-row-start: 4;
+  grid-row-end: 5;
+  grid-column-start: 1;
+  grid-column-end: 2;
+}
+
+#content{
+  grid-row-start: 5;
+  grid-row-end: 6;
+  grid-column-start: 1;
+  grid-column-end: 2;
+}
+
+#signature_title{
+  grid-row-start: 6;
+  grid-row-end: 7;
+  grid-column-start: 1;
+  grid-column-end: 2;
+}
+
+#signature{
+  grid-row-start: 7;
+  grid-row-end: 8;
+  grid-column-start: 1;
+  grid-column-end: 2;
+}
+
 #avenueIn{
   vertical-align: top;
-  grid-row-start: 2;
-  grid-row-end: 5;
+  grid-row-start: 3;
+  grid-row-end: 8;
   grid-column-start: 2;
   grid-column-end: 3;
-  max-height: 25rem;
+  max-height: 26rem;
   overflow-y: scroll;
-  padding: 1pt;
+  background-color: rgb(255, 255, 255);
 }
+
 #bottom{
   grid-column-start: 1;
   grid-column-end: 3;
   align-items: center;
+  padding: 0.3rem;
 }
 #save{
   align-items: center;
@@ -59,39 +91,23 @@ textarea{
 /* Avenue rules */
 .avenue{
   display: grid;
-  grid-template-columns: 6rem 1fr 1fr 1fr 1.4rem;
+  grid-template-columns: 5rem 1fr 1fr 1fr 1.4rem;
   grid-template-rows: 1.4rem 1.5rem 2rem;
   background-color: #999;
-  border: #88ff9f;
-  border-width: thin;
+  border: rgb(169, 169, 169);
+  border-width: 1px;
   border-style: solid;
 }
 
 /* First Row */
 /* Drop down box rules*/
 .dropdown{
-  position: relative;
   display: inline-block;
+  width: 5rem;
   grid-column-start: 1;
   grid-column-end: 2;
   grid-row-start: 2;
   grid-row-end: 3;
-}
-
-.dropbtn{
-  background-color: #8ff;
-  padding: 0.2rem;
-}
-
-.dropdown-content{
-  display: none;
-  position: absolute;
-  background-color: #f9f9f9;
-  z-index: 1;
-}
-
-.dropdown:hover .dropdown-content{
-  display:block;
 }
 
 /* Titles */
@@ -122,6 +138,7 @@ textarea{
 /* Seccond row */
 /*Sent box rules */
 .sent_box{
+  width: 5rem;
   grid-column-start: 1;
   grid-column-end: 2;
   grid-row-start: 3;

@@ -11,22 +11,15 @@
         <text>Title:</text>
         <input type="text" id="title" value="" spellcheck="true">
       <p class="tag">
-        <text>Avenue</text>
+        <text>Avenue:</text>
         <input type="button" id="add" value="add">
       </p>
-      <p>
-        <text>Greeting</text>
-        <textarea class="message" type="text" id="greeting" value="" spellcheck="true"></textarea>
-      </p>
-      <p>
-        <text>Content</text>
-        <textarea class="message" type="text" id="content" value="" spellcheck="true"></textarea>
-        <!--add with css overflow-y: scroll; height="100px" resize="none"-->
-      </p>
-      <p>
-        <text>Signature</text>
-        <textarea class="message" type="text" id="signature" value=""></textarea>
-      </p>
+      <p id="greeting_title">Greeting</p>
+      <textarea class="message" type="text" id="greeting" value="" spellcheck="true"></textarea>
+      <p id="content_title">Content</p>
+      <textarea class="message" type="text" id="content" value="" spellcheck="true"></textarea>
+      <p id="signature_title">Signature</p>
+      <textarea class="message" type="text" id="signature" value=""></textarea>
       <!-- <button id="2" type="button" onclick="buttonPush()">Save</button>
       <script type="text/javascript" src="./renderer.js"></script> -->
       <div id="avenueIn"></div>
@@ -34,27 +27,6 @@
         <input type="button" id="save" value="Save">
         <input type="button" id="open" value="Open">
       </p>
-    </div>
-    <div class="avenue">
-      <div class="dropdown" id="avenue_type">
-        <p class="dropbtn">Dropdown</p>
-        <div class="dropdown-content">
-          <a href="#">link 1</a>
-          <a href="#">link 2</a>
-          <a href="#">link 3</a>
-        </div>
-      </div>
-      <p class="description_title" id="description_title">Description:</p>
-      <p class="persons_title" id="persons_title">Persons Responsible:</p>
-      <p class="date_title" id="date_title">Date:</p>
-      <p class="sent_box" id="sent_box">
-        <input class="sent_checkbox" id="sent_checkbox" type="checkbox" value="">
-        <label class="sent_label" id="sent_label" for="sent_checkbox">Sent</label>
-      </p>
-      <textarea class="description" id="description"></textarea>
-      <textarea class="persons" id="persons"></textarea>
-      <textarea class="dates" id="dates"></textarea>
-      <input class="delete" id="delete" type="button" value="x">
     </div>
   </body>
   <script type="text/javascript" src="renderer.js"></script>
