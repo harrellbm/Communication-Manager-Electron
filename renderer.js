@@ -16,7 +16,7 @@ function saveFile () {
   let contentValue = document.getElementById('content').value;
   let signatureValue = document.getElementById('signature').value;
   let avenuesValue = document.getElementById('avenueIn').getElementsByClassName('avenue');
-  console.log('avenue collection', avenuesValue)
+    // unpack values from each avenue that is added
     for (i = avenuesValue.length-1; i>=0; i--) {
       let avenue = avenuesValue.item(i);
       let dropdown = avenue.children[0].value;
@@ -25,7 +25,6 @@ function saveFile () {
       let persons = avenue.children[6].value;
       let dates = avenue.children[7].value;
       console.log('specific elements', dropdown, sent, description, persons, dates)
-      // need to now unpack the pertinant data from the avenue's html
     }
 
   currentMessage.change_title(titleValue);
