@@ -15,20 +15,34 @@ p{
   margin: 0px;
 }
 
+textarea{
+  resize: none;
+}
+
 .tag{
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
-textarea{
-  resize: none;
+.button{
+padding-top: 0.3rem;
+padding-bottom: 0.3rem;
+padding-left: 0.5rem;
+padding-right: 0.5rem;
+margin-left: 0.5rem;
+flex-grow: 0.1;
+flex-shrink: 1;
 }
 
 .message{
   height: 23vh;
   width: 90%;
   margin: auto;
+}
+
+#title{
+  margin-left: 0.5rem;
 }
 
 #greeting_title{
@@ -83,14 +97,17 @@ textarea{
 }
 
 #avenueIn{
+  max-height: 85vh;
   vertical-align: top;
   grid-row-start: 3;
   grid-row-end: 8;
   grid-column-start: 2;
   grid-column-end: 3;
-  max-height: 85vh;
   overflow-y: scroll;
   background-color: rgb(255, 255, 255);
+  border-width: 1px;
+  border-style: solid;
+  border-color: rgb(169, 169, 169);
 }
 
 #bottom{
@@ -99,21 +116,6 @@ textarea{
   display: flex;
   justify-content: center;
   align-items: center;
-}
-
-#save{
-  margin-right: 0.5rem;
-  padding-top: 0.3rem;
-  padding-bottom: 0.3rem;
-  padding-left: 0.5rem;
-  padding-right: 0.5rem;
-}
-
-#open{
-  padding-top: 0.3rem;
-  padding-bottom: 0.3rem;
-  padding-left: 0.5rem;
-  padding-right: 0.5rem;
 }
 
 /* Avenue rules */
