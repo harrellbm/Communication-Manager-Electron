@@ -4,21 +4,30 @@
 //this is the js file for the message manager tab
 const ipc = require('electron').ipcRenderer;
 const events = require('events');
+const templates = require('./objectTemplate.js')
+
+var currentMessage = templates.createMessage();
 
 //handles event from the save button
 document.getElementById('save').addEventListener("click", saveFile);
 function saveFile () {
-  let titleValue = document.getElementById('title').value
-  let greetingValue = document.getElementById('greeting').value
-  let contentValue = document.getElementById('content').value
-  let signatureValue = document.getElementById('signature').value
-  var file = {
-    title: titleValue,
-    greeting: greetingValue,
-    content: contentValue,
-    signature: signatureValue
-  }
-  ipc.send('save', file)
+  let titleValue = document.getElementById('title').value;
+  let greetingValue = document.getElementById('greeting').value;
+  let contentValue = document.getElementById('content').value;
+  let signatureValue = document.getElementById('signature').value;
+  let avenuesValue = document.getElementById('avenueIn').getElementsByClassName('avenue');
+  console.log('avenue collection', avenuesValue)
+    for (i = avenuesValue.length-1; i>=0; i--) {
+      console.log('elements pulled', avenuesValue.item(i))
+    }
+
+  currentMessage.change_title(titleValue);
+  currentMessage.change_greeting(greetingValue);
+  currentMessage.change_content(contentValue);
+  currentMessage.change_signature(signatureValue);
+  //currentMessage.add_avenue(avenuesValue);
+  
+  ipc.send('save', currentMessage)
 };
 
 // Handles the event from the open button
@@ -133,7 +142,7 @@ function addAvenue () {
   ave.appendChild(deleteBtn)
 
   // Get the main div that holds all the avenues and append the new one
-  console.log("avenue", ave);
+  //console.log("avenue", ave);
   document.getElementById("avenueIn").appendChild(ave);
   ++avenueCount;
 };
