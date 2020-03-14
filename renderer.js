@@ -18,7 +18,14 @@ function saveFile () {
   let avenuesValue = document.getElementById('avenueIn').getElementsByClassName('avenue');
   console.log('avenue collection', avenuesValue)
     for (i = avenuesValue.length-1; i>=0; i--) {
-      console.log('elements pulled', avenuesValue.item(i))
+      let avenue = avenuesValue.item(i);
+      let dropdown = avenue.children[0].value;
+      let sent = avenue.children[4].children[0].checked;
+      let description = avenue.children[5].value;
+      let persons = avenue.children[6].value;
+      let dates = avenue.children[7].value;
+      console.log('specific elements', dropdown, sent, description, persons, dates)
+      // need to now unpack the pertinant data from the avenue's html
     }
 
   currentMessage.change_title(titleValue);
@@ -103,7 +110,6 @@ function addAvenue () {
   sent_checkbox.setAttribute("class", "sent_checkbox");
   sent_checkbox.setAttribute("id", `sent_checkbox${avenueCount}`);
   sent_checkbox.setAttribute("type", "checkbox");
-  sent_checkbox.setAttribute("value", "true");
   sent_box.appendChild(sent_checkbox);
 
 
