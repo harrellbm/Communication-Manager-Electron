@@ -18,7 +18,7 @@ describe("Message object", function() {
         expect(test_message.greeting, 'greeting is not a string').is.a('string');
         expect(test_message.content, 'content is not a string').is.a('string');
         expect(test_message.signature, 'signature is not a string').is.a('string');
-        expect(test_message.avenue_types, 'avenue_types is not an array').is.a('array');
+        expect(test_message.avenue_types, 'avenue_types is not an array').is.an('array');
         expect(test_message.avenue_count, 'avenue_count is not a number').is.a('number');
     })
 
@@ -30,6 +30,47 @@ describe("Message object", function() {
         expect(test_message.title).to.be.a('string').that.includes('This is a new Title')
     })
 
+    // test change greeting method 
+    it('should have a new greeting', () => {
+        let new_greeting = 'This is a new Greeting'
+        test_message.change_greeting(new_greeting)
+        //console.log('Greeting', test_message)
+        expect(test_message.greeting).to.be.a('string').that.includes('This is a new Greeting')
+    })
+
+    // test change content method 
+    it('should have new content', () => {
+        let new_content = 'This is new Content'
+        test_message.change_content(new_content)
+        //console.log('Content', test_message)
+        expect(test_message.content).to.be.a('string').that.includes('This is new Content')
+    })
+    
+     // test change signature method 
+    it('should have a new signature', () => {
+        let new_signature = 'This is a new Signature'
+        test_message.change_signature(new_signature)
+        //console.log('Signature', test_message)
+        expect(test_message.signature).to.be.a('string').that.includes('This is a new Signature')
+    })
+
+    // test adding avenue_type method 
+    it('should have new avenue_type', () => {
+        let new_avenue_type = 'Facebook'
+        test_message.add_type(new_avenue_type)
+        console.log('avenue types', test_message)
+        expect(test_message.avenue_types).to.be.an('array').that.includes('Facebook')
+    })
+
+     // test adding avenue method 
+     it('should have a new avenue', () => {
+        let new_avenue1 = templates.createAvenue(['test', 'left', 'right']);
+        test_message.add_avenue(new_avenue1);
+        let new_avenue2 = templates.createAvenue(['test2', 'left2', 'right2']);
+        test_message.add_avenue(new_avenue2);
+        console.log('new avenue', test_message);
+        expect(test_message.avenues).to.be.an('array').that.includes(new_avenue1).and.includes(new_avenue2)
+    })
 })
 
 describe("Avenue object", function () {

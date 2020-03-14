@@ -1,25 +1,47 @@
 class Message {
-    constructor () {
+   constructor () {
      // Person is a list value so that multiple people can be added
      this.title = '';
      this.greeting = '';
      this.content = '';
      this.signature ='';
      this.avenue_types = ['Other', 'Email', 'Text', 'Social Media', 'Handout', 'Poster']
+     this.avenues = []
      this.avenue_count = 0
         }
     
-    change_title(new_title){  // TODO: need data validation
-            this.title = new_title
-        }
-    };
+   change_title(new_title){
+      this.title = new_title
+      }
+      
+   change_greeting(new_greeting){
+      this.greeting = new_greeting
+      }
+
+   change_content(new_content){ 
+      this.content = new_content
+      }
+   
+   change_signature(new_signature){ 
+      this.signature = new_signature
+      }
+
+   add_type(new_type){
+      this.avenue_types[this.avenue_types.length] = new_type
+      }
+
+   add_avenue(new_avenue){
+      this.avenues[this.avenues.length] = new_avenue
+      }
+
+   };
 
 // Constructor wrapper for exporting 
 function createMessage () {
     return new Message()
 }
 
-// onstructor for Avenue object.  All methods are held within the Message object  
+// Constructor for Avenue object.  All methods are held within the Message object  
 class Avenue {
     constructor(gui_id) {
        // date is an array so that multiple dates can be added
@@ -44,28 +66,11 @@ module.exports = {
     createAvenue,
 }
 /*
-    change_greeting(self, new_greeting){  // TODO: need data validation
-        self.message_dict['greeting'] = new_greeting
-    }
-
     // TODO: greeting in avenue that can be used instead of default
-
-     change_content(self, new_content){  // TODO: need data validation
-        self.message_dict['content'] = new_content
-     }
-
-     change_signature(self, new_signature){  // TODO: need data validation
-        self.message_dict['signature'] = new_signature
-     }
 
     // TODO: signature in avenue that can be used instead of ault
 
-     add_avenue(self, *args){
-        for new_avenue in args:
-            self.message_dict[str(self.avenue_count)] = new_avenue.avenue_dict
-            self.avenue_count += 1
-     }
-
+     
      delete_avenue(self, avenue_key){
         assert avenue_key in self.message_dict.keys(), 'Avenue does not exist'
         del self.message_dict[avenue_key]
