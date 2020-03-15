@@ -64,21 +64,23 @@ describe("Message object", function() {
 
     // test adding avenue method 
     it('should have a new avenue', () => {
-        test_message.add_avenue('email', 'this is an email', 'Bob','12-12-12', true, 'test');
-        test_message.add_avenue();
-        //console.log('new avenue', test_message.avenues);
+        // test giving array of people, dates, and gui ids
+        test_message.add_avenue('email', 'this is an email', ['Bob', 'Jill'], ['12-12-12', '1-1-1'], true, ['test', 'left', 'right']);
+        // test single string values for people, dates, and gui ids 
+        test_message.add_avenue('text', 'this is a text', 'Bill', '11-1-11', true, 'test');
+        console.log('new avenue', test_message.avenues);
         expect(test_message.avenues[0].avenue_type).to.be.an('string').that.includes('email');
         expect(test_message.avenues[0].description).to.be.an('string').that.includes('this is an email');
-        expect(test_message.avenues[0].person).to.be.an('array').that.includes('Bob');
-        expect(test_message.avenues[0].date).to.be.an('array').that.includes('12-12-12');
+        expect(test_message.avenues[0].person).to.be.an('array').that.includes('Bob').and.includes('Jill');
+        expect(test_message.avenues[0].date).to.be.an('array').that.includes('12-12-12').and.includes('1-1-1');
         expect(test_message.avenues[0].sent).to.be.true;
-        expect(test_message.avenues[0].gui_ids).to.be.an('array').that.includes('test');
-        expect(test_message.avenues[1].avenue_type).to.be.an('string').that.includes('');
-        expect(test_message.avenues[1].description).to.be.an('string').that.includes('');
-        expect(test_message.avenues[1].person).to.be.an('array').that.includes('');
-        expect(test_message.avenues[1].date).to.be.an('array').that.includes('');
-        expect(test_message.avenues[1].sent).to.be.false;
-        expect(test_message.avenues[1].gui_ids).to.be.an('array').that.includes('');
+        expect(test_message.avenues[0].gui_ids).to.be.an('array').that.includes('test').and.includes('left').and.includes('right');
+        expect(test_message.avenues[1].avenue_type).to.be.an('string').that.includes('text');
+        expect(test_message.avenues[1].description).to.be.an('string').that.includes('this is a text');
+        expect(test_message.avenues[1].person).to.be.an('array').that.includes('Bill');
+        expect(test_message.avenues[1].date).to.be.an('array').that.includes('11-1-11');
+        expect(test_message.avenues[1].sent).to.be.true;
+        expect(test_message.avenues[1].gui_ids).to.be.an('array').that.includes('test');
     })
 
     // test change avenue type

@@ -32,13 +32,54 @@ class Message {
 
    // Avenue related methods
    add_avenue(avenue_type='', description='', person='', date='', sent=false, gui_ids=''){
+      debugger
       let new_avenue = new Avenue;
       new_avenue.avenue_type = avenue_type;
       new_avenue.description = description;
-      new_avenue.person.push(person);
-      new_avenue.date.push(date);
+
+      // able to take single string argument or array of strings for person, date, and gui_id fields
+      let array = [person]
+      let value;
+      let name;
+      for(value of array){
+         // if it is a single string argument then push to the avenue's array
+         if(typeof value === "string"){
+            new_avenue.person.push(value)
+            // if it is an array of values then loop through them and push to avenue's array
+         } else if (value.constructor === Array){
+            for(name of value){
+               new_avenue.person.push(name)
+            }
+         }
+      }
+      
+      // Same set up as for adding people
+      let array2 = [date]
+      let value2;
+      let num;
+      for(value2 of array2){
+         if(typeof value2 === "string"){
+            new_avenue.date.push(value2)
+         } else if (value2.constructor === Array){
+            for(num of value2){
+               new_avenue.date.push(num)
+            }
+         }
+      }
       new_avenue.sent = sent;
-      new_avenue.gui_ids.push(gui_ids);
+      // Same as people and dates
+      let array3 = [gui_ids]
+      let value3;
+      let id;
+      for(value3 of array3){
+         if(typeof value3 === "string"){
+            new_avenue.gui_ids.push(value3)
+         } else if (value3.constructor === Array){
+            for(id of value3){
+               new_avenue.gui_ids.push(id)
+            }
+         }
+      }
       this.avenues[this.avenues.length] = new_avenue
       }
    
