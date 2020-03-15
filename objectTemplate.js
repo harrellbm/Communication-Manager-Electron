@@ -30,10 +30,91 @@ class Message {
       this.avenue_types[this.avenue_types.length] = new_type
       }
 
+   // Avenue related methods
    add_avenue(new_avenue){
       this.avenues[this.avenues.length] = new_avenue
       }
+   
+   //need test
+   change_avenue_type(avenueId, new_type){  // TODO: need data validation, redo test
+      this.avenues[avenueId].avenue_type = new_type
+      }
 
+   //need test
+   get_avenue_type(avenueId){  // TODO: need test
+      return this.avenues[avenueId].avenue_type
+      }
+
+  //need test
+   change_description(avenueId, new_description){  // TODO: need test
+         this.avenues[avenueId].description = new_description
+      }
+
+  //need test
+   get_description(avenueId){
+      return this.avenues[avenueId].description
+      }
+
+   //need test
+   // Completely writes over current values in person values
+   change_person(avenueId, new_person){  // TODO: need data validation
+         this.avenues[avenueId].person = new_person
+      }
+
+   //need test
+   // Adds a person to the person list for that specific avenue
+   add_person(avenueId, new_person){  // TODO: add test
+         // Removes the empty string that is used to initialize the message object
+         console.log(this.avenues[avenueId].person)
+         this.avenues[avenueId].person.push(new_person)
+         console.log(this.avenues[avenueId].person)
+      }
+   
+   //need test
+   // Returns the list of people for the given avenue as a simple string
+   get_people(avenueId){  // TODO: add test
+         people = ''
+         for (person in this.avenues[avenueId].person) {
+             if (person != '') {
+                 people += person + '\n'
+             }
+         }
+         return people
+      }
+ 
+   // TODO: delete a person responsible(need to validate that there is at least one person)
+   //need test
+   change_date(avenueId, new_date){  // TODO: need data validation
+         this.avenues[avenueId].date = new_date
+      }
+ 
+  //need test
+   add_date(avenueId, new_date){  // TODO: add test
+      console.log(this.avenues[avenueId].person)
+      this.avenues[avenueId].person.push(new_person)
+      console.log(this.avenues[avenueId].person)
+      }
+ 
+   // Returns the list of people for the given avenue as a simple string
+   //need test
+   get_dates(avenueId){  // TODO: add test
+         dates = ''
+         for (date in this.avenues[avenueId].date) {
+            if (date != '') {
+                 dates += date + '\n'
+               }
+            }
+         return dates
+      }
+ 
+   // TODO: delete date from Avenue (need to make sure that there is at least one date)
+   // TODO: get dates
+
+   //need test
+   change_sent(avenueId, new_sent){  // TODO: need data validation
+         this.avenues[avenueId].sent = new_sent
+      }
+ 
    };
 
 // Constructor wrapper for exporting 
@@ -94,76 +175,7 @@ module.exports = {
         return all_avenue_gui_keys
      }
 
-     change_avenue_type(self, avenue, new_type){  // TODO: need data validation, redo test
-        self.message_dict[str(avenue)]['avenue_type'] = new_type
-     }
-
-     get_avenue_type(self, avenue){  // TODO: need test
-        return self.message_dict[avenue]['avenue_type']
-     }
-
-     change_description(self, avenue, new_description){  // TODO: need test
-        self.message_dict[str(avenue)]['description'] = new_description
-     }
-
-     get_description(self, avenue){
-        return self.message_dict[avenue]['description']
-     }
-
-    // Completely writes over current values in person values
-     change_person(self, avenue, new_person){  // TODO: need data validation
-        self.message_dict[avenue]['person'] = new_person
-     }
-
-    // Adds a person to the person list for that specific avenue
-     add_person(self, avenue, new_person){  // TODO: add test
-        self.message_dict[avenue]['person'].append(new_person)
-        // Removes the empty string that is used to initialize the message object
-        if self.message_dict[avenue]['person'][0] == '':
-            self.message_dict[avenue]['person'].remove('')
-     }
-
-    // Returns the list of people for the given avenue as a simple string
-     get_people(self, avenue){  // TODO: add test
-        people = ''
-        for person in self.message_dict[avenue]['person']:
-            if person != '':
-                people += person + '\n'
-        return people
-     }
-
-    // TODO: delete a person responsible(need to validate that there is at least one person)
-
-     change_date(self, avenue_key, new_date){  // TODO: need data validation
-        self.message_dict[avenue_key]['date'] = new_date
-     }
-
-        // Adds a person to the person list for that specific avenue
-
-     add_date(self, avenue, new_date){  // TODO: add test
-        self.message_dict[avenue]['date'].append(new_date)
-        // Removes the empty string that is used to initialize the message object
-        if self.message_dict[avenue]['date'][0] == '':
-            self.message_dict[avenue]['date'].remove('')
-     }
-
-        // Returns the list of people for the given avenue as a simple string
-
-     get_dates(self, avenue){  // TODO: add test
-        dates = ''
-        for date in self.message_dict[avenue]['date']:
-            if date != '':
-                dates += date + '\n'
-        return dates
-     }
-
-    // TODO: delete date from Avenue (need to make sure that there is at least one date)
-    // TODO: get dates
-
-     change_sent(self, avenue, new_sent){  // TODO: need data validation
-        self.message_dict[str(avenue)]['sent'] = new_sent
-     }
-
+     
      save(self, title, greeting, signature, content, *args){  // TODO: write test
         // avenue data sent in list of lists through *args
         self.change_title(title)
