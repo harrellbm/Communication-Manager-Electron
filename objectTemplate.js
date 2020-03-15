@@ -31,7 +31,14 @@ class Message {
       }
 
    // Avenue related methods
-   add_avenue(new_avenue){
+   add_avenue(avenue_type='', description='', person='', date='', sent=false, gui_ids=''){
+      let new_avenue = new Avenue;
+      new_avenue.avenue_type = avenue_type;
+      new_avenue.description = description;
+      new_avenue.person.push(person);
+      new_avenue.date.push(date);
+      new_avenue.sent = sent;
+      new_avenue.gui_ids.push(gui_ids);
       this.avenues[this.avenues.length] = new_avenue
       }
    
@@ -116,7 +123,7 @@ function createMessage () {
 
 // Constructor for Avenue object.  All methods are held within the Message object  
 class Avenue {
-    constructor(gui_id) {
+    constructor() {
        // date is an array so that multiple dates can be added
        // Sent is whether the message is sent or not
        // gui_id holds the output ids for this avenue specifically, they should be entered as an array upon initialization
@@ -125,7 +132,7 @@ class Avenue {
        this.person = [];
        this.date = [];
        this.sent = false;
-       this.gui_ids = gui_id
+       this.gui_ids = []
     }
    }
 
