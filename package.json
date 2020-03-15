@@ -8,7 +8,8 @@
   "author": "Brenden Harrell",
   "scripts": {
     "start": "electron .",
-    "test": "mocha"
+    "test": "mocha",
+    "debug-test": "mocha --inspect-brk test/test_object_templates.js"
   },
   "dependencies": {
     "electron": "^8.0.0"
