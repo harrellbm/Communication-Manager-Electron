@@ -35,35 +35,30 @@ class Message {
       this.avenues[this.avenues.length] = new_avenue
       }
    
-   //need test
-   change_avenue_type(avenueId, new_type){  // TODO: need data validation, redo test
+   change_avenue_type(avenueId, new_type){ 
       this.avenues[avenueId].avenue_type = new_type
       }
 
-   //need test
-   get_avenue_type(avenueId){  // TODO: need test
+   get_avenue_type(avenueId){
       return this.avenues[avenueId].avenue_type
       }
 
-  //need test
-   change_description(avenueId, new_description){  // TODO: need test
+   change_description(avenueId, new_description){ 
          this.avenues[avenueId].description = new_description
       }
 
-  //need test
    get_description(avenueId){
       return this.avenues[avenueId].description
       }
 
-   //need test
    // Completely writes over current values in person values
-   change_person(avenueId, new_person){  // TODO: need data validation
+   change_person(avenueId, new_person){  
          this.avenues[avenueId].person = new_person
       }
 
-   //need test
+   //keep working on it
    // Adds a person to the person list for that specific avenue
-   add_person(avenueId, new_person){  // TODO: add test
+   add_person(avenueId, new_person){  
          // Removes the empty string that is used to initialize the message object
          console.log(this.avenues[avenueId].person)
          this.avenues[avenueId].person.push(new_person)
