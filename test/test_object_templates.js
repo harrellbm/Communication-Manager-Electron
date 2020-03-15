@@ -151,7 +151,7 @@ describe("Message object", function() {
         test_message.add_person(0, 'Bob');
         test_message.add_person(1, 'Tim');
         test_message.add_person(1, 'Bill');
-        console.log('new people', test_message);
+        //console.log('new people', test_message.avenues);
         expect(test_message.avenues[0].person).to.be.an('array').that.includes('Jill');
         expect(test_message.avenues[0].person).to.be.an('array').that.includes('Bob');
         expect(test_message.avenues[1].person).to.be.an('array').that.includes('Tim');
@@ -165,12 +165,14 @@ describe("Message object", function() {
         let new_avenue2 = templates.createAvenue(['test2', 'left2', 'right2']);
         test_message.add_avenue(new_avenue2);
         test_message.add_person(0, 'Joe');
+        test_message.add_person(0, 'Phil');
+        test_message.add_person(1, 'Bill');
         test_message.add_person(1, 'John');
         let avenue_people1 = test_message.get_people(0);
         let avenue_people2 = test_message.get_people(1);
-        console.log('returned people', avenue_people1, avenue_people2);
-        expect(avenue_people1).to.be.an('array').that.includes('Joe');
-        expect(avenue_people2).to.be.an('array').that.includes('John');
+        //console.log('returned people', avenue_people1, 'and', avenue_people2);
+        expect(avenue_people1).to.be.a('string').that.includes('Joe').and.includes('Phil');
+        expect(avenue_people2).to.be.a('string').that.includes('John').and.includes('Bill');
     })
    
     // test change date
@@ -181,7 +183,7 @@ describe("Message object", function() {
         test_message.add_avenue(new_avenue2);
         test_message.change_date(0, '12-12-12');
         test_message.change_date(1, '11-1-11');
-        console.log('new dates', test_message);
+        //console.log('new dates', test_message);
         expect(test_message.avenues[0].date).to.be.an('string').that.includes('12-12-12');
         expect(test_message.avenues[1].date).to.be.an('string').that.includes('11-1-11');
     })
@@ -196,7 +198,7 @@ describe("Message object", function() {
         test_message.add_date(0, '11-1-11');
         test_message.add_date(1, '10-9-10');
         test_message.add_date(1, '9-9-9');
-        console.log('new dates', test_message);
+        //console.log('new dates', test_message.avenues);
         expect(test_message.avenues[0].date).to.be.an('array').that.includes('12-12-12').and.includes('11-1-11');
         expect(test_message.avenues[1].date).to.be.an('array').that.includes('10-9-10').and.includes('9-9-9');
     })
@@ -213,9 +215,9 @@ describe("Message object", function() {
         test_message.add_date(1, '9-9-9');
         let avenue_dates1 = test_message.get_dates(0);
         let avenue_dates2 = test_message.get_dates(1);
-        console.log('returned people', avenue_people1, avenue_people2);
-        expect(avenue_dates1).to.be.an('array').that.includes('12-12-12').and.includes('11-1-11');
-        expect(avenue_dates2).to.be.an('array').that.includes('10-9-10').and.includes('9-9-9');
+        //console.log('returned people', avenue_dates1, avenue_dates2);
+        expect(avenue_dates1).to.be.an('string').that.includes('12-12-12').and.includes('11-1-11');
+        expect(avenue_dates2).to.be.an('string').that.includes('10-9-10').and.includes('9-9-9');
     })
   
     // test change sent
@@ -226,7 +228,7 @@ describe("Message object", function() {
         test_message.add_avenue(new_avenue2);
         test_message.change_sent(0, true);
         test_message.change_sent(1, false);
-        console.log('new sent', test_message);
+        //console.log('new sent', test_message);
         expect(test_message.avenues[0].sent).to.be.true;
         expect(test_message.avenues[1].sent).to.be.false;
     })
@@ -238,7 +240,7 @@ describe("Avenue object", function () {
     */
    it('should have all initial Avenue object keys', function () {
        let test_avenue = templates.createAvenue(['test', 'left', 'right']);
-       console.log(test_avenue);
+       //console.log(test_avenue);
        expect(test_avenue, 'Missing a key').to.include.keys('avenue_type', 'description', 'person', 'date', 'sent', 'gui_ids')
        expect(test_avenue.avenue_type, 'avenue_type is not a string').is.a('string');
        expect(test_avenue.description, 'descrition is not a string').is.a('string');
@@ -252,175 +254,7 @@ describe("Avenue object", function () {
 })
 
 /*       
- 
-    def test_change_greeting(self):
-        test_message = template.Message()
-
-        new_avenue_1 = template.Avenue(['test', 'test'])
-        new_avenue_2 = template.Avenue(['test', 'test'])
-        new_avenue_3 = template.Avenue(['test', 'test'])
-
-        test_message.add_avenue(new_avenue_1, new_avenue_2, new_avenue_3)
-        new_greeting = 'Hello from the other side'
-        test_message.change_greeting(new_greeting)
-
-        self.assertIn(new_greeting, test_message.message_dict.values())
-
-    def test_change_content(self):
-        test_message = template.Message()
-
-        new_avenue_1 = template.Avenue(['test', 'test'])
-        new_avenue_2 = template.Avenue(['test', 'test'])
-        new_avenue_3 = template.Avenue(['test', 'test'])
-
-        test_message.add_avenue(new_avenue_1, new_avenue_2, new_avenue_3)
-        new_content = 'This is New Content'
-        test_message.change_content(new_content)
-
-        self.assertIn(new_content, test_message.message_dict.values())
-
-    def test_change_signature(self):
-        test_message = template.Message()
-
-        new_avenue_1 = template.Avenue(['test', 'test'])
-        new_avenue_2 = template.Avenue(['test', 'test'])
-        new_avenue_3 = template.Avenue(['test', 'test'])
-
-        test_message.add_avenue(new_avenue_1, new_avenue_2, new_avenue_3)
-        new_signature = 'Signed, Bigfoot'
-        test_message.change_signature(new_signature)
-
-        self.assertIn(new_signature, test_message.message_dict.values())
-
-    def test_add_avenue(self):
-        test_message = template.Message()
-
-        new_avenue_1 = template.Avenue(['test', 'test'])
-        new_avenue_2 = template.Avenue(['test', 'test'])
-        new_avenue_3 = template.Avenue(['test', 'test'])
-
-        test_message.add_avenue(new_avenue_1, new_avenue_2, new_avenue_3)
-        self.assertIn(new_avenue_1.avenue_dict, test_message.message_dict.values())
-        self.assertIn(new_avenue_2.avenue_dict, test_message.message_dict.values())
-        self.assertIn(new_avenue_3.avenue_dict, test_message.message_dict.values())
-
-    def test_delete_avenue(self):
-        test_message = template.Message()
-
-        new_avenue_1 = template.Avenue(['test', 'test'])
-        new_avenue_2 = template.Avenue(['test', 'test'])
-        new_avenue_3 = template.Avenue(['test', 'test'])
-
-        test_message.add_avenue(new_avenue_1, new_avenue_2, new_avenue_3)
-        self.assertIn('0', test_message.message_dict.keys())
-        self.assertIn('1', test_message.message_dict.keys())
-        self.assertIn('2', test_message.message_dict.keys())
-
-        test_message.delete_avenue('0')
-        self.assertNotIn('0', test_message.message_dict.keys())
-
-    def test_get_main_avenue_key(self):  # TODO: finish
-        pass
-
-    def test_assert_raise_avenue_delete(self):
-        test_message = template.Message()
-
-        new_avenue_1 = template.Avenue(['test', 'test'])
-        new_avenue_2 = template.Avenue(['test', 'test'])
-        new_avenue_3 = template.Avenue(['test', 'test'])
-
-        test_message.add_avenue(new_avenue_1, new_avenue_2, new_avenue_3)
-
-        self.assertRaises(AssertionError, test_message.delete_avenue, 'crackers')
-
-    def test_get_gui_avenue_keys(self):  # TODO: finish
-        pass
-
-    def test_change_avenue_type(self):
-        test_message = template.Message()
-
-        new_avenue_1 = template.Avenue(['test', 'test'])
-        new_avenue_2 = template.Avenue(['test', 'test'])
-        new_avenue_3 = template.Avenue(['test', 'test'])
-
-        test_message.add_avenue(new_avenue_1, new_avenue_2, new_avenue_3)
-
-        test_message.change_avenue_type('0', 'string and cans')
-        self.assertIn('string and cans', test_message.message_dict['0']['avenue_type'])
-
-    def test_get_avenue_type(self):  # TODO: finish
-        pass
-
-    def test_change_description(self):  # TODO: finish
-        pass
-
-    def test_get_description(self):  # TODO: finish
-        pass
-
-    def test_change_person(self):
-        test_message = template.Message()
-
-        new_avenue_1 = template.Avenue(['test', 'test'])
-        new_avenue_2 = template.Avenue(['test', 'test'])
-        new_avenue_3 = template.Avenue(['test', 'test'])
-
-        test_message.add_avenue(new_avenue_1, new_avenue_2, new_avenue_3)
-        new_person = 'Joe the new person'
-        test_message.change_person('0', new_person)
-
-        self.assertIn(new_person, test_message.message_dict['0']['person'])
-
-    def test_add_person(self):  # TODO: finish
-        pass
-
-    def test_get_people(self):  # TODO: finish
-        pass
-
-    def test_change_date(self):
-        test_message = template.Message()
-
-        new_avenue_1 = template.Avenue(['test', 'test'])
-        new_avenue_2 = template.Avenue(['test', 'test'])
-        new_avenue_3 = template.Avenue(['test', 'test'])
-
-        test_message.add_avenue(new_avenue_1, new_avenue_2, new_avenue_3)
-
-        test_message.change_date('0', '3-12-6')
-        self.assertIn('3-12-6', test_message.message_dict['0']['date'])
-
-    def test_add_date(self):
-        test_message = template.Message()
-
-        new_avenue_1 = template.Avenue(['test', 'test'])
-        new_avenue_2 = template.Avenue(['test', 'test'])
-        new_avenue_3 = template.Avenue(['test', 'test'])
-
-        test_message.add_avenue(new_avenue_1, new_avenue_2, new_avenue_3)
-
-        test_message.add_date('0', '3-12-6')
-        self.assertIn('3-12-6', test_message.message_dict['0']['date'])
-
-    def test_get_dates(self):  # TODO: finish
-        pass
-
-    def test_change_sent(self):
-        test_message = template.Message()
-
-        new_avenue_1 = template.Avenue(['test', 'test'])
-        new_avenue_2 = template.Avenue(['test', 'test'])
-        new_avenue_3 = template.Avenue(['test', 'test'])
-
-        test_message.add_avenue(new_avenue_1, new_avenue_2, new_avenue_3)
-
-        print(test_message.message_dict)
-        self.assertEquals(False, test_message.message_dict['0']['sent'])
-
-        test_message.change_sent('0', True)
-
-        self.assertEquals(True, test_message.message_dict['0']['sent'])
-        self.assertNotEquals(False, test_message.message_dict['0']['sent'])
-
-    def save(self):  # TODO: finish
+     def save(self):  # TODO: finish
         pass
 
     def test_compose_message_for_avenue(self):

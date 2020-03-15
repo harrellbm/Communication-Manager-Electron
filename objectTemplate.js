@@ -59,20 +59,18 @@ class Message {
    //keep working on it
    // Adds a person to the person list for that specific avenue
    add_person(avenueId, new_person){  
-         // Removes the empty string that is used to initialize the message object
-         console.log(this.avenues[avenueId].person)
          this.avenues[avenueId].person.push(new_person)
-         console.log(this.avenues[avenueId].person)
       }
    
    //need test
    // Returns the list of people for the given avenue as a simple string
    get_people(avenueId){  // TODO: add test
-         people = ''
-         for (person in this.avenues[avenueId].person) {
-             if (person != '') {
-                 people += person + '\n'
-             }
+         let people = '';
+         let person;
+         for (person of this.avenues[avenueId].person) {
+            if (person != '') {
+               people += person + '\n'
+            }
          }
          return people
       }
@@ -85,20 +83,19 @@ class Message {
  
   //need test
    add_date(avenueId, new_date){  // TODO: add test
-      console.log(this.avenues[avenueId].person)
-      this.avenues[avenueId].person.push(new_person)
-      console.log(this.avenues[avenueId].person)
+      this.avenues[avenueId].date.push(new_date)
       }
  
    // Returns the list of people for the given avenue as a simple string
    //need test
    get_dates(avenueId){  // TODO: add test
-         dates = ''
-         for (date in this.avenues[avenueId].date) {
+         let dates = '';
+         let date;
+         for (date of this.avenues[avenueId].date) {
             if (date != '') {
-                 dates += date + '\n'
-               }
+              dates += date + '\n'
             }
+         }
          return dates
       }
  
