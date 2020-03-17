@@ -68,7 +68,7 @@ describe("Message object", function() {
         test_message.add_avenue('email', 'this is an email', ['Bob', 'Jill'], ['12-12-12', '1-1-1'], true, ['test', 'left', 'right']);
         // test single string values for people, dates, and gui ids 
         test_message.add_avenue('text', 'this is a text', 'Bill', '11-1-11', true, 'test');
-        console.log('new avenue', test_message.avenues);
+        //console.log('new avenue', test_message.avenues);
         expect(test_message.avenues[0].avenue_type).to.be.an('string').that.includes('email');
         expect(test_message.avenues[0].description).to.be.an('string').that.includes('this is an email');
         expect(test_message.avenues[0].person).to.be.an('array').that.includes('Bob').and.includes('Jill');
@@ -85,10 +85,8 @@ describe("Message object", function() {
 
     // test change avenue type
     it('should change avenue type', () => {
-        let new_avenue1 = templates.createAvenue(['test', 'left', 'right']);
-        test_message.add_avenue(new_avenue1);
-        let new_avenue2 = templates.createAvenue(['test2', 'left2', 'right2']);
-        test_message.add_avenue(new_avenue2);
+        test_message.add_avenue();
+        test_message.add_avenue();
         test_message.change_avenue_type(0, 'Aliens');
         test_message.change_avenue_type(1, 'Facebook');
         //console.log('new avenue types', test_message);
@@ -98,25 +96,19 @@ describe("Message object", function() {
   
     // test return avenue types
     it('should return avenue type', () => {
-        let new_avenue1 = templates.createAvenue(['test', 'left', 'right']);
-        test_message.add_avenue(new_avenue1);
-        let new_avenue2 = templates.createAvenue(['test2', 'left2', 'right2']);
-        test_message.add_avenue(new_avenue2);
-        test_message.change_avenue_type(0, 'Aliens');
-        test_message.change_avenue_type(1, 'Facebook');
+        test_message.add_avenue('Alien');
+        test_message.add_avenue('Facebook', '', '', '', false, '');
         let avenue_type1 = test_message.get_avenue_type(0);
         let avenue_type2 = test_message.get_avenue_type(1);
         //console.log('returned avenues', avenue_type1, avenue_type2);
-        expect(avenue_type1).to.be.an('string').that.includes('Aliens');
+        expect(avenue_type1).to.be.an('string').that.includes('Alien');
         expect(avenue_type2).to.be.an('string').that.includes('Facebook');
     })
   
     // test change description
     it('should have a new description', () => {
-        let new_avenue1 = templates.createAvenue(['test', 'left', 'right']);
-        test_message.add_avenue(new_avenue1);
-        let new_avenue2 = templates.createAvenue(['test2', 'left2', 'right2']);
-        test_message.add_avenue(new_avenue2);
+        test_message.add_avenue('email', 'this is an email', ['Bob', 'Jill'], ['12-12-12', '1-1-1'], true, ['test', 'left', 'right']);
+        test_message.add_avenue('text', 'this is a text', 'Bill', '11-1-11', true, 'test');
         test_message.change_description(0, 'This is a new description 1');
         test_message.change_description(1, 'This is a new description 2');
         //console.log('new descriptions', test_message);
@@ -126,10 +118,8 @@ describe("Message object", function() {
     
     // test return description
     it('should return description', () => {
-        let new_avenue1 = templates.createAvenue(['test', 'left', 'right']);
-        test_message.add_avenue(new_avenue1);
-        let new_avenue2 = templates.createAvenue(['test2', 'left2', 'right2']);
-        test_message.add_avenue(new_avenue2);
+        test_message.add_avenue('email', 'this is an email', ['Bob', 'Jill'], ['12-12-12', '1-1-1'], true, ['test', 'left', 'right']);
+        test_message.add_avenue('text', 'this is a text', 'Bill', '11-1-11', true, 'test');
         test_message.change_description(0, 'This is a new description 1');
         test_message.change_description(1, 'This is a new description 2');
         let avenue_description1 = test_message.get_description(0);
@@ -141,10 +131,8 @@ describe("Message object", function() {
     
     // test change person
     it('should have a new person', () => {
-        let new_avenue1 = templates.createAvenue(['test', 'left', 'right']);
-        test_message.add_avenue(new_avenue1);
-        let new_avenue2 = templates.createAvenue(['test2', 'left2', 'right2']);
-        test_message.add_avenue(new_avenue2);
+        test_message.add_avenue('email', 'this is an email', ['Bob', 'Jill'], ['12-12-12', '1-1-1'], true, ['test', 'left', 'right']);
+        test_message.add_avenue('text', 'this is a text', 'Bill', '11-1-11', true, 'test');
         test_message.change_person(0, 'Jill');
         test_message.change_person(1, 'Bob');
         //console.log('new person', test_message);
@@ -154,89 +142,75 @@ describe("Message object", function() {
     
     // test add person - keep working on 
     it('should add a new person', () => {
-        let new_avenue1 = templates.createAvenue(['test', 'left', 'right']);
-        test_message.add_avenue(new_avenue1);
-        let new_avenue2 = templates.createAvenue(['test2', 'left2', 'right2']);
-        test_message.add_avenue(new_avenue2);
+        test_message.add_avenue('email', 'this is an email', ['Phil', 'Tom'], ['12-12-12', '1-1-1'], true, ['test', 'left', 'right']);
+        test_message.add_avenue('text', 'this is a text', 'John', '11-1-11', true, 'test');
         test_message.add_person(0, 'Jill');
         test_message.add_person(0, 'Bob');
         test_message.add_person(1, 'Tim');
         test_message.add_person(1, 'Bill');
         //console.log('new people', test_message.avenues);
-        expect(test_message.avenues[0].person).to.be.an('array').that.includes('Jill');
-        expect(test_message.avenues[0].person).to.be.an('array').that.includes('Bob');
-        expect(test_message.avenues[1].person).to.be.an('array').that.includes('Tim');
-        expect(test_message.avenues[1].person).to.be.an('array').that.includes('Bill');
+        expect(test_message.avenues[0].person).to.be.an('array').that.includes('Jill').and.includes('Bob').and.includes("Tom");
+        expect(test_message.avenues[1].person).to.be.an('array').that.includes('Tim').and.includes('Bill').and.includes('John');
     })
     
     // test return people
     it('should return people', () => {
-        let new_avenue1 = templates.createAvenue(['test', 'left', 'right']);
-        test_message.add_avenue(new_avenue1);
-        let new_avenue2 = templates.createAvenue(['test2', 'left2', 'right2']);
-        test_message.add_avenue(new_avenue2);
+        test_message.add_avenue('email', 'this is an email', ['Bob', 'Jill'], ['12-12-12', '1-1-1'], true, ['test', 'left', 'right']);
+        test_message.add_avenue('text', 'this is a text', 'Bill', '11-1-11', true, 'test');
         test_message.add_person(0, 'Joe');
         test_message.add_person(0, 'Phil');
-        test_message.add_person(1, 'Bill');
+        test_message.add_person(1, 'Jill');
         test_message.add_person(1, 'John');
         let avenue_people1 = test_message.get_people(0);
         let avenue_people2 = test_message.get_people(1);
         //console.log('returned people', avenue_people1, 'and', avenue_people2);
-        expect(avenue_people1).to.be.a('string').that.includes('Joe').and.includes('Phil');
-        expect(avenue_people2).to.be.a('string').that.includes('John').and.includes('Bill');
+        expect(avenue_people1).to.be.a('string').that.includes('Joe').and.includes('Phil').and.includes('Bob');
+        expect(avenue_people2).to.be.a('string').that.includes('John').and.includes('Jill').and.includes('Bill');
     })
    
     // test change date
     it('should have a new date', () => {
-        let new_avenue1 = templates.createAvenue(['test', 'left', 'right']);
-        test_message.add_avenue(new_avenue1);
-        let new_avenue2 = templates.createAvenue(['test2', 'left2', 'right2']);
-        test_message.add_avenue(new_avenue2);
+        test_message.add_avenue('email', 'this is an email', ['Bob', 'Jill'], ['9-9-9', '1-1-1'], true, ['test', 'left', 'right']);
+        test_message.add_avenue('text', 'this is a text', 'Bill', '8-8-8', true, 'test');
         test_message.change_date(0, '12-12-12');
         test_message.change_date(1, '11-1-11');
-        //console.log('new dates', test_message);
-        expect(test_message.avenues[0].date).to.be.an('string').that.includes('12-12-12');
-        expect(test_message.avenues[1].date).to.be.an('string').that.includes('11-1-11');
+        //console.log('new dates', test_message.avenues);
+        expect(test_message.avenues[0].date).to.be.an('string').that.includes('12-12-12').and.not.include('9-9-9').and.not.include('1-1-1');
+        expect(test_message.avenues[1].date).to.be.an('string').that.includes('11-1-11').and.not.include('8-8-8');
     })
    
     // test add date
     it('should add a new date', () => {
-        let new_avenue1 = templates.createAvenue(['test', 'left', 'right']);
-        test_message.add_avenue(new_avenue1);
-        let new_avenue2 = templates.createAvenue(['test2', 'left2', 'right2']);
-        test_message.add_avenue(new_avenue2);
+        test_message.add_avenue('email', 'this is an email', ['Bob', 'Jill'], ['9-9-9', '1-1-1'], true, ['test', 'left', 'right']);
+        test_message.add_avenue('text', 'this is a text', 'Bill', '8-8-8', true, 'test');
         test_message.add_date(0, '12-12-12');
         test_message.add_date(0, '11-1-11');
         test_message.add_date(1, '10-9-10');
         test_message.add_date(1, '9-9-9');
         //console.log('new dates', test_message.avenues);
-        expect(test_message.avenues[0].date).to.be.an('array').that.includes('12-12-12').and.includes('11-1-11');
-        expect(test_message.avenues[1].date).to.be.an('array').that.includes('10-9-10').and.includes('9-9-9');
+        expect(test_message.avenues[0].date).to.be.an('array').that.includes('12-12-12').and.includes('11-1-11').and.includes('9-9-9').and.includes('1-1-1');
+        expect(test_message.avenues[1].date).to.be.an('array').that.includes('10-9-10').and.includes('9-9-9').and.includes('8-8-8');
     })
 
     // test return dates
     it('should return dates', () => {
-        let new_avenue1 = templates.createAvenue(['test', 'left', 'right']);
-        test_message.add_avenue(new_avenue1);
-        let new_avenue2 = templates.createAvenue(['test2', 'left2', 'right2']);
-        test_message.add_avenue(new_avenue2);
+        test_message.add_avenue('email', 'this is an email', ['Bob', 'Jill'], ['9-9-9', '1-1-1'], true, ['test', 'left', 'right']);
+        test_message.add_avenue('text', 'this is a text', 'Bill', '5-5-5', true, 'test');
         test_message.add_date(0, '12-12-12');
         test_message.add_date(0, '11-1-11');
         test_message.add_date(1, '10-9-10');
-        test_message.add_date(1, '9-9-9');
+        test_message.add_date(1, '8-8-8');
         let avenue_dates1 = test_message.get_dates(0);
         let avenue_dates2 = test_message.get_dates(1);
         //console.log('returned people', avenue_dates1, avenue_dates2);
-        expect(avenue_dates1).to.be.an('string').that.includes('12-12-12').and.includes('11-1-11');
-        expect(avenue_dates2).to.be.an('string').that.includes('10-9-10').and.includes('9-9-9');
+        expect(avenue_dates1).to.be.an('string').that.includes('12-12-12').and.includes('11-1-11').and.includes('9-9-9').and.includes('1-1-1');;
+        expect(avenue_dates2).to.be.an('string').that.includes('10-9-10').and.includes('8-8-8').and.includes('5-5-5');
     })
   
     // test change sent
     it('should have a new sent value', () => {
-        let new_avenue1 = templates.createAvenue(['test', 'left', 'right']);
-        test_message.add_avenue(new_avenue1);
-        let new_avenue2 = templates.createAvenue(['test2', 'left2', 'right2']);
-        test_message.add_avenue(new_avenue2);
+        test_message.add_avenue('email', 'this is an email', ['Bob', 'Jill'], ['9-9-9', '1-1-1'], false, ['test', 'left', 'right']);
+        test_message.add_avenue('text', 'this is a text', 'Bill', '5-5-5', true, 'test');
         test_message.change_sent(0, true);
         test_message.change_sent(1, false);
         //console.log('new sent', test_message);
