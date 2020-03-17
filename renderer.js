@@ -3,7 +3,6 @@
 // All of the Node.js APIs are available in this process.
 //this is the js file for the message manager tab
 const ipc = require('electron').ipcRenderer;
-const events = require('events');
 const templates = require('./objectTemplate.js')
 
 var currentMessage = templates.createMessage();
@@ -15,16 +14,17 @@ function saveFile () {
   let greetingValue = document.getElementById('greeting').value;
   let contentValue = document.getElementById('content').value;
   let signatureValue = document.getElementById('signature').value;
+  // unpack values from each avenue that is added
   let avenuesValue = document.getElementById('avenueIn').getElementsByClassName('avenue');
-    // unpack values from each avenue that is added
-    for (i = avenuesValue.length-1; i>=0; i--) {
-      let avenue = avenuesValue.item(i);
-      let dropdown = avenue.children[0].value;
-      let sent = avenue.children[4].children[0].checked;
-      let description = avenue.children[5].value;
-      let persons = avenue.children[6].value;
-      let dates = avenue.children[7].value;
-      console.log('specific elements', dropdown, sent, description, persons, dates)
+  for (i = avenuesValue.length-1; i>=0; i--) {//each iteration goes through one avenue
+    let avenue = avenuesValue.item(i);
+    let dropdown = avenue.children[0].value;
+    let sent = avenue.children[4].children[0].checked;
+    let description = avenue.children[5].value;
+    let persons = avenue.children[6].value;
+    let dates = avenue.children[7].value;
+    console.log('specific elements',avenue, dropdown, sent, description, persons, dates)
+    currentMessage.add_avenue(dropdown, description, persons, dates, sent)
     }
 
   currentMessage.change_title(titleValue);
@@ -46,6 +46,7 @@ function openFile () {
   document.getElementById('greeting').value = file.greeting
   document.getElementById('content').value = file.content
   document.getElementById('signature').value = file.signature
+  // figure out how to load avenues 
 };
 
 

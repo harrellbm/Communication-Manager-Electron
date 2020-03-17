@@ -32,7 +32,7 @@ class Message {
 
    // Avenue related methods
    add_avenue(avenue_type='', description='', person='', date='', sent=false, gui_ids=''){
-      debugger
+      //debugger
       let new_avenue = new Avenue;
       new_avenue.avenue_type = avenue_type;
       new_avenue.description = description;
