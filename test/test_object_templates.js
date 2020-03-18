@@ -83,6 +83,22 @@ describe("Message object", function() {
         expect(test_message.avenues[1].gui_ids).to.be.an('array').that.includes('test');
     })
 
+    // test removing avenue method 
+    it('should remove an avenue', () => {
+        test_message.add_avenue('email', 'this is an email', ['Bob', 'Jill'], ['12-12-12', '1-1-1'], true, ['test', 'left', 'right']);
+        test_message.add_avenue('text', 'this is a text', 'Bill', '11-1-11', true, 'test');
+        console.log('new avenues', test_message.avenues);
+        test_message.remove_avenue(0);
+        console.log('removed avenues', test_message.avenues);
+        expect(test_message.avenues[0]).to.not.exist;
+        expect(test_message.avenues[1].avenue_type).to.be.an('string').that.includes('text');
+        expect(test_message.avenues[1].description).to.be.an('string').that.includes('this is a text');
+        expect(test_message.avenues[1].person).to.be.an('array').that.includes('Bill');
+        expect(test_message.avenues[1].date).to.be.an('array').that.includes('11-1-11');
+        expect(test_message.avenues[1].sent).to.be.true;
+        expect(test_message.avenues[1].gui_ids).to.be.an('array').that.includes('test');
+    })
+    
     // test change avenue type
     it('should change avenue type', () => {
         test_message.add_avenue();

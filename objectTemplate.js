@@ -6,7 +6,7 @@ class Message {
      this.content = '';
      this.signature ='';
      this.avenue_types = ['Other', 'Email', 'Text', 'Social Media', 'Handout', 'Poster']
-     this.avenues = []
+     this.avenues = {}
      this.avenue_count = 0
         }
     
@@ -80,9 +80,20 @@ class Message {
             }
          }
       }
-      this.avenues[this.avenues.length] = new_avenue
+      // Need to figureout how to back fill ids when an earlier object is removed say 2 is removed but 3 
+      //and 4 still exist how to you loop back through and reasign 2 to a new avenue without exponetially 
+      //ratcheting up the ids which would eventually lead to problems  
+      let avenueId = this.avenue_count 
+      this.avenues[avenueId] = new_avenue
+      this.avenue_count += 1
       }
    
+   remove_avenue(avenueId){
+      if (avenueId > -1){
+        delete this.avenues[avenueId]
+      }
+   }
+
    change_avenue_type(avenueId, new_type){ 
       this.avenues[avenueId].avenue_type = new_type
       }

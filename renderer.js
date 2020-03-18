@@ -7,6 +7,7 @@ const templates = require('./objectTemplate.js')
 
 var currentMessage = templates.createMessage();
 
+// Save does not function quite right yet. Need to update message object so that double saves do not happen
 //handles event from the save button
 document.getElementById('save').addEventListener("click", saveFile);
 function saveFile () {
