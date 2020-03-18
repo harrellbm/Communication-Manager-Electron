@@ -1,6 +1,1 @@
-{
-    "title": "test message",
-    "greeting": "hello",
-    "content": "This is a message",
-    "signature": "signed me"
-}
+{"title":"Yay it works ","greeting":"Hello!","content":"These are some words ","signature":"Signed Me","avenue_types":["Other","Email","Text","Social Media","Handout","Poster"],"avenues":[{"avenue_type":"option2","description":"asdfsadf","person":["Phil"],"date":["12-12-12"],"sent":true,"gui_ids":[""]},{"avenue_type":"option3","description":"GGGGG","person":["Bob "],"date":["1-1-1"],"sent":true,"gui_ids":[""]}],"avenue_count":0}
