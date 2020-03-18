@@ -29,6 +29,7 @@ function saveFile () {
     let persons = avenue.children[6].value;
     let dates = avenue.children[7].value;
     //console.log('specific elements',avenue, dropdown, sent, description, persons, dates)
+    // Need to figure out how to only add new avenues and update old ones
     currentMessage.add_avenue(dropdown, description, persons, dates, sent)
     }
   
@@ -183,5 +184,6 @@ function addAvenue (avenue_typeValue='', sentValue='', descriptionValue='', pers
 
 // Deletes an avenue from the DOM
 function deleteAvenue (ave) {
+  // Need to figure out how to delete avenue from message object 
   ave.parentElement.removeChild(ave)
 };
