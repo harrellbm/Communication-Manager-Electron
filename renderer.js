@@ -39,12 +39,16 @@ function saveFile () {
 // Uses synchronous call for now 
 document.getElementById('open').addEventListener("click", openFile);
 function openFile () {
-  let file = ipc.sendSync('open-file')
-  //console.log('on renderer side' , file)
+  let file = ipc.sendSync('open-file')// Sents for file 
+  console.log('on renderer side' , file)
+  // Loads file values to static elements
   document.getElementById('title').value = file.title
   document.getElementById('greeting').value = file.greeting
   document.getElementById('content').value = file.content
   document.getElementById('signature').value = file.signature
+  oldAvenues = document.getElementById('avenueIn')
+  oldAvenues.innerHTML = ''
+    
   // Loads each avenue from the file 
   for (i = file.avenues.length-1; i>=0; i--) {//each iteration goes through one avenue
     let avenue = file.avenues[i];
