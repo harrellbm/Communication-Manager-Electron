@@ -1,5 +1,5 @@
 const expect = require('chai').expect;
-var templates = require('../objectTemplate.js')
+const templates = require('../objectTemplate.js')
 
 describe("Message object", function() {
     /*
@@ -302,23 +302,6 @@ describe("Avenue object", function () {
 })
 
 /*       
-     def save(self):  # TODO: finish
-        pass
-
-    def test_compose_message_for_avenue(self):
-        test_message = template.Message()
-
-        new_avenue_1 = template.Avenue(['test', 'test'])
-        new_avenue_2 = template.Avenue(['test', 'test'])
-        new_avenue_3 = template.Avenue(['test', 'test'])
-
-        test_message.add_avenue(new_avenue_1, new_avenue_2, new_avenue_3)
-
-        test_message.add_date('1', '3-12-6')
-        self.assertIn('3-12-6', test_message.message_dict['1']['date'])
-        test_message.compose_message_for_avenue('1')
-
-
 class TestCampaign(unittest.TestCase):
     """
     Tests all methods of the Campaign class
