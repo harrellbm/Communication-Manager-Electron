@@ -30,6 +30,9 @@ class Message {
       this.avenue_types[this.avenue_types.length] = new_type
       }
    
+   
+   // ----Avenue related methods----
+
    // makes sure that the lowest possible id is assigned to a new avenue 
    avenue_id_fill(){
       let avenueId = 0
@@ -44,7 +47,6 @@ class Message {
       return avenueId
       }
 
-   // Avenue related methods
    add_avenue(avenue_type='', description='', person='', date='', sent=false, gui_ids=''){
       //debugger
       let new_avenue = new Avenue;
@@ -55,7 +57,7 @@ class Message {
       let array = [person]
       let value;
       let name;
-      for(value of array){
+      for(value of array){ // could refractor to function that would be used three times for persons, dates, and gui_ids
          // if it is a single string argument then push to the avenue's array
          if(typeof value === "string"){
             new_avenue.person.push(value)
@@ -66,7 +68,7 @@ class Message {
             }
          }
       }
-      
+
       // Same set up as for adding people
       let array2 = [date]
       let value2;
@@ -80,7 +82,9 @@ class Message {
             }
          }
       }
+
       new_avenue.sent = sent;
+
       // Same as people and dates
       let array3 = [gui_ids]
       let value3;
@@ -94,12 +98,9 @@ class Message {
             }
          }
       }
-      // Need to figureout how to back fill ids when an earlier object is removed say 2 is removed but 3 
-      //and 4 still exist how to you loop back through and reasign 2 to a new avenue without exponetially 
-      //ratcheting up the ids which would eventually lead to problems  
-      let avenueId = this.avenue_count 
+      
+      let avenueId = this.avenue_id_fill()// fill in the lowest available id
       this.avenues[avenueId] = new_avenue
-      this.avenue_count += 1
       }
    
    remove_avenue(avenueId){
