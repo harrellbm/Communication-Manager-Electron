@@ -62,6 +62,24 @@ describe("Message object", function() {
         expect(test_message.avenue_types).to.be.an('array').that.includes('Facebook')
     })
 
+    // test filling lowest id method 
+    it('should return lowest available id', () => {
+        test_message.avenues = {'0': 'avenue', '1': 'avenue2', '2': 'avenue3'};
+        //console.log(test_message.avenues);
+        let test = test_message.avenue_id_fill();
+        //console.log(test);
+        expect(test).to.be.a('number').that.equals(3);
+        test_message.avenues = {'0': 'avenue', '2': 'avenue3'};
+        //console.log(test_message.avenues);
+        test = test_message.avenue_id_fill();
+        //console.log(test);
+        expect(test).to.be.a('number').that.equals(1);
+        test_message.avenues = {'1': 'avenue2', '2': 'avenue3'};
+        //console.log(test_message.avenues);
+        test = test_message.avenue_id_fill();
+        //console.log(test);
+        expect(test).to.be.a('number').that.equals(0);
+    })
     // test adding avenue method 
     it('should have a new avenue', () => {
         // test giving array of people, dates, and gui ids
@@ -87,9 +105,9 @@ describe("Message object", function() {
     it('should remove an avenue', () => {
         test_message.add_avenue('email', 'this is an email', ['Bob', 'Jill'], ['12-12-12', '1-1-1'], true, ['test', 'left', 'right']);
         test_message.add_avenue('text', 'this is a text', 'Bill', '11-1-11', true, 'test');
-        console.log('new avenues', test_message.avenues);
+        //console.log('new avenues', test_message.avenues);
         test_message.remove_avenue(0);
-        console.log('removed avenues', test_message.avenues);
+        //console.log('removed avenues', test_message.avenues);
         expect(test_message.avenues[0]).to.not.exist;
         expect(test_message.avenues[1].avenue_type).to.be.an('string').that.includes('text');
         expect(test_message.avenues[1].description).to.be.an('string').that.includes('this is a text');
@@ -165,7 +183,7 @@ describe("Message object", function() {
         test_message.add_person(1, 'Tim');
         test_message.add_person(1, 'Bill');
         //console.log('new people', test_message.avenues);
-        expect(test_message.avenues[0].person).to.be.an('array').that.includes('Jill').and.includes('Bob').and.includes("Tom");
+        expect(test_message.avenues[0].person).to.be.an('array').that.includes('Jill').and.includes('Bob').and.includes("Tom").and.includes('Phil');
         expect(test_message.avenues[1].person).to.be.an('array').that.includes('Tim').and.includes('Bill').and.includes('John');
     })
     

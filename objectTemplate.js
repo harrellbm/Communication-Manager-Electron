@@ -29,6 +29,20 @@ class Message {
    add_type(new_type){
       this.avenue_types[this.avenue_types.length] = new_type
       }
+   
+   // makes sure that the lowest possible id is assigned to a new avenue 
+   avenue_id_fill(){
+      let avenueId = 0
+      let ave;
+      for(ave in this.avenues){
+         if (avenueId == ave){
+            avenueId += 1
+            } else { // when avenueId does not equal ave we know that the spot is empty
+               return avenueId
+            }
+         } 
+      return avenueId
+      }
 
    // Avenue related methods
    add_avenue(avenue_type='', description='', person='', date='', sent=false, gui_ids=''){
