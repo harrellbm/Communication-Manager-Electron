@@ -54,10 +54,11 @@ class Message {
       new_avenue.description = description;
 
       // able to take single string argument or array of strings for person, date, and gui_id fields
+      // could refractor to function that would be used three times for persons, dates, and gui_ids
       let array = [person]
       let value;
       let name;
-      for(value of array){ // could refractor to function that would be used three times for persons, dates, and gui_ids
+      for(value of array){ 
          // if it is a single string argument then push to the avenue's array
          if(typeof value === "string"){
             new_avenue.person.push(value)
@@ -105,10 +106,16 @@ class Message {
    
    remove_avenue(avenueId){
       if (avenueId > -1){
-        delete this.avenues[avenueId]
+        delete this.avenues[avenueId];
       }
    }
 
+   remove_all_avenues(){
+      let ave;
+      for(ave in this.avenues){
+         delete this.avenues[ave];
+      }
+   }
    change_avenue_type(avenueId, new_type){ 
       this.avenues[avenueId].avenue_type = new_type
       }

@@ -135,6 +135,17 @@ describe("Message object", function() {
         expect(test_message.avenues[2].gui_ids).to.be.an('array').that.includes('test');
     })
     
+    it('should clear all avenues', () => {
+        test_message.add_avenue('email', 'this is an email', ['Bob', 'Jill'], ['12-12-12', '1-1-1'], true, ['test', 'left', 'right']);
+        test_message.add_avenue('text', 'this is a text', 'Bill', '11-1-11', true, 'test');
+        test_message.add_avenue('facebook', 'this is a facebook post', 'Bonny', '3-1-89', true, 'test');
+        //console.log('new avenues', test_message.avenues);
+        test_message.remove_all_avenues()
+        //console.log('no avenues', test_message.avenues);
+        expect(test_message.avenues[0]).to.not.exist;
+        expect(test_message.avenues[1]).to.not.exist;
+        expect(test_message.avenues[2]).to.not.exist;
+    })
     // test change avenue type
     it('should change avenue type', () => {
         test_message.add_avenue();
