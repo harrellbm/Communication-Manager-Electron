@@ -20,15 +20,18 @@ function saveFile () {
   currentMessage.change_content(contentValue);
   currentMessage.change_signature(signatureValue);
 
+  // clear old avenues from message object
+  currentMessage.remove_all_avenues()
   // unpack values from each avenue that is added
   let avenuesValue = document.getElementById('avenueIn').getElementsByClassName('avenue');
-  for (i = avenuesValue.length-1; i>=0; i--) {//each iteration goes through one avenue
-    let avenue = avenuesValue.item(i);
-    let dropdown = avenue.children[0].value;
-    let sent = avenue.children[4].children[0].checked;
-    let description = avenue.children[5].value;
-    let persons = avenue.children[6].value;
-    let dates = avenue.children[7].value;
+  for (ave of avenuesValue) {//each iteration goes through one avenue
+    console.log(ave)
+    //let avenue = avenuesValue.item(i);
+    let dropdown = ave.children[0].value;
+    let sent = ave.children[4].children[0].checked;
+    let description = ave.children[5].value;
+    let persons = ave.children[6].value;
+    let dates = ave.children[7].value;
     //console.log('specific elements',avenue, dropdown, sent, description, persons, dates)
 
     // Need to figure out how to only add new avenues and update old ones
@@ -53,14 +56,12 @@ function openFile () {
   oldAvenues.innerHTML = ''
     
   // Loads each avenue from the file 
-  for (i = file.avenues.length-1; i>=0; i--) {//each iteration goes through one avenue
-    let avenue = file.avenues[i];
-    //console.log(`avenue${i} to load`, avenue)
-    let dropdown = avenue.avenue_type;
-    let sent = avenue.sent;
-    let description = avenue.description;
-    let persons = avenue.person;
-    let dates = avenue.date;
+  for (ave in file.avenues) {//each iteration goes through one avenue
+    let dropdown = file.avenues[ave].avenue_type;
+    let sent = file.avenues[ave].sent;
+    let description = file.avenues[ave].description;
+    let persons = file.avenues[ave].person;
+    let dates = file.avenues[ave].date;
     addAvenue(dropdown, sent, description, persons, dates)
     }
 };
