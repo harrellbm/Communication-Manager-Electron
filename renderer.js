@@ -191,3 +191,10 @@ function deleteAvenue (ave) {
   //currentMessage. new delete avenue method
   ave.parentElement.removeChild(ave)
 };
+
+module.exports = {
+  saveFile,
+  openFile,
+  addAvenue,
+  deleteAvenue
+}
