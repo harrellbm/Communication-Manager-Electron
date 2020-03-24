@@ -23,18 +23,38 @@ describe('Application launch', function () {
     }
   })
 
-  it('test clicking open button', async () => {
-    await app.client.waitUntilWindowLoaded();
-    await app.client.click('#open');
+   // test clicking save
+   it('should have things written to input/textareas', async () => {
+    await app.client.$('#title').setValue('This is a test Title');
+    await app.client.$('#greeting').setValue('This is a test greeting');
+    await app.client.$('#content').setValue('This is test content.  Blah Blah Blah.');
+    await app.client.$('#signature').setValue('Testing that I can Sign it');
     const title = await app.client.$('#title').getValue();
     const greeting = await app.client.$('#greeting').getValue();   
     const content = await app.client.$('#content').getValue();
     const signature = await app.client.$('#signature').getValue();
     console.log('title: ', title , '\nGreeting: ', greeting, '\nContent: ', content, '\nSignature: ', signature)
-    expect(title).a('string').that.is.not.equal('');
-    expect(greeting).a('string').that.is.not.equal('');
-    expect(content).a('string').that.is.not.equal('');
-    expect(signature).a('string').that.is.not.equal('');
+    expect(title).is.a('string').that.is.not.equal('');
+    expect(greeting).is.a('string').that.is.not.equal('');
+    expect(content).is.a('string').that.is.not.equal('');
+    expect(signature).is.a('string').that.is.not.equal('');
+  })
+
+  // test clicking open
+  it('test clicking open button', async () => {
+    await app.client.waitUntilWindowLoaded();
+    await app.client.click('#open');
+    // Main message window 
+    const title = await app.client.$('#title').getValue();
+    const greeting = await app.client.$('#greeting').getValue();   
+    const content = await app.client.$('#content').getValue();
+    const signature = await app.client.$('#signature').getValue();
+    console.log('title: ', title , '\nGreeting: ', greeting, '\nContent: ', content, '\nSignature: ', signature)
+    expect(title).is.a('string').that.is.not.equal('');
+    expect(greeting).is.a('string').that.is.not.equal('');
+    expect(content).is.a('string').that.is.not.equal('');
+    expect(signature).is.a('string').that.is.not.equal('');
+    // Avenue window
     let ave = 1
     while (ave <= 3){
       let ave_type = await app.client.$(`//div/div/div[${ave}]/select`).getValue();
