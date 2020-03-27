@@ -9,7 +9,8 @@
   "scripts": {
     "start": "electron .",
     "test": "mocha",
-    "debug-test": "mocha --inspect-brk test/test_object_templates.js"
+    "debug-test": "mocha --inspect-brk test/test_object_templates.js",
+    "debug-test2": "mocha --inspect-brk test/test_message_manager.js"
   },
   "dependencies": {
     "electron": "^8.0.0"
