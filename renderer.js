@@ -7,6 +7,8 @@ const templates = require('./objectTemplate.js')
 
 var currentMessage = templates.createMessage();
 
+/* TODO: need to figure out how to load avenues with same id in the message object and ui*/
+
 // Save does not function quite right yet. Need to update message object so that double saves do not happen
 //handles event from the save button
 document.getElementById('save').addEventListener("click", saveFile);
