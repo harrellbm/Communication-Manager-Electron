@@ -103,24 +103,24 @@ describe('Test Message Manager Functionality', function () {
         expect(signature).to.be.a('string').that.is.equal('Testing that I can Sign it');
       // Verify avenue window loaded
         // Avenue 1
-        let ave_type = await app.client.$(`//div/div/div[1]/select`).getText('option:checked');
-        let check = await app.client.$(`//div/div/div[1]/p/input`).getAttribute('checked'); // will return null or true
-        let description = await app.client.$(`//div/div/div[1]/textarea[1]`).getValue();
-        let person = await app.client.$(`//div/div/div[1]/textarea[2]`).getValue();
-        let date = await app.client.$(`//div/div/div[1]/textarea[3]`).getValue();
-        console.log(`Avenue 1\nAvenue Type: `, ave_type, '\nCheck: ', check, '\nDescription: ', description, '\nPerson: ', person, '\nDates: ', date);
+        let ave_type = await app.client.$('#avenue_type0').getText('option:checked');
+        let check = await app.client.$('#sent_checkbox0').getAttribute('checked'); // will return null or true
+        let description = await app.client.$('#description0').getValue();
+        let person = await app.client.$('#persons0').getValue();
+        let date = await app.client.$('#dates0').getValue();
+        //console.log(`Avenue 1\nAvenue Type: `, ave_type, '\nChecked: ', check, '\nDescription: ', description, '\nPerson: ', person, '\nDates: ', date);
         expect(ave_type).to.be.a('string').that.is.equal('Option 3');
         expect(check).to.be.a('string').that.equals('true');
         expect(description).to.be.a('string').that.is.equal('This is a text');
         expect(person).to.be.a('string').that.is.equal('Bob');
         expect(date).to.be.a('string').that.is.equal('12-12-12');
         // Avenue 2
-        let ave_type2 = await app.client.$('//div/div/div[2]/select').getText('option:checked');
-        let check2 = await app.client.$(`//div/div/div[2]/p/input`).getAttribute('checked'); // will return null or true
-        let description2 = await app.client.$(`//div/div/div[2]/textarea[1]`).getValue();
-        let person2 = await app.client.$(`//div/div/div[2]/textarea[2]`).getValue();
-        let date2 = await app.client.$(`//div/div/div[2]/textarea[3]`).getValue();
-        console.log(`Avenue 2\nAvenue Type: `, ave_type2, '\nCheck: ', check2, '\nDescription: ', description2, '\nPerson: ', person2, '\nDates: ', date2);
+        let ave_type2 = await app.client.$('#avenue_type1').getText('option:checked');
+        let check2 = await app.client.$('#sent_checkbox1').getAttribute('checked'); // will return null or true
+        let description2 = await app.client.$('#description1').getValue();
+        let person2 = await app.client.$('#persons1').getValue();
+        let date2 = await app.client.$('#dates1').getValue();
+        //console.log(`Avenue 2\nAvenue Type: `, ave_type2, '\nChecked: ', check2, '\nDescription: ', description2, '\nPerson: ', person2, '\nDates: ', date2);
         expect(ave_type2).to.be.a('string').that.is.equal('Option 2');
         expect(check2).to.be.a('string').that.equals('true');
         expect(description2).to.be.a('string').that.is.equal('This is an email');

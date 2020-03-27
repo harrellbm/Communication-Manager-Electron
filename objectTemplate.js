@@ -102,6 +102,7 @@ class Message {
       
       let avenueId = this.avenue_id_fill()// fill in the lowest available id
       this.avenues[avenueId] = new_avenue
+      return avenueId
       }
    
    remove_avenue(avenueId){

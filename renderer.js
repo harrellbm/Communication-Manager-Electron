@@ -27,7 +27,7 @@ function saveFile () {
   // unpack values from each avenue that is added
   let avenuesValue = document.getElementById('avenueIn').getElementsByClassName('avenue');
   for (ave of avenuesValue) {//each iteration goes through one avenue
-    console.log(ave)
+    //console.log(ave)
     //let avenue = avenuesValue.item(i);
     let dropdown = ave.children[0].value;
     let sent = ave.children[4].children[0].checked;
@@ -36,10 +36,10 @@ function saveFile () {
     let dates = ave.children[7].value;
     //console.log('specific elements',avenue, dropdown, sent, description, persons, dates)
 
-    // Need to figure out how to only add new avenues and update old ones
+    // TODO: Need to figure out how to only add new avenues and update old ones
     currentMessage.add_avenue(dropdown, description, persons, dates, sent)
     }
-  
+  console.log('message to be saved: ', currentMessage)
   ipc.send('save', currentMessage)
 };
 
@@ -55,8 +55,8 @@ function openFile () {
   document.getElementById('content').value = file.content
   document.getElementById('signature').value = file.signature
   oldAvenues = document.getElementById('avenueIn')
-  oldAvenues.innerHTML = ''
-    
+  oldAvenues.innerHTML = '' //clear all existing avenues from ui
+  currentMessage.remove_all_avenues() //clear all existing avenues from message object
   // Loads each avenue from the file 
   for (ave in file.avenues) {//each iteration goes through one avenue
     let dropdown = file.avenues[ave].avenue_type;
@@ -64,6 +64,7 @@ function openFile () {
     let description = file.avenues[ave].description;
     let persons = file.avenues[ave].person;
     let dates = file.avenues[ave].date;
+    
     addAvenue(dropdown, sent, description, persons, dates)
     }
 };
@@ -71,18 +72,19 @@ function openFile () {
 
 // Adds an avenue to do the DOM
 document.getElementById('add').addEventListener("click", addAvenue);
-var avenueCount = 0;
 function addAvenue (avenue_typeValue='', sentValue='', descriptionValue='', personsValue='', datesValue='') {
+//TODO: need to add avenue to object here so that id can be pulled from object
+  let id = currentMessage.add_avenue()
 
   //creates main div to hold an individual avenue
   let ave = document.createElement("div");
   ave.setAttribute("class", "avenue");
-  ave.setAttribute("id", `avenue${avenueCount}`);
+  ave.setAttribute("id", `avenue${id}`);
   
   // Creates drop down list 
   let dropdown = document.createElement("select");
   dropdown.setAttribute("class", "dropdown");
-  dropdown.setAttribute("id", `avenue_type${avenueCount}`);
+  dropdown.setAttribute("id", `avenue_type${id}`);
   
   // TODO: need to make options load off of loop 
   let option1 = document.createElement("option");
@@ -127,11 +129,11 @@ function addAvenue (avenue_typeValue='', sentValue='', descriptionValue='', pers
   // Creates sent box
   let sent_box = document.createElement("p");
   sent_box.setAttribute("class", "sent_box");
-  sent_box.setAttribute("id", `sent_box${avenueCount}`);
+  sent_box.setAttribute("id", `sent_box${id}`);
 
   let sent_checkbox = document.createElement("input");
   sent_checkbox.setAttribute("class", "sent_checkbox");
-  sent_checkbox.setAttribute("id", `sent_checkbox${avenueCount}`);
+  sent_checkbox.setAttribute("id", `sent_checkbox${id}`);
   sent_checkbox.setAttribute("type", "checkbox");
   if(sentValue != ''){// if creating an avenue that is being pulled from a file set it's value
     sent_checkbox.checked = sentValue;
@@ -150,7 +152,7 @@ function addAvenue (avenue_typeValue='', sentValue='', descriptionValue='', pers
   // Creates textareas 
   let description = document.createElement("textarea");
   description.setAttribute("class", "description");
-  description.setAttribute("id", "description");
+  description.setAttribute("id", `description${id}`);
   if(descriptionValue != ''){// if creating an avenue that is being pulled from a file set it's value 
     description.value = descriptionValue;
     }
@@ -158,7 +160,7 @@ function addAvenue (avenue_typeValue='', sentValue='', descriptionValue='', pers
 
   let persons = document.createElement("textarea");
   persons.setAttribute("class", "persons");
-  persons.setAttribute("id", "persons");
+  persons.setAttribute("id", `persons${id}`);
   if(personsValue != ''){// if creating an avenue that is being pulled from a file set it's value 
     persons.value = personsValue;
     }
@@ -166,7 +168,7 @@ function addAvenue (avenue_typeValue='', sentValue='', descriptionValue='', pers
 
   let dates = document.createElement("textarea");
   dates.setAttribute("class", "dates");
-  dates.setAttribute("id", "dates");
+  dates.setAttribute("id", `dates${id}`);
   if(datesValue != ''){// if creating an avenue that is being pulled from a file set it's value 
     dates.value = datesValue;
     }
@@ -175,7 +177,7 @@ function addAvenue (avenue_typeValue='', sentValue='', descriptionValue='', pers
   // Creates and adds dynamic event listener to delete button
   let deleteBtn = document.createElement("input")
   deleteBtn.setAttribute("class", "delete")
-  deleteBtn.setAttribute("id", `delete${avenueCount}`)
+  deleteBtn.setAttribute("id", `delete${id}`)
   deleteBtn.setAttribute("type", "button")
   deleteBtn.setAttribute("value", "x")
   deleteBtn.addEventListener("click", function () {deleteAvenue(ave)}) 
@@ -184,7 +186,6 @@ function addAvenue (avenue_typeValue='', sentValue='', descriptionValue='', pers
   // Get the main div that holds all the avenues and append the new one
   //console.log("avenue", ave);
   document.getElementById("avenueIn").appendChild(ave);
-  ++avenueCount;
 };
 
 // Deletes an avenue from the DOM

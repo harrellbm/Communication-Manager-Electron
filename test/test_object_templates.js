@@ -101,6 +101,17 @@ describe("Message object", function() {
         expect(test_message.avenues[1].gui_ids).to.be.an('array').that.includes('test');
     })
 
+    it('should get the id of the avenue from add avenue method return', () => {
+        let id = test_message.add_avenue('email', 'this is an email', ['Bob', 'Jill'], ['12-12-12', '1-1-1'], true, ['test', 'left', 'right']);
+        let id2 = test_message.add_avenue('text', 'this is a text', 'Bill', '11-1-11', true, 'test');
+        let id3 = test_message.add_avenue('facebook', 'this is a facebook post', 'Bonny', '3-1-89', true, 'test');
+        //console.log('new avenues', test_message.avenues);
+        //console.log('avenue 1 id: ', id, '\navenue 2 id: ', id2, '\navenue 3 id: ', id3);
+        expect(id).to.equal(0);
+        expect(id2).to.equal(1);
+        expect(id3).to.equal(2);
+    })
+    
     // test removing avenue method 
     it('should remove an avenue', () => {
         test_message.add_avenue('email', 'this is an email', ['Bob', 'Jill'], ['12-12-12', '1-1-1'], true, ['test', 'left', 'right']);
@@ -146,6 +157,7 @@ describe("Message object", function() {
         expect(test_message.avenues[1]).to.not.exist;
         expect(test_message.avenues[2]).to.not.exist;
     })
+
     // test change avenue type
     it('should change avenue type', () => {
         test_message.add_avenue();
