@@ -37,7 +37,7 @@ describe('Test Message Manager Functionality', function () {
    // Test full input, save to open loop
   it('should successfuly implement full input, save, to open loop', async () => {
     await app.client.waitUntilWindowLoaded();
-    // Set message frame
+    // Set message values
     await app.client.$('#title').setValue('This is a test Title');
     await app.client.$('#greeting').setValue('This is a test greeting');
     await app.client.$('#content').setValue('This is test content.  Blah Blah Blah.');
@@ -97,21 +97,35 @@ describe('Test Message Manager Functionality', function () {
       let signature = await app.client.$('#signature').getValue();
         // Verify message frame loaded
         console.log('title: ', title , '\nGreeting: ', greeting, '\nContent: ', content, '\nSignature: ', signature)
-        expect(title).is.a('string').that.is.equal('This is a test Title');
-        expect(greeting).is.a('string').that.is.equal('This is a test greeting');
-        expect(content).is.a('string').that.is.equal('This is test content.  Blah Blah Blah.');
-        expect(signature).is.a('string').that.is.equal('Testing that I can Sign it');
-      // Avenue window
-      let ave = 1
-      while (ave <= 2){
-        let ave_type = await app.client.$(`//div/div/div[${ave}]/select`).getValue();
-        let check = await app.client.$(`//div/div/div[${ave}]/p/input`).getAttribute('checked'); // will return null or true
-        let description = await app.client.$(`//div/div/div[${ave}]/textarea[1]`).getValue();
-        let person = await app.client.$(`//div/div/div[${ave}]/textarea[2]`).getValue();
-        let date = await app.client.$(`//div/div/div[${ave}]/textarea[3]`).getValue();
-        console.log(`Avenue ${ave}\nAvenue Type: `, ave_type, '\nCheck: ', check, '\nDescription: ', description, '\nPerson: ', person, '\nDates: ', date);
-        ++ave
-        };
+        expect(title).to.be.a('string').that.is.equal('This is a test Title');
+        expect(greeting).to.be.a('string').that.is.equal('This is a test greeting');
+        expect(content).to.be.a('string').that.is.equal('This is test content.  Blah Blah Blah.');
+        expect(signature).to.be.a('string').that.is.equal('Testing that I can Sign it');
+      // Verify avenue window loaded
+        // Avenue 1
+        let ave_type = await app.client.$(`//div/div/div[1]/select`).getValue();
+        let check = await app.client.$(`//div/div/div[1]/p/input`).getAttribute('checked'); // will return null or true
+        let description = await app.client.$(`//div/div/div[1]/textarea[1]`).getValue();
+        let person = await app.client.$(`//div/div/div[1]/textarea[2]`).getValue();
+        let date = await app.client.$(`//div/div/div[1]/textarea[3]`).getValue();
+        console.log(`Avenue 1\nAvenue Type: `, ave_type, '\nCheck: ', check, '\nDescription: ', description, '\nPerson: ', person, '\nDates: ', date);
+        //expect(ave_type).to.be.a('string').that.is.equal('This is a test Title'); need to figure out how to input
+        //expect(check).to.be.a('string').that.is.equal('This is a test Title');
+        expect(description).to.be.a('string').that.is.equal('This is a text');
+        expect(person).to.be.a('string').that.is.equal('Bob');
+        expect(date).to.be.a('string').that.is.equal('12-12-12');
+        // Avenue 2
+        let ave_type2 = await app.client.$(`//div/div/div[2]/select`).getValue();
+        let check2 = await app.client.$(`//div/div/div[2]/p/input`).getAttribute('checked'); // will return null or true
+        let description2 = await app.client.$(`//div/div/div[2]/textarea[1]`).getValue();
+        let person2 = await app.client.$(`//div/div/div[2]/textarea[2]`).getValue();
+        let date2 = await app.client.$(`//div/div/div[2]/textarea[3]`).getValue();
+        console.log(`Avenue 2\nAvenue Type: `, ave_type2, '\nCheck: ', check2, '\nDescription: ', description2, '\nPerson: ', person2, '\nDates: ', date2);
+        //expect(ave_type).to.be.a('string').that.is.equal('This is a test Title'); need to figure out how to input
+        //expect(check).to.be.a('string').that.is.equal('This is a test Title'); 
+        expect(description2).to.be.a('string').that.is.equal('This is an email');
+        expect(person2).to.be.a('string').that.is.equal('Phil, Joe');
+        expect(date2).to.be.a('string').that.is.equal('9-9-9, 1-1-1');
     });
 
   // test clicking open
