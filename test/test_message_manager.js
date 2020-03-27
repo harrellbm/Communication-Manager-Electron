@@ -45,15 +45,15 @@ describe('Test Message Manager Functionality', function () {
     // Add and fill avenues
       // Avenue 1
       await app.client.click('#add');
-      //await app.client.$(`//div/div/div[1]/select`).setValue('1'); //Avenue Type //need to figure out how to set select element
-      //await app.client.$(`//div/div/div[1]/p/input`).setAttribute('checked'); //Check Box // possibly use executeScript function
+      //await app.client.$(`//div/div/div[1]/select`).setValue('1'); //Avenue Type //need to figure out how to set select element // possibly use executeScript function
+      await app.client.click(`//div/div/div[1]/p/input`);; //Check Box 
       await app.client.$(`//div/div/div[1]/textarea[1]`).setValue('This is a text'); //Description
       await app.client.$(`//div/div/div[1]/textarea[2]`).setValue('Bob'); //Person
       await app.client.$(`//div/div/div[1]/textarea[3]`).setValue('12-12-12'); //Date
       // Avenue 2
       await app.client.click('#add');
-      //await app.client.$(`//div/div/div[2]/select`).setValue('1'); //Avenue Type //need to figure out how to set select element
-      //await app.client.$(`//div/div/div[2]/p/input`).setAttribute('checked'); //Check Box // possibly use executeScript function
+      //await app.client.$(`//div/div/div[2]/select`).setValue('1'); //Avenue Type //need to figure out how to set select element // possibly use executeScript function
+      await app.client.click(`//div/div/div[2]/p/input`); //Check Box 
       await app.client.$(`//div/div/div[2]/textarea[1]`).setValue('This is an email'); //Description
       await app.client.$(`//div/div/div[2]/textarea[2]`).setValue('Phil, Joe'); //Person
       await app.client.$(`//div/div/div[2]/textarea[3]`).setValue('9-9-9, 1-1-1'); //Date
@@ -96,7 +96,7 @@ describe('Test Message Manager Functionality', function () {
       let content = await app.client.$('#content').getValue();
       let signature = await app.client.$('#signature').getValue();
         // Verify message frame loaded
-        console.log('title: ', title , '\nGreeting: ', greeting, '\nContent: ', content, '\nSignature: ', signature)
+        //console.log('title: ', title , '\nGreeting: ', greeting, '\nContent: ', content, '\nSignature: ', signature)
         expect(title).to.be.a('string').that.is.equal('This is a test Title');
         expect(greeting).to.be.a('string').that.is.equal('This is a test greeting');
         expect(content).to.be.a('string').that.is.equal('This is test content.  Blah Blah Blah.');
@@ -110,7 +110,7 @@ describe('Test Message Manager Functionality', function () {
         let date = await app.client.$(`//div/div/div[1]/textarea[3]`).getValue();
         console.log(`Avenue 1\nAvenue Type: `, ave_type, '\nCheck: ', check, '\nDescription: ', description, '\nPerson: ', person, '\nDates: ', date);
         //expect(ave_type).to.be.a('string').that.is.equal('This is a test Title'); need to figure out how to input
-        //expect(check).to.be.a('string').that.is.equal('This is a test Title');
+        expect(check).to.be.a('string').that.equals('true');
         expect(description).to.be.a('string').that.is.equal('This is a text');
         expect(person).to.be.a('string').that.is.equal('Bob');
         expect(date).to.be.a('string').that.is.equal('12-12-12');
@@ -122,7 +122,7 @@ describe('Test Message Manager Functionality', function () {
         let date2 = await app.client.$(`//div/div/div[2]/textarea[3]`).getValue();
         console.log(`Avenue 2\nAvenue Type: `, ave_type2, '\nCheck: ', check2, '\nDescription: ', description2, '\nPerson: ', person2, '\nDates: ', date2);
         //expect(ave_type).to.be.a('string').that.is.equal('This is a test Title'); need to figure out how to input
-        //expect(check).to.be.a('string').that.is.equal('This is a test Title'); 
+        expect(check2).to.be.a('string').that.equals('true');
         expect(description2).to.be.a('string').that.is.equal('This is an email');
         expect(person2).to.be.a('string').that.is.equal('Phil, Joe');
         expect(date2).to.be.a('string').that.is.equal('9-9-9, 1-1-1');
