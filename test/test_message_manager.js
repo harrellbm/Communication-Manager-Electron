@@ -2,8 +2,7 @@ const Application = require('spectron').Application
 const electronPath = require('electron') // Require Electron from the binaries included in node_modules.
 const path = require('path')
 const expect = require('chai').expect;
-const jsdom = require('jsdom');
-const {JSDOM} = jsdom;
+
 
 var app = new Application({
     path: electronPath,
@@ -34,6 +33,7 @@ describe('Test Message Manager Functionality', function () {
     expect(avenue).to.be.false;
     })
 
+    //TODO: need to shift to css # selectors so that tests rely on same ids as the program itself
    // Test full input, save to open loop
   it('should successfuly implement full input, save, to open loop', async () => {
     await app.client.waitUntilWindowLoaded();
