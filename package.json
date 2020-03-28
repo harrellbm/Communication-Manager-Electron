@@ -9,14 +9,14 @@
   "scripts": {
     "start": "electron .",
     "test": "mocha",
-    "debug-test": "mocha --inspect-brk test/test_object_templates.js",
-    "debug-test2": "mocha --inspect-brk test/test_message_manager.js"
+    "debug-test-objects": "mocha --inspect-brk test/test_object_templates.js",
+    "debug-test-messEditor": "mocha --inspect-brk test/test_message_manager.js"
   },
   "dependencies": {
-    "electron": "^8.0.0"
+    "electron": "^8.2.0"
   },
   "devDependencies": {
-    "@types/mocha": "^7.0.1",
+    "@types/mocha": "^7.0.2",
     "chai": "^4.2.0",
     "chai-as-promised": "^7.1.1",
     "electron-chromedriver": "^8.0.0",
