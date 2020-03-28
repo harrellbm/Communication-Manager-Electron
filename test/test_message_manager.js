@@ -44,14 +44,14 @@ describe('Test Message Manager Functionality', function () {
     // Add and fill avenues
       // Avenue 1
       await app.client.click('#add');
-      await app.client.$('#avenue_type0').selectByVisibleText('Option 3'); //Avenue Type 
+      await app.client.$('#avenue_type0').selectByVisibleText('Text'); //Avenue Type 
       await app.client.click('#sent_checkbox0');; //Check Box 
       await app.client.$('#description0').setValue('This is a text'); //Description
       await app.client.$('#persons0').setValue('Bob'); //Person
       await app.client.$('#dates0').setValue('12-12-12'); //Date
       // Avenue 2
       await app.client.click('#add');
-      await app.client.$('#avenue_type1').selectByVisibleText('Option 2'); //Avenue Type //need to figure out how to set select element // possibly use executeScript function
+      await app.client.$('#avenue_type1').selectByVisibleText('Email'); //Avenue Type //need to figure out how to set select element // possibly use executeScript function
       await app.client.click('#sent_checkbox1'); //Check Box 
       await app.client.$('#description1').setValue('This is an email'); //Description
       await app.client.$('#persons1').setValue('Phil, Joe'); //Person
@@ -108,7 +108,7 @@ describe('Test Message Manager Functionality', function () {
         let person = await app.client.$('#persons0').getValue();
         let date = await app.client.$('#dates0').getValue();
         //console.log(`Avenue 1\nAvenue Type: `, ave_type, '\nChecked: ', check, '\nDescription: ', description, '\nPerson: ', person, '\nDates: ', date);
-        expect(ave_type).to.be.a('string').that.is.equal('Option 3');
+        expect(ave_type).to.be.a('string').that.is.equal('Text');
         expect(check).to.be.a('string').that.equals('true');
         expect(description).to.be.a('string').that.is.equal('This is a text');
         expect(person).to.be.a('string').that.is.equal('Bob');
@@ -120,7 +120,7 @@ describe('Test Message Manager Functionality', function () {
         let person2 = await app.client.$('#persons1').getValue();
         let date2 = await app.client.$('#dates1').getValue();
         //console.log(`Avenue 2\nAvenue Type: `, ave_type2, '\nChecked: ', check2, '\nDescription: ', description2, '\nPerson: ', person2, '\nDates: ', date2);
-        expect(ave_type2).to.be.a('string').that.is.equal('Option 2');
+        expect(ave_type2).to.be.a('string').that.is.equal('Email');
         expect(check2).to.be.a('string').that.equals('true');
         expect(description2).to.be.a('string').that.is.equal('This is an email');
         expect(person2).to.be.a('string').that.is.equal('Phil, Joe');
@@ -133,14 +133,14 @@ describe('Test Message Manager Functionality', function () {
     // Add and fill initial avenues
       // Avenue 1
       await app.client.click('#add');
-      await app.client.$('#avenue_type0').selectByVisibleText('Option 3'); //Avenue Type //need to figure out how to set select element // possibly use executeScript function
+      await app.client.$('#avenue_type0').selectByVisibleText('Text'); //Avenue Type //need to figure out how to set select element // possibly use executeScript function
       await app.client.click('#sent_checkbox0');; //Check Box 
       await app.client.$('#description0').setValue('This is a text'); //Description
       await app.client.$('#persons0').setValue('Bob'); //Person
       await app.client.$('#dates0').setValue('12-12-12'); //Date
       // Avenue 2
       await app.client.click('#add');
-      await app.client.$('#avenue_type1').selectByVisibleText('Option 2'); //Avenue Type //need to figure out how to set select element // possibly use executeScript function
+      await app.client.$('#avenue_type1').selectByVisibleText('Email'); //Avenue Type //need to figure out how to set select element // possibly use executeScript function
       await app.client.click('#sent_checkbox1'); //Check Box 
       await app.client.$('#description1').setValue('This is an email'); //Description
       await app.client.$('#persons1').setValue('Phil, Joe'); //Person
@@ -157,7 +157,7 @@ describe('Test Message Manager Functionality', function () {
 
     // Add a third Avenue 
     await app.client.click('#add');
-    await app.client.$('#avenue_type2').selectByVisibleText('Option 2'); //Avenue Type 
+    await app.client.$('#avenue_type2').selectByVisibleText('Facebook'); //Avenue Type 
     await app.client.click('#sent_checkbox2');; //Check Box 
     await app.client.$('#description2').setValue('This is a facebook post'); //Description
     await app.client.$('#persons2').setValue('Tommy, Jill'); //Person
@@ -176,7 +176,7 @@ describe('Test Message Manager Functionality', function () {
         let person2 = await app.client.$('#persons0').getValue();
         let date2 = await app.client.$('#dates0').getValue();
         //console.log(`Avenue 2\nAvenue Type: `, ave_type2, '\nChecked: ', check2, '\nDescription: ', description2, '\nPerson: ', person2, '\nDates: ', date2);
-        expect(ave_type2).to.be.a('string').that.is.equal('Option 2');
+        expect(ave_type2).to.be.a('string').that.is.equal('Email');
         expect(check2).to.be.a('string').that.equals('true');
         expect(description2).to.be.a('string').that.is.equal('This is an email');
         expect(person2).to.be.a('string').that.is.equal('Phil, Joe');
@@ -188,7 +188,7 @@ describe('Test Message Manager Functionality', function () {
         let person3 = await app.client.$('#persons1').getValue();
         let date3 = await app.client.$('#dates1').getValue();
         //console.log(`Avenue 3\nAvenue Type: `, ave_type3, '\nChecked: ', check3, '\nDescription: ', description3, '\nPerson: ', person3, '\nDates: ', date3);
-        expect(ave_type3).to.be.a('string').that.is.equal('Option 2');
+        expect(ave_type3).to.be.a('string').that.is.equal('Facebook');
         expect(check3).to.be.a('string').that.equals('true');
         expect(description3).to.be.a('string').that.is.equal('This is a facebook post');
         expect(person3).to.be.a('string').that.is.equal('Tommy, Jill');
