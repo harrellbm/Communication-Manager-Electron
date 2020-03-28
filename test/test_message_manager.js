@@ -22,7 +22,7 @@ describe('Test Message Manager Functionality', function () {
     }
   })
 
-  // make sure add and delete buttons working 
+  // Make sure add and delete buttons working 
   it('should add and delete an avenue', async () => {
     await app.client.waitUntilWindowLoaded();
     await app.client.click('#add'); //click add button
@@ -33,7 +33,6 @@ describe('Test Message Manager Functionality', function () {
     expect(avenue).to.be.false;
     })
 
-    //TODO: need to shift to css # selectors so that tests rely on same ids as the program itself
    // Test full input, save to open loop
   it('should successfuly implement full input, save, to open loop', async () => {
     await app.client.waitUntilWindowLoaded();
@@ -45,18 +44,18 @@ describe('Test Message Manager Functionality', function () {
     // Add and fill avenues
       // Avenue 1
       await app.client.click('#add');
-      await app.client.$('#avenue_type0').selectByVisibleText('Option 3'); //Avenue Type //need to figure out how to set select element // possibly use executeScript function
-      await app.client.click(`//div/div/div[1]/p/input`);; //Check Box 
-      await app.client.$(`//div/div/div[1]/textarea[1]`).setValue('This is a text'); //Description
-      await app.client.$(`//div/div/div[1]/textarea[2]`).setValue('Bob'); //Person
-      await app.client.$(`//div/div/div[1]/textarea[3]`).setValue('12-12-12'); //Date
+      await app.client.$('#avenue_type0').selectByVisibleText('Option 3'); //Avenue Type 
+      await app.client.click('#sent_checkbox0');; //Check Box 
+      await app.client.$('#description0').setValue('This is a text'); //Description
+      await app.client.$('#persons0').setValue('Bob'); //Person
+      await app.client.$('#dates0').setValue('12-12-12'); //Date
       // Avenue 2
       await app.client.click('#add');
       await app.client.$('#avenue_type1').selectByVisibleText('Option 2'); //Avenue Type //need to figure out how to set select element // possibly use executeScript function
-      await app.client.click(`//div/div/div[2]/p/input`); //Check Box 
-      await app.client.$(`//div/div/div[2]/textarea[1]`).setValue('This is an email'); //Description
-      await app.client.$(`//div/div/div[2]/textarea[2]`).setValue('Phil, Joe'); //Person
-      await app.client.$(`//div/div/div[2]/textarea[3]`).setValue('9-9-9, 1-1-1'); //Date
+      await app.client.click('#sent_checkbox1'); //Check Box 
+      await app.client.$('#description1').setValue('This is an email'); //Description
+      await app.client.$('#persons1').setValue('Phil, Joe'); //Person
+      await app.client.$('#dates1').setValue('9-9-9, 1-1-1'); //Date
 
     // Save Ui
     await app.client.click('#save');
@@ -127,6 +126,75 @@ describe('Test Message Manager Functionality', function () {
         expect(person2).to.be.a('string').that.is.equal('Phil, Joe');
         expect(date2).to.be.a('string').that.is.equal('9-9-9, 1-1-1');
     });
+  
+  // Test avenue keys with dynamically adding and deleting avenues
+  it('should keep keys consistent even with dynamic adding and deleting of avenues', async () => {
+    await app.client.waitUntilWindowLoaded();
+    // Add and fill initial avenues
+      // Avenue 1
+      await app.client.click('#add');
+      await app.client.$('#avenue_type0').selectByVisibleText('Option 3'); //Avenue Type //need to figure out how to set select element // possibly use executeScript function
+      await app.client.click('#sent_checkbox0');; //Check Box 
+      await app.client.$('#description0').setValue('This is a text'); //Description
+      await app.client.$('#persons0').setValue('Bob'); //Person
+      await app.client.$('#dates0').setValue('12-12-12'); //Date
+      // Avenue 2
+      await app.client.click('#add');
+      await app.client.$('#avenue_type1').selectByVisibleText('Option 2'); //Avenue Type //need to figure out how to set select element // possibly use executeScript function
+      await app.client.click('#sent_checkbox1'); //Check Box 
+      await app.client.$('#description1').setValue('This is an email'); //Description
+      await app.client.$('#persons1').setValue('Phil, Joe'); //Person
+      await app.client.$('#dates1').setValue('9-9-9, 1-1-1'); //Date
+
+    // Save Ui
+    await app.client.click('#save');
+    
+    // Delete avenue 1
+    await app.client.click('#delete0'); //click delete button
+      // Verify Avenue deleted 
+      let ave1 = await app.client.isExisting('#avenue0');
+      expect(ave1).to.be.false;
+
+    // Add a third Avenue 
+    await app.client.click('#add');
+    await app.client.$('#avenue_type2').selectByVisibleText('Option 2'); //Avenue Type 
+    await app.client.click('#sent_checkbox2');; //Check Box 
+    await app.client.$('#description2').setValue('This is a facebook post'); //Description
+    await app.client.$('#persons2').setValue('Tommy, Jill'); //Person
+    await app.client.$('#dates2').setValue('3-27-20'); //Date
+
+    // Save Ui
+    await app.client.click('#save');
+
+    // Open saved ui 
+    await app.client.click('#open');
+      // Verify avenue window loaded
+        // Second Avenue
+        let ave_type2 = await app.client.$('#avenue_type0').getText('option:checked');
+        let check2 = await app.client.$('#sent_checkbox0').getAttribute('checked'); // will return null or true
+        let description2 = await app.client.$('#description0').getValue();
+        let person2 = await app.client.$('#persons0').getValue();
+        let date2 = await app.client.$('#dates0').getValue();
+        //console.log(`Avenue 2\nAvenue Type: `, ave_type2, '\nChecked: ', check2, '\nDescription: ', description2, '\nPerson: ', person2, '\nDates: ', date2);
+        expect(ave_type2).to.be.a('string').that.is.equal('Option 2');
+        expect(check2).to.be.a('string').that.equals('true');
+        expect(description2).to.be.a('string').that.is.equal('This is an email');
+        expect(person2).to.be.a('string').that.is.equal('Phil, Joe');
+        expect(date2).to.be.a('string').that.is.equal('9-9-9, 1-1-1');
+        // Third Avenue
+        let ave_type3 = await app.client.$('#avenue_type1').getText('option:checked');
+        let check3 = await app.client.$('#sent_checkbox1').getAttribute('checked'); // will return null or true
+        let description3 = await app.client.$('#description1').getValue();
+        let person3 = await app.client.$('#persons1').getValue();
+        let date3 = await app.client.$('#dates1').getValue();
+        //console.log(`Avenue 3\nAvenue Type: `, ave_type3, '\nChecked: ', check3, '\nDescription: ', description3, '\nPerson: ', person3, '\nDates: ', date3);
+        expect(ave_type3).to.be.a('string').that.is.equal('Option 2');
+        expect(check3).to.be.a('string').that.equals('true');
+        expect(description3).to.be.a('string').that.is.equal('This is a facebook post');
+        expect(person3).to.be.a('string').that.is.equal('Tommy, Jill');
+        expect(date3).to.be.a('string').that.is.equal('3-27-20');
+    });
+
 
   // test clicking open
   /*it('test clicking open button', async () => {
