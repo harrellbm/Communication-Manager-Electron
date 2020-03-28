@@ -77,6 +77,6 @@ ipc.on('save', function (event, arg) {
 ipc.on('open-file', function (event, arg) {
   let rawData = fs.readFileSync('data.json')
   let fileData = JSON.parse(rawData)
-  console.log(fileData)
+  //console.log(fileData)
   event.returnValue = fileData
 })
