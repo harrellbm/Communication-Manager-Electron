@@ -5,7 +5,7 @@ class Message {
      this.greeting = '';
      this.content = '';
      this.signature ='';
-     this.avenue_types = ['Other', 'Email', 'Text', 'Social Media', 'Handout', 'Poster']
+     this.avenue_types = ['Email', 'Text', 'Facebook', 'Instagram', 'Handout', 'Poster','Other']
      this.avenues = {}
      this.avenue_count = 0
         }

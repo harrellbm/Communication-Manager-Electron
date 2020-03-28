@@ -71,7 +71,7 @@ function openFile () {
 // Adds an avenue to do the DOM
 document.getElementById('add').addEventListener("click", addAvenue);
 function addAvenue (avenue_typeValue='', sentValue='', descriptionValue='', personsValue='', datesValue='') {
-//TODO: need to add avenue to object here so that id can be pulled from object
+
   let id = currentMessage.add_avenue()
 
   //creates main div to hold an individual avenue
@@ -84,21 +84,16 @@ function addAvenue (avenue_typeValue='', sentValue='', descriptionValue='', pers
   dropdown.setAttribute("class", "dropdown");
   dropdown.setAttribute("id", `avenue_type${id}`);
   
-  // TODO: need to make options load off of loop 
-  let option1 = document.createElement("option");
-  option1.setAttribute("value", "option1");
-  option1.innerHTML = "Option 1";
-  dropdown.appendChild(option1);
+  let options = currentMessage.avenue_types
+  console.log(options)
 
-  let option2 = document.createElement("option");
-  option2.setAttribute("value", "option2");
-  option2.innerHTML = "Option 2";
-  dropdown.appendChild(option2);
-
-  let option3 = document.createElement("option");
-  option3.setAttribute("value", "option3");
-  option3.innerHTML = "Option 3";
-  dropdown.appendChild(option3);
+  for (i in options){
+    let opElem = document.createElement("option");
+    let opText = currentMessage.avenue_types[i]
+    opElem.setAttribute("value", `${opText}`);
+    opElem.innerHTML = `${opText}`;
+    dropdown.appendChild(opElem);
+    }
 
   if(avenue_typeValue != ''){// if creating an avenue that is being pulled from a file set it's value 
     dropdown.value = avenue_typeValue;

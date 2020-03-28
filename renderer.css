@@ -135,7 +135,7 @@ flex-shrink: 1;
 /* Avenue rules */
 .avenue{
   display: grid;
-  grid-template-columns: 5rem 1fr 1fr 1fr 1.4rem;
+  grid-template-columns: 6rem 1fr 1fr 1fr 1.4rem;
   grid-template-rows: 1.4rem 1.5rem 2rem;
   background-color: #999;
   border: rgb(169, 169, 169);
@@ -147,7 +147,6 @@ flex-shrink: 1;
 /* Drop down box rules*/
 .dropdown{
   display: inline-block;
-  width: 5rem;
   grid-column-start: 1;
   grid-column-end: 2;
   grid-row-start: 2;
@@ -182,7 +181,6 @@ flex-shrink: 1;
 /* Seccond row */
 /*Sent box rules */
 .sent_box{
-  width: 5rem;
   grid-column-start: 1;
   grid-column-end: 2;
   grid-row-start: 3;
