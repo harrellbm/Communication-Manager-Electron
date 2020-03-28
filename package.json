@@ -4,7 +4,7 @@
   "description": "A lightweight way to keep track of and send communications",
   "keywords": [],
   "main": "./main.js",
-  "version": "0.1.0",
+  "version": "0.1.4",
   "author": "Brenden Harrell",
   "scripts": {
     "start": "electron .",
