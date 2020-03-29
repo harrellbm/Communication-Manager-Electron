@@ -3,7 +3,7 @@
 // All of the Node.js APIs are available in this process.
 //this is the js file for the message manager tab
 const ipc = require('electron').ipcRenderer;
-const templates = require('./objectTemplate.js')
+const templates = require('../objectTemplate.js')
 
 var currentMessage = templates.createMessage();
 
@@ -11,19 +11,10 @@ var currentMessage = templates.createMessage();
 //handles event from the save button
 document.getElementById('save').addEventListener("click", saveFile);
 function saveFile () {
-  let titleValue = document.getElementById('title').value;
-  let greetingValue = document.getElementById('greeting').value;
-  let contentValue = document.getElementById('content').value;
-  let signatureValue = document.getElementById('signature').value;
-  currentMessage.change_title(titleValue);
-  currentMessage.change_greeting(greetingValue);
-  currentMessage.change_content(contentValue);
-  currentMessage.change_signature(signatureValue);
-
-  // clear old avenues from message object
+  // clear old messeges from campaign object
   currentMessage.remove_all_avenues()
   // unpack values from each avenue that is added
-  let avenuesValue = document.getElementById('avenueIn').getElementsByClassName('avenue');
+  let avenuesValue = document.getElementById('messageIn').getElementsByClassName('message');
   for (ave of avenuesValue) {//each iteration goes through one avenue
     //console.log(ave)
     //let avenue = avenuesValue.item(i);

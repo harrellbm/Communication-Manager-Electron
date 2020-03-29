@@ -3,14 +3,12 @@ const {app, BrowserWindow} = require('electron')
 const ipc = require('electron').ipcMain
 const fs = require('fs')
 const debug = require('electron-debug')
+require('electron-reload')(__dirname);
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 
-/*let mainWindow
-(async () => {
-	await app.whenReady();
-	mainWindow = new BrowserWindow();
-})();*/
+// Open devTools for all browser windows
+debug({'devToolsMode': 'right'});
 
 const windows = new Set();
 
@@ -28,6 +26,7 @@ function createWindow (name, tag, html) {
   // Add name and tag to window
   newWindow.__name = name;
   newWindow.__tag = tag;
+
   // and load the index.html of the app.
   newWindow.loadFile(html);
 
@@ -35,9 +34,6 @@ function createWindow (name, tag, html) {
   newWindow.once('ready-to-show', () => {
     newWindow.show();
   });
-
-  // Open the DevTools.
-  //newWindow.webContents.openDevTools();
 
   // Emitted when the window is closed.
   newWindow.on('closed', function () {
@@ -52,9 +48,9 @@ function createWindow (name, tag, html) {
 
 // Create all the initial windows 
 function setUpWindows() {
-  createWindow('message_manager','manager', 'message_manager.html');
-  createWindow('message_editor','editor','message_editor.html');
-  console.log(windows)
+  createWindow('message_manager','manager', './src/message_manager.html');
+  createWindow('message_editor','editor','./src/message_editor.html');
+  //console.log(windows)
 }
 
 // This method will be called when Electron has finished
