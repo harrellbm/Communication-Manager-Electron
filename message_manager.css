@@ -1,8 +1,8 @@
 /* Container for full grid */
 .wrapper{
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: 8vh 4vh 24vh 4vh 24vh 4vh 24vh 8vh;
+    grid-template-columns: 1fr;
+    grid-template-rows: 15vh 70vh 15vh;
     background-color: rgb(139, 203, 224);
   }
   
@@ -17,9 +17,6 @@
     margin: 0px;
   }
   
-  textarea{
-    resize: none;
-  }
   
   /* Common class for tags at top of message editor */
   .tag{
@@ -39,101 +36,39 @@
   flex-shrink: 1;
   }
   
-  /* Common class for message textareas */
-  .message{
-    height: 23vh;
-    width: 90%;
-    margin: auto;
-  }
-  
   /* input for title */
   #title{
     margin-left: 0.5rem;
   }
   
-  /* Text title for greeting */
-  #greeting_title{
+  /* Container for adding avenues */
+  #messageIn{
+    max-height: 85vh;
+    vertical-align: top;
     grid-row-start: 2;
     grid-row-end: 3;
     grid-column-start: 1;
     grid-column-end: 2;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-  
-  /* Textarea for greeting */
-  #greeting{
-    grid-row-start: 3;
-    grid-row-end: 4;
-    grid-column-start: 1;
-    grid-column-end: 2;
-  }
-  
-  /* Text title for content */
-  #content_title{
-    grid-row-start: 4;
-    grid-row-end: 5;
-    grid-column-start: 1;
-    grid-column-end: 2;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-  
-  /* Textarea for content */
-  #content{
-    grid-row-start: 5;
-    grid-row-end: 6;
-    grid-column-start: 1;
-    grid-column-end: 2;
-  }
-  
-  /* Text title for signature */
-  #signature_title{
-    grid-row-start: 6;
-    grid-row-end: 7;
-    grid-column-start: 1;
-    grid-column-end: 2;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-  
-  /* Textarea for signature */
-  #signature{
-    grid-row-start: 7;
-    grid-row-end: 8;
-    grid-column-start: 1;
-    grid-column-end: 2;
-  }
-  
-  /* Container for adding avenues */
-  #avenueIn{
-    max-height: 85vh;
-    vertical-align: top;
-    grid-row-start: 3;
-    grid-row-end: 8;
-    grid-column-start: 2;
-    grid-column-end: 3;
     overflow-y: scroll;
     background-color: rgb(255, 255, 255);
     border-width: 1px;
     border-style: solid;
     border-color: rgb(169, 169, 169);
+    margin-left: 1vh;
+    margin-right: 1vh;
   }
   
   /* container on the bottom */
   #bottom{
     grid-column-start: 1;
-    grid-column-end: 3;
+    grid-column-end: 2;
     display: flex;
     justify-content: center;
     align-items: center;
   }
   
   /* Avenue rules */
-  .avenue{
+  .message{
     display: grid;
     grid-template-columns: 6rem 1fr 1fr 1fr 1.4rem;
     grid-template-rows: 1.4rem 1.5rem 2rem;
