@@ -14,9 +14,9 @@ const debug = require('electron-debug')
 
 const windows = new Set();
 
-function createWindow () {
+function createWindow (name, tag, html) {
   // Create Message editor window
-  newWindow = new BrowserWindow({
+  let newWindow = new BrowserWindow({
     width: 1000,
     height: 600,
     show: false,
@@ -25,8 +25,11 @@ function createWindow () {
     }
   });
 
+  // Add name and tag to window
+  newWindow.__name = name;
+  newWindow.__tag = tag;
   // and load the index.html of the app.
-  newWindow.loadFile('message_manager.html')
+  newWindow.loadFile(html);
 
   // When loaded show 
   newWindow.once('ready-to-show', () => {
@@ -34,13 +37,11 @@ function createWindow () {
   });
 
   // Open the DevTools.
-  newWindow.webContents.openDevTools()
+  //newWindow.webContents.openDevTools();
 
   // Emitted when the window is closed.
   newWindow.on('closed', function () {
-    // Dereference the window object, usually you would store windows
-    // in an array if your app supports multi windows, this is the time
-    // when you should delete the corresponding element.
+    // Dereference the window object and delete from set
     windows.delete(newWindow);
     newWindow = null;
   });
@@ -49,10 +50,17 @@ function createWindow () {
   return newWindow;
 };
 
+// Create all the initial windows 
+function setUpWindows() {
+  createWindow('message_manager','manager', 'message_manager.html');
+  createWindow('message_editor','editor','message_editor.html');
+  console.log(windows)
+}
+
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
-app.on('ready', createWindow)
+app.on('ready', setUpWindows)
 
 // Quit when all windows are closed.
 app.on('window-all-closed', function () {
