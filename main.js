@@ -2,8 +2,6 @@
 const {app, BrowserWindow} = require('electron')
 const ipc = require('electron').ipcMain
 const fs = require('fs')
-const path = require('path')
-const url = require('url')
 const debug = require('electron-debug')
 require('electron-reload')(__dirname);
 // Keep a global reference of the window object, if you don't, the window will
@@ -29,8 +27,8 @@ function createWindow (name, tag, html) {
   newWindow.__name = name;
   newWindow.__tag = tag;
 
-  // and load the index.html of the app.
-  //newWindow.loadFile(html);
+  // And load the html of the window
+    // Add __dirname so that electron-reload can watch render processes
   newWindow.loadURL(`file://${__dirname}/${html}`);
 
   // When loaded show 
