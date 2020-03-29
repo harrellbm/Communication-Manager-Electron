@@ -12,30 +12,42 @@ const debug = require('electron-debug')
 	mainWindow = new BrowserWindow();
 })();*/
 
+const windows = new Set();
+
 function createWindow () {
-  // Create the browser window.
-  mainWindow = new BrowserWindow({
+  // Create Message editor window
+  newWindow = new BrowserWindow({
     width: 1000,
     height: 600,
+    show: false,
     webPreferences: {
       nodeIntegration: true
     }
-  })
+  });
 
   // and load the index.html of the app.
-  mainWindow.loadFile('message_manager.html')
+  newWindow.loadFile('message_manager.html')
+
+  // When loaded show 
+  newWindow.once('ready-to-show', () => {
+    newWindow.show();
+  });
 
   // Open the DevTools.
-  mainWindow.webContents.openDevTools()
+  newWindow.webContents.openDevTools()
 
   // Emitted when the window is closed.
-  mainWindow.on('closed', function () {
+  newWindow.on('closed', function () {
     // Dereference the window object, usually you would store windows
     // in an array if your app supports multi windows, this is the time
     // when you should delete the corresponding element.
-    mainWindow = null
-  })
-}
+    windows.delete(newWindow);
+    newWindow = null;
+  });
+
+  windows.add(newWindow);
+  return newWindow;
+};
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
