@@ -3,14 +3,13 @@ const {app, BrowserWindow} = require('electron')
 const ipc = require('electron').ipcMain
 const fs = require('fs')
 const debug = require('electron-debug')
-require('electron-reload')(__dirname);
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 
 // Open devTools for all browser windows
-debug({'devToolsMode': 'right'});
+//debug({'devToolsMode': 'right'});
 
-const windows = new Set();
+const windows = [];
 
 function createWindow (name, tag, html) {
   // Create Message editor window
@@ -29,7 +28,7 @@ function createWindow (name, tag, html) {
 
   // And load the html of the window
     // Add __dirname so that electron-reload can watch render processes
-  newWindow.loadURL(`file://${__dirname}/${html}`);
+  newWindow.loadFile(html);
 
   // When loaded show 
   newWindow.once('ready-to-show', () => {
@@ -39,11 +38,11 @@ function createWindow (name, tag, html) {
   // Emitted when the window is closed.
   newWindow.on('closed', function () {
     // Dereference the window object and delete from set
-    windows.delete(newWindow);
+    delete windows[name];
     newWindow = null;
   });
 
-  windows.add(newWindow);
+  windows.push(newWindow);
   return newWindow;
 };
 
@@ -51,7 +50,7 @@ function createWindow (name, tag, html) {
 function setUpWindows() {
   createWindow('message_manager','manager', './src/message_manager.html');
   createWindow('message_editor','editor','./src/message_editor.html');
-  //console.log(windows)
+  console.log(windows)
 }
 
 // This method will be called when Electron has finished
@@ -79,6 +78,9 @@ app.on('activate', function () {
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.
 
+// TODO: add ipcs for message manager 
+
+// Ipcs for message editor
 ipc.on('save', function (event, arg) {
   file = JSON.stringify(arg)
   console.log("made it to main", file)
@@ -86,9 +88,6 @@ ipc.on('save', function (event, arg) {
     if (err) throw err;
     console.log('Replaced!')
   })
-  /*if (arg[title]){
-
-  }*/
 })
 
 ipc.on('open-file', function (event, arg) {

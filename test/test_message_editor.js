@@ -10,10 +10,12 @@ var app = new Application({
   })
 
 describe('Test Message Manager Functionality', function () {
-  this.timeout(15000)
+  this.timeout(50000)
 
   beforeEach(function () {
+    
     return app.start()
+    
   })
 
   afterEach(function () {
@@ -25,6 +27,7 @@ describe('Test Message Manager Functionality', function () {
   // Make sure add and delete buttons working 
   it('should add and delete an avenue', async () => {
     await app.client.waitUntilWindowLoaded();
+    await app.client.switchWindow('Message Editor');
     await app.client.click('#add'); //click add button
     let avenue = await app.client.isExisting('//div/div/div[1]');
     expect(avenue).to.be.true;
@@ -33,9 +36,11 @@ describe('Test Message Manager Functionality', function () {
     expect(avenue).to.be.false;
     })
 
-   // Test full input, save to open loop
+  
+  // Test full input, save to open loop
   it('should successfuly implement full input, save, to open loop', async () => {
     await app.client.waitUntilWindowLoaded();
+    await app.client.switchWindow('Message Editor');
     // Set message values
     await app.client.$('#title').setValue('This is a test Title');
     await app.client.$('#greeting').setValue('This is a test greeting');
@@ -86,7 +91,7 @@ describe('Test Message Manager Functionality', function () {
           // Verify Avenue deleted 
           let ave2 = await app.client.isExisting('#avenue1');
           expect(ave2).to.be.false;
-
+    
     // Open saved ui 
     await app.client.click('#open');
       // Main message window 
@@ -127,9 +132,11 @@ describe('Test Message Manager Functionality', function () {
         expect(date2).to.be.a('string').that.is.equal('9-9-9, 1-1-1');
     });
   
+  
   // Test avenue keys with dynamically adding and deleting avenues
   it('should keep keys consistent even with dynamic adding and deleting of avenues', async () => {
     await app.client.waitUntilWindowLoaded();
+    await app.client.switchWindow('Message Editor');
     // Add and fill initial avenues
       // Avenue 1
       await app.client.click('#add');
