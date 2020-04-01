@@ -1,5 +1,5 @@
 const expect = require('chai').expect;
-const templates = require('../objectTemplate.js')
+const templates = require('../src/objectTemplate.js')
 
 describe("Message object", function() {
     /*

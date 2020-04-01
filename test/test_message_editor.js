@@ -11,6 +11,7 @@ var app = new Application({
 
 describe('Test Message Manager Functionality', function () {
   this.timeout(50000)
+  this.slow(6000)
 
   beforeEach(function () {
     

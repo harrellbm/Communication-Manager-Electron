@@ -8,7 +8,7 @@
   "author": "Brenden Harrell",
   "scripts": {
     "start": "electron .",
-    "test:all": "mocha",
+    "test": "mocha",
     "write-test": "mocha --watch ./test",
     "debug-test-objects": "mocha --inspect-brk test/test_object_templates.js",
     "debug-test-messEditor": "mocha --inspect-brk test/test_message_manager.js"
