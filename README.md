@@ -2,6 +2,8 @@
 ## Communication-Manager
 Lightweight way to keep track of and send your communications
 
+### Goal:  To increase the capacity and organization of each individual and team's communication.
+
 Nonprofit organizations often have to settle for the tools that are made for big for profit corporations.  This puts smaller nonprofit organizations at a disadvantage when having to pay for these kinds of software.  In my experience, the solution for these organizations is to do things by hand or the old fashion way because there is no affordable alternative. 
 
 The Communication Manager is aimed at Small to medium sized organizations or leaders who have a lot of emails, texts, social media, etc. to keep track of and need a way to organize and make sure that communication flows smoothly and effectivly.  It offers a tool to organize communication campaigns and set up automations to make communicating to many people and sub-groups in your organization easier. 
