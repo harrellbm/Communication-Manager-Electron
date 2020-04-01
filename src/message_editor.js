@@ -3,7 +3,7 @@
 // All of the Node.js APIs are available in this process.
 //this is the js file for the message manager tab
 const ipc = require('electron').ipcRenderer;
-const templates = require('../objectTemplate.js')
+const templates = require('./objectTemplate.js')
 
 var currentMessage = templates.createMessage();
 
