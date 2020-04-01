@@ -6,6 +6,11 @@
   "main": "./main.js",
   "version": "0.1.4",
   "author": "Brenden Harrell",
+  "repository": {
+    "type": "git",
+    "url": "https//github.com/harrellbm/Communication-Manager-Electron.git"
+  },
+  "license": "MIT",
   "scripts": {
     "start": "electron .",
     "test": "mocha",
@@ -14,7 +19,8 @@
     "debug-test-messEditor": "mocha --inspect-brk test/test_message_manager.js"
   },
   "dependencies": {
-    "electron": "^8.2.0"
+    "electron": "^8.2.0",
+    "electron-tabs": "^0.15.0"
   },
   "devDependencies": {
     "@types/mocha": "^7.0.2",
