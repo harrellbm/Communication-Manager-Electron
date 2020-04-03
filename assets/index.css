@@ -9,12 +9,17 @@ body, html {
     background-color: #555;
     color: white;
     float: left;
-    border: none;
+    border-bottom: none;
+    border-left: none;
+    border-top: none;
+    border-right-style: groove;
+    border-width: 1px;
+    border-color: ghostwhite;
     outline: none;
     cursor: pointer;
     padding: 2vh 1vh;
     font-size: 3vh;
-    width: 25%;
+    width: 33.3333%;
   }
   
   .tablink:hover {
@@ -29,10 +34,10 @@ body, html {
     height: 93vh;
   }
   
-  #Home {background-color: red;}
+  #Home {background-color: rgb(139, 203, 224);}
   #News {background-color: rgb(139, 203, 224);}
-  #Contact {background-color: blue;}
-  #About {background-color: orange;}
+  #Contact {background-color: rgb(139, 203, 224);}
+  #About {background-color: rgb(139, 203, 224);}
 
   /* Container for full grid */
 .wrapper{
