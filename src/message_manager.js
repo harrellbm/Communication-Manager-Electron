@@ -3,8 +3,10 @@
 // All of the Node.js APIs are available in this process.
 //this is the js file for the message manager tab
 const ipc = require('electron').ipcRenderer;
-const templates = require('./objectTemplate.js')
+const templates = require('./objectTemplate.js');
 
+
+// Initialize message object to be used currently 
 var currentMessage = templates.createMessage();
 
 // Save does not function quite right yet. Need to update message object so that double saves do not happen
