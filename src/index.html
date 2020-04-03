@@ -5,9 +5,9 @@
         <title>Message Manager</title>
     </head>
     <body>
-        <button class="tablink" onclick="openPage('Home', this)">Home</button>
-        <button class="tablink" onclick="openPage('News', this)" id="defaultOpen">Initiative</button>
-        <button class="tablink" onclick="openPage('Contact', this)">Messages</button>
+        <button class="tablink" onclick="openPage('Home', this)"id="homeTab">Home</button>
+        <button class="tablink" onclick="openPage('Initiative', this)" id="defaultOpen">Initiative</button>
+        <button class="tablink" onclick="openPage('Messages', this)" id="messageTab">Messages</button>
 
         <div id="Home" class="tabcontent">
             <div class="wrapper">
@@ -23,7 +23,7 @@
             </div>
         </div>
 
-        <div id="News" class="tabcontent">
+        <div id="Initiative" class="tabcontent">
             <div class="wrapper">
                 <p class="tag">
                   <text>Initiative:</text>
@@ -37,7 +37,7 @@
             </div>
         </div>
 
-        <div id="Contact" class="tabcontent">
+        <div id="Messages" class="tabcontent">
             <div class="wrapper">
                 <p class="tag">
                   <text>Message Manager:</text>

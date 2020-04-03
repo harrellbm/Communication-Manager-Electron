@@ -35,9 +35,9 @@ body, html {
   }
   
   #Home {background-color: rgb(139, 203, 224);}
-  #News {background-color: rgb(139, 203, 224);}
-  #Contact {background-color: rgb(139, 203, 224);}
-  #About {background-color: rgb(139, 203, 224);}
+  #Initiative {background-color: rgb(139, 203, 224);}
+  #Messages {background-color: rgb(139, 203, 224);}
+
 
   /* Container for full grid */
 .wrapper{
