@@ -13,11 +13,11 @@ body, html {
     border-left: none;
     border-top: none;
     border-right-style: groove;
-    border-width: 1px;
+    border-width: 0.2vh;
     border-color: ghostwhite;
     outline: none;
     cursor: pointer;
-    padding: 2vh 1vh;
+    padding: 1.9vh 1vh;
     font-size: 3vh;
     width: 33.3333%;
   }
@@ -31,7 +31,7 @@ body, html {
     color: white;
     display: none;
     padding-top: 8vh;
-    height: 93vh;
+    height: 92vh;
   }
   
   #Home {background-color: rgb(139, 203, 224);}
@@ -43,7 +43,7 @@ body, html {
 .wrapper{
     display: grid;
     grid-template-columns: 1fr;
-    grid-template-rows: 12vh 69vh 12vh;
+    grid-template-rows: 11.5vh 69vh 11.5vh;
     background-color: rgb(139, 203, 224);
   }
   
