@@ -7,7 +7,7 @@
     <body>
         <button class="tablink" onclick="openPage('Home', this)"id="homeTab">Home</button>
         <button class="tablink" onclick="openPage('Initiative', this)" id="defaultOpen">Initiative</button>
-        <button class="tablink" onclick="openPage('Messages', this)" id="messageTab">Messages</button>
+        <button class="tablink" onclick="openPage('Messages', this)" id="messageTab">Message Manager</button>
 
         <div id="Home" class="tabcontent">
             <div class="wrapper">
@@ -38,15 +38,20 @@
         </div>
 
         <div id="Messages" class="tabcontent">
-            <div class="messWrapper">
-                <p class="tag">
-                  <text>Message Manager:</text>
-                  <input class="button" type="button" id="addMess" value="add">
+            <div id="messWrapper">
+                <p id="messTitle" class="tag">
+                  <text>Messages:</text>
+                  <input id="addMess" class="button" type="button"  value="add">
                 </p>
-                <div id="messageIn"></div>
-                <p id="bottom">
-                  <input class="button" type="button" id="save" value="Save">
-                  <input class="button" type="button" id="open" value="Open">
+                <p id="aveTitle" class="tag">
+                  <text>Unassigned Slots:</text>
+                  <input id="addAve" class="button" type="button" value="add">
+                </p>
+                <div id="messageIn" class="messIn"></div>
+                <div id="avenueIn" class="messIn"></div>
+                <p id="messBottom">
+                  <input id="messSave" class="button" type="button" value="Save">
+                  <input id="messOpen" class="button" type="button" value="Open">
                 </p>
             </div>
         </div>
