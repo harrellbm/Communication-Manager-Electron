@@ -221,7 +221,7 @@ textarea{
     /* Outside rows */
     /* Delete button */
     .messDelete{
-      width: 1.4rem;
+      width: 1.6rem;
       height: 1.4rem;
       grid-column-start: 5;
       grid-column-end: 6;
