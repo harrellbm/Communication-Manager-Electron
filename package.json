@@ -14,6 +14,7 @@
   "scripts": {
     "start": "electron .",
     "test": "mocha",
+    "test-object": "mocha test/test_object_templates.js", 
     "write-test": "mocha --watch ./test",
     "debug-test-objects": "mocha --inspect-brk test/test_object_templates.js",
     "debug-test-messEditor": "mocha --inspect-brk test/test_message_manager.js"
