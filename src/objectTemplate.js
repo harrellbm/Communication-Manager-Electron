@@ -1,3 +1,25 @@
+// Constructor for Initiative object.  Top tier data structure 
+class Initiative {
+   constructor() {
+      // date is an array so that multiple dates can be added
+      // Sent is whether the message is sent or not
+      // gui_id holds the output ids for this avenue specifically, they should be entered as an array upon initialization
+      this.description = ''; //used to state the purpose of initiative 
+      this.groups = [];
+      this.person = [];
+      this.messages = {};
+      this.avenues = {};
+   }
+
+   // add message
+   // move add avenue
+  }
+
+// Constructor wrapper for exporting 
+function createInitiative (gui_id) {
+   return new Initiative(gui_id)
+}
+
 class Message {
    constructor () {
      // Person is a list value so that multiple people can be added
@@ -217,8 +239,9 @@ function createAvenue (gui_id) {
 }
 
 module.exports = {
-    createMessage,
-    createAvenue,
+   createInitiative, 
+   createMessage,
+   createAvenue,
 }
 /*
     // TODO: greeting in avenue that can be used instead of default
