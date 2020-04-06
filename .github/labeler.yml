@@ -1,6 +1,20 @@
-# Add 'test' to any changes within 'example' folder or any subfolders
-test:
-  - test/*
+# Add 'Test' to any changes within test folder
+Test: test/*
 
-# Add 'assets' to any file changes within 'example2' folder
-assets: assets/*
+# Add 'Assets' to any file changes within assets folder
+Style: assets/*
+
+# Add 'Main' to any file changes within main folder
+Main Process: main.js
+
+# Add 'Main Window' to any file changes within main folder
+Main Window:
+- src/index.html
+- src.index.js
+
+Message Editor:
+- src/message_editor.html
+- src/message_editor.js
+
+Object Template:
+- src/objectTemplate.js
