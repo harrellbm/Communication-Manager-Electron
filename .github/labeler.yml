@@ -1,0 +1,6 @@
+# Add 'test' to any changes within 'example' folder or any subfolders
+test:
+  - test/*
+
+# Add 'assets' to any file changes within 'example2' folder
+assets: assets/*
