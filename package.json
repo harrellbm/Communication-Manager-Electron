@@ -14,7 +14,7 @@
   "scripts": {
     "start": "electron .",
     "test": "mocha",
-    "test-object": "mocha test/test_object_templates.js", 
+    "test-object": "mocha test/test_object_templates.js",
     "write-test": "mocha --watch ./test",
     "debug-test-objects": "mocha --inspect-brk test/test_object_templates.js",
     "debug-test-messEditor": "mocha --inspect-brk test/test_message_manager.js"
@@ -27,6 +27,7 @@
     "@types/mocha": "^7.0.2",
     "chai": "^4.2.0",
     "chai-as-promised": "^7.1.1",
+    "chai-datetime": "^1.5.0",
     "electron-chromedriver": "^8.0.0",
     "electron-debug": "^3.0.1",
     "mocha": "^7.1.1",
