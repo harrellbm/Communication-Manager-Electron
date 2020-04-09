@@ -6,18 +6,102 @@ class Initiative {
       // gui_id holds the output ids for this avenue specifically, they should be entered as an array upon initialization
       this.description = ''; //used to state the purpose of initiative 
       this.groups = [];
-      this.person = [];
+      this.goals = {};
       this.messages = {};
       this.avenues = {};
    }
-
+   // add goal
+   // delete goal 
    // add message
-   // move add avenue
+   // delete message
+   // move add avenue and related methods
+   // link message and avenue with ids 
+   // compose to single string
+   // default signature and greeting 
+
+   // makes sure that the lowest possible id is assigned to a new avenue 
+   id_fill(objects){
+      let Id = 0
+      let obj;
+      for(obj in objects){
+         if (Id == obj){
+            Id += 1
+            } else { // when avenueId does not equal ave we know that the spot is empty
+               return Id
+            }
+         } 
+      return Id
+      }
+
+   add_avenue(avenue_type='', description='', person='', sent=false, message_ids='', year=1000, month=0, day=1, hour=0, min=0){
+      //debugger
+      let new_avenue = new Avenue;
+      new_avenue.avenue_type = avenue_type;
+      new_avenue.description = description;
+
+      // able to take single string argument or array of strings for person, and message_id fields
+      // could refractor to function that would be used three times for persons, dates, and gui_ids
+      let array = [person]
+      let value;
+      let name;
+      for(value of array){ 
+         // if it is a single string argument then push to the avenue's array
+         if(typeof value === "string"){
+            new_avenue.person.push(value)
+            // if it is an array of values then loop through them and push to avenue's array
+         } else if (value.constructor === Array){
+            for(name of value){
+               new_avenue.person.push(name)
+            }
+         }
+      }
+
+      // Set sent status 
+      new_avenue.sent = sent;
+
+      // Same as people
+      let array2 = [message_ids]
+      let value2;
+      let id;
+      for(value2 of array2){
+         if(typeof value2 === "string"){
+            new_avenue.message_id.push(value2)
+         } else if (value2.constructor === Array){
+            for(id of value2){
+               new_avenue.message_id.push(id)
+            }
+         }
+      }
+      
+      // Set date object
+      new_avenue.date.setFullYear(year, month, day);
+      new_avenue.date.setHours(hour, min, 0, 0);
+
+      let avenueId = this.id_fill(this.avenues)// fill in the lowest available id
+      this.avenues[avenueId] = new_avenue
+      return avenueId
+      }
   }
 
 // Constructor wrapper for exporting 
-function createInitiative (gui_id) {
-   return new Initiative(gui_id)
+function createInitiative () {
+   return new Initiative()
+}
+
+class Goal {
+   constructor() {
+      // Frequency is going to eventually be some kind of date object to tell how often to schedule this communication
+      // Type is the type of communication for this goal Sent is whether the message is sent or not
+      // Reminder will be a way to hold the reminders that you set for this goal 
+      this.frequency= 0;
+      this.type = '';
+      this.reminder = {};
+   }
+  }
+
+// Constructor wrapper for exporting 
+function createGoal () {
+   return new Goal();
 }
 
 class Message {
@@ -54,78 +138,6 @@ class Message {
    
    
    // ----Avenue related methods----
-
-   // makes sure that the lowest possible id is assigned to a new avenue 
-   avenue_id_fill(){
-      let avenueId = 0
-      let ave;
-      for(ave in this.avenues){
-         if (avenueId == ave){
-            avenueId += 1
-            } else { // when avenueId does not equal ave we know that the spot is empty
-               return avenueId
-            }
-         } 
-      return avenueId
-      }
-
-   add_avenue(avenue_type='', description='', person='', date='', sent=false, gui_ids=''){
-      //debugger
-      let new_avenue = new Avenue;
-      new_avenue.avenue_type = avenue_type;
-      new_avenue.description = description;
-
-      // able to take single string argument or array of strings for person, date, and gui_id fields
-      // could refractor to function that would be used three times for persons, dates, and gui_ids
-      let array = [person]
-      let value;
-      let name;
-      for(value of array){ 
-         // if it is a single string argument then push to the avenue's array
-         if(typeof value === "string"){
-            new_avenue.person.push(value)
-            // if it is an array of values then loop through them and push to avenue's array
-         } else if (value.constructor === Array){
-            for(name of value){
-               new_avenue.person.push(name)
-            }
-         }
-      }
-
-      // Same set up as for adding people
-      let array2 = [date]
-      let value2;
-      let num;
-      for(value2 of array2){
-         if(typeof value2 === "string"){
-            new_avenue.date.push(value2)
-         } else if (value2.constructor === Array){
-            for(num of value2){
-               new_avenue.date.push(num)
-            }
-         }
-      }
-
-      new_avenue.sent = sent;
-
-      // Same as people and dates
-      let array3 = [gui_ids]
-      let value3;
-      let id;
-      for(value3 of array3){
-         if(typeof value3 === "string"){
-            new_avenue.gui_ids.push(value3)
-         } else if (value3.constructor === Array){
-            for(id of value3){
-               new_avenue.gui_ids.push(id)
-            }
-         }
-      }
-      
-      let avenueId = this.avenue_id_fill()// fill in the lowest available id
-      this.avenues[avenueId] = new_avenue
-      return avenueId
-      }
    
    remove_avenue(avenueId){
       if (avenueId > -1){
@@ -227,22 +239,24 @@ class Avenue {
        this.avenue_type = '';
        this.description = '';
        this.person = [];
-       this.date = [];
+       this.date = new Date(); // only one date 
        this.sent = false;
-       this.gui_ids = []
+       this.message_id = []
     }
    }
 
 // Constructor wrapper for exporting 
-function createAvenue (gui_id) {
-    return new Avenue(gui_id)
+function createAvenue () {
+    return new Avenue()
 }
 
 module.exports = {
-   createInitiative, 
+   createInitiative,
+   createGoal, 
    createMessage,
    createAvenue,
 }
+
 /*
     // TODO: greeting in avenue that can be used instead of default
 
