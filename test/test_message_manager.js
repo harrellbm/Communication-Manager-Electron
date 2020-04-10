@@ -10,7 +10,8 @@ var app = new Application({
   })
 
 describe('Test Message Manager Functionality', function () {
-  this.slow(10000)
+  this.slow(10000);
+  this.timeout(20000);
 
   beforeEach(function () {
     return app.start()
@@ -37,10 +38,12 @@ describe('Test Message Manager Functionality', function () {
   it('should successfuly implement full input, save, to open loop', async () => {
     await app.client.waitUntilWindowLoaded();
     // Set message values
-    await app.client.$('#title').setValue('This is a test Title');
-    await app.client.$('#greeting').setValue('This is a test greeting');
-    await app.client.$('#content').setValue('This is test content.  Blah Blah Blah.');
-    await app.client.$('#signature').setValue('Testing that I can Sign it');
+    await Promise.all(
+        app.client.$('#title').setValue('This is a test Title');
+        app.client.$('#greeting').setValue('This is a test greeting');
+        app.client.$('#content').setValue('This is test content.  Blah Blah Blah.');
+        app.client.$('#signature').setValue('Testing that I can Sign it');
+      );
     // Add and fill avenues
       // Avenue 1
       await app.client.click('#add');
