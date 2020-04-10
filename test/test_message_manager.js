@@ -10,7 +10,7 @@ var app = new Application({
   })
 
 describe('Test Message Manager Functionality', function () {
-  this.timeout(10000)
+  this.slow(10000)
 
   beforeEach(function () {
     return app.start()
