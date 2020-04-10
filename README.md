@@ -1,4 +1,7 @@
 # Communication-Manager-Electron
+
+[![harrellbm](https://circleci.com/gh/harrellbm/Communication-Manager-Electron.svg?style=svg)](https://circleci.com/gh/harrellbm/Communication-Manager-Electron)
+
 ## Communication-Manager
 Lightweight way to keep track of and send your communications
 
