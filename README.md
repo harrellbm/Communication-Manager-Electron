@@ -1,6 +1,7 @@
 # Communication-Manager-Electron
 
-Test Status: [![CircleCI](https://circleci.com/gh/harrellbm/Communication-Manager-Electron.svg?style=svg&circle-token=0c6948ef75b2820a2b2c38acaecf830a16920f26)](https://circleci.com/gh/harrellbm/Communication-Manager-Electron)
+**Test Status:** <br>
+[![CircleCI](https://circleci.com/gh/harrellbm/Communication-Manager-Electron.svg?style=svg&circle-token=0c6948ef75b2820a2b2c38acaecf830a16920f26)](https://circleci.com/gh/harrellbm/Communication-Manager-Electron)
 
 ## Communication-Manager
 Lightweight way to keep track of and send your communications
