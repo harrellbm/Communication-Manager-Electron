@@ -1,6 +1,6 @@
 # Communication-Manager-Electron
 
-[![harrellbm](https://circleci.com/gh/harrellbm/Communication-Manager-Electron.svg?style=svg)](https://circleci.com/gh/harrellbm/Communication-Manager-Electron)
+Test Status: [![CircleCI](https://circleci.com/gh/harrellbm/Communication-Manager-Electron.svg?style=svg&circle-token=0c6948ef75b2820a2b2c38acaecf830a16920f26)](https://circleci.com/gh/harrellbm/Communication-Manager-Electron)
 
 ## Communication-Manager
 Lightweight way to keep track of and send your communications
@@ -10,8 +10,6 @@ Lightweight way to keep track of and send your communications
 Nonprofit organizations often have to settle for the tools that are made for big for profit corporations.  This puts smaller nonprofit organizations at a disadvantage when having to pay for these kinds of software.  In my experience, the solution for these organizations is to do things by hand or the old fashion way because there is no affordable alternative. 
 
 The Communication Manager is aimed at Small to medium sized organizations or leaders who have a lot of emails, texts, social media, etc. to keep track of and need a way to organize and make sure that communication flows smoothly and effectivly.  It offers a tool to organize communication campaigns and set up automations to make communicating to many people and sub-groups in your organization easier. 
-
-![# Message Editor](./docs/screen-shot-of-message-editor-tab.PNG)
 
 # Potential Features
 Set up schedule with multiple dates and locations to send
