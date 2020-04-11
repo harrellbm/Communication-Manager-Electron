@@ -9,16 +9,18 @@ class Initiative {
       this.goals = {};
       this.messages = {};
       this.avenues = {};
+      this.avenue_types = ['Email', 'Text', 'Facebook', 'Instagram', 'Handout', 'Poster','Other']
       }
    // add goal
    // delete goal 
    // add message
    // delete message
-   // move add avenue and related methods
    // link message and avenue with ids 
    // compose to single string
    // default signature and greeting 
 
+   
+   
    // makes sure that the lowest possible id is assigned to a new avenue 
    id_fill(objects){
       let Id = 0
@@ -33,6 +35,7 @@ class Initiative {
       return Id
       }
 
+// --- Avenue Related Methods ---
    add_avenue(avenue_type='', description='', person='', sent=false, message_ids='', year=1000, month=0, day=1, hour=0, min=0){
       let new_avenue = new Avenue;
       new_avenue.avenue_type = avenue_type;
@@ -93,7 +96,13 @@ class Initiative {
          delete this.avenues[ave];
          }
       }  
-  }
+   
+// --- Avenue Type Realted Methods --- 
+   // add new type of avenue on the fly
+   add_type(new_type){
+      this.avenue_types[this.avenue_types.length] = new_type;
+      }
+  };
 
 // Constructor wrapper for exporting 
 function createInitiative () {
@@ -109,6 +118,7 @@ class Goal {
       this.type = '';
       this.reminder = {};
       }
+      //need to add getters and setters as well as tests
   }
 
 // Constructor wrapper for exporting 
@@ -119,14 +129,12 @@ function createGoal () {
 class Message {
    constructor () {
      // Person is a list value so that multiple people can be added
-     this.title = '';
-     this.greeting = '';
-     this.content = '';
-     this.signature ='';
-     this.avenue_types = ['Email', 'Text', 'Facebook', 'Instagram', 'Handout', 'Poster','Other']
-     this.avenues = {}
-     this.avenue_count = 0
-        }
+      this.title = '';
+      this.greeting = '';
+      this.content = '';
+      this.signature ='';
+      this.avenue_ids = []
+      }
     
    change_title(new_title){
       this.title = new_title
@@ -143,86 +151,11 @@ class Message {
    change_signature(new_signature){ 
       this.signature = new_signature
       }
-
-   add_type(new_type){
-      this.avenue_types[this.avenue_types.length] = new_type
-      }
-   
-   
-   // ----Avenue related methods----
-
-   change_avenue_type(avenueId, new_type){ 
-      this.avenues[avenueId].avenue_type = new_type
-      }
-
-   get_avenue_type(avenueId){
-      return this.avenues[avenueId].avenue_type
-      }
-
-   change_description(avenueId, new_description){ 
-         this.avenues[avenueId].description = new_description
-      }
-
-   get_description(avenueId){
-      return this.avenues[avenueId].description
-      }
-
-   // Completely writes over current values in person values
-   change_person(avenueId, new_person){  
-         this.avenues[avenueId].person = new_person
-      }
-
-   //keep working on it
-   // Adds a person to the person list for that specific avenue
-   add_person(avenueId, new_person){  
-         this.avenues[avenueId].person.push(new_person)
-      }
-   
-   //need test
-   // Returns the list of people for the given avenue as a simple string
-   get_people(avenueId){  // TODO: add test
-         let people = '';
-         let person;
-         for (person of this.avenues[avenueId].person) {
-            if (person != '') {
-               people += person + '\n'
-            }
-         }
-         return people
-      }
- 
-   // TODO: delete a person responsible(need to validate that there is at least one person)
-   //need test
-   change_date(avenueId, new_date){  // TODO: need data validation
-         this.avenues[avenueId].date = new_date
-      }
- 
-  //need test
-   add_date(avenueId, new_date){  // TODO: add test
-      this.avenues[avenueId].date.push(new_date)
-      }
- 
-   // Returns the list of people for the given avenue as a simple string
-   //need test
-   get_dates(avenueId){  // TODO: add test
-         let dates = '';
-         let date;
-         for (date of this.avenues[avenueId].date) {
-            if (date != '') {
-              dates += date + '\n'
-            }
-         }
-         return dates
-      }
- 
-   // TODO: delete date from Avenue (need to make sure that there is at least one date)
-   // TODO: get dates
-
-   //need test
-   change_sent(avenueId, new_sent){  // TODO: need data validation
-         this.avenues[avenueId].sent = new_sent
-      }
- 
+      
+   // need get avenue ids
+   // need add avenue ids
+   // need remove avenue ids
+   // need clear avenue ids
    };
 
 // Constructor wrapper for exporting 
@@ -232,18 +165,78 @@ function createMessage () {
 
 // Constructor for Avenue object.  All methods are held within the Message object  
 class Avenue {
-    constructor() {
-       // date is an array so that multiple dates can be added
-       // Sent is whether the message is sent or not
-       // gui_id holds the output ids for this avenue specifically, they should be entered as an array upon initialization
-       this.avenue_type = '';
-       this.description = '';
-       this.person = [];
-       this.date = new Date(); // only one date 
-       this.sent = false;
-       this.message_id = []
-    }
-   }
+   constructor() {
+      // date is an array so that multiple dates can be added
+      // Sent is whether the message is sent or not
+      // gui_id holds the output ids for this avenue specifically, they should be entered as an array upon initialization
+      this.avenue_type = '';
+      this.description = '';
+      this.person = [];
+      this.date = new Date(); // only one date 
+      this.sent = false;
+      this.message_id = []
+      }
+      
+   change_avenue_type(new_type){ 
+      this.avenue_type = new_type
+      }
+
+   get_avenue_type(){
+      return this.avenue_type
+      }
+
+   change_description(new_description){ 
+      this.description = new_description
+      }
+
+   get_description(){
+      return this.description
+      }
+
+   // Completely writes over current values in person values
+   change_person(new_person){  
+      this.person = new_person
+      }
+
+   //keep working on it
+   // Adds a person to the person list for that specific avenue
+   add_person(new_person){  
+      this.person.push(new_person)
+      }
+   
+   // Returns the list of people for the given avenue as a simple string
+   get_people(){  // TODO: add test
+         let people = '';
+         let person;
+         for (person of this.person) {
+            if (person != '') {
+               people += person + '\n'
+            }
+         }
+         return people
+      }
+ 
+   // TODO: delete a person responsible(need to validate that there is at least one person)
+
+   //need test
+   change_date(new_date){  // TODO: need data validation
+      this.date = new_date
+      }
+ 
+   // Returns the list of dates for the given avenue as a simple string
+   get_dates(){
+      return this.date
+      }
+
+   change_sent(new_sent){  // TODO: need data validation
+      this.sent = new_sent
+      }
+   
+       
+   // need get message ids
+   // need change message id
+   // need clear message id
+   };
 
 // Constructor wrapper for exporting 
 function createAvenue () {
