@@ -85,7 +85,6 @@ function addAvenue (avenue_typeValue='', sentValue='', descriptionValue='', pers
   dropdown.setAttribute("id", `avenue_type${id}`);
   
   let options = currentMessage.avenue_types
-  console.log(options)
 
   for (i in options){
     let opElem = document.createElement("option");

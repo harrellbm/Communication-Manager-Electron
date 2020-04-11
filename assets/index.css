@@ -1,0 +1,468 @@
+/* global styles for element types */
+body, html {
+    height: 100%;
+    margin: 0;
+    font-family: Arial;
+  }
+
+p{
+    text-align: center;
+    background-color: rgb(139, 203, 224);
+    margin: 0px;
+}
+
+textarea{
+  resize: none;
+}
+
+/* Common class for tags at top of tab contents */
+.tag{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Common class button elements */
+.button{
+  padding-top: 0.3rem;
+  padding-bottom: 0.3rem;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+  margin-left: 0.5rem;
+  flex-grow: 0.1;
+  flex-shrink: 1;
+  }
+  
+/* Style tab links */
+.tablink {
+    background-color: #555;
+    color: white;
+    float: left;
+    border-bottom: none;
+    border-left: none;
+    border-top: none;
+    border-right-style: groove;
+    border-width: 0.2vh;
+    border-color: ghostwhite;
+    outline: none;
+    cursor: pointer;
+    padding: 1.9vh 1vh;
+    font-size: 3vh;
+    width: 33.3333%;
+  }
+  
+  .tablink:hover {
+    background-color: #777;
+  }
+  
+  /* Default style for tab content */
+  .tabcontent {
+    color: white;
+    display: none;
+    padding-top: 8vh;
+    height: 92vh;
+  }
+  
+  #Home {background-color: rgb(139, 203, 224);}
+  #Initiative {background-color: rgb(139, 203, 224);}
+ 
+
+/* Container for grid in the message manager tab
+    Note: nested div used top one is used to toggle visibility on and off second holds the actual grid*/
+  /* Color for tab background */
+  #Messages {background-color: rgb(139, 203, 224);}
+ 
+  /* Definition of grid for tab's content */
+  #messWrapper{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 11.5vh 69vh 11.5vh;
+    background-color: rgb(139, 203, 224);
+  }
+  
+  /* input for title */
+  #messtitle{
+    grid-row-start: 1;
+    grid-row-end: 2;
+    grid-column-start: 1;
+    grid-column-end: 2;
+  }
+
+  #aveTitle{
+    grid-row-start: 1;
+    grid-row-end: 2;
+    grid-column-start: 2;
+    grid-column-end: 3;
+  }
+  
+  /* Containers for adding messages and avenues */
+  .messIn{
+    max-height: 85vh;
+    vertical-align: top;
+    overflow-y: scroll;
+    background-color: rgb(255, 255, 255);
+    border-width: 1px;
+    border-style: solid;
+    border-color: rgb(169, 169, 169);
+    margin-left: 1vh;
+    margin-right: 1vh;
+  }
+
+  #messageIn{
+    grid-row-start: 2;
+    grid-row-end: 3;
+    grid-column-start: 1;
+    grid-column-end: 2;
+    }
+
+  #avenueIn{
+    grid-row-start: 2;
+    grid-row-end: 3;
+    grid-column-start: 2;
+    grid-column-end: 3;
+    }
+  
+  /* container on the bottom */
+  #messBottom{
+    grid-column-start: 1;
+    grid-column-end: 3;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  /* Rules for dynamically added Messages */
+  .message{
+    display: grid;
+    grid-template-columns: 6rem 1fr 1fr 1fr 1.4rem;
+    grid-template-rows: 1.4rem 1.5rem 2rem;
+    background-color: #999;
+    border: rgb(169, 169, 169);
+    border-width: 1px;
+    border-style: solid;
+  }
+  
+    /* First Row */
+    /* Drop down box rules*/
+    .messDropdown{
+      display: inline-block;
+      grid-column-start: 1;
+      grid-column-end: 2;
+      grid-row-start: 2;
+      grid-row-end: 3;
+      }
+  
+    /* Titles */
+    .messDescription_title{
+      padding: 0.1rem;
+      grid-column-start: 2;
+      grid-column-end: 3;
+      grid-row-start: 2;
+      grid-row-end: 3;
+      }
+  
+    .messPersons_title{
+      padding: 0.1rem;
+      grid-column-start: 3;
+      grid-column-end: 4;
+      grid-row-start: 2;
+      grid-row-end: 3;
+      }
+  
+    .messDate_title{
+      padding: 0.1rem;
+      grid-column-start: 4;
+      grid-column-end:5;
+      grid-row-start: 2;
+      grid-row-end: 3;
+      }
+  
+    /* Seccond row */
+    /*Sent box rules */
+    .messSent_box{
+      grid-column-start: 1;
+      grid-column-end: 2;
+      grid-row-start: 3;
+      grid-row-end: 4;
+      }
+  
+    .messSent_checkbox{
+      position: relative;
+      top: 0.3rem;
+      }
+  
+    .messSent_label{
+      position: relative;
+      top: 0.2rem;
+      }
+  
+    /* Textareas*/
+    .messDescription{
+      grid-column-start: 2;
+      grid-column-end: 3;
+      grid-row-start: 3;
+      grid-row-end: 4;
+      }
+  
+    .messPersons{
+      grid-column-start: 3;
+      grid-column-end: 4;
+      grid-row-start: 3;
+      grid-row-end: 4;
+      }
+  
+    .messDates{
+      grid-column-start: 4;
+      grid-column-end: 5;
+      grid-row-start: 3;
+      grid-row-end: 4;
+      }
+  
+    /* Outside rows */
+    /* Delete button */
+    .messDelete{
+      width: 1.4rem;
+      height: 1.4rem;
+      grid-column-start: 5;
+      grid-column-end: 6;
+      grid-row-start: 1;
+      grid-row-end: 2;
+      }
+
+ /* Rules for dynamically added Avenues */
+ .avenue{
+  display: grid;
+  grid-template-columns: 6rem 1fr 1fr 1fr 1.4rem;
+  grid-template-rows: 1.4rem 1.5rem 2rem;
+  background-color: #999;
+  border: rgb(169, 169, 169);
+  border-width: 1px;
+  border-style: solid;
+}
+
+  /* First Row */
+  /* Drop down box rules*/
+  .aveDropdown{
+    display: inline-block;
+    grid-column-start: 1;
+    grid-column-end: 2;
+    grid-row-start: 2;
+    grid-row-end: 3;
+    }
+
+  /* Titles */
+  .aveDescription_title{
+    padding: 0.1rem;
+    grid-column-start: 2;
+    grid-column-end: 3;
+    grid-row-start: 2;
+    grid-row-end: 3;
+    }
+
+  .avePersons_title{
+    padding: 0.1rem;
+    grid-column-start: 3;
+    grid-column-end: 4;
+    grid-row-start: 2;
+    grid-row-end: 3;
+    }
+
+  .aveDate_title{
+    padding: 0.1rem;
+    grid-column-start: 4;
+    grid-column-end:5;
+    grid-row-start: 2;
+    grid-row-end: 3;
+    }
+
+  /* Seccond row */
+  /*Sent box rules */
+  .aveSent_box{
+    grid-column-start: 1;
+    grid-column-end: 2;
+    grid-row-start: 3;
+    grid-row-end: 4;
+    }
+
+  .aveSent_checkbox{
+    position: relative;
+    top: 0.3rem;
+    }
+
+  .aveSent_label{
+    position: relative;
+    top: 0.2rem;
+    }
+
+  /* Textareas*/
+  .aveDescription{
+    grid-column-start: 2;
+    grid-column-end: 3;
+    grid-row-start: 3;
+    grid-row-end: 4;
+    }
+
+  .avePersons{
+    grid-column-start: 3;
+    grid-column-end: 4;
+    grid-row-start: 3;
+    grid-row-end: 4;
+    }
+
+  .aveDates{
+    grid-column-start: 4;
+    grid-column-end: 5;
+    grid-row-start: 3;
+    grid-row-end: 4;
+    }
+
+  /* Outside rows */
+  /* Delete button */
+  .aveDelete{
+    width: 1.4rem;
+    height: 1.4rem;
+    grid-column-start: 5;
+    grid-column-end: 6;
+    grid-row-start: 1;
+    grid-row-end: 2;
+    }
+
+
+
+/* Note: nested div used top one is used to toggle visibility on and off second holds the actual grid
+/* Container for full grid */
+.wrapper{
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 11.5vh 69vh 11.5vh;
+    background-color: rgb(139, 203, 224);
+  }
+  
+  /* input for title */
+  #title{
+    margin-left: 0.5rem;
+  }
+  
+  /* Container for adding avenues */
+  #In{
+    max-height: 85vh;
+    vertical-align: top;
+    grid-row-start: 2;
+    grid-row-end: 3;
+    grid-column-start: 1;
+    grid-column-end: 2;
+    overflow-y: scroll;
+    background-color: rgb(255, 255, 255);
+    border-width: 1px;
+    border-style: solid;
+    border-color: rgb(169, 169, 169);
+    margin-left: 1vh;
+    margin-right: 1vh;
+  }
+  
+  /* container on the bottom */
+  #bottom{
+    grid-column-start: 1;
+    grid-column-end: 2;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  /* Avenue rules */
+  .message{
+    display: grid;
+    grid-template-columns: 6rem 1fr 1fr 1fr 1.4rem;
+    grid-template-rows: 1.4rem 1.5rem 2rem;
+    background-color: #999;
+    border: rgb(169, 169, 169);
+    border-width: 1px;
+    border-style: solid;
+  }
+  
+  /* First Row */
+  /* Drop down box rules*/
+  .dropdown{
+    display: inline-block;
+    grid-column-start: 1;
+    grid-column-end: 2;
+    grid-row-start: 2;
+    grid-row-end: 3;
+  }
+  
+  /* Titles */
+  .description_title{
+    padding: 0.1rem;
+    grid-column-start: 2;
+    grid-column-end: 3;
+    grid-row-start: 2;
+    grid-row-end: 3;
+  }
+  
+  .persons_title{
+    padding: 0.1rem;
+    grid-column-start: 3;
+    grid-column-end: 4;
+    grid-row-start: 2;
+    grid-row-end: 3;
+  }
+  
+  .date_title{
+    padding: 0.1rem;
+    grid-column-start: 4;
+    grid-column-end:5;
+    grid-row-start: 2;
+    grid-row-end: 3;
+  }
+  
+  /* Seccond row */
+  /*Sent box rules */
+  .sent_box{
+    grid-column-start: 1;
+    grid-column-end: 2;
+    grid-row-start: 3;
+    grid-row-end: 4;
+  }
+  
+  .sent_checkbox{
+    position: relative;
+    top: 0.3rem;
+  }
+  
+  .sent_label{
+    position: relative;
+    top: 0.2rem;
+  }
+  
+  /* Textareas*/
+  .description{
+    grid-column-start: 2;
+    grid-column-end: 3;
+    grid-row-start: 3;
+    grid-row-end: 4;
+  }
+  
+  .persons{
+    grid-column-start: 3;
+    grid-column-end: 4;
+    grid-row-start: 3;
+    grid-row-end: 4;
+  }
+  
+  .dates{
+    grid-column-start: 4;
+    grid-column-end: 5;
+    grid-row-start: 3;
+    grid-row-end: 4;
+  }
+  
+  /* Outside rows */
+  /* Delete button */
+  .delete{
+    width: 1.4rem;
+    height: 1.4rem;
+    grid-column-start: 5;
+    grid-column-end: 6;
+    grid-row-start: 1;
+    grid-row-end: 2;
+  }

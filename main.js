@@ -6,41 +6,57 @@ const debug = require('electron-debug')
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 
-/*let mainWindow
-(async () => {
-	await app.whenReady();
-	mainWindow = new BrowserWindow();
-})();*/
+// Open devTools for all browser windows
+//debug({'devToolsMode': 'right'});
 
-function createWindow () {
-  // Create the browser window.
-  mainWindow = new BrowserWindow({
-    width: 800,
+const windows = [];
+
+function createWindow (name, tag, html) {
+  // Create Message editor window
+  let newWindow = new BrowserWindow({
+    width: 1000,
     height: 600,
+    show: false,
     webPreferences: {
       nodeIntegration: true
     }
-  })
+  });
 
-  // and load the index.html of the app.
-  mainWindow.loadFile('index.html')
+  // Add name and tag to window
+  newWindow.__name = name;
+  newWindow.__tag = tag;
 
-  // Open the DevTools.
-  // mainWindow.webContents.openDevTools()
+  // And load the html of the window
+    // Add __dirname so that electron-reload can watch render processes
+  newWindow.loadFile(html);
+
+  // When loaded show 
+  newWindow.once('ready-to-show', () => {
+    newWindow.show();
+  });
 
   // Emitted when the window is closed.
-  mainWindow.on('closed', function () {
-    // Dereference the window object, usually you would store windows
-    // in an array if your app supports multi windows, this is the time
-    // when you should delete the corresponding element.
-    mainWindow = null
-  })
+  newWindow.on('closed', function () {
+    // Dereference the window object and delete from set
+    delete windows[name];
+    newWindow = null;
+  });
+
+  windows.push(newWindow);
+  return newWindow;
+};
+
+// Create all the initial windows 
+function setUpWindows() {
+  createWindow('message_manager','manager', './src/index.html');
+  //createWindow('message_editor','editor','./src/message_editor.html');
+  console.log(windows)
 }
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
-app.on('ready', createWindow)
+app.on('ready', setUpWindows)
 
 // Quit when all windows are closed.
 app.on('window-all-closed', function () {
@@ -62,6 +78,9 @@ app.on('activate', function () {
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.
 
+// TODO: add ipcs for message manager 
+
+// Ipcs for message editor
 ipc.on('save', function (event, arg) {
   file = JSON.stringify(arg)
   console.log("made it to main", file)
@@ -69,9 +88,6 @@ ipc.on('save', function (event, arg) {
     if (err) throw err;
     console.log('Replaced!')
   })
-  /*if (arg[title]){
-
-  }*/
 })
 
 ipc.on('open-file', function (event, arg) {
