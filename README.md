@@ -1,7 +1,5 @@
 # Communication-Manager-Electron
 
-[![CircleCI](https://img.shields.io/circleci/build/gh/harrellbm/Communication-Manager-Electron?label=Test%20Status&style=for-the-badge&token=0c6948ef75b2820a2b2c38acaecf830a16920f26)](https://circleci.com/gh/harrellbm/Communication-Manager-Electron)
-
 ![Test Status](https://github.com/harrellbm/Communication-Manager-Electron/workflows/Test%20Status/badge.svg)
 
 ## Communication-Manager
