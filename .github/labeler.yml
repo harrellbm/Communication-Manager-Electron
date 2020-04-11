@@ -1,0 +1,22 @@
+# Add 'Test' to any changes within test folder
+Test: test/*
+
+# Add 'Assets' to any file changes within assets folder
+Style: assets/*
+
+# Add 'Main' label 
+Main Process: main.js
+
+# Add 'Main Window' label
+Main Window:
+- src/index.html
+- src.index.js
+
+# Add 'Message Editor' label
+Message Editor:
+- src/message_editor.html
+- src/message_editor.js
+
+# Add 'Object Template' label 
+Object Template:
+- src/objectTemplate.js

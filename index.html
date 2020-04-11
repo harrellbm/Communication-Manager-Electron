@@ -11,38 +11,22 @@
         <text>Title:</text>
         <input type="text" id="title" value="" spellcheck="true">
       <p class="tag">
-        <text>Avenue</text>
-        <input type="button" id="add" value="add">
+        <text>Avenue:</text>
+        <input class="button" type="button" id="add" value="add">
       </p>
-      <p>
-        <text>Greeting</text>
-        <textarea type="text" id="greeting" value="" spellcheck="true"></textarea>
-      </p>
-
-      <p>
-        <text>Content</text>
-        <textarea type="text" id="content" value="" spellcheck="true"></textarea>
-        <!--add with css overflow-y: scroll; height="100px" resize="none"-->
-      </p>
-      <p>
-        <text>Signature</text>
-        <textarea type="text" id="signature" value=""></textarea>
-      </p>
+      <p id="greeting_title">Greeting</p>
+      <textarea class="message" type="text" id="greeting" value="" spellcheck="true"></textarea>
+      <p id="content_title">Content</p>
+      <textarea class="message" type="text" id="content" value="" spellcheck="true"></textarea>
+      <p id="signature_title">Signature</p>
+      <textarea class="message" type="text" id="signature" value=""></textarea>
       <!-- <button id="2" type="button" onclick="buttonPush()">Save</button>
       <script type="text/javascript" src="./renderer.js"></script> -->
       <div id="avenueIn"></div>
       <p id="bottom">
-        <input type="button" id="save" value="Save">
-        <input type="button" id="open" value="Open">
+        <input class="button" type="button" id="save" value="Save">
+        <input class="button" type="button" id="open" value="Open">
       </p>
-    </div>
-    <div class="wrappere">
-      <div id="item1">1</div>
-      <div id="item2">2</div>
-      <div id="item3">3</div>
-      <div id="item4">4</div>
-      <div id="item5">5</div>
-      <div id="item6">6</div>
     </div>
   </body>
   <script type="text/javascript" src="renderer.js"></script>
