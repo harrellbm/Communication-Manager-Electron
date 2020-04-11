@@ -218,9 +218,10 @@ class Avenue {
  
    // TODO: delete a person responsible(need to validate that there is at least one person)
 
-   //need test
-   change_date(new_date){  // TODO: need data validation
-      this.date = new_date
+   // Change the date object 
+   change_date(year, month, day, hour, min){  // TODO: need data validation
+      this.date.setFullYear(year, month, day);
+      this.date.setHours(hour, min, 0, 0);
       }
  
    // Returns the list of dates for the given avenue as a simple string
