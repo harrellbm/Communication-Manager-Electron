@@ -85,6 +85,52 @@ describe("Initiative object", function () {
         expect(id3).to.equal(2);
     })
 
+    // test removing avenue method 
+    it('should remove an avenue then re-add', () => {
+        test_message.add_avenue('email', 'this is an email', ['Bob', 'Jill'], ['12-12-12', '1-1-1'], true, ['test', 'left', 'right']);
+        test_message.add_avenue('text', 'this is a text', 'Bill', '11-1-11', true, 'test');
+        //console.log('new avenues', test_message.avenues);
+        test_message.remove_avenue(0);
+        //console.log('removed avenues', test_message.avenues);
+        expect(test_message.avenues[0]).to.not.exist;
+        expect(test_message.avenues[1].avenue_type).to.be.an('string').that.includes('text');
+        expect(test_message.avenues[1].description).to.be.an('string').that.includes('this is a text');
+        expect(test_message.avenues[1].person).to.be.an('array').that.includes('Bill');
+        expect(test_message.avenues[1].date).to.be.an('array').that.includes('11-1-11');
+        expect(test_message.avenues[1].sent).to.be.true;
+        expect(test_message.avenues[1].gui_ids).to.be.an('array').that.includes('test');
+
+        // Test re-add avenue
+        test_message.add_avenue('phone', 'this is a phone call', ['Bob', 'Jill'], ['12-12-12', '8-9-8'], true, ['test', 'left', 'right']);
+        expect(test_message.avenues[0]).to.exist
+        expect(test_message.avenues[0].avenue_type).to.be.an('string').that.includes('phone');
+        expect(test_message.avenues[0].description).to.be.an('string').that.includes('this is a phone call');
+        expect(test_message.avenues[0].person).to.be.an('array').that.includes('Bob').and.includes('Jill');
+        expect(test_message.avenues[0].date).to.be.an('array').that.includes('12-12-12').and.includes('8-9-8');
+        expect(test_message.avenues[0].sent).to.be.true;
+        expect(test_message.avenues[0].gui_ids).to.be.an('array').that.includes('test');
+        // Test adding additional avenue after that
+        test_message.add_avenue('facebook', 'this is a facebook post', ['Tim', 'Bently'], ['12-7-1993', '2-31-2020'], true, ['test', 'left', 'right']);
+        expect(test_message.avenues[2]).to.exist
+        expect(test_message.avenues[2].avenue_type).to.be.an('string').that.includes('facebook');
+        expect(test_message.avenues[2].description).to.be.an('string').that.includes('this is a facebook post');
+        expect(test_message.avenues[2].person).to.be.an('array').that.includes('Tim').and.includes('Bently');
+        expect(test_message.avenues[2].date).to.be.an('array').that.includes('12-7-1993').and.includes('2-31-2020');
+        expect(test_message.avenues[2].sent).to.be.true;
+        expect(test_message.avenues[2].gui_ids).to.be.an('array').that.includes('test');
+    })
+    
+    it('should clear all avenues', () => {
+        test_message.add_avenue('email', 'this is an email', ['Bob', 'Jill'], ['12-12-12', '1-1-1'], true, ['test', 'left', 'right']);
+        test_message.add_avenue('text', 'this is a text', 'Bill', '11-1-11', true, 'test');
+        test_message.add_avenue('facebook', 'this is a facebook post', 'Bonny', '3-1-89', true, 'test');
+        //console.log('new avenues', test_message.avenues);
+        test_message.remove_all_avenues()
+        //console.log('no avenues', test_message.avenues);
+        expect(test_message.avenues[0]).to.not.exist;
+        expect(test_message.avenues[1]).to.not.exist;
+        expect(test_message.avenues[2]).to.not.exist;
+    })
 })
 
 describe("Goal object", function () {
@@ -162,52 +208,6 @@ describe("Message object", function() {
         test_message.add_type(new_avenue_type)
         //console.log('avenue types', test_message)
         expect(test_message.avenue_types).to.be.an('array').that.includes('Facebook')
-    })
-
-    // test removing avenue method 
-    it('should remove an avenue', () => {
-        test_message.add_avenue('email', 'this is an email', ['Bob', 'Jill'], ['12-12-12', '1-1-1'], true, ['test', 'left', 'right']);
-        test_message.add_avenue('text', 'this is a text', 'Bill', '11-1-11', true, 'test');
-        //console.log('new avenues', test_message.avenues);
-        test_message.remove_avenue(0);
-        //console.log('removed avenues', test_message.avenues);
-        expect(test_message.avenues[0]).to.not.exist;
-        expect(test_message.avenues[1].avenue_type).to.be.an('string').that.includes('text');
-        expect(test_message.avenues[1].description).to.be.an('string').that.includes('this is a text');
-        expect(test_message.avenues[1].person).to.be.an('array').that.includes('Bill');
-        expect(test_message.avenues[1].date).to.be.an('array').that.includes('11-1-11');
-        expect(test_message.avenues[1].sent).to.be.true;
-        expect(test_message.avenues[1].gui_ids).to.be.an('array').that.includes('test');
-
-        // test re-add avenue
-        test_message.add_avenue('phone', 'this is a phone call', ['Bob', 'Jill'], ['12-12-12', '8-9-8'], true, ['test', 'left', 'right']);
-        expect(test_message.avenues[0]).to.exist
-        expect(test_message.avenues[0].avenue_type).to.be.an('string').that.includes('phone');
-        expect(test_message.avenues[0].description).to.be.an('string').that.includes('this is a phone call');
-        expect(test_message.avenues[0].person).to.be.an('array').that.includes('Bob').and.includes('Jill');
-        expect(test_message.avenues[0].date).to.be.an('array').that.includes('12-12-12').and.includes('8-9-8');
-        expect(test_message.avenues[0].sent).to.be.true;
-        expect(test_message.avenues[0].gui_ids).to.be.an('array').that.includes('test');
-        test_message.add_avenue('facebook', 'this is a facebook post', ['Tim', 'Bently'], ['12-7-1993', '2-31-2020'], true, ['test', 'left', 'right']);
-        expect(test_message.avenues[2]).to.exist
-        expect(test_message.avenues[2].avenue_type).to.be.an('string').that.includes('facebook');
-        expect(test_message.avenues[2].description).to.be.an('string').that.includes('this is a facebook post');
-        expect(test_message.avenues[2].person).to.be.an('array').that.includes('Tim').and.includes('Bently');
-        expect(test_message.avenues[2].date).to.be.an('array').that.includes('12-7-1993').and.includes('2-31-2020');
-        expect(test_message.avenues[2].sent).to.be.true;
-        expect(test_message.avenues[2].gui_ids).to.be.an('array').that.includes('test');
-    })
-    
-    it('should clear all avenues', () => {
-        test_message.add_avenue('email', 'this is an email', ['Bob', 'Jill'], ['12-12-12', '1-1-1'], true, ['test', 'left', 'right']);
-        test_message.add_avenue('text', 'this is a text', 'Bill', '11-1-11', true, 'test');
-        test_message.add_avenue('facebook', 'this is a facebook post', 'Bonny', '3-1-89', true, 'test');
-        //console.log('new avenues', test_message.avenues);
-        test_message.remove_all_avenues()
-        //console.log('no avenues', test_message.avenues);
-        expect(test_message.avenues[0]).to.not.exist;
-        expect(test_message.avenues[1]).to.not.exist;
-        expect(test_message.avenues[2]).to.not.exist;
     })
 
     // test change avenue type

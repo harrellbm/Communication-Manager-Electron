@@ -9,7 +9,7 @@ class Initiative {
       this.goals = {};
       this.messages = {};
       this.avenues = {};
-   }
+      }
    // add goal
    // delete goal 
    // add message
@@ -34,7 +34,6 @@ class Initiative {
       }
 
    add_avenue(avenue_type='', description='', person='', sent=false, message_ids='', year=1000, month=0, day=1, hour=0, min=0){
-      //debugger
       let new_avenue = new Avenue;
       new_avenue.avenue_type = avenue_type;
       new_avenue.description = description;
@@ -81,12 +80,25 @@ class Initiative {
       this.avenues[avenueId] = new_avenue
       return avenueId
       }
+      
+   remove_avenue(avenueId){
+      if (avenueId > -1){
+         delete this.avenues[avenueId];
+         }
+      }
+   
+   remove_all_avenues(){
+      let ave;
+      for(ave in this.avenues){
+         delete this.avenues[ave];
+         }
+      }  
   }
 
 // Constructor wrapper for exporting 
 function createInitiative () {
    return new Initiative()
-}
+   }
 
 class Goal {
    constructor() {
@@ -96,7 +108,7 @@ class Goal {
       this.frequency= 0;
       this.type = '';
       this.reminder = {};
-   }
+      }
   }
 
 // Constructor wrapper for exporting 
@@ -138,19 +150,7 @@ class Message {
    
    
    // ----Avenue related methods----
-   
-   remove_avenue(avenueId){
-      if (avenueId > -1){
-        delete this.avenues[avenueId];
-      }
-   }
 
-   remove_all_avenues(){
-      let ave;
-      for(ave in this.avenues){
-         delete this.avenues[ave];
-      }
-   }
    change_avenue_type(avenueId, new_type){ 
       this.avenues[avenueId].avenue_type = new_type
       }
