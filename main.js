@@ -49,7 +49,7 @@ function createWindow (name, tag, html) {
 // Create all the initial windows 
 function setUpWindows() {
   createWindow('message_manager','manager', './src/index.html');
-  //createWindow('message_editor','editor','./src/message_editor.html');
+  createWindow('message_editor','editor','./src/message_editor.html');
   console.log(windows)
 }
 

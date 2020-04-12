@@ -1,7 +1,7 @@
 /* Container for full grid */
 .wrapper{
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr;
   grid-template-rows: 8vh 4vh 24vh 4vh 24vh 4vh 24vh 8vh;
   background-color: rgb(139, 203, 224);
 }
@@ -108,124 +108,11 @@ flex-shrink: 1;
   grid-column-end: 2;
 }
 
-/* Container for adding avenues */
-#avenueIn{
-  max-height: 85vh;
-  vertical-align: top;
-  grid-row-start: 3;
-  grid-row-end: 8;
-  grid-column-start: 2;
-  grid-column-end: 3;
-  overflow-y: scroll;
-  background-color: rgb(255, 255, 255);
-  border-width: 1px;
-  border-style: solid;
-  border-color: rgb(169, 169, 169);
-}
-
 /* container on the bottom */
 #bottom{
   grid-column-start: 1;
-  grid-column-end: 3;
+  grid-column-end: 2;
   display: flex;
   justify-content: center;
   align-items: center;
-}
-
-/* Avenue rules */
-.avenue{
-  display: grid;
-  grid-template-columns: 6rem 1fr 1fr 1fr 1.4rem;
-  grid-template-rows: 1.4rem 1.5rem 2rem;
-  background-color: #999;
-  border: rgb(169, 169, 169);
-  border-width: 1px;
-  border-style: solid;
-}
-
-/* First Row */
-/* Drop down box rules*/
-.dropdown{
-  display: inline-block;
-  grid-column-start: 1;
-  grid-column-end: 2;
-  grid-row-start: 2;
-  grid-row-end: 3;
-}
-
-/* Titles */
-.description_title{
-  padding: 0.1rem;
-  grid-column-start: 2;
-  grid-column-end: 3;
-  grid-row-start: 2;
-  grid-row-end: 3;
-}
-
-.persons_title{
-  padding: 0.1rem;
-  grid-column-start: 3;
-  grid-column-end: 4;
-  grid-row-start: 2;
-  grid-row-end: 3;
-}
-
-.date_title{
-  padding: 0.1rem;
-  grid-column-start: 4;
-  grid-column-end:5;
-  grid-row-start: 2;
-  grid-row-end: 3;
-}
-
-/* Seccond row */
-/*Sent box rules */
-.sent_box{
-  grid-column-start: 1;
-  grid-column-end: 2;
-  grid-row-start: 3;
-  grid-row-end: 4;
-}
-
-.sent_checkbox{
-  position: relative;
-  top: 0.3rem;
-}
-
-.sent_label{
-  position: relative;
-  top: 0.2rem;
-}
-
-/* Textareas*/
-.description{
-  grid-column-start: 2;
-  grid-column-end: 3;
-  grid-row-start: 3;
-  grid-row-end: 4;
-}
-
-.persons{
-  grid-column-start: 3;
-  grid-column-end: 4;
-  grid-row-start: 3;
-  grid-row-end: 4;
-}
-
-.dates{
-  grid-column-start: 4;
-  grid-column-end: 5;
-  grid-row-start: 3;
-  grid-row-end: 4;
-}
-
-/* Outside rows */
-/* Delete button */
-.delete{
-  width: 1.4rem;
-  height: 1.4rem;
-  grid-column-start: 5;
-  grid-column-end: 6;
-  grid-row-start: 1;
-  grid-row-end: 2;
 }
