@@ -1,39 +1,44 @@
 // Constructor for Initiative object.  Top tier data structure 
 class Initiative {
    constructor() {
-      // date is an array so that multiple dates can be added
-      // Sent is whether the message is sent or not
-      // gui_id holds the output ids for this avenue specifically, they should be entered as an array upon initialization
+      // groups will evenutally be the default people an initiative is aimed toward
+      // goals, messages, and avenues are all map objects so that they can be added and manipulated more easily
+        // Note: they as well as the date objects used need converted before saving to json
+      // avenue_type holds the basic types of avenues, can add new on the fly with add_type method
       this.description = ''; //used to state the purpose of initiative 
       this.groups = [];
-      this.goals = {};
-      this.messages = {};
-      this.avenues = {};
+      this.goals = new Map; // change to map 
+      this.messages = new Map;
+      this.avenues = new Map;
       this.avenue_types = ['Email', 'Text', 'Facebook', 'Instagram', 'Handout', 'Poster','Other']
       }
-   // add goal
-   // delete goal 
+   // Note: useful built in methods for maps: set(key, value), delete(key), get(key), has(key), clear()
+      // keys(), values(), entries(), forEach(), size
+   
+   // add goal 
    // add message
-   // delete message
    // link message and avenue with ids 
-   // compose to single string
+   // compose to single string for copy and paste
    // default signature and greeting 
+   // prepare for stringify (convert date objects, and maps)
+   // parse from json (reconver to date objects and maps)
 
    
    
    // makes sure that the lowest possible id is assigned to a new avenue 
    id_fill(objects){
-      let Id = 0
-      let obj;
-      for(obj in objects){
-         if (Id == obj){
+      let Id = 0;
+      let strId; // holds id that is converted to string
+      let has = true; // holds boolean for if object has key or not 
+      while(has == true){
+         strId = Id.toString(); // turn id to string so that it can be evaluated and possibly returned
+         if (objects.has(strId) == true){ // check to see if map has id or not
             Id += 1
             } else { // when avenueId does not equal ave we know that the spot is empty
-               return Id
-            }
-         } 
-      return Id
+               return strId
+               }
       }
+   };
 
 // --- Avenue Related Methods ---
    add_avenue(avenue_type='', description='', person='', sent=false, message_ids='', year=1000, month=0, day=1, hour=0, min=0){
@@ -80,29 +85,15 @@ class Initiative {
       new_avenue.date.setHours(hour, min, 0, 0);
 
       let avenueId = this.id_fill(this.avenues)// fill in the lowest available id
-      this.avenues[avenueId] = new_avenue
+      this.avenues.set(avenueId, new_avenue);
       return avenueId
       }
-      
-   remove_avenue(avenueId){
-      if (avenueId > -1){
-         delete this.avenues[avenueId];
-         }
-      }
    
-   remove_all_avenues(){
-      let ave;
-      for(ave in this.avenues){
-         delete this.avenues[ave];
-         }
-      }  
-   
-// --- Avenue Type Realted Methods --- 
    // add new type of avenue on the fly
    add_type(new_type){
       this.avenue_types[this.avenue_types.length] = new_type;
       }
-  };
+};
 
 // Constructor wrapper for exporting 
 function createInitiative () {
