@@ -61,7 +61,7 @@ describe("Initiative object", function () {
     })
 
     // test adding goal method 
-    it('should add a new message', () => {
+    it('should add a new goal', () => {
         // test giving array of avenue ids
         test_initiative.add_goal(10, 'email', {'0': 'tomorrow', '1':'next week'});
         // test single string values for avenue ids  
@@ -69,20 +69,65 @@ describe("Initiative object", function () {
         //console.log('new goals', test_initiative.goals);
 
         let goal0 = test_initiative.goals.get('0')
-        //console.log('message0:', test_initiative.goals.get('0'))
+        //console.log('goal0:', test_initiative.goals.get('0'))
         expect(goal0.frequency, 'Goal does not have correct frequency').to.equal(10);
         expect(goal0.type, 'Goal does not have correct type').to.be.a('string').that.includes('email');
         expect(goal0.reminder, 'Goal does not have correct reminder').to.be.an('object').that.includes({'0': 'tomorrow'}).and.to.includes({'1': 'next week'});
 
         let goal1 = test_initiative.goals.get('1')
-        //console.log('message1:', test_initiative.goals.get('1'))
+        //console.log('goal1:', test_initiative.goals.get('1'))
         expect(goal1.frequency, 'Goal does not have correct frequency').to.equal(5);
         expect(goal1.type, 'Goal does not have correct type').to.be.a('string').that.includes('text');
         expect(goal1.reminder, 'Goal does not have correct reminder').to.be.an('object').that.includes({'0': 'tonight'});
 
     })
 
-    // test adding avenue method 
+    // test the return of the add goal method 
+    it('should return the id of the goal from add goal method return', () => {
+        let id = test_initiative.add_goal(10, 'email', {'0': 'tomorrow', '1':'next week'}); 
+        let id1 = test_initiative.add_goal(5, 'text', {'0': 'tonight'});
+        //console.log('new goals', test_initiative.goals);
+        //console.log('goal 1 id: ', id, '\ngoal 2 id: ', id1);
+        expect(id, "Does not return correct id").to.equal('0');
+        expect(id1, "Does not return correct id").to.equal('1');
+    })
+
+    // test dynamic preformace of goals map 
+    it('should remove a goal then re-add', () => {
+        test_initiative.add_goal(10, 'email', {'0': 'tomorrow', '1':'next week'}); 
+        test_initiative.add_goal(5, 'text', {'0': 'tonight'});
+        //console.log('new goals', test_initiative.goals);
+        // remove avenue and test
+        test_initiative.goals.delete('0');
+        //console.log('removed messages', test_initiative.goals);
+        let goal0 = test_initiative.goals.has('0')
+        expect(goal0).to.be.false;
+        let goal1 = test_initiative.goals.get('1')
+        //console.log('goal1:', test_initiative.goals.get('1'))
+        expect(goal1.frequency, 'Goal does not have correct frequency').to.equal(5);
+        expect(goal1.type, 'Goal does not have correct type').to.be.a('string').that.includes('text');
+        expect(goal1.reminder, 'Goal does not have correct reminder').to.be.an('object').that.includes({'0': 'tonight'});
+        
+        // Test re-add avenue
+        test_initiative.add_goal(10, 'email', {'0': 'tomorrow', '1':'next week'}); 
+        //console.log('re-added message:', test_initiative.goals)
+        goal0 = test_initiative.goals.get('0')
+        //console.log('goal0:', test_initiative.goals.get('0'))
+        expect(goal0.frequency, 'Goal does not have correct frequency').to.equal(10);
+        expect(goal0.type, 'Goal does not have correct type').to.be.a('string').that.includes('email');
+        expect(goal0.reminder, 'Goal does not have correct reminder').to.be.an('object').that.includes({'0': 'tomorrow'}).and.to.includes({'1': 'next week'});
+
+        // Test adding additional avenue after that
+        test_initiative.add_goal(9, 'facebook', {'0': 'in a month', '1':'when I need to'}); 
+        //console.log('added additional goal:', test_initiative.goals) 
+        goal2 = test_initiative.goals.get('2')
+        //console.log('goal2:', test_initiative.goals.get('2'))
+        expect(goal2.frequency, 'Goal does not have correct frequency').to.equal(9);
+        expect(goal2.type, 'Goal does not have correct type').to.be.a('string').that.includes('facebook');
+        expect(goal2.reminder, 'Goal does not have correct reminder').to.be.an('object').that.includes({'0': 'in a month'}).and.to.includes({'1': 'when I need to'});
+    })
+
+    // test adding message method 
     it('should add a new message', () => {
         // test giving array of avenue ids
         test_initiative.add_message('This is my title', 'Hi Hello,', 'This is my content. Blah blah blah.', 'Signed Me', ['avenue1', 'avenue2', 'avenue3']);
@@ -106,6 +151,56 @@ describe("Initiative object", function () {
         expect(message1.content, 'Message does not have correct content').to.be.a('string').that.includes('This is my message content.');
         expect(message1.signature, 'Message does not have correct signature').to.be.a('string').that.includes('This is my signature');
         expect(message1.avenue_ids, 'Message does not have correct avenue ids').to.be.an('array').that.includes('avenue1');
+    })
+
+    // test the return of the add message method 
+    it('should return the id of the message from add message method return', () => {
+        let id = test_initiative.add_message('This is my title', 'Hi Hello,', 'This is my content. Blah blah blah.', 'Signed Me', ['avenue1', 'avenue2', 'avenue3']); 
+        let id1 = test_initiative.add_message('Title of my message', 'Hello this is a greeting,', 'This is my message content.', 'This is my signature', 'avenue1');
+        //console.log('new messages', test_initiative.messages);
+        //console.log('message 1 id: ', id, '\nmessage 2 id: ', id1);
+        expect(id, "Does not return correct id").to.equal('0');
+        expect(id1, "Does not return correct id").to.equal('1');
+    })
+
+    // test dynamic preformace of messages map 
+    it('should remove a message then re-add', () => {
+        test_initiative.add_message('This is my title', 'Hi Hello,', 'This is my content. Blah blah blah.', 'Signed Me', ['avenue1', 'avenue2', 'avenue3']); 
+        test_initiative.add_message('Title of my message', 'Hello this is a greeting,', 'This is my message content.', 'This is my signature', 'avenue1');
+        //console.log('new messages', test_initiative.messages);
+        // remove avenue and test
+        test_initiative.messages.delete('0');
+        //console.log('removed messages', test_initiative.messages);
+        let message0 = test_initiative.messages.has('0')
+        expect(message0).to.be.false;
+        let message1 = test_initiative.messages.get('1')
+        //console.log('message1:', test_initiative.messages.get('1'))
+        expect(message1.title, 'Message does not have correct title').to.be.a('string').that.includes('Title of my message');
+        expect(message1.greeting, 'Message does not have correct').to.be.a('string').that.includes('Hello this is a greeting,');
+        expect(message1.content, 'Message does not have correct content').to.be.a('string').that.includes('This is my message content.');
+        expect(message1.signature, 'Message does not have correct signature').to.be.a('string').that.includes('This is my signature');
+        expect(message1.avenue_ids, 'Message does not have correct avenue ids').to.be.an('array').that.includes('avenue1');
+
+        // Test re-add avenue
+        test_initiative.add_message('This is my title', 'Hi Hello,', 'This is my content. Blah blah blah.', 'Signed Me', ['avenue1', 'avenue2', 'avenue3']);
+        message0 = test_initiative.messages.get('0')
+        //console.log('re-added message:', test_initiative.messages)
+        expect(message0.title, 'Message does not have correct title').to.be.a('string').that.includes('This is my title');
+        expect(message0.greeting, 'Message does not have correct greeting').to.be.a('string').that.includes('Hi Hello');
+        expect(message0.content, 'Message does not have correct content').to.be.a('string').that.includes('This is my content. Blah blah blah.');
+        expect(message0.signature, 'Message does not have correct signature').to.be.a('string').that.includes('Signed Me');
+        expect(message0.avenue_ids, 'Message does not have correct avenue ids').to.be.an('array').that.includes('avenue1').and.includes('avenue2').and.includes('avenue3');
+
+        // Test adding additional avenue after that
+        test_initiative.add_message('This is another message title', 'Oh hi there,', 'I have some things to say.', 'Good day young man', 'avenue3');
+        message2 = test_initiative.messages.get('2')
+        //console.log('added additional message:', test_initiative.messages)
+        expect(message2.title, 'Message does not have correct title').to.be.a('string').that.includes('This is another message title');
+        expect(message2.greeting, 'Message does not have correct greeting').to.be.a('string').that.includes('Oh hi there,');
+        expect(message2.content, 'Message does not have correct content').to.be.a('string').that.includes('I have some things to say.');
+        expect(message2.signature, 'Message does not have correct signature').to.be.a('string').that.includes('Good day young man');
+        expect(message2.avenue_ids, 'Message does not have correct avenue ids').to.be.an('array').that.includes('avenue3');
+       
     })
 
     // test adding avenue method 
@@ -138,16 +233,14 @@ describe("Initiative object", function () {
     // test the return of the add avenue method 
     it('should return the id of the avenue from add avenue method return', () => {
         let id = test_initiative.add_avenue('email', 'this is an email', ['Bob', 'Jill'], true, ['message1', 'message2', 'message3'], 2020, 9, 23, 12, 30);
-        let id2 = test_initiative.add_avenue('text', 'this is a text', 'Bill', true, 'message4', 2019, 11, 4, 9, 12);
-        let id3 = test_initiative.add_avenue('facebook', 'this is a facebook post', 'Bonny', true, 'message2', 2031, 3, 1, 15, 49);
+        let id1 = test_initiative.add_avenue('text', 'this is a text', 'Bill', true, 'message4', 2019, 11, 4, 9, 12);
         //console.log('new avenues', test_initiative.avenues);
-        //console.log('avenue 1 id: ', id, '\navenue 2 id: ', id2, '\navenue 3 id: ', id3);
-        expect(id).to.equal('0');
-        expect(id2).to.equal('1');
-        expect(id3).to.equal('2');
+        //console.log('avenue 1 id: ', id, '\navenue 2 id: ', id1);
+        expect(id,"Does not return correct id").to.equal('0');
+        expect(id1, "Does not return correct id").to.equal('1');
     })
 
-    // test removing from maps 
+    // test dynamic preformace of avenues map  
     it('should remove an avenue then re-add', () => {
         test_initiative.add_avenue('email', 'this is an email', ['Bob', 'Jill'], true, ['message1', 'message2', 'message3'], 2020, 9, 23, 12, 30);
         test_initiative.add_avenue('text', 'this is a text', 'Bill', true, 'message4', 2019, 11, 4, 9, 12);
@@ -180,7 +273,7 @@ describe("Initiative object", function () {
 
         // Test adding additional avenue after that
         test_initiative.add_avenue('facebook', 'this is a facebook post', ['Tim', 'Bently'], true, 'message1', 2000, 1, 5, 23, 00);
-        //console.log('added aditional avenue:', test_initiative.avenues)
+        //console.log('added asditional avenue:', test_initiative.avenues)
         let avenue2 = test_initiative.avenues.get('2')
         //console.log('avenue2:', test_initiative.avenues.get('2'))
         expect(avenue2).to.exist

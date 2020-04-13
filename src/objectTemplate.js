@@ -15,16 +15,6 @@ class Initiative {
    // Note: useful built in methods for maps: set(key, value), delete(key), get(key), has(key), clear()
       // keys(), values(), entries(), forEach(), size
    
-   // add goal 
-   // add message
-   // link message and avenue with ids 
-   // compose to single string for copy and paste
-   // default signature and greeting 
-   // prepare for stringify (convert date objects, and maps)
-   // parse from json (recover to date objects and maps)
-
-   
-   
    // makes sure that the lowest possible id is assigned to a new avenue 
    id_fill(objects){
       let Id = 0;
@@ -40,6 +30,7 @@ class Initiative {
       }
    };
 
+   // add an goal to the goals map in the initiative 
    add_goal(frequency = 0, type = '', reminder = {}){
       
       let new_goal = new Goal;
@@ -52,6 +43,7 @@ class Initiative {
       return goalId
       }
    
+   // add a message to the messages map in the initiative 
    add_message(title = '', greeting = '', content = '', signature ='', avenue_ids=''){
       let new_message = new Message;
       new_message.title = title;
@@ -77,7 +69,8 @@ class Initiative {
       this.messages.set(messageId, new_message);
       return messageId
       }
-
+   
+   // add an avenue to the avenues map in the initiative 
    add_avenue(avenue_type='', description='', person='', sent=false, message_ids='', year=1000, month=0, day=1, hour=0, min=0){
       let new_avenue = new Avenue;
       new_avenue.avenue_type = avenue_type;
@@ -243,8 +236,6 @@ class Avenue {
          }
          return people
       }
- 
-   // TODO: delete a person responsible(need to validate that there is at least one person)
 
    // Change the date object 
    change_date(year, month, day, hour, min){  // TODO: need data validation
@@ -261,7 +252,7 @@ class Avenue {
       this.sent = new_sent
       }
    
-       
+   // need to get sent 
    // need get message ids
    // need change message id
    // need clear message id
