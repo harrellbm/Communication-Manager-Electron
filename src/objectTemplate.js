@@ -21,7 +21,7 @@ class Initiative {
    // compose to single string for copy and paste
    // default signature and greeting 
    // prepare for stringify (convert date objects, and maps)
-   // parse from json (reconver to date objects and maps)
+   // parse from json (recover to date objects and maps)
 
    
    
@@ -40,7 +40,44 @@ class Initiative {
       }
    };
 
-// --- Avenue Related Methods ---
+   add_goal(frequency = 0, type = '', reminder = {}){
+      
+      let new_goal = new Goal;
+      new_goal.frequency = frequency;
+      new_goal.type = type;
+      new_goal.reminder = reminder
+
+      let goalId = this.id_fill(this.goals)// fill in the lowest available id
+      this.goals.set(goalId, new_goal);
+      return goalId
+      }
+   
+   add_message(title = '', greeting = '', content = '', signature ='', avenue_ids=''){
+      let new_message = new Message;
+      new_message.title = title;
+      new_message.greeting = greeting;
+      new_message.content = content;
+      new_message.signature = signature;
+
+      // Set any initial avenue ids.  Can take a single string or array of strings
+      let array = [avenue_ids]
+      let value;
+      let id;
+      for(value of array){
+         if(typeof value === "string"){
+            new_message.avenue_ids.push(value)
+         } else if (value.constructor === Array){
+            for(id of value){
+               new_message.avenue_ids.push(id)
+            }
+         }
+      }
+
+      let messageId = this.id_fill(this.messages)// fill in the lowest available id
+      this.messages.set(messageId, new_message);
+      return messageId
+      }
+
    add_avenue(avenue_type='', description='', person='', sent=false, message_ids='', year=1000, month=0, day=1, hour=0, min=0){
       let new_avenue = new Avenue;
       new_avenue.avenue_type = avenue_type;
