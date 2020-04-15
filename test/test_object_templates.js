@@ -298,14 +298,52 @@ describe("Goal object", function () {
     /*
     Test Goal constructor
     */
+   var test_goal;
+    
+   this.beforeEach( function () {
+       test_goal = templates.createGoal()
+   })
+
    it('should have all initial Goal object keys', function () {
-       let test_goal = templates.createGoal();
        //console.log(test_goal);
        expect(test_goal, 'Missing a key').to.include.keys('frequency', 'type', 'reminder')
        expect(test_goal.frequency, 'frequency is not a number').is.a('number');
        expect(test_goal.type, 'type is not a string').is.a('string');
        expect(test_goal.reminder, 'reminder is not an object').is.an('object');
     })
+
+    // test change frequency 
+    it('should change goal frequency', () => {
+        test_goal.change_frequency(10);
+        //console.log('new goal frequency', test_goal);
+        expect(test_goal.frequency, 'Frequency was not changed').to.equal(10);
+    })
+  
+    // test return frequency
+    it('should return frequency', () => {
+        test_goal.change_frequency(12);
+        // get the new frequency
+        let frequency =  test_goal.get_frequency();
+        //console.log('returned frequency', frequency);
+        expect(frequency, 'Frequency was not returned').to.equal(12);
+    })
+
+     // test change frequency 
+     it('should change goal type', () => {
+        test_goal.change_type('email');
+        //console.log('new goal type', test_goal);
+        expect(test_goal.type, 'Type was not changed').to.be.a('string').that.equals('email');
+    })
+  
+    // test return frequency
+    it('should return type', () => {
+        test_goal.change_type('text');
+        // get the new frequency
+        let type =  test_goal.get_type();
+        //console.log('returned type', type);
+        expect(type, 'Type was not returned').to.be.a('string').that.equals('text');
+    })
+
 });
 
 describe("Message object", function() {
@@ -336,12 +374,28 @@ describe("Message object", function() {
         expect(test_message.title, 'Title was not changed').to.be.a('string').that.includes('This is a new Title')
     })
 
+    // test return title 
+    it('should return title', () => {
+        test_message.change_title('This is a different title');
+        let message_title = test_message.get_title();
+        //console.log('returned title:', message_title);
+        expect(message_title, 'Message title was not returned').to.be.an('string').that.equals('This is a different title');
+    })
+
     // test change greeting method 
     it('should change greeting', () => {
         let new_greeting = 'This is a new Greeting'
         test_message.change_greeting(new_greeting)
         //console.log('Greeting', test_message)
         expect(test_message.greeting, 'Greeting was not changed').to.be.a('string').that.includes('This is a new Greeting')
+    })
+
+     // test return greeting 
+     it('should return greeting', () => {
+        test_message.change_greeting('This is a new Greeting');
+        let message_greeting = test_message.get_greeting();
+        //console.log('returned greeting:', message_greeting);
+        expect(message_greeting, 'Message greeting was not returned').to.be.an('string').that.equals('This is a new Greeting');
     })
 
     // test change content method 
@@ -352,12 +406,28 @@ describe("Message object", function() {
         expect(test_message.content, 'Content was not changed').to.be.a('string').that.includes('This is new Content')
     })
     
+    // test return content 
+    it('should return content', () => {
+        test_message.change_content('This is new Content');
+        let message_content = test_message.get_content();
+        //console.log('returned content:', message_content);
+        expect(message_content, 'Message content was not returned').to.be.an('string').that.equals('This is new Content');
+    })
+
      // test change signature method 
     it('should change signature', () => {
         let new_signature = 'This is a new Signature'
         test_message.change_signature(new_signature)
         //console.log('Signature', test_message)
         expect(test_message.signature, 'Signature was not changed').to.be.a('string').that.includes('This is a new Signature')
+    })
+
+    // test return signature 
+    it('should return signature', () => {
+        test_message.change_signature('This is a new Signature');
+        let message_signature = test_message.get_signature();
+        //console.log('returned signature:', message_signature);
+        expect(message_signature, 'Message signature was not returned').to.be.an('string').that.equals('This is a new Signature');
     })
 });
 
@@ -464,5 +534,13 @@ describe("Avenue object", function () {
         test_avenue.change_sent(true);
         //console.log('new sent', test_avenue);
         expect(test_avenue.sent, 'Sent value was not changed').to.be.true;
+    })
+
+    // test return sent 
+    it('should return sent value', () => {
+        test_avenue.change_sent(true);
+        let avenue_sent = test_avenue.get_sent();
+        //console.log('returned sent value:', avenue_sent);
+        expect(avenue_sent, 'Avenue sent value was not returned').to.be.an('boolean').that.equals(true);
     })
 })
