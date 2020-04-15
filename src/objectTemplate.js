@@ -15,7 +15,13 @@ class Initiative {
    // Note: useful built in methods for maps: set(key, value), delete(key), get(key), has(key), clear()
       // keys(), values(), entries(), forEach(), size
    
-   // need change description
+   change_description(new_description){ 
+      this.description = new_description
+      }
+
+   get_description(){
+      return this.description
+      }
 
    // need add groups 
    // need get groups

@@ -25,6 +25,22 @@ describe("Initiative object", function () {
        expect(test_initiative.avenue_types, 'Avenue_types is not an array').is.an('array');
     })
 
+    // test change description
+    it('should change description', () => {
+        test_initiative.change_description('This is a new description');
+        //console.log('new description:', test_avenue);
+        expect(test_initiative.description, 'Description was not changed').to.be.an('string').that.includes('This is a new description');
+    })
+    
+    // test return description
+    it('should return description', () => {
+        test_initiative.change_description('This is a new description');
+        let initiative_description = test_initiative.get_description();
+        //console.log('returned description:', avenue_initiative);
+        expect(initiative_description, 'Initiative description was not returned').to.be.an('string').that.includes('This is a new description');
+    })
+    
+
     // test filling lowest id method 
     it('should return lowest available id', () => {
         // base test 
