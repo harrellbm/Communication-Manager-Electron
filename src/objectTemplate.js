@@ -147,8 +147,23 @@ class Goal {
       this.reminder = {};
       }
 
-      // need change frequency 
-      // need change type
+      change_frequency(new_frequency){ 
+         this.frequency = new_frequency
+         }
+   
+      get_frequency(){
+         return this.frequency
+         }
+      
+      change_type(new_type){ 
+         this.type = new_type
+         }
+      
+      get_type(){
+         return this.type
+         }
+      
+      // possibly implement date object for frequency 
 
       // need add reminder
       // need get reminder
@@ -172,29 +187,47 @@ class Message {
       this.signature ='';
       this.avenue_ids = []
       }
-    
+   
+   // Changes the title for the given message    
    change_title(new_title){
       this.title = new_title
       }
    
-   // get title
-      
+   // Returns the title for the given message
+   get_title(){
+      return this.title
+      }
+   
+   // Changes the greeting for the given message    
    change_greeting(new_greeting){
       this.greeting = new_greeting
       }
 
-   // get greeting
+   // Returns the greeting for the given message
+   get_greeting(){
+      return this.greeting
+      }
 
+   // Changes the content for the given message    
    change_content(new_content){ 
       this.content = new_content
       }
    
-   // get content
-   
+   // Returns the content for the given message
+   get_content(){
+      return this.content
+      }
+
+   // Changes the signature for the given message    
    change_signature(new_signature){ 
       this.signature = new_signature
       }
-      
+   
+   // Returns the signature for the given message
+   get_signature(){
+      return this.signature
+      }
+
    // need get avenue ids
    // need add avenue ids
    // need remove avenue id
@@ -265,7 +298,7 @@ class Avenue {
       this.date.setHours(hour, min, 0, 0);
       }
  
-   // Returns the list of dates for the given avenue as a simple string
+   // Returns the date for the given avenue as a date object
    get_dates(){
       return this.date
       }
@@ -274,8 +307,11 @@ class Avenue {
       this.sent = new_sent
       }
    
-   // need to get sent
-   
+   // Returns the date for the given avenue as a date object
+   get_sent(){
+      return this.sent
+      }
+
    // need get message ids
    // need change message id
    // need clear message id
