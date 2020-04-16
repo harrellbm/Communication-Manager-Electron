@@ -40,6 +40,45 @@ describe("Initiative object", function () {
         expect(initiative_description, 'Initiative description was not returned').to.be.an('string').that.includes('This is a new description');
     })
     
+    // test change group
+    it('should change group', () => {
+        test_initiative.change_group('Youth');
+        //console.log('new group', test_initiative);
+        expect(test_initiative.groups, 'Group was not changed').to.be.an('array').that.includes('Youth');
+    })
+    
+    // test add group  
+    it('should add a new group', () => {
+        test_initiative.add_group('Youth');
+        test_initiative.add_group('Parents');
+        test_initiative.add_group('School Families');
+        test_initiative.add_group('Members');
+        //console.log('new groups:', test_initiative);
+        expect(test_initiative.groups, 'New groups were not added').to.be.an('array').that.includes('Youth').and.includes('Parents').and.includes('School Families').and.includes('Members');
+    })
+    
+    // test return groups
+    it('should return groups', () => {
+        test_initiative.add_group('Youth');
+        test_initiative.add_group('Parents');
+        test_initiative.add_group('School Families');
+        test_initiative.add_group('Members');
+        let groups = test_initiative.get_groups();
+        //console.log('returned groups', groups);
+        expect(groups, 'Groups were not returned').to.be.an('array').that.includes('Youth').and.includes('Parents').and.includes('School Families').and.includes('Members');
+    })
+   
+     // test clear groups people  
+     it('should clear groups', () => {
+        test_initiative.add_group('Youth');
+        test_initiative.add_group('Parents');
+        test_initiative.add_group('School Families');
+        test_initiative.add_group('Members');
+        //console.log('new groups:', test_initiative);;
+        test_initiative.clear_groups();
+        //console.log('cleared groups:', test_initiative);;
+        expect(test_initiative.groups, 'Groups were not cleared').to.be.an('array').and.to.have.length(0);
+    })
 
     // test filling lowest id method 
     it('should return lowest available id', () => {
@@ -553,7 +592,7 @@ describe("Avenue object", function () {
     it('should change person responsible', () => {
         test_avenue.change_person('Jill');
         //console.log('new person', test_avenue);
-        expect(test_avenue.person, 'Person was not changed').to.be.an('string').that.includes('Jill');
+        expect(test_avenue.person, 'Person was not changed').to.be.an('array').that.includes('Jill');
     })
     
     // test add person - keep working on 
@@ -578,7 +617,7 @@ describe("Avenue object", function () {
     })
    
      // test clear people  
-     it('should clear avenue ids', () => {
+     it('should clear people', () => {
         test_avenue.add_person('Joe');
         test_avenue.add_person('Phil');
         test_avenue.add_person('Jill');
