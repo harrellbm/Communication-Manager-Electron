@@ -15,20 +15,22 @@ class Initiative {
    // Note: useful built in methods for maps: set(key, value), delete(key), get(key), has(key), clear()
       // keys(), values(), entries(), forEach(), size
    
+   // Changes the initiative's description  
    change_description(new_description){ 
       this.description = new_description
       }
 
+   // Gets the initiative's description 
    get_description(){
       return this.description
       }
 
-   // need add groups 
-   // need get groups
-   // need remove groups 
-   // need clear groups 
+   /* need add groups */
+   /* need get groups */
+   /* need remove groups */ 
+   /* need clear groups */
    
-   // makes sure that the lowest possible id is assigned to a new avenue 
+   // Makes sure that the lowest possible id is assigned to a new avenue 
    id_fill(objects){
       let Id = 0;
       let strId; // holds id that is converted to string
@@ -43,7 +45,7 @@ class Initiative {
       }
    };
 
-   // add an goal to the goals map in the initiative 
+   // Add a goal to the goals map in the initiative 
    add_goal(frequency = 0, type = '', reminder = {}){
       
       let new_goal = new Goal();
@@ -56,7 +58,7 @@ class Initiative {
       return goalId
       }
    
-   // add a message to the messages map in the initiative 
+   // Add a message to the messages map in the initiative 
    add_message(title = '', greeting = '', content = '', signature ='', avenue_ids=''){
       let new_message = new Message();
       new_message.title = title;
@@ -83,7 +85,7 @@ class Initiative {
       return messageId
       }
    
-   // add an avenue to the avenues map in the initiative 
+   // Add an avenue to the avenues map in the initiative 
    add_avenue(avenue_type='', description='', person='', sent=false, message_id='', year=1000, month=0, day=1, hour=0, min=0){
       let new_avenue = new Avenue();
       new_avenue.avenue_type = avenue_type;
@@ -121,9 +123,14 @@ class Initiative {
       return avenueId
       }
    
-   // add new type of avenue on the fly
+   // Add new type of avenue on the fly
    add_type(new_type){
       this.avenue_types[this.avenue_types.length] = new_type;
+      }
+   
+   // Returns avenue types as an array
+   get_types(){
+      return this.avenue_types
       }
 };
 
@@ -142,30 +149,33 @@ class Goal {
       this.reminder = {};
       }
    
-      // possibly implement date object for frequency 
-
-      change_frequency(new_frequency){ 
-         this.frequency = new_frequency;
-         }
+   /*possibly implement date object for frequency*/ 
    
-      get_frequency(){
-         return this.frequency;
-         }
+   // Changes the goal's frequency 
+   change_frequency(new_frequency){ 
+      this.frequency = new_frequency;
+      }
+   
+   // Gets the goal's frequency 
+   get_frequency(){
+      return this.frequency;
+      }
+   
+   // Changes the goal's avenue type 
+   change_type(new_type){ 
+      this.type = new_type;
+      }
+   
+   // Gets the goal's avenue type 
+   get_type(){
+      return this.type;
+      }
       
-      change_type(new_type){ 
-         this.type = new_type;
-         }
-      
-      get_type(){
-         return this.type;
-         }
-      
-      // need add reminder
-      // need get reminder
-      // need remove reminder 
-      // need clear reminders 
-      // implement date object in reminder
-
+      /* need add reminder */
+      /* need get reminder */
+      /* need remove reminder */
+      /* need clear reminders */
+      /* implement date object in reminder */
   }
 
 // Constructor wrapper for exporting 
@@ -175,7 +185,8 @@ function createGoal () {
 
 class Message {
    constructor () {
-     // Person is a list value so that multiple people can be added
+      // Avenue ids holds the ids of the avenues that are associated with this message
+         // Only one message is allowed for each avenue, but you can add multiple avenues to a message
       this.title = '';
       this.greeting = '';
       this.content = '';
@@ -222,12 +233,27 @@ class Message {
    get_signature(){
       return this.signature;
       }
+   
+   // Completely writes over current values in avenue ids 
+   change_avenue_id(new_id){   // TODO: need data validation
+      this.avenue_ids = [new_id]
+      }
 
-   // need get avenue ids
-   // need add avenue ids
-   // need remove avenue id
-   // need clear avenue ids
-   };
+   // Adds an avenue id to the list of ids for this message
+   add_avenue_id(new_id){  // TODO: need data validation
+      this.avenue_ids.push(new_id)
+      }
+   
+   // Returns the list of avenue ids as an array
+   get_avenue_ids(){  
+         return this.avenue_ids
+      }
+
+   // Clears all avenue ids for this message 
+   clear_avenue_ids(){
+      this.avenue_ids = []
+      }
+};
 
 // Constructor wrapper for exporting 
 function createMessage () {
@@ -237,15 +263,16 @@ function createMessage () {
 // Constructor for Avenue object.  All methods are held within the Message object  
 class Avenue {
    constructor() {
-      // date is an array so that multiple dates can be added
+      // date is a built in dat object only one date is assigned per avenue
       // Sent is whether the message is sent or not
-      // gui_id holds the output ids for this avenue specifically, they should be entered as an array upon initialization
+      // Message id holds the id of the message that is associated with this avenue 
+         //Only one message is allowed for each avenue, but you can add multiple avenues to a message
       this.avenue_type = '';
       this.description = '';
       this.person = [];
-      this.date = new Date(); // only one date 
+      this.date = new Date(); // Only one date 
       this.sent = false;
-      this.message_id = '' // only one message id
+      this.message_id = '' // Only one message id
       }
    
    // Completely writes over current avenue type 
@@ -288,6 +315,11 @@ class Avenue {
             }
          }
          return people
+      }
+
+   // Clears all people for this avenue  
+   clear_people(){
+      this.person = []
       }
 
    // Change the date object 
