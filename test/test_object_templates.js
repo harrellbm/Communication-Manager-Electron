@@ -301,12 +301,21 @@ describe("Initiative object", function () {
         expect(avenue2.date, 'Does not have proper date').to.be.instanceOf(Date).and.equalTime(new Date('February 5 2000 23:00'));
     })
 
-   // test adding avenue_type method 
-   it('should add new avenue_type', () => {
+    // test adding add_type method 
+    it('should add new a avenue type to the initiative', () => {
     let new_avenue_type = 'Facebook'
-    test_initiative.add_type(new_avenue_type)
-    //console.log('avenue types', test_initiative.avenue_types)
+    test_initiative.add_type(new_avenue_type);
+    //console.log('avenue types', test_initiative.avenue_types);
     expect(test_initiative.avenue_types, 'Does not have proper avenue type').to.be.an('array').that.includes('Facebook')
+    })
+
+    // test return from get_types method
+    it('should return the avenue types held in initiative', () => {
+        let new_avenue_type = 'Alien Harmonica'
+        test_initiative.add_type(new_avenue_type)
+        let avenue_types = test_initiative.get_types();
+        //console.log('returned avenue types:', avenue_types);
+        expect(avenue_types, 'Avenue types were not returned').to.be.an('array').that.includes('Alien Harmonica');
     })
 });
 
@@ -445,6 +454,46 @@ describe("Message object", function() {
         //console.log('returned signature:', message_signature);
         expect(message_signature, 'Message signature was not returned').to.be.an('string').that.equals('This is a new Signature');
     })
+
+     // test change avenue ids
+     it('should change avenue ids', () => {
+        test_message.change_avenue_id('avenue1');
+        //console.log('new avenue id', test_message);
+        expect(test_message.avenue_ids, 'Avenue id was not changed').to.be.an('array').that.includes('avenue1');
+    })
+    
+    // test add avenue id 
+    it('should add an avenue id', () => {
+        test_message.add_avenue_id('avenue0');
+        test_message.add_avenue_id('avenue1');
+        test_message.add_avenue_id('avenue2');
+        test_message.add_avenue_id('avenue3');
+        //console.log('new avenue ids:', test_message);
+        expect(test_message.avenue_ids, 'New avenue ids were not added').to.be.an('array').that.includes('avenue0').and.includes('avenue1').and.includes('avenue2').and.includes('avenue3');
+    })
+    
+    // test return avenue ids 
+    it('should return avenue ids', () => {
+        test_message.add_avenue_id('avenue0');
+        test_message.add_avenue_id('avenue1');
+        test_message.add_avenue_id('avenue2');
+        test_message.add_avenue_id('avenue3');
+        let avenue_ids = test_message.get_avenue_ids();
+        //console.log('new avenue ids:', test_message);;
+        expect(avenue_ids, 'Avenue ids were not returned').to.be.an('array').that.includes('avenue0').and.includes('avenue1').and.includes('avenue2').and.includes('avenue3');
+    })
+
+    // test clear avenue ids 
+    it('should clear avenue ids', () => {
+        test_message.add_avenue_id('avenue0');
+        test_message.add_avenue_id('avenue1');
+        test_message.add_avenue_id('avenue2');
+        test_message.add_avenue_id('avenue3');
+        //console.log('new avenue ids:', test_message);;
+        test_message.clear_avenue_ids();
+        //console.log('cleared avenue ids:', test_message);;
+        expect(test_message.avenue_ids, 'Avenue ids were not cleared').to.be.an('array').and.to.have.length(0);
+    })
 });
 
 describe("Avenue object", function () {
@@ -528,6 +577,18 @@ describe("Avenue object", function () {
         expect(avenue_people, 'People were not returned').to.be.a('string').that.includes('Joe').and.includes('Phil').and.includes('Jill').and.includes('John');
     })
    
+     // test clear people  
+     it('should clear avenue ids', () => {
+        test_avenue.add_person('Joe');
+        test_avenue.add_person('Phil');
+        test_avenue.add_person('Jill');
+        test_avenue.add_person('John');
+        //console.log('new people:', test_avenue);;
+        test_avenue.clear_people();
+        //console.log('cleared people:', test_avenue);;
+        expect(test_avenue.person, 'People were not cleared').to.be.an('array').and.to.have.length(0);
+    })
+
     // test change date
     it('should change date', () => {
         //console.log('base date:', test_avenue.date);
@@ -581,8 +642,8 @@ describe("Avenue object", function () {
         test_avenue.change_message_id('message1');
         //console.log('message id added:', test_avenue);
         // get the new type
-        let message_id = test_avenue.clear_message_id();
-        //console.log('cleared message id:', message_id);
-        expect(message_id, 'Message_id was not cleared').to.be.an('undefined');
+        test_avenue.clear_message_id();
+        //console.log('cleared message id:', test_avenue);
+        expect(test_avenue.message_id, 'Message ids were not cleared').to.be.an('string').that.equals('');
     })
 });
