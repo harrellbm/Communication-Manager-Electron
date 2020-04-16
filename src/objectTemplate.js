@@ -7,9 +7,9 @@ class Initiative {
       // avenue_type holds the basic types of avenues, can add new on the fly with add_type method
       this.description = ''; //used to state the purpose of initiative 
       this.groups = [];
-      this.goals = new Map; // change to map 
-      this.messages = new Map;
-      this.avenues = new Map;
+      this.goals = new Map(); // change to map 
+      this.messages = new Map();
+      this.avenues = new Map();
       this.avenue_types = ['Email', 'Text', 'Facebook', 'Instagram', 'Handout', 'Poster','Other']
       }
    // Note: useful built in methods for maps: set(key, value), delete(key), get(key), has(key), clear()
@@ -46,7 +46,7 @@ class Initiative {
    // add an goal to the goals map in the initiative 
    add_goal(frequency = 0, type = '', reminder = {}){
       
-      let new_goal = new Goal;
+      let new_goal = new Goal();
       new_goal.frequency = frequency;
       new_goal.type = type;
       new_goal.reminder = reminder
@@ -58,7 +58,7 @@ class Initiative {
    
    // add a message to the messages map in the initiative 
    add_message(title = '', greeting = '', content = '', signature ='', avenue_ids=''){
-      let new_message = new Message;
+      let new_message = new Message();
       new_message.title = title;
       new_message.greeting = greeting;
       new_message.content = content;
@@ -85,7 +85,7 @@ class Initiative {
    
    // add an avenue to the avenues map in the initiative 
    add_avenue(avenue_type='', description='', person='', sent=false, message_id='', year=1000, month=0, day=1, hour=0, min=0){
-      let new_avenue = new Avenue;
+      let new_avenue = new Avenue();
       new_avenue.avenue_type = avenue_type;
       new_avenue.description = description;
 
@@ -129,7 +129,7 @@ class Initiative {
 
 // Constructor wrapper for exporting 
 function createInitiative () {
-   return new Initiative()
+   return new Initiative();
    }
 
 class Goal {
@@ -145,23 +145,21 @@ class Goal {
       // possibly implement date object for frequency 
 
       change_frequency(new_frequency){ 
-         this.frequency = new_frequency
+         this.frequency = new_frequency;
          }
    
       get_frequency(){
-         return this.frequency
+         return this.frequency;
          }
       
       change_type(new_type){ 
-         this.type = new_type
+         this.type = new_type;
          }
       
       get_type(){
-         return this.type
+         return this.type;
          }
       
-      
-
       // need add reminder
       // need get reminder
       // need remove reminder 
@@ -182,47 +180,47 @@ class Message {
       this.greeting = '';
       this.content = '';
       this.signature ='';
-      this.avenue_ids = []
+      this.avenue_ids = [];
       }
    
    // Changes the title for the given message    
    change_title(new_title){
-      this.title = new_title
+      this.title = new_title;
       }
    
    // Returns the title for the given message
    get_title(){
-      return this.title
+      return this.title;
       }
    
    // Changes the greeting for the given message    
    change_greeting(new_greeting){
-      this.greeting = new_greeting
+      this.greeting = new_greeting;
       }
 
    // Returns the greeting for the given message
    get_greeting(){
-      return this.greeting
+      return this.greeting;
       }
 
    // Changes the content for the given message    
    change_content(new_content){ 
-      this.content = new_content
+      this.content = new_content;
       }
    
    // Returns the content for the given message
    get_content(){
-      return this.content
+      return this.content;
       }
 
    // Changes the signature for the given message    
    change_signature(new_signature){ 
-      this.signature = new_signature
+      this.signature = new_signature;
       }
    
    // Returns the signature for the given message
    get_signature(){
-      return this.signature
+      return this.signature;
       }
 
    // need get avenue ids
@@ -233,7 +231,7 @@ class Message {
 
 // Constructor wrapper for exporting 
 function createMessage () {
-    return new Message()
+    return new Message();
 }
 
 // Constructor for Avenue object.  All methods are held within the Message object  
@@ -249,36 +247,39 @@ class Avenue {
       this.sent = false;
       this.message_id = '' // only one message id
       }
-      
-   change_avenue_type(new_type){ 
+   
+   // Completely writes over current avenue type 
+   change_avenue_type(new_type){ // TODO: need data validation
       this.avenue_type = new_type
       }
-
+   
+   // Returns the avenue type of this avenue as a simple string
    get_avenue_type(){
       return this.avenue_type
       }
 
-   change_description(new_description){ 
+   // Completely writes over current description
+   change_description(new_description){ // TODO: need data validation
       this.description = new_description
       }
 
+   // Returns the description of this avenue as a simple string
    get_description(){
       return this.description
       }
 
    // Completely writes over current values in person values
-   change_person(new_person){  
+   change_person(new_person){   // TODO: need data validation
       this.person = new_person
       }
 
-   
    // Adds a person to the person list for that specific avenue
-   add_person(new_person){  
+   add_person(new_person){  // TODO: need data validation
       this.person.push(new_person)
       }
    
    // Returns the list of people for the given avenue as a simple string
-   get_people(){  // TODO: add test
+   get_people(){  
          let people = '';
          let person;
          for (person of this.person) {
@@ -305,13 +306,13 @@ class Avenue {
       this.sent = new_sent
       }
    
-   // Returns the date for the given avenue as a date object
+   // Returns the sent value for the given avenue as a boolean
    get_sent(){
       return this.sent
       }
 
    // Completely writes over current value of message id
-   change_message_id(new_id){ 
+   change_message_id(new_id){ // TODO: need data validation
       this.message_id = new_id
       }
    
@@ -328,7 +329,7 @@ class Avenue {
 
 // Constructor wrapper for exporting 
 function createAvenue () {
-    return new Avenue()
+    return new Avenue();
 }
 
 module.exports = {
