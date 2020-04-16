@@ -84,7 +84,7 @@ class Initiative {
       }
    
    // add an avenue to the avenues map in the initiative 
-   add_avenue(avenue_type='', description='', person='', sent=false, message_ids='', year=1000, month=0, day=1, hour=0, min=0){
+   add_avenue(avenue_type='', description='', person='', sent=false, message_id='', year=1000, month=0, day=1, hour=0, min=0){
       let new_avenue = new Avenue;
       new_avenue.avenue_type = avenue_type;
       new_avenue.description = description;
@@ -109,19 +109,8 @@ class Initiative {
       // Set sent status 
       new_avenue.sent = sent;
 
-      // Same as people
-      let array2 = [message_ids]
-      let value2;
-      let id;
-      for(value2 of array2){
-         if(typeof value2 === "string"){
-            new_avenue.message_id.push(value2)
-         } else if (value2.constructor === Array){
-            for(id of value2){
-               new_avenue.message_id.push(id)
-            }
-         }
-      }
+      // Set message id associated with avenue
+      new_avenue.message_id = message_id
       
       // Set date object
       new_avenue.date.setFullYear(year, month, day);
@@ -152,6 +141,8 @@ class Goal {
       this.type = '';
       this.reminder = {};
       }
+   
+      // possibly implement date object for frequency 
 
       change_frequency(new_frequency){ 
          this.frequency = new_frequency
@@ -169,7 +160,7 @@ class Goal {
          return this.type
          }
       
-      // possibly implement date object for frequency 
+      
 
       // need add reminder
       // need get reminder
@@ -256,7 +247,7 @@ class Avenue {
       this.person = [];
       this.date = new Date(); // only one date 
       this.sent = false;
-      this.message_id = []
+      this.message_id = ''
       }
       
    change_avenue_type(new_type){ 
@@ -280,7 +271,7 @@ class Avenue {
       this.person = new_person
       }
 
-   //keep working on it
+   
    // Adds a person to the person list for that specific avenue
    add_person(new_person){  
       this.person.push(new_person)
@@ -318,9 +309,32 @@ class Avenue {
       return this.sent
       }
 
-   // need get message ids
-   // need change message id
-   // need clear message id
+   // Completely writes over current values in person values
+   change_person(new_person){  
+      this.person = new_person
+      }
+
+   
+   // Adds a person to the person list for that specific avenue
+   add_person(new_person){  
+      this.person.push(new_person)
+      }
+
+   // Completely writes over current value of message id
+   change_message_id(new_id){ 
+      this.message_id = new_id
+      }
+   
+   // Returns the message id associated with this avenue
+   get_message_id(){
+      return this.message_id
+      }
+   
+   // Clears the message id 
+   clear_message_id(){
+      this.message_id = ''
+      }
+   
    };
 
 // Constructor wrapper for exporting 
