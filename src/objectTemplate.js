@@ -25,10 +25,27 @@ class Initiative {
       return this.description
       }
 
-   /* need add groups */
-   /* need get groups */
-   /* need remove groups */ 
-   /* need clear groups */
+   /* need remove groups from array */ 
+
+    // Completely writes over current groups 
+    change_group(new_group){   // TODO: need data validation
+      this.groups = [new_group]
+      }
+
+   // Adds a group to the groups list for that specific avenue
+   add_group(new_group){  // TODO: need data validation
+      this.groups.push(new_group)
+      }
+   
+   // Returns the list of groups as an array
+   get_groups(){  
+      return this.groups   
+      }
+
+   // Clears all groups from this initiative   
+   clear_groups(){
+      this.groups = []
+      }
    
    // Makes sure that the lowest possible id is assigned to a new avenue 
    id_fill(objects){
@@ -297,7 +314,7 @@ class Avenue {
 
    // Completely writes over current values in person values
    change_person(new_person){   // TODO: need data validation
-      this.person = new_person
+      this.person = [new_person]
       }
 
    // Adds a person to the person list for that specific avenue
