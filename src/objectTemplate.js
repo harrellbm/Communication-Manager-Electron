@@ -247,7 +247,7 @@ class Avenue {
       this.person = [];
       this.date = new Date(); // only one date 
       this.sent = false;
-      this.message_id = ''
+      this.message_id = '' // only one message id
       }
       
    change_avenue_type(new_type){ 
@@ -300,6 +300,7 @@ class Avenue {
       return this.date
       }
 
+   // Change the sent status 
    change_sent(new_sent){  // TODO: need data validation
       this.sent = new_sent
       }
@@ -307,17 +308,6 @@ class Avenue {
    // Returns the date for the given avenue as a date object
    get_sent(){
       return this.sent
-      }
-
-   // Completely writes over current values in person values
-   change_person(new_person){  
-      this.person = new_person
-      }
-
-   
-   // Adds a person to the person list for that specific avenue
-   add_person(new_person){  
-      this.person.push(new_person)
       }
 
    // Completely writes over current value of message id
@@ -334,8 +324,7 @@ class Avenue {
    clear_message_id(){
       this.message_id = ''
       }
-   
-   };
+};
 
 // Constructor wrapper for exporting 
 function createAvenue () {
