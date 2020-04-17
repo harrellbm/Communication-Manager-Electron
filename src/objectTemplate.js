@@ -7,7 +7,7 @@ class Initiative {
       // avenue_type holds the basic types of avenues, can add new on the fly with add_type method
       this.description = ''; //used to state the purpose of initiative 
       this.groups = [];
-      this.goals = new Map(); // change to map 
+      this.goals = new Map();  
       this.messages = new Map();
       this.avenues = new Map();
       this.avenue_types = ['Email', 'Text', 'Facebook', 'Instagram', 'Handout', 'Poster','Other']
@@ -149,6 +149,30 @@ class Initiative {
    get_types(){
       return this.avenue_types
       }
+   
+   /* need link avenue and message */
+   /* need unlink avenue and message */
+   
+   // Prepare initiative to be stringified for Json or sent over ipc by converting nonstandard objects
+   pack_for_ipc(){ // Note: dynamic test held in test_main.js, unit test in test_object_templates.js
+      this.messages = Object.fromEntries(this.messages); // convert maps to vanilla objects 
+      this.avenues = Object.fromEntries(this.avenues)
+      this.goals = Object.fromEntries(this.goals)
+   }
+
+   // Unpack values passed in by Json format from saved file or ipc
+   unpack_from_ipc(file){ // Note: dynamic test held in test_main.js, unit test in test_object_templates.js
+      this.description = file.description; // string 
+      this.groups = file.groups; // array 
+      this.goals = new Map(Object.entries(file.goals)); // convert objects back to maps
+      this.messages = new Map(Object.entries(file.messages)); 
+      this.avenues = new Map(Object.entries(file.avenues));
+      this.avenues.forEach(function (value){ // convert all stringified dates back to date objects 
+         let dateObj = new Date(value.date);
+         value.date = dateObj;
+         })
+      this.avenue_types = file.avenue_types; // array
+   }
 };
 
 // Constructor wrapper for exporting 
