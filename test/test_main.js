@@ -26,8 +26,9 @@ describe('Test Communication with Main process', function () {
   // Test ipc messages to main
   it('should send ipc to main', async () => {
     await app.client.waitUntilWindowLoaded();
-    let file = await app.electron.ipcRenderer.send('open-file');
-    console.log('file: ', file);
+    await app.electron.ipcRenderer.send('save', 'save save save')
+    let file = await app.electron.ipcRenderer.sendSync('open-file');
+    console.log('test return file: ', file);
        /* expect(title).to.be.a('string').that.is.equal('This is a test Title');
         expect(greeting).to.be.a('string').that.is.equal('This is a test greeting');
         expect(content).to.be.a('string').that.is.equal('This is test content.  Blah Blah Blah.');
