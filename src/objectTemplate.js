@@ -25,10 +25,8 @@ class Initiative {
       return this.description
       }
 
-   /* need remove groups from array */ 
-
-    // Completely writes over current groups 
-    change_group(new_group){   // TODO: need data validation
+   // Completely writes over current groups 
+   change_group(new_group){   // TODO: need data validation
       this.groups = [new_group]
       }
 
@@ -191,7 +189,7 @@ class Goal {
       this.reminder = {};
       }
    
-   /*possibly implement date object for frequency*/ 
+   /* possibly implement date object for frequency */ 
    
    // Changes the goal's frequency 
    change_frequency(new_frequency){ 
