@@ -40,6 +40,45 @@ describe("Initiative object", function () {
         expect(initiative_description, 'Initiative description was not returned').to.be.an('string').that.includes('This is a new description');
     })
     
+    // test change group
+    it('should change group', () => {
+        test_initiative.change_group('Youth');
+        //console.log('new group', test_initiative);
+        expect(test_initiative.groups, 'Group was not changed').to.be.an('array').that.includes('Youth');
+    })
+    
+    // test add group  
+    it('should add a new group', () => {
+        test_initiative.add_group('Youth');
+        test_initiative.add_group('Parents');
+        test_initiative.add_group('School Families');
+        test_initiative.add_group('Members');
+        //console.log('new groups:', test_initiative);
+        expect(test_initiative.groups, 'New groups were not added').to.be.an('array').that.includes('Youth').and.includes('Parents').and.includes('School Families').and.includes('Members');
+    })
+    
+    // test return groups
+    it('should return groups', () => {
+        test_initiative.add_group('Youth');
+        test_initiative.add_group('Parents');
+        test_initiative.add_group('School Families');
+        test_initiative.add_group('Members');
+        let groups = test_initiative.get_groups();
+        //console.log('returned groups', groups);
+        expect(groups, 'Groups were not returned').to.be.an('array').that.includes('Youth').and.includes('Parents').and.includes('School Families').and.includes('Members');
+    })
+   
+     // test clear groups people  
+     it('should clear groups', () => {
+        test_initiative.add_group('Youth');
+        test_initiative.add_group('Parents');
+        test_initiative.add_group('School Families');
+        test_initiative.add_group('Members');
+        //console.log('new groups:', test_initiative);;
+        test_initiative.clear_groups();
+        //console.log('cleared groups:', test_initiative);;
+        expect(test_initiative.groups, 'Groups were not cleared').to.be.an('array').and.to.have.length(0);
+    })
 
     // test filling lowest id method 
     it('should return lowest available id', () => {
@@ -222,7 +261,7 @@ describe("Initiative object", function () {
     // test adding avenue method 
     it('should add a new avenue', () => {
         // test giving array of people, and message ids, as well as date object values
-        test_initiative.add_avenue('email', 'this is an email', ['Bob', 'Jill'], true, ['message1', 'message2', 'message3'], 2020, 9, 23, 12, 30);
+        test_initiative.add_avenue('email', 'this is an email', ['Bob', 'Jill'], true, 'message2', 2020, 9, 23, 12, 30);
         // test single string values for people, and message ids  
         test_initiative.add_avenue('text', 'this is a text', 'Bill', true, 'message1', 2019, 11, 4, 9, 12);
         //console.log('new avenues', test_initiative.avenues);
@@ -233,7 +272,7 @@ describe("Initiative object", function () {
         expect(avenue0.description, 'Does not have proper description').to.be.an('string').that.includes('this is an email');
         expect(avenue0.person, 'Does not have proper people').to.be.an('array').that.includes('Bob').and.includes('Jill');
         expect(avenue0.sent, 'Does not have proper sent value').to.be.true;
-        expect(avenue0.message_id, 'Does not have proper message ids').to.be.an('array').that.includes('message1').and.includes('message2').and.includes('message3');
+        expect(avenue0.message_id, 'Does not have proper message id').to.be.an('string').that.equals('message2');
         expect(avenue0.date, 'Does not have proper date').to.be.instanceOf(Date).and.equalTime(new Date('October 23 2020 12:30'));
 
         let avenue1 = test_initiative.avenues.get('1')
@@ -242,13 +281,13 @@ describe("Initiative object", function () {
         expect(avenue1.description, 'Does not have proper description').to.be.an('string').that.includes('this is a text');
         expect(avenue1.person, 'Does not have proper people').to.be.an('array').that.includes('Bill');
         expect(avenue1.sent, 'Does not have proper sent value').to.be.true;
-        expect(avenue1.message_id, 'Does not have proper message ids').to.be.an('array').that.includes('message1');
+        expect(avenue1.message_id, 'Does not have proper message id').to.be.an('string').that.equals('message1');
         expect(avenue1.date, 'Does not have proper date').to.be.instanceOf(Date).and.equalTime(new Date('December 4 2019 9:12'));
     })
 
     // test the return of the add avenue method 
     it('should return the id of the avenue from add avenue method return', () => {
-        let id = test_initiative.add_avenue('email', 'this is an email', ['Bob', 'Jill'], true, ['message1', 'message2', 'message3'], 2020, 9, 23, 12, 30);
+        let id = test_initiative.add_avenue('email', 'this is an email', ['Bob', 'Jill'], true, 'message2', 2020, 9, 23, 12, 30);
         let id1 = test_initiative.add_avenue('text', 'this is a text', 'Bill', true, 'message4', 2019, 11, 4, 9, 12);
         //console.log('new avenues', test_initiative.avenues);
         //console.log('avenue 1 id: ', id, '\navenue 2 id: ', id1);
@@ -258,7 +297,7 @@ describe("Initiative object", function () {
 
     // test dynamic preformace of avenues map  
     it('should remove an avenue then re-add', () => {
-        test_initiative.add_avenue('email', 'this is an email', ['Bob', 'Jill'], true, ['message1', 'message2', 'message3'], 2020, 9, 23, 12, 30);
+        test_initiative.add_avenue('email', 'this is an email', ['Bob', 'Jill'], true, 'message1', 2020, 9, 23, 12, 30);
         test_initiative.add_avenue('text', 'this is a text', 'Bill', true, 'message4', 2019, 11, 4, 9, 12);
         //console.log('new avenues', test_initiative.avenues);
         // remove avenue and test
@@ -272,11 +311,11 @@ describe("Initiative object", function () {
         expect(avenue1.description, 'Does not have proper description').to.be.an('string').that.includes('this is a text');
         expect(avenue1.person, 'Does not have proper people').to.be.an('array').that.includes('Bill');
         expect(avenue1.sent, 'Does not have proper sent value').to.be.true;
-        expect(avenue1.message_id, 'Does not have proper message ids').to.be.an('array').that.includes('message4');
+        expect(avenue1.message_id, 'Does not have proper message id').to.be.an('string').that.equals('message4');
         expect(avenue1.date, 'Does not have proper date').to.be.instanceOf(Date).and.equalTime(new Date('December 4 2019 9:12'));
 
         // Test re-add avenue
-        test_initiative.add_avenue('email', 'this is an email', ['Bob', 'Jill'], true, ['message1', 'message2', 'message3'], 2020, 9, 23, 12, 30);
+        test_initiative.add_avenue('email', 'this is an email', ['Bob', 'Jill'], true, 'message3', 2020, 9, 23, 12, 30);
         avenue0 = test_initiative.avenues.get('0')
         //console.log('re-added avenue:', test_initiative.avenues)
         expect(avenue0).to.exist
@@ -284,7 +323,7 @@ describe("Initiative object", function () {
         expect(avenue0.description, 'Does not have proper description').to.be.an('string').that.includes('this is an email');
         expect(avenue0.person, 'Does not have proper people').to.be.an('array').that.includes('Bob').and.includes('Jill');
         expect(avenue0.sent, 'Does not have proper sent value').to.be.true;
-        expect(avenue0.message_id, 'Does not have proper message ids').to.be.an('array').that.includes('message1').and.includes('message2').and.includes('message3');
+        expect(avenue0.message_id, 'Does not have proper message id').to.be.an('string').that.equals('message3');
         expect(avenue0.date, 'Does not have proper date').to.be.instanceOf(Date).and.equalTime(new Date('October 23 2020 12:30'));
 
         // Test adding additional avenue after that
@@ -297,16 +336,25 @@ describe("Initiative object", function () {
         expect(avenue2.description, 'Does not have proper description').to.be.an('string').that.includes('this is a facebook post');
         expect(avenue2.person, 'Does not have proper people').to.be.an('array').that.includes('Tim').and.includes('Bently');
         expect(avenue2.sent, 'Does not have proper sent value').to.be.true;
-        expect(avenue2.message_id, 'Does not have proper message ids').to.be.an('array').that.includes('message1');
+        expect(avenue2.message_id, 'Does not have proper message ids').to.be.an('string').that.equals('message1');
         expect(avenue2.date, 'Does not have proper date').to.be.instanceOf(Date).and.equalTime(new Date('February 5 2000 23:00'));
     })
 
-   // test adding avenue_type method 
-   it('should add new avenue_type', () => {
+    // test adding add_type method 
+    it('should add new a avenue type to the initiative', () => {
     let new_avenue_type = 'Facebook'
-    test_initiative.add_type(new_avenue_type)
-    //console.log('avenue types', test_initiative.avenue_types)
+    test_initiative.add_type(new_avenue_type);
+    //console.log('avenue types', test_initiative.avenue_types);
     expect(test_initiative.avenue_types, 'Does not have proper avenue type').to.be.an('array').that.includes('Facebook')
+    })
+
+    // test return from get_types method
+    it('should return the avenue types held in initiative', () => {
+        let new_avenue_type = 'Alien Harmonica'
+        test_initiative.add_type(new_avenue_type)
+        let avenue_types = test_initiative.get_types();
+        //console.log('returned avenue types:', avenue_types);
+        expect(avenue_types, 'Avenue types were not returned').to.be.an('array').that.includes('Alien Harmonica');
     })
 });
 
@@ -445,6 +493,46 @@ describe("Message object", function() {
         //console.log('returned signature:', message_signature);
         expect(message_signature, 'Message signature was not returned').to.be.an('string').that.equals('This is a new Signature');
     })
+
+     // test change avenue ids
+     it('should change avenue ids', () => {
+        test_message.change_avenue_id('avenue1');
+        //console.log('new avenue id', test_message);
+        expect(test_message.avenue_ids, 'Avenue id was not changed').to.be.an('array').that.includes('avenue1');
+    })
+    
+    // test add avenue id 
+    it('should add an avenue id', () => {
+        test_message.add_avenue_id('avenue0');
+        test_message.add_avenue_id('avenue1');
+        test_message.add_avenue_id('avenue2');
+        test_message.add_avenue_id('avenue3');
+        //console.log('new avenue ids:', test_message);
+        expect(test_message.avenue_ids, 'New avenue ids were not added').to.be.an('array').that.includes('avenue0').and.includes('avenue1').and.includes('avenue2').and.includes('avenue3');
+    })
+    
+    // test return avenue ids 
+    it('should return avenue ids', () => {
+        test_message.add_avenue_id('avenue0');
+        test_message.add_avenue_id('avenue1');
+        test_message.add_avenue_id('avenue2');
+        test_message.add_avenue_id('avenue3');
+        let avenue_ids = test_message.get_avenue_ids();
+        //console.log('new avenue ids:', test_message);;
+        expect(avenue_ids, 'Avenue ids were not returned').to.be.an('array').that.includes('avenue0').and.includes('avenue1').and.includes('avenue2').and.includes('avenue3');
+    })
+
+    // test clear avenue ids 
+    it('should clear avenue ids', () => {
+        test_message.add_avenue_id('avenue0');
+        test_message.add_avenue_id('avenue1');
+        test_message.add_avenue_id('avenue2');
+        test_message.add_avenue_id('avenue3');
+        //console.log('new avenue ids:', test_message);;
+        test_message.clear_avenue_ids();
+        //console.log('cleared avenue ids:', test_message);;
+        expect(test_message.avenue_ids, 'Avenue ids were not cleared').to.be.an('array').and.to.have.length(0);
+    })
 });
 
 describe("Avenue object", function () {
@@ -465,7 +553,7 @@ describe("Avenue object", function () {
        expect(test_avenue.person, 'person is not an array').is.an('array');
        expect(test_avenue.date, 'date is not a date').is.instanceOf(Date);
        expect(test_avenue.sent, 'sent is not a boolean').is.an('boolean');
-       expect(test_avenue.message_id, 'message_id are not an array').is.an('array');
+       expect(test_avenue.message_id, 'message_id is not a string').is.an('string');
 
     })
 
@@ -504,7 +592,7 @@ describe("Avenue object", function () {
     it('should change person responsible', () => {
         test_avenue.change_person('Jill');
         //console.log('new person', test_avenue);
-        expect(test_avenue.person, 'Person was not changed').to.be.an('string').that.includes('Jill');
+        expect(test_avenue.person, 'Person was not changed').to.be.an('array').that.includes('Jill');
     })
     
     // test add person - keep working on 
@@ -528,6 +616,18 @@ describe("Avenue object", function () {
         expect(avenue_people, 'People were not returned').to.be.a('string').that.includes('Joe').and.includes('Phil').and.includes('Jill').and.includes('John');
     })
    
+     // test clear people  
+     it('should clear people', () => {
+        test_avenue.add_person('Joe');
+        test_avenue.add_person('Phil');
+        test_avenue.add_person('Jill');
+        test_avenue.add_person('John');
+        //console.log('new people:', test_avenue);;
+        test_avenue.clear_people();
+        //console.log('cleared people:', test_avenue);;
+        expect(test_avenue.person, 'People were not cleared').to.be.an('array').and.to.have.length(0);
+    })
+
     // test change date
     it('should change date', () => {
         //console.log('base date:', test_avenue.date);
@@ -559,4 +659,30 @@ describe("Avenue object", function () {
         //console.log('returned sent value:', avenue_sent);
         expect(avenue_sent, 'Avenue sent value was not returned').to.be.an('boolean').that.equals(true);
     })
-})
+
+    // test change message id
+    it('should change message id', () => {
+        test_avenue.change_message_id('message1');
+       //console.log('new message id', test_avenue);
+        expect(test_avenue.message_id, 'Message_id was not changed').to.be.an('string').that.equals('message1');
+    })
+  
+    // test return message id 
+    it('should return message id', () => {
+        test_avenue.change_message_id('message1');
+        // get the new type
+        let message_id = test_avenue.get_message_id();
+        //console.log('returned message id:', message_id);
+        expect(message_id, 'Message_id was not returned').to.be.an('string').that.equals('message1');
+    })
+
+    // test clear message id 
+    it('should clear message id', () => {
+        test_avenue.change_message_id('message1');
+        //console.log('message id added:', test_avenue);
+        // get the new type
+        test_avenue.clear_message_id();
+        //console.log('cleared message id:', test_avenue);
+        expect(test_avenue.message_id, 'Message ids were not cleared').to.be.an('string').that.equals('');
+    })
+});
