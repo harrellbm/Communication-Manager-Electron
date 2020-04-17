@@ -158,6 +158,7 @@ class Initiative {
       this.messages = Object.fromEntries(this.messages); // convert maps to vanilla objects 
       this.avenues = Object.fromEntries(this.avenues)
       this.goals = Object.fromEntries(this.goals)
+         // Note: date objects are not converted here because Json stringify will convert them to strings without lost of data
    }
 
    // Unpack values passed in by Json format from saved file or ipc

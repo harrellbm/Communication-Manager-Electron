@@ -38,7 +38,7 @@ describe('Test Communication with Main process', function () {
     await app.client.waitUntilWindowLoaded();
     // Create initiative 
     let test_initiative;
-    test_initiative = template.createInitiative(),
+    test_initiative = template.createInitiative();
     test_initiative.change_description('This is an initiavtive to communicate with people');
     test_initiative.change_group('my peeps')
     test_initiative.add_goal(5, 'text', 'tomorrow');
