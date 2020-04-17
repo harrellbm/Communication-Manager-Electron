@@ -451,7 +451,7 @@ describe("Initiative object", function () {
         expect(avenue1.avenue_type, 'Avenue_type is not correct').to.be.a('string').that.equals('email');
         expect(avenue1.description, 'Description is not correct').to.be.a('string').that.equals('for all my peeps');
         expect(avenue1.person, 'Person is not correct').to.be.an('array').that.includes('Bob');
-        expect(avenue1.date, 'Date is not correct').to.be.instanceOf(Date).and.equalTime(new Date('May 23 2033 13:00'));
+        expect(avenue1.date, 'Date is not correct').to.be.instanceOf(Date).and.equalTime(new Date('2033-05-23T19:00:00.000Z'));
         expect(avenue1.sent, 'Sent is not correct').to.be.true; 
         expect(avenue1.message_id, 'Message_id is not correct').to.be.a('string').that.includes('message23'); 
     
