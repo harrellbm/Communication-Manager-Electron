@@ -10,17 +10,15 @@ var app = new Application({
   })
 
 describe('Test Message Editor Functionality', function () {
-  this.slow(10000);
-  this.timeout(20000);
+  this.slow(5000);
+  this.timeout(10000);
 
   beforeEach(function () {
     return app.start()
     });
 
   afterEach(function () {
-    if (app && app.isRunning()) {
       return app.stop()
-    }
     });
   
   // Test full input, save to open loop

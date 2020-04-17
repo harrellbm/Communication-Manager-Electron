@@ -7,7 +7,7 @@ class Initiative {
       // avenue_type holds the basic types of avenues, can add new on the fly with add_type method
       this.description = ''; //used to state the purpose of initiative 
       this.groups = [];
-      this.goals = new Map(); // change to map 
+      this.goals = new Map();  
       this.messages = new Map();
       this.avenues = new Map();
       this.avenue_types = ['Email', 'Text', 'Facebook', 'Instagram', 'Handout', 'Poster','Other']
@@ -25,10 +25,27 @@ class Initiative {
       return this.description
       }
 
-   /* need add groups */
-   /* need get groups */
-   /* need remove groups */ 
-   /* need clear groups */
+   /* need remove groups from array */ 
+
+    // Completely writes over current groups 
+    change_group(new_group){   // TODO: need data validation
+      this.groups = [new_group]
+      }
+
+   // Adds a group to the groups list for that specific avenue
+   add_group(new_group){  // TODO: need data validation
+      this.groups.push(new_group)
+      }
+   
+   // Returns the list of groups as an array
+   get_groups(){  
+      return this.groups   
+      }
+
+   // Clears all groups from this initiative   
+   clear_groups(){
+      this.groups = []
+      }
    
    // Makes sure that the lowest possible id is assigned to a new avenue 
    id_fill(objects){
@@ -132,6 +149,31 @@ class Initiative {
    get_types(){
       return this.avenue_types
       }
+   
+   /* need link avenue and message */
+   /* need unlink avenue and message */
+   
+   // Prepare initiative to be stringified for Json or sent over ipc by converting nonstandard objects
+   pack_for_ipc(){ // Note: dynamic test held in test_main.js, unit test in test_object_templates.js
+      this.messages = Object.fromEntries(this.messages); // convert maps to vanilla objects 
+      this.avenues = Object.fromEntries(this.avenues)
+      this.goals = Object.fromEntries(this.goals)
+         // Note: date objects are not converted here because Json stringify will convert them to strings without lost of data
+   }
+
+   // Unpack values passed in by Json format from saved file or ipc
+   unpack_from_ipc(file){ // Note: dynamic test held in test_main.js, unit test in test_object_templates.js
+      this.description = file.description; // string 
+      this.groups = file.groups; // array 
+      this.goals = new Map(Object.entries(file.goals)); // convert objects back to maps
+      this.messages = new Map(Object.entries(file.messages)); 
+      this.avenues = new Map(Object.entries(file.avenues));
+      this.avenues.forEach(function (value){ // convert all stringified dates back to date objects 
+         let dateObj = new Date(value.date);
+         value.date = dateObj;
+         })
+      this.avenue_types = file.avenue_types; // array
+   }
 };
 
 // Constructor wrapper for exporting 
@@ -297,7 +339,7 @@ class Avenue {
 
    // Completely writes over current values in person values
    change_person(new_person){   // TODO: need data validation
-      this.person = new_person
+      this.person = [new_person]
       }
 
    // Adds a person to the person list for that specific avenue

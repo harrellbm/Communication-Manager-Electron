@@ -10,20 +10,17 @@ var app = new Application({
   })
 
 describe('Test Message Manager Functionality', function () {
-  this.slow(10000);
-  this.timeout(20000);
+  this.slow(5000);
+  this.timeout(10000);
 
   beforeEach(function () {
     
-    return app.start()
-    
-  })
+    return app.start() 
+    })
 
   afterEach(function () {
-    if (app && app.isRunning()) {
-      return app.stop()
-    }
-  })
+    return app.stop()
+    })
 
   // Make sure add and delete buttons working 
   it('should add and delete an avenue', async () => {
