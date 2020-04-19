@@ -377,6 +377,30 @@ describe("Initiative object", function () {
         //console.log('Linked avenues: ', test_initiative.avenues, '\nLinked messages: ', test_initiative.messages);
     })
 
+    // test unlinking messages and avenues 
+    it('should unlink message and avenue', () => {
+        test_initiative.add_message('This is my title', 'Hi Hello,', 'This is my content. Blah blah blah.', 'Signed Me');
+        test_initiative.add_avenue('email', 'this is an email', ['Bob', 'Jill'], true, '', 2020, 9, 23, 12, 30); 
+        test_initiative.add_avenue('text', 'this is a text', 'Bill', true, 'message1', 2019, 11, 4, 9, 12);
+        test_initiative.link_ids('0', '0');
+        test_initiative.link_ids('1', '0');
+        // console.log('Linked avenues: ', test_initiative.avenues, '\nLinked messages: ', test_initiative.messages);
+        
+        // Unlink one avenue and message
+        test_initiative.unlink_ids('0', '0');
+        let message = test_initiative.messages.get('0');
+        let avenue0 = test_initiative.avenues.get('0');
+        expect(avenue0.message_id, 'Unlinked message id incorrect').to.be.an('string').that.does.not.equals('0');
+        expect(message.avenue_ids, 'Unlinked avenue id incorrect').to.be.an('array').that.does.not.includes('0');
+        test_initiative.unlink_ids('0', '0');
+        // Unlink additional avenue
+        test_initiative.unlink_ids('1','0');
+        let avenue1 = test_initiative.avenues.get('1');
+        expect(avenue1.message_id, 'Unlinked message id incorrect').to.be.an('string').that.does.not.equals('0');
+        expect(message.avenue_ids, 'Unlinked avenue id incorrect').to.be.an('array').that.does.not.includes('0');
+        // console.log('Unlinked avenues: ', test_initiative.avenues, '\nUnlinked messages: ', test_initiative.messages);
+    })
+
     // test pack for Json or ipc 
     it('should convert and pack all objects to vanilla', () => {
         test_initiative.change_description('This is an initiavtive to communicate with people');
