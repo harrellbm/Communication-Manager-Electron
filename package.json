@@ -21,7 +21,7 @@
     "debug-test-messEditor": "mocha --inspect-brk test/test_message_manager.js"
   },
   "dependencies": {
-    "electron": "^8.2.0",
+    "electron": "^8.2.3",
     "electron-tabs": "^0.15.0"
   },
   "devDependencies": {
