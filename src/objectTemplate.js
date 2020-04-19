@@ -151,19 +151,40 @@ class Initiative {
    // Link an avenue and message 
       // Note: avenues can only have one linked message assigning a new message will override any old ones 
    link_ids(aveId, mesId){
-      let avenue = this.avenues.get(aveId);
-      console.log(avenue)
-      avenue.change_message_id(mesId);
+      try{ 
+         let avenue = this.avenues.get(aveId);
+         avenue.change_message_id(mesId);
 
-      let message = this.messages.get(mesId);
-      if (message.avenue_ids[0] == ''){ // If avenue ids has empty string get rid of it, otherwise add new avenue id
-         message.change_avenue_id(aveId);
-      } else { message.add_avenue_id(aveId); 
+         let message = this.messages.get(mesId);
+         if (message.avenue_ids[0] == ''){ // If avenue ids has empty string get rid of it, otherwise add new avenue id
+            message.change_avenue_id(aveId);
+         } else { 
+            message.add_avenue_id(aveId); 
+            }
+         } catch(err){
+            console.log('Invalid Id: ' + err);
+            }
+      }
+
+   // Unlink an avenue and message 
+      // Note: method will return true if unlinking is successful, otherwise false in order to avoid accidentally deleting one id
+   unlink_ids(aveId, mesId){
+      try{
+         var avenue = this.avenues.get(aveId);
+         var message = this.messages.get(mesId);
+         } catch(err){
+            console.log('Invalid Id: ' + err);
+            }
+      avenue.change_message_id('');
+      let id;
+      for (id in message.avenue_ids){
+         if (aveId == id){
+            message.avenue_ids.splice(aveId, 1);
+            return true;
+            }
          }
+      }
 
-      
-   }
-   /* need unlink avenue and message */
    
    // Prepare initiative to be stringified for Json or sent over ipc by converting nonstandard objects
    pack_for_ipc(){ // Note: dynamic test held in test_main.js, unit test in test_object_templates.js
