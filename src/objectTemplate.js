@@ -148,7 +148,21 @@ class Initiative {
       return this.avenue_types
       }
    
-   /* need link avenue and message */
+   // Link an avenue and message 
+      // Note: avenues can only have one linked message assigning a new message will override any old ones 
+   link_ids(aveId, mesId){
+      let avenue = this.avenues.get(aveId);
+      console.log(avenue)
+      avenue.change_message_id(mesId);
+
+      let message = this.messages.get(mesId);
+      if (message.avenue_ids[0] == ''){ // If avenue ids has empty string get rid of it, otherwise add new avenue id
+         message.change_avenue_id(aveId);
+      } else { message.add_avenue_id(aveId); 
+         }
+
+      
+   }
    /* need unlink avenue and message */
    
    // Prepare initiative to be stringified for Json or sent over ipc by converting nonstandard objects
