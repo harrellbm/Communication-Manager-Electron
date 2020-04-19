@@ -10,7 +10,7 @@ var app = new Application({
   })
 
 describe('Test Message Editor Functionality', function () {
-  this.slow(5000);
+  this.slow(6000);
   this.timeout(10000);
 
   beforeEach(function () {

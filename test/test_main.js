@@ -13,7 +13,7 @@ var app = new Application({
   });
 
 describe('Test Communication with Main process', function () {
-  this.slow(5000);
+  this.slow(6000);
   this.timeout(10000);
 
   beforeEach(function () {
