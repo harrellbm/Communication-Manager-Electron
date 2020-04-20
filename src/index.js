@@ -43,13 +43,28 @@ document.getElementById('messSave').addEventListener("click", saveFile);
 function saveFile () {
   // Unpack values from each message that has been added
   let messageValue = document.getElementById('messageIn').getElementsByClassName('message');
-  for (mes of messageValue) {//each iteration goes through one message
-    console.log(mes)
-    let title = mes.children[1].value;
-    let aves = mes.children[2].value;
-    console.log('specific elements',title, aves)
+  for (mess of messageValue) {// Each iteration goes through one message
+    let id = mess.id[7];
+    let messInit = currentInitiative.messages.get(id);
+    messInit.title = mess.children[1].value; // Update title in initiative object 
+    messInit.avenue_ids = mess.children[2].value; // Update linked avenues in initiative object 
+    //console.log('updated initiative: ', currentInitiative.messages);
     }
-  console.log('initiative to be saved: ', currentInitiative)
+
+  let avenueValue = document.getElementById('avenueIn').getElementsByClassName('avenue');
+  for (ave of avenueValue) {// Each iteration goes through one avenue
+    console.log(ave)
+    let id = ave.id[6];
+    let aveInit = currentInitiative.avenues.get(id);
+    aveInit.avenue_type = ave.children[0].value;
+    aveInit.sent = ave.children[4].children[0].checked;
+    aveInit.description = ave.children[5].value;
+    aveInit.person = ave.children[6].value;
+    aveInit.date = ave.children[7].value;
+    //console.log('updated initiative: ', currentInitiative.avenues);
+    }
+
+  //console.log('initiative to be saved: ', currentInitiative)
   let data = currentInitiative.pack_for_ipc();
   ipc.send('save', data);
 };
@@ -127,7 +142,7 @@ function addMessage (event, titleValue='', greetingValue='', contentValue='', si
   mess.appendChild(deleteBtn);
 
   // Get the main div that holds all the avenues and append the new one
-  console.log("message", mess);
+  //console.log("message", mess);
   document.getElementById("messageIn").appendChild(mess);
 };
 
@@ -136,8 +151,8 @@ function deleteMess (mess) {
   // Remove message from UI
   mess.parentElement.removeChild(mess);
   // Remove message from Initiative object 
-  let id = mess.id;
-  currentInitiative.messages.delete(id[7]); // Take only the number off of the end of the ui id 
+  let id = mess.id[7];
+  currentInitiative.messages.delete(id); // Take only the number off of the end of the ui id 
 };
 
 // Adds an Avenue to do the DOM
@@ -257,6 +272,6 @@ function deleteAve (ave) {
   // Remove message from UI
   ave.parentElement.removeChild(ave);
   // Remove message from Initiative object 
-  let id = ave.id;
-  currentInitiative.avenues.delete(id[6]); // Take only the number off of the end of the ui id 
+  let id = ave.id[6];
+  currentInitiative.avenues.delete(id); // Take only the number off of the end of the ui id 
 };
