@@ -201,16 +201,33 @@ class Initiative {
    }
 
    // Unpack values passed in by Json format from saved file or ipc
-   unpack_from_ipc(file){ // Note: dynamic test held in test_main.js, unit test in test_object_templates.js
+   unpack_from_ipc( file ){ // Note: dynamic test held in test_main.js, unit test in test_object_templates.js
       this.description = file.description; // string 
       this.groups = file.groups; // array 
-      this.goals = new Map(Object.entries(file.goals)); // convert objects back to maps
+
+      // Convert objects back to maps
+      this.goals = new Map(Object.entries(file.goals));
       this.messages = new Map(Object.entries(file.messages)); 
       this.avenues = new Map(Object.entries(file.avenues));
-      this.avenues.forEach(function (value){ // convert all stringified dates back to date objects 
-         let dateObj = new Date(value.date);
-         value.date = dateObj;
-         })
+      // Alternate solution to converting
+      /*this.goals = new Map();
+      Object.keys( file.goals ).forEach( key => { 
+         this.goals.set( key, file.goals[key]) 
+         });
+      this.messages = new Map();
+      Object.keys( file.messages ).forEach( key => { 
+         this.messages.set( key, file.messages[key]) 
+         });
+      this.avenues = new Map();
+      Object.keys( file.avenues ).forEach( key => {
+         this.avenues.set( key, file.avenues[key] ) 
+         }); */
+
+      // Convert all stringified dates back to date objects 
+      this.avenues.forEach( ave => { 
+         ave.date = new Date(ave.date);
+         });
+
       this.avenue_types = file.avenue_types; // array
    }
 };
