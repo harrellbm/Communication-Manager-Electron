@@ -188,10 +188,16 @@ class Initiative {
    
    // Prepare initiative to be stringified for Json or sent over ipc by converting nonstandard objects
    pack_for_ipc(){ // Note: dynamic test held in test_main.js, unit test in test_object_templates.js
-      this.messages = Object.fromEntries(this.messages); // convert maps to vanilla objects 
-      this.avenues = Object.fromEntries(this.avenues)
-      this.goals = Object.fromEntries(this.goals)
-         // Note: date objects are not converted here because Json stringify will convert them to strings without lost of data
+      let initiative_for_ipc = new Initiative(); 
+      initiative_for_ipc.description = this.description;
+      initiative_for_ipc.groups = this.groups;
+      initiative_for_ipc.goals = Object.fromEntries(this.goals);// Convert maps to vanilla objects
+      initiative_for_ipc.messages = Object.fromEntries(this.messages);  
+      initiative_for_ipc.avenues = Object.fromEntries(this.avenues);
+      initiative_for_ipc.avenue_types = this.avenue_types
+
+      return initiative_for_ipc // returns the packaged initiative 
+      // Note: date objects are not converted here because Json stringify will convert them to strings without lost of data
    }
 
    // Unpack values passed in by Json format from saved file or ipc
