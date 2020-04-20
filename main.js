@@ -50,7 +50,7 @@ function createWindow (name, tag, html) {
 function setUpWindows() {
   createWindow('message_manager','manager', './src/index.html');
   createWindow('message_editor','editor','./src/message_editor.html');
-  console.log(windows)
+  //console.log(windows)
 }
 
 // This method will be called when Electron has finished
