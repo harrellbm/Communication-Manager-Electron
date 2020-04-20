@@ -37,8 +37,7 @@ document.getElementById("defaultOpen").click();
 
 /* ---- Message Manager related functions ---- */
 
-// Save does not function quite right yet. Need to update message object so that double saves do not happen
-//handles event from the save button // Needs transitioned 
+// Handles event from the save button
 document.getElementById('messSave').addEventListener("click", saveFile);
 function saveFile () {
   // Unpack values from each message that has been added
@@ -53,7 +52,6 @@ function saveFile () {
 
   let avenueValue = document.getElementById('avenueIn').getElementsByClassName('avenue');
   for (ave of avenueValue) {// Each iteration goes through one avenue
-    console.log(ave)
     let id = ave.id[6];
     let aveInit = currentInitiative.avenues.get(id);
     aveInit.avenue_type = ave.children[0].value;
@@ -64,41 +62,55 @@ function saveFile () {
     //console.log('updated initiative: ', currentInitiative.avenues);
     }
 
-  //console.log('initiative to be saved: ', currentInitiative)
+  console.log('initiative to be saved: ', currentInitiative)
   let data = currentInitiative.pack_for_ipc();
   ipc.send('save', data);
 };
 
 // Handles the event from the open button // Needs transitioned 
-// Uses synchronous call for now 
 document.getElementById('messOpen').addEventListener("click", openFile);
 function openFile () {
-  let file = ipc.sendSync('open-file')// Sents for file 
-  console.log('on renderer side' , file)
-  // Loads file values to static elements
-  document.getElementById('title').value = file.title
-  document.getElementById('greeting').value = file.greeting
-  document.getElementById('content').value = file.content
-  document.getElementById('signature').value = file.signature
-  oldAvenues = document.getElementById('avenueIn')
-  oldAvenues.innerHTML = '' //clear all existing avenues from ui
-  currentInitiative.remove_all_avenues() //clear all existing avenues from message object
-  // Loads each avenue from the file 
-  for (ave in file.avenues) {//each iteration goes through one avenue
-    let dropdown = file.avenues[ave].avenue_type;
-    let sent = file.avenues[ave].sent;
-    let description = file.avenues[ave].description;
-    let persons = file.avenues[ave].person;
-    let dates = file.avenues[ave].date;
-    
-    addAvenue(dropdown, sent, description, persons, dates)
-    }
+  let file = ipc.sendSync('open-file'); // Uses synchronous call to avoid user actions before data is loaded 
+  currentInitiative.unpack_from_ipc(file);
+  console.log('Unpacked initiative', currentInitiative);
+
+  // Clear old message and avenue Ui elements 
+  oldMessages = document.getElementById('messageIn');
+  oldMessages.innerHTML = ''; 
+  oldAvenues = document.getElementById('avenueIn');
+  oldAvenues.innerHTML = '';
+
+  // Send new initiative messages and avenues to ui
+
+  /* need to handle linked avenues to pop up in their linked message dropbox */
+  
+  let aveKeys = currentInitiative.avenues.keys();
+  for ( key of aveKeys ){
+    addAve('load', key ); // Event is not used programatically but helps with debugging
+    //console.log('message to ui: ', key)
+  };
+
+  let messKeys = currentInitiative.messages.keys();
+  for ( key of messKeys ){
+    addMess('load', key ); // Event is not used programatically but helps with debugging
+    //console.log('message to ui: ', key)
+  };
+  
 };
 
-// Adds a message to do the DOM // Needs ui out put updating 
-document.getElementById('addMess').addEventListener("click", addMessage);
-function addMessage (event, titleValue='', greetingValue='', contentValue='', signatureValue='', avenue_idsValue=[]) {
-  let id = currentInitiative.add_message();
+// Adds a message to do the DOM
+document.getElementById('addMess').addEventListener("click", addMess);
+function addMess (event='', messId='') {// If message id is passed in it will load it from the initative object. Otherwise it is treated as a new message
+  // Update the current initiative object if this is a new message 
+  var id; 
+  var messLoad = '';
+  if ( messId == '') { // If message is being added for the first time 
+    id = currentInitiative.add_message();
+    } else { // Else load existing message from initiative object 
+      id = messId
+      messLoad = currentInitiative.messages.get(id);
+      //console.log(messLoad);
+      }
 
   //creates main div to hold an individual Message
   let mess = document.createElement("div");
@@ -116,8 +128,8 @@ function addMessage (event, titleValue='', greetingValue='', contentValue='', si
   let title = document.createElement("textarea");
   title.setAttribute("class", "messTitle");
   title.setAttribute("id", `messTitle${id}`);
-  if(titleValue != ''){// if creating an avenue that is being pulled from a file set it's value
-    title.value = titleValue;
+  if(messLoad != ''){// if creating an avenue that is being pulled from a file set it's value
+    title.value = messLoad.title;
     }
   mess.appendChild(title);//add check box to the smaller area
 
@@ -125,8 +137,8 @@ function addMessage (event, titleValue='', greetingValue='', contentValue='', si
   let aveDrop = document.createElement("textarea");
   aveDrop.setAttribute("class", "aveDrop");
   aveDrop.setAttribute("id", `aveDrop${id}`);
-  if(aveDrop != ''){// if creating an avenue that is being pulled from a file set it's value 
-    aveDrop.value = avenue_idsValue;
+  if(messLoad != ''){// if creating an avenue that is being pulled from a file set it's value 
+    aveDrop.value = messLoad.avenue_ids;
     }
   mess.appendChild(aveDrop);
 
@@ -157,10 +169,18 @@ function deleteMess (mess) {
 
 // Adds an Avenue to do the DOM
 document.getElementById('addAve').addEventListener("click", addAve);
-function addAve (avenue_typeValue='', sentValue='', descriptionValue='', personsValue='', datesValue='') {
-
-  let id = currentInitiative.add_avenue();
-
+function addAve (event='', aveId='') { // If avenue id is passed in it will load it from the initative object. Otherwise it is treated as a new avenue
+  // Update current initiative object if this is a new avenue 
+  var id; 
+  var aveLoad = '';
+  if ( aveId == '') {// If message is being added for the first time 
+    id = currentInitiative.add_avenue();
+    } else { // Else load existing message from initiative object
+      id = aveId
+      aveLoad = currentInitiative.avenues.get(id);
+      //console.log(aveLoad);
+      }
+    
   //creates main div to hold an individual avenue
   let ave = document.createElement("div");
   ave.setAttribute("class", "avenue");
@@ -180,11 +200,10 @@ function addAve (avenue_typeValue='', sentValue='', descriptionValue='', persons
     opElem.innerHTML = `${opText}`;
     dropdown.appendChild(opElem);
     }
-
-  if(avenue_typeValue != ''){// if creating an avenue that is being pulled from a file set it's value 
-    dropdown.value = avenue_typeValue;
+  if(aveLoad != ''){// if creating an avenue that is being pulled from a file set it's value 
+    dropdown.value = aveLoad.avenue_type;
     }
-  ave.appendChild(dropdown);//add the dropdown menu to the avenue
+  ave.appendChild(dropdown); //add the dropdown menu to the avenue
   
   // Creates title paragraphs 
   let description_title = document.createElement("p");// Title for Description 
@@ -214,8 +233,8 @@ function addAve (avenue_typeValue='', sentValue='', descriptionValue='', persons
   sent_checkbox.setAttribute("class", "aveSent_checkbox");
   sent_checkbox.setAttribute("id", `avaeSent_checkbox${id}`);
   sent_checkbox.setAttribute("type", "checkbox");
-  if(sentValue != ''){// if creating an avenue that is being pulled from a file set it's value
-    sent_checkbox.checked = sentValue;
+  if(aveLoad != ''){// if creating an avenue that is being pulled from a file set it's value
+    sent_checkbox.checked = aveLoad.sent;
     }
   sent_box.appendChild(sent_checkbox);//add check box to the smaller area
 
@@ -232,24 +251,25 @@ function addAve (avenue_typeValue='', sentValue='', descriptionValue='', persons
   let description = document.createElement("textarea");
   description.setAttribute("class", "aveDescription");
   description.setAttribute("id", `aveDescription${id}`);
-  if(descriptionValue != ''){// if creating an avenue that is being pulled from a file set it's value 
-    description.value = descriptionValue;
+  if(aveLoad != '') {// if creating an avenue that is being pulled from a file set it's value 
+    description.value = aveLoad.description;
     }
   ave.appendChild(description);
 
   let persons = document.createElement("textarea");
   persons.setAttribute("class", "avePersons");
   persons.setAttribute("id", `avePersons${id}`);
-  if(personsValue != ''){// if creating an avenue that is being pulled from a file set it's value 
-    persons.value = personsValue;
+  if(aveLoad != ''){// if creating an avenue that is being pulled from a file set it's value 
+    persons.value = aveLoad.person;
     }
   ave.appendChild(persons);
 
-  let dates = document.createElement("textarea");
+  /* need to make a date chooser for now */
+  let dates = document.createElement("textarea"); 
   dates.setAttribute("class", "aveDates");
   dates.setAttribute("id", `aveDates${id}`);
-  if(datesValue != ''){// if creating an avenue that is being pulled from a file set it's value 
-    dates.value = datesValue;
+  if(aveLoad != ''){// if creating an avenue that is being pulled from a file set it's value 
+    dates.value = aveLoad.date;
     }
   ave.appendChild(dates);
 
