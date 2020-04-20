@@ -409,15 +409,15 @@ describe("Initiative object", function () {
         test_initiative.add_message('This is the title of the first message', 'this is its greeting', 'this is the content.', 'this is the signature', ['avenue1', 'avenue2']);
         test_initiative.add_avenue('email', 'for all my peeps', 'Bob', true, 'message23', 2033, 4, 23, 13, 0);
         //console.log('Initiative before packing:', test_initiative);
-        test_initiative.pack_for_ipc();
-        //console.log('Initiative after packing:', test_initiative);
-        expect(test_initiative, 'Initiative does not have proper keys').to.be.an('object').that.has.keys('description', 'groups', 'goals', 'messages', 'avenues', 'avenue_types');
-        expect(test_initiative.description, 'Description is not correct').to.be.a('string').that.equals('This is an initiavtive to communicate with people');
-        expect(test_initiative.groups, 'Groups are not correct').to.be.a('array').that.includes('my peeps');
+        let returned_initiative = test_initiative.pack_for_ipc();
+        //console.log('Packed initiative:', returned_initiative);
+        expect(returned_initiative, 'Initiative does not have proper keys').to.be.an('object').that.has.keys('description', 'groups', 'goals', 'messages', 'avenues', 'avenue_types');
+        expect(returned_initiative.description, 'Description is not correct').to.be.a('string').that.equals('This is an initiavtive to communicate with people');
+        expect(returned_initiative.groups, 'Groups are not correct').to.be.a('array').that.includes('my peeps');
         
         // Nested Goals object
-        expect(test_initiative.goals, 'Goals is not a map').to.be.instanceOf(Object);
-        let goal1 = test_initiative.goals['0'];
+        expect(returned_initiative.goals, 'Goals is not a map').to.be.instanceOf(Object);
+        let goal1 = returned_initiative.goals['0'];
         //console.log(goal1)
         expect(goal1, 'Goal does not have proper keys').to.be.an('object').that.has.keys('frequency', 'type', 'reminder');
         expect(goal1.frequency, 'Frequency is not correct').to.be.a('number').that.equals(5);
@@ -425,8 +425,8 @@ describe("Initiative object", function () {
         expect(goal1.reminder, 'Reminder is not correct').to.be.a('string').that.equals('tomorrow');
         
         // Nested Message object
-        expect(test_initiative.messages, 'Messages is not a map').to.be.instanceOf(Object);
-        let message1 = test_initiative.messages['0'];
+        expect(returned_initiative.messages, 'Messages is not a map').to.be.instanceOf(Object);
+        let message1 = returned_initiative.messages['0'];
         //console.log(message1)
         expect(message1, 'Message does not have proper keys').to.be.an('object').that.has.keys('title', 'greeting', 'content', 'signature', 'avenue_ids');
         expect(message1.title, 'Title is not correct').to.be.a('string').that.equals('This is the title of the first message');
@@ -436,8 +436,8 @@ describe("Initiative object", function () {
         expect(message1.avenue_ids, 'Avenue_ids is not correct').to.be.a('array').that.includes('avenue1').and.includes('avenue2');
         
         // Nested Avenues object
-        expect(test_initiative.avenues, 'Avenues is not a map').to.be.instanceOf(Object);
-        let avenue1 = test_initiative.avenues['0'];
+        expect(returned_initiative.avenues, 'Avenues is not a map').to.be.instanceOf(Object);
+        let avenue1 = returned_initiative.avenues['0'];
         //console.log(avenue1)
         expect(avenue1, 'Avenue does not have proper keys').to.be.an('object').that.has.keys('avenue_type', 'description', 'person', 'date', 'sent', 'message_id');
         expect(avenue1.avenue_type, 'Avenue_type is not correct').to.be.a('string').that.equals('email');
@@ -448,7 +448,7 @@ describe("Initiative object", function () {
         expect(avenue1.message_id, 'Message_id is not correct').to.be.a('string').that.includes('message23'); 
     
         // Avenue types
-        expect(test_initiative.avenue_types, 'avenue types are not correct').to.be.a('array').that.includes('Email').and.includes('Text').and.includes('Facebook').and.includes('Instagram').and.includes('Handout').and.includes('Poster').and.includes('Other');
+        expect(returned_initiative.avenue_types, 'avenue types are not correct').to.be.a('array').that.includes('Email').and.includes('Text').and.includes('Facebook').and.includes('Instagram').and.includes('Handout').and.includes('Poster').and.includes('Other');
     })
     
     // test converting back to maps and date objects from json string 

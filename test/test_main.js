@@ -46,8 +46,8 @@ describe('Test Communication with Main process', function () {
     test_initiative.add_avenue('email', 'for all my peeps', 'Bob', true, 'message23', 2033, 4, 23, 13, 0);
     //console.log('Initiative before sending: ', test_initiative);
     // Pack for compatability with Json and then send to main over ipc
-    test_initiative.pack_for_ipc();
-    await app.electron.ipcRenderer.send('save', test_initiative);
+    let returned_initiative = test_initiative.pack_for_ipc();
+    await app.electron.ipcRenderer.send('save', returned_initiative);
     // Open from file and repack into a new initiative object
     let file = await app.electron.ipcRenderer.sendSync('open-file');
     //console.log('returned file: ', file);
