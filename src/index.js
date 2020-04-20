@@ -131,7 +131,7 @@ function addMessage (event, titleValue='', greetingValue='', contentValue='', si
   deleteBtn.setAttribute("id", `messDelete${id}`);
   deleteBtn.setAttribute("type", "button");
   deleteBtn.setAttribute("value", "x");
-  deleteBtn.addEventListener("click", function () {deleteSlot(mess)}) ;
+  deleteBtn.addEventListener("click", function () {deleteMess(mess)}) ;
   mess.appendChild(deleteBtn);
 
   // Get the main div that holds all the avenues and append the new one
@@ -139,11 +139,21 @@ function addMessage (event, titleValue='', greetingValue='', contentValue='', si
   document.getElementById("messageIn").appendChild(mess);
 };
 
+
+// Deletes a message from the DOM
+function deleteMess (mess) {
+  // Remove message from UI
+  mess.parentElement.removeChild(mess);
+  // Remove message from Initiative object 
+  let id = mess.id;
+  currentInitiative.messages.delete(id[7]); // Take only the number off of the end of the ui id 
+};
+
 // Adds an Avenue to do the DOM
 document.getElementById('addAve').addEventListener("click", addAve);
 function addAve (avenue_typeValue='', sentValue='', descriptionValue='', personsValue='', datesValue='') {
 
-  let id = currentInitiative.add_avenue()
+  let id = currentInitiative.add_avenue();
 
   //creates main div to hold an individual avenue
   let ave = document.createElement("div");
@@ -156,7 +166,7 @@ function addAve (avenue_typeValue='', sentValue='', descriptionValue='', persons
   dropdown.setAttribute("id", `avenue_type${id}`);
   
   // Set dropdown options from list held in the message object 
-  let options = currentInitiative.avenue_types
+  let options = currentInitiative.avenue_types;
   for (i in options){
     let opElem = document.createElement("option");
     let opText = currentInitiative.avenue_types[i]
@@ -208,7 +218,7 @@ function addAve (avenue_typeValue='', sentValue='', descriptionValue='', persons
   sent_label.setAttribute("id", "aveSent_label");
   sent_label.setAttribute("for", "aveSent_checkbox");
   sent_label.innerHTML = "Sent";
-  sent_box.appendChild(sent_label)//add label to the smaller area
+  sent_box.appendChild(sent_label);//add label to the smaller area
 
   ave.appendChild(sent_box);//add smaller area to the avenue
 
@@ -238,21 +248,24 @@ function addAve (avenue_typeValue='', sentValue='', descriptionValue='', persons
   ave.appendChild(dates);
 
   // Creates and adds dynamic event listener to delete button
-  let deleteBtn = document.createElement("input")
-  deleteBtn.setAttribute("class", "aveDelete")
-  deleteBtn.setAttribute("id", `aveDelete${id}`)
-  deleteBtn.setAttribute("type", "button")
-  deleteBtn.setAttribute("value", "x")
-  deleteBtn.addEventListener("click", function () {deleteSlot(ave)}) 
-  ave.appendChild(deleteBtn)
+  let deleteBtn = document.createElement("input");
+  deleteBtn.setAttribute("class", "aveDelete");
+  deleteBtn.setAttribute("id", `aveDelete${id}`);
+  deleteBtn.setAttribute("type", "button");
+  deleteBtn.setAttribute("value", "x");
+  deleteBtn.addEventListener("click", function () {deleteAve(ave)}); 
+  ave.appendChild(deleteBtn);
 
   // Get the main div that holds all the avenues and append the new one
   //console.log("avenue", ave);
   document.getElementById("avenueIn").appendChild(ave);
 };
 
-// Deletes a message or an avenue from the DOM
-function deleteSlot (slot) {
-  // Message object is not cleared until save or load to preserve avenue order from user
-  slot.parentElement.removeChild(slot)
+// Deletes an avenue from the DOM
+function deleteAve (ave) {
+  // Remove message from UI
+  ave.parentElement.removeChild(ave);
+  // Remove message from Initiative object 
+  let id = ave.id;
+  currentInitiative.avenues.delete(id[6]); // Take only the number off of the end of the ui id 
 };
