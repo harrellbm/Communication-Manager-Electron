@@ -2,6 +2,9 @@
 const ipc = require('electron').ipcRenderer;
 const templates = require('./objectTemplate.js');
 
+// Initialize initiative object to be used currently
+var currentInitiative = templates.createInitiative();
+
 /* ---- Implement tabs ---- */
 function openPage(pageName, elmnt) { // linked to directly from html
     // Hide all elements with class="tabcontent" by default 
@@ -33,38 +36,27 @@ document.getElementById("defaultOpen").click();
 
 
 /* ---- Message Manager related functions ---- */
-// Initialize message object to be used currently
-var currentInitiative = templates.createInitiative();
 
 // Save does not function quite right yet. Need to update message object so that double saves do not happen
 //handles event from the save button // Needs transitioned 
-document.getElementById('save').addEventListener("click", saveFile);
+document.getElementById('messSave').addEventListener("click", saveFile);
 function saveFile () {
-  // clear old messeges from initiative object
-  currentInitiative.messages.clear();
-  // unpack values from each message that is added
+  // Unpack values from each message that has been added
   let messageValue = document.getElementById('messageIn').getElementsByClassName('message');
-  for (mes of messageValue) {//each iteration goes through one avenue
-    //console.log(mes)
-    //let avenue = avenuesValue.item(i);
-    let dropdown = mes.children[0].value;
-    let sent = mes.children[4].children[0].checked;
-    let description = mes.children[5].value;
-    let persons = mes.children[6].value;
-    let dates = mes.children[7].value;
-    //console.log('specific elements',avenue, dropdown, sent, description, persons, dates)
-
-    // TODO: Need to figure out how to only add new avenues and update old ones
-    currentInitiative.add_avenue(dropdown, description, persons, dates, sent)
+  for (mes of messageValue) {//each iteration goes through one message
+    console.log(mes)
+    let title = mes.children[1].value;
+    let aves = mes.children[2].value;
+    console.log('specific elements',title, aves)
     }
   console.log('initiative to be saved: ', currentInitiative)
-  let data = currentInitiative.pack_for_ipc()
-  ipc.send('save', data)
+  let data = currentInitiative.pack_for_ipc();
+  ipc.send('save', data);
 };
 
 // Handles the event from the open button // Needs transitioned 
 // Uses synchronous call for now 
-document.getElementById('open').addEventListener("click", openFile);
+document.getElementById('messOpen').addEventListener("click", openFile);
 function openFile () {
   let file = ipc.sendSync('open-file')// Sents for file 
   console.log('on renderer side' , file)
@@ -138,7 +130,6 @@ function addMessage (event, titleValue='', greetingValue='', contentValue='', si
   console.log("message", mess);
   document.getElementById("messageIn").appendChild(mess);
 };
-
 
 // Deletes a message from the DOM
 function deleteMess (mess) {
