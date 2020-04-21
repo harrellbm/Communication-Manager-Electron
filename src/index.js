@@ -264,14 +264,16 @@ function addAve (event='', aveId='') { // If avenue id is passed in it will load
     }
   ave.appendChild(persons);
 
-  /* need to make a date chooser for now */
-  let dates = document.createElement("textarea"); 
-  dates.setAttribute("class", "aveDates");
-  dates.setAttribute("id", `aveDates${id}`);
+  // For now use Date chooser for date. Cannot handle time yet 
+  let date = document.createElement("input"); 
+  date.setAttribute("class", "aveDate");
+  date.setAttribute("id", `aveDate${id}`);
+  date.setAttribute("type", "date");
   if(aveLoad != ''){// if creating an avenue that is being pulled from a file set it's value 
-    dates.value = aveLoad.date;
+    date.value = aveLoad.date.getFullYear().toString() + '-' + (aveLoad.date.getMonth() + 1).toString().padStart(2, 0) +
+    '-' + aveLoad.date.getDate().toString().padStart(2, 0); // convert to string for date chooser element, also add extra 0s for single didget dates
     }
-  ave.appendChild(dates);
+  ave.appendChild(date);
 
   // Creates and adds dynamic event listener to delete button
   let deleteBtn = document.createElement("input");

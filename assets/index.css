@@ -184,8 +184,8 @@ textarea{
   /* Rules for dynamically added Avenues */
   .avenue{
     display: grid;
-    grid-template-columns: 6rem 1fr 1fr 1fr 1.4rem;
-    grid-template-rows: 1.4rem 1.5rem 2rem;
+    grid-template-columns: 5.2rem 1fr 1fr 1fr 1.4rem;
+    grid-template-rows: 1.4rem 1.5rem 2.5rem;
     background-color: #999;
     border: rgb(169, 169, 169);
     border-width: 1px;
@@ -261,7 +261,7 @@ textarea{
       grid-row-end: 4;
       }
 
-    .aveDates{
+    .aveDate{
       grid-column-start: 4;
       grid-column-end: 5;
       grid-row-start: 3;
