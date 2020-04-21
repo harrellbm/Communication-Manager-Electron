@@ -1,6 +1,7 @@
 // This is the js file for the main window
 const ipc = require('electron').ipcRenderer;
 const templates = require('./objectTemplate.js');
+const dragula = require('dragula');
 
 // Initialize initiative object to be used currently
 var currentInitiative = templates.createInitiative();
@@ -134,9 +135,11 @@ function addMess (event='', messId='') {// If message id is passed in it will lo
   mess.appendChild(title);//add check box to the smaller area
 
   // Avenue dropbox
-  let aveDrop = document.createElement("textarea");
+  let aveDrop = document.createElement("div");
   aveDrop.setAttribute("class", "aveDrop");
   aveDrop.setAttribute("id", `aveDrop${id}`);
+  drake.containers.push(aveDrop);// Flag as drop container for dragula 
+  console.log(drake.containers)
   if(messLoad != ''){// if creating an avenue that is being pulled from a file set it's value 
     aveDrop.value = messLoad.avenue_ids;
     }
@@ -297,3 +300,6 @@ function deleteAve (ave) {
   let id = ave.id[6];
   currentInitiative.avenues.delete(id); // Take only the number off of the end of the ui id 
 };
+
+var drake = dragula([document.getElementById('avenueIn')]);
+console.log('drag and drop:', drake);
