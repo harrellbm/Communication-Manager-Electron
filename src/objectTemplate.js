@@ -178,8 +178,8 @@ class Initiative {
       avenue.change_message_id('');
       let id;
       for (id in message.avenue_ids){
-         if (aveId == id){
-            message.avenue_ids.splice(aveId, 1);
+         if (aveId == message.avenue_ids[id]){
+            message.avenue_ids.splice(id, 1);
             return true;
             }
          }
