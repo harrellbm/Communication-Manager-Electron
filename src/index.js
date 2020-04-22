@@ -138,8 +138,8 @@ function addMess (event='', messId='') {// If message id is passed in it will lo
   let aveDrop = document.createElement("div");
   aveDrop.setAttribute("class", "aveDrop");
   aveDrop.setAttribute("id", `aveDrop${id}`);
-  drake.containers.push(aveDrop);// Flag as drop container for dragula 
-  console.log(drake.containers)
+  dragDrop.containers.push(aveDrop);// Flag as drop container for dragula 
+  //console.log(dragDrop.containers)
   if(messLoad != ''){// if creating an avenue that is being pulled from a file set it's value 
     aveDrop.value = messLoad.avenue_ids;
     }
@@ -163,6 +163,19 @@ function addMess (event='', messId='') {// If message id is passed in it will lo
 
 // Deletes a message from the DOM
 function deleteMess (mess) {
+  // Check if message has linked avenue
+  let aves = mess.getElementsByClassName('avenue');
+  if (aves.length != 0 ) { 
+    // Unlink avenues and place them back in avenueIn 
+    while (0 < aves.length){// Collection empties as they are appended back to avenueIn
+      let aveId = aves[0].id[6]; // grab id number of avenue
+      let messId = mess.id[7];
+      currentInitiative.unlink_ids(aveId, messId);
+      console.log('unlinked avenue: ', currentInitiative.avenues.get(aveId), 'unlinked message: ', currentInitiative.messages.get(messId));
+      document.getElementById("avenueIn").appendChild(aves[0]);
+      }
+    }
+  
   // Remove message from UI
   mess.parentElement.removeChild(mess);
   // Remove message from Initiative object 
@@ -301,5 +314,34 @@ function deleteAve (ave) {
   currentInitiative.avenues.delete(id); // Take only the number off of the end of the ui id 
 };
 
-var drake = dragula([document.getElementById('avenueIn')]);
-console.log('drag and drop:', drake);
+// Initalize dragula containers for drag and drop
+var dragDrop = dragula([document.getElementById('avenueIn')]);// aveDrops are added dynamically when message is generated 
+//console.log('drag and drop:', dragDrop);
+
+// Link message and avenue if avenue is dropped into aveDrop
+  // Else Unlink if avenue is dropped into avenueIn
+dragDrop.on('drop', function (ave, target, source) {
+  let type = target.getAttribute('class'); // determine where avenue was dropped by target class
+  if (type == 'aveDrop') {
+    let aveId = ave.id[6]; // Grab the id number off of each id
+    let messId = target.id[7];
+    let oldMessId = source.id[7];
+
+    // Check to see if avenue is being moved from another message 
+    let sourceClas = source.getAttribute('class'); 
+    if (sourceClas == 'aveDrop' ) { // If coming from another message unlink from old message
+      currentInitiative.unlink_ids(aveId, oldMessId);
+      //console.log('unlinked old mess from ave: ', currentInitiative.messages.get(oldMessId));
+      }
+
+    // Link to new message 
+    currentInitiative.link_ids(aveId, messId);
+    //console.log('linked ave: ', currentInitiative.avenues.get(aveId), 'linked mess: ', currentInitiative.messages.get(messId));
+    }
+    else if (type == 'messIn' ){ // If being droped back into avenueIn unlink from old message
+      let aveId = ave.id[6];
+      let messId = source.id[7];
+      currentInitiative.unlink_ids(aveId, messId);
+      //console.log('unlinked ave: ', currentInitiative.avenues.get(aveId), 'unlinked mess: ', currentInitiative.messages.get(messId));
+      }
+  });

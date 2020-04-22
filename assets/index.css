@@ -85,7 +85,6 @@ textarea{
   
   /* Top container */
   #messTitle{
-    margin-bottom: 2vh;
     grid-row-start: 1;
     grid-row-end: 2;
     grid-column-start: 1;
@@ -139,8 +138,8 @@ textarea{
   /* Rules for dynamically added Messages */
   .message{
     display: grid;
-    width: 34.79rem;
-    grid-template-columns: 6rem 28.79rem;
+    width: 37rem;
+    grid-template-columns: 8rem 29rem;
     grid-template-rows: 1.4rem 4rem 1.4rem;
     background-color: #999;
     border: rgb(169, 169, 169);
@@ -196,7 +195,7 @@ textarea{
   .avenue{
     width: 27.6rem;
     display: grid;
-    grid-template-columns: 5.2rem 6rem 6rem 9rem 1.4rem;
+    grid-template-columns: 5.2rem 9rem 6rem 6rem 1.4rem;
     grid-template-rows: 1.5rem 2rem;
     background-color: #999;
     border: rgb(169, 169, 169);
@@ -215,15 +214,15 @@ textarea{
       }
 
     /* Titles */
-    .aveDescription_title{
+    .aveDate_title{
       padding: 0.1rem;
       grid-column-start: 2;
-      grid-column-end: 3;
+      grid-column-end:3;
       grid-row-start: 1;
       grid-row-end: 2;
       }
-
-    .avePersons_title{
+      
+    .aveDescription_title{
       padding: 0.1rem;
       grid-column-start: 3;
       grid-column-end: 4;
@@ -231,13 +230,15 @@ textarea{
       grid-row-end: 2;
       }
 
-    .aveDate_title{
+    .avePersons_title{
       padding: 0.1rem;
       grid-column-start: 4;
-      grid-column-end:5;
+      grid-column-end: 5;
       grid-row-start: 1;
       grid-row-end: 2;
       }
+
+    
 
     /* Seccond row */
     /* Sent box rules */
@@ -259,26 +260,27 @@ textarea{
       }
 
     /* Textareas*/
-    .aveDescription{
+   .aveDate{
       grid-column-start: 2;
       grid-column-end: 3;
       grid-row-start: 2;
       grid-row-end: 3;
-      }
 
-    .avePersons{
+    } .aveDescription{
       grid-column-start: 3;
       grid-column-end: 4;
       grid-row-start: 2;
       grid-row-end: 3;
       }
 
-    .aveDate{
+    .avePersons{
       grid-column-start: 4;
       grid-column-end: 5;
       grid-row-start: 2;
       grid-row-end: 3;
       }
+
+    
 
     /* Outside rows */
     /* Delete button */
