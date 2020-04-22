@@ -14,7 +14,7 @@ var app = new Application({
 
 describe('Test Communication with Main process', function () {
   this.slow(6000);
-  this.timeout(10000);
+  this.timeout(15000);
 
   beforeEach(function () {
     return app.start();
