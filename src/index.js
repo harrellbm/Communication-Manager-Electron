@@ -339,7 +339,13 @@ dragDrop.on('drop', function (ave, target, source) {
     //console.log('linked ave: ', currentInitiative.avenues.get(aveId), 'linked mess: ', currentInitiative.messages.get(messId));
     }
     else if (type == 'messIn' ){ // If being droped back into avenueIn unlink from old message
-      let aveId = ave.id[6];
+      // Check to see if avenue is being moved within avenueIn container 
+      let sourceClas = source.getAttribute('class'); 
+      if (sourceClas == 'messIn' ) { // If being moved within avenueIn return early to avoid unnecessary unlink
+        return
+        }
+      // If being moved from a message unlink before droping into avenueIn
+      let aveId = ave.id[6]; 
       let messId = source.id[7];
       currentInitiative.unlink_ids(aveId, messId);
       //console.log('unlinked ave: ', currentInitiative.avenues.get(aveId), 'unlinked mess: ', currentInitiative.messages.get(messId));
