@@ -103,13 +103,18 @@ textarea{
     max-height: 85vh;
     vertical-align: top;
     overflow-y: scroll;
-    overflow-x: scroll;
     background-color: rgb(255, 255, 255);
     border-width: 1px;
     border-style: solid;
     border-color: rgb(169, 169, 169);
     margin-left: 1vh;
     margin-right: 1vh;
+  }
+
+  #dropTitles{
+    position: fixed;
+    top: 16vh;
+    width: 50%;
   }
 
   #messageIn{
@@ -139,8 +144,9 @@ textarea{
   /* Rules for dynamically added Messages */
   .message{
     display: grid;
-    grid-template-columns: 6rem 1fr 1.4rem;
-    grid-template-rows: 1.4rem 2rem 4rem;
+    width: 34.79rem;
+    grid-template-columns: 6rem 28.79rem;
+    grid-template-rows: 1.4rem 4rem 1.4rem;
     background-color: #999;
     border: rgb(169, 169, 169);
     border-width: 1px;
@@ -169,8 +175,8 @@ textarea{
       background-color: rgb(255, 255, 255);
       overflow-y: scroll;
       grid-column-start: 2;
-      grid-column-end: 4;
-      grid-row-start: 2;
+      grid-column-end: 3;
+      grid-row-start: 1;
       grid-row-end: 4;
       }
   
@@ -178,17 +184,18 @@ textarea{
     .messDelete{
       width: 1.4rem;
       height: 1.4rem;
-      grid-column-start: 3;
-      grid-column-end: 4;
-      grid-row-start: 1;
-      grid-row-end: 2;
+      grid-column-start: 1;
+      grid-column-end: 2;
+      grid-row-start: 3;
+      grid-row-end: 4;
       }
 
   /* Rules for dynamically added Avenues */
   .avenue{
+    width: 27.6rem;
     display: grid;
     grid-template-columns: 5.2rem 6rem 6rem 9rem 1.4rem;
-    grid-template-rows: 1.4rem 1.5rem 2.5rem;
+    grid-template-rows: 1.4rem 1.5rem 2rem;
     background-color: #999;
     border: rgb(169, 169, 169);
     border-width: 1px;

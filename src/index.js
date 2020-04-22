@@ -188,7 +188,7 @@ function addAve (event='', aveId='') { // If avenue id is passed in it will load
   let ave = document.createElement("div");
   ave.setAttribute("class", "avenue");
   ave.setAttribute("id", `avenue${id}`);
-  
+
   // Creates drop down list 
   let dropdown = document.createElement("select");
   dropdown.setAttribute("class", "aveDropdown");
