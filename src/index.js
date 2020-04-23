@@ -41,29 +41,32 @@ document.getElementById("defaultOpen").click();
 // Handles event from the save button
 document.getElementById('messSave').addEventListener("click", saveFile);
 function saveFile () {
-  // Unpack values from each message that has been added
-  let messageValue = document.getElementById('messageIn').getElementsByClassName('message');
-  for (mess of messageValue) {// Each iteration goes through one message
-    let id = mess.id[7];
-    let messInit = currentInitiative.messages.get(id);
-    messInit.title = mess.children[1].value; // Update title in initiative object 
-    messInit.avenue_ids = mess.children[2].value; // Update linked avenues in initiative object 
-    //console.log('updated initiative: ', currentInitiative.messages);
-    }
+  // Sync ui and initiative message objects before saving 
+  let messages = currentInitiative.messages.keys(); 
+  for (id of messages) {// Each iteration goes through one message
+    let guiMess = document.getElementById(`message${id}`); // Message object from the ui
+    let initMess = currentInitiative.messages.get(id); // Message object from the initiative object 
 
-  let avenueValue = document.getElementById('avenueIn').getElementsByClassName('avenue');
-  for (ave of avenueValue) {// Each iteration goes through one avenue
-    let id = ave.id[6];
-    let aveInit = currentInitiative.avenues.get(id);
-    aveInit.avenue_type = ave.children[0].value;
-    aveInit.sent = ave.children[4].children[0].checked;
-    aveInit.description = ave.children[5].value;
-    aveInit.person = ave.children[6].value;
-    aveInit.date = ave.children[7].value;
-    //console.log('updated initiative: ', currentInitiative.avenues);
+    initMess.title = guiMess.children[1].value; // Update title in initiative object 
+    
     }
+    console.log('updated messages: ', currentInitiative.messages);
+  // Sync ui and initiative avenue objects before saving 
+  let avenues = currentInitiative.avenues.keys(); 
+  for (id of avenues) {// Each iteration goes through one avenue
+    let guiAve = document.getElementById(`avenue${id}`); // Avenue object from the ui
+    let initAve = currentInitiative.avenues.get(id); // Avenue object from the initiative object 
+    
+    initAve.avenue_type = guiAve.children[0].value;
+    initAve.sent = guiAve.children[4].children[0].checked;
+    initAve.description = guiAve.children[5].value;
+    initAve.person = guiAve.children[6].value;
+    initAve.date = guiAve.children[7].value;
+    
+    }
+    console.log('updated avenues: ', currentInitiative.avenues);
 
-  console.log('initiative to be saved: ', currentInitiative)
+  console.log('initiative to be saved: ', currentInitiative);
   let data = currentInitiative.pack_for_ipc();
   ipc.send('save', data);
 };
