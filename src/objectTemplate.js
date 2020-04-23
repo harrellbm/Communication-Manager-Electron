@@ -256,7 +256,6 @@ class Initiative {
          unpacked.avenue_type = content.avenue_type; // String 
          unpacked.description = content.description; // String 
          unpacked.person = content.person; // Array 
-            /* bug here */ 
          unpacked.date = new Date(content.date); // Convert stringified dates back to date object 
          unpacked.sent = content.sent; // Boolean
          unpacked.message_id = content.message_id; // String
