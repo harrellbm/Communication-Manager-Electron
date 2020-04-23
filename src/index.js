@@ -89,8 +89,6 @@ function openFile () {
   for ( id of messKeys ){
     addMess('load', id ); // Note: Event is not used programatically but helps with debugging input to addMess
   };
-
-  /* need to handle linked avenues to pop up in their linked message dropbox */
   
   let aveKeys = currentInitiative.avenues.keys();
   for ( id of aveKeys ){
