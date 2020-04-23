@@ -185,7 +185,7 @@ class Initiative {
          }
       }
 
-   
+   /* may need to convert date, message, goal, and avenue to vanilla objects */
    // Prepare initiative to be stringified for Json or sent over ipc by converting nonstandard objects
    pack_for_ipc(){ // Note: dynamic test held in test_main.js, unit test in test_object_templates.js
       let initiative_for_ipc = new Initiative(); 
@@ -205,28 +205,66 @@ class Initiative {
       this.description = file.description; // string 
       this.groups = file.groups; // array 
 
-      // Convert objects back to maps
-      this.goals = new Map(Object.entries(file.goals));
-      this.messages = new Map(Object.entries(file.messages)); 
-      this.avenues = new Map(Object.entries(file.avenues));
-      // Alternate solution to converting
-      /*this.goals = new Map();
-      Object.keys( file.goals ).forEach( key => { 
-         this.goals.set( key, file.goals[key]) 
-         });
-      this.messages = new Map();
-      Object.keys( file.messages ).forEach( key => { 
-         this.messages.set( key, file.messages[key]) 
-         });
-      this.avenues = new Map();
-      Object.keys( file.avenues ).forEach( key => {
-         this.avenues.set( key, file.avenues[key] ) 
-         }); */
+      // Convert Goals back from saved vanilla objects
+      this.goals = new Map(); // Reset initiative.goals to a map object
+      // Reload each goal into an Goal object 
+      let goal;
+      for (goal of Object.entries(file.goals)) { // Iterate over the key value pairs from the vanilla object
+         let id = goal[0];
+         let content = goal[1];
+         let unpacked = new Goal(); // Create new Goal object 
+         // Load all contents into new Goal object
+         unpacked.frequency= content.frequency;
+         unpacked.type = content.type;
+         unpacked.reminder = content.reminder;
+         
+         // Add the new goal object back to the Initiative.goals map
+         this.goals.set(id, unpacked); 
+         }
+      //console.log('new unpacked goals: ', this.goals);
 
-      // Convert all stringified dates back to date objects 
-      this.avenues.forEach( ave => { 
-         ave.date = new Date(ave.date);
-         });
+       
+      // Convert Messages back from saved vanilla objects
+      this.messages = new Map(); // Reset initiative.messages to a map object
+      // Reload each message into an Message object 
+      let mess;
+      for (mess of Object.entries(file.messages)) { // Iterate over the key value pairs from the vanilla object
+         let id = mess[0];
+         let content = mess[1];
+         let unpacked = new Message(); // Create new message object 
+         // Load all contents into new Message object
+         unpacked.title = content.title;
+         unpacked.greeting = content.greeting;
+         unpacked.content = content.content;
+         unpacked.signature = content.signature;
+         unpacked.avenue_ids = content.avenue_ids;
+      
+         // Add the new message object back to the Initiative.messages map
+         this.messages.set(id, unpacked); 
+         }
+      //console.log('new unpacked messages: ', this.messages);
+
+      // Convert Avenues back from saved vanilla objects
+      this.avenues = new Map(); // Reset initiative.avenues to a map object 
+      // Reload each avenue into an Avenue object 
+      let ave;
+      for (ave of Object.entries(file.avenues)) { // Iterate over the key value pairs from the vanilla object
+         let id = ave[0];
+         let content = ave[1];
+         let unpacked = new Avenue(); // Create new avenue object 
+         // Load all contents into new Avenue object
+         unpacked.avenue_type = content.avenue_type; // String 
+         unpacked.description = content.description; // String 
+         unpacked.person = content.person; // Array 
+            /* bug here */ 
+         unpacked.date = new Date(content.date); // Convert stringified dates back to date object 
+         unpacked.sent = content.sent; // Boolean
+         unpacked.message_id = content.message_id; // String
+      
+         // Add the new avenue object back to the Initiative.avenues map
+         this.avenues.set(id, unpacked); 
+         }
+      //console.log('new unpacked avenues: ', this.avenues);
 
       this.avenue_types = file.avenue_types; // array
    }
@@ -463,10 +501,14 @@ function createAvenue () {
 }
 
 module.exports = {
-   createInitiative,
+   createInitiative, // depricate these after the rest of the program is converted to normal constructors 
    createGoal, 
    createMessage,
    createAvenue,
+   Initiative,
+   Goal,
+   Message,
+   Avenue
 }
 
 /*
