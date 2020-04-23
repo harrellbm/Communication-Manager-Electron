@@ -42,18 +42,18 @@ document.getElementById("defaultOpen").click();
 document.getElementById('messSave').addEventListener("click", saveFile);
 function saveFile () {
   // Sync ui and initiative message objects before saving 
-  let messages = currentInitiative.messages.keys(); 
-  for (id of messages) {// Each iteration goes through one message
+  let messKeys = currentInitiative.messages.keys(); 
+  for (id of messKeys) {// Each iteration goes through one message
     let guiMess = document.getElementById(`message${id}`); // Message object from the ui
     let initMess = currentInitiative.messages.get(id); // Message object from the initiative object 
 
     initMess.title = guiMess.children[1].value; // Update title in initiative object 
     
     }
-    console.log('updated messages: ', currentInitiative.messages);
+    //console.log('updated messages: ', currentInitiative.messages);
   // Sync ui and initiative avenue objects before saving 
-  let avenues = currentInitiative.avenues.keys(); 
-  for (id of avenues) {// Each iteration goes through one avenue
+  let aveKeys = currentInitiative.avenues.keys(); 
+  for (id of aveKeys) {// Each iteration goes through one avenue
     let guiAve = document.getElementById(`avenue${id}`); // Avenue object from the ui
     let initAve = currentInitiative.avenues.get(id); // Avenue object from the initiative object 
     
@@ -64,7 +64,7 @@ function saveFile () {
     initAve.date = guiAve.children[7].value;
     
     }
-    console.log('updated avenues: ', currentInitiative.avenues);
+    //console.log('updated avenues: ', currentInitiative.avenues);
 
   console.log('initiative to be saved: ', currentInitiative);
   let data = currentInitiative.pack_for_ipc();
@@ -85,21 +85,25 @@ function openFile () {
   oldAvenues.innerHTML = '';
 
   // Send new initiative messages and avenues to ui
+  let messKeys = currentInitiative.messages.keys();
+  for ( id of messKeys ){
+    addMess('load', id ); // Note: Event is not used programatically but helps with debugging input to addMess
+  };
 
   /* need to handle linked avenues to pop up in their linked message dropbox */
   
   let aveKeys = currentInitiative.avenues.keys();
-  for ( key of aveKeys ){
-    addAve('load', key ); // Event is not used programatically but helps with debugging
-    //console.log('message to ui: ', key)
+  for ( id of aveKeys ){
+    // Check to see if avenue is linked to a message
+    let aveObj = currentInitiative.avenues.get(id);
+    let messId = aveObj.message_id
+    if (messId != '') { // If so send to respective message drop box
+      addAve('load', id, `aveDrop${messId}`) // Note: event is not used programatically but helps with debugging input to addAve
+      }
+      else { // Else just add it to the default container
+        addAve('load', id ); 
+        }
   };
-
-  let messKeys = currentInitiative.messages.keys();
-  for ( key of messKeys ){
-    addMess('load', key ); // Event is not used programatically but helps with debugging
-    //console.log('message to ui: ', key)
-  };
-  
 };
 
 // Adds a message to do the DOM
@@ -188,7 +192,8 @@ function deleteMess (mess) {
 
 // Adds an Avenue to do the DOM
 document.getElementById('addAve').addEventListener("click", addAve);
-function addAve (event='', aveId='') { // If avenue id is passed in it will load it from the initative object. Otherwise it is treated as a new avenue
+function addAve (event='', aveId='', location='avenueIn') { // If avenue id is passed in it will load it from the initative object. Otherwise it is treated as a new avenue
+  // Note: event is not used programatically but helps with debugging input form different sources
   // Update current initiative object if this is a new avenue 
   var id; 
   var aveLoad = '';
@@ -303,9 +308,10 @@ function addAve (event='', aveId='') { // If avenue id is passed in it will load
   deleteBtn.addEventListener("click", function () {deleteAve(ave)}); 
   ave.appendChild(deleteBtn);
 
-  // Get the main div that holds all the avenues and append the new one
+  // Get the container to hold the avenue and append it 
+    // Note: default location is the avenueIn container
   //console.log("avenue", ave);
-  document.getElementById("avenueIn").appendChild(ave);
+  document.getElementById(location).appendChild(ave);
 };
 
 // Deletes an avenue from the DOM
@@ -353,4 +359,4 @@ dragDrop.on('drop', function (ave, target, source) {
       currentInitiative.unlink_ids(aveId, messId);
       //console.log('unlinked ave: ', currentInitiative.avenues.get(aveId), 'unlinked mess: ', currentInitiative.messages.get(messId));
       }
-  });
+});
