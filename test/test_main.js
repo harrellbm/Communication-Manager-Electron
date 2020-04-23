@@ -52,7 +52,7 @@ describe('Test Communication with Main process', function () {
     let file = await app.electron.ipcRenderer.sendSync('open-file');
     //console.log('returned file: ', file);
     let after_initiative;
-    after_initiative = template.createInitiative();
+    after_initiative = new template.Initiative();
     after_initiative.unpack_from_ipc(file);
     //console.log('unpacked initiative: ', after_initiative);
     expect(after_initiative, 'Initiative does not have proper keys').to.be.an('object').that.has.keys('description', 'groups', 'goals', 'messages', 'avenues', 'avenue_types');
@@ -63,7 +63,8 @@ describe('Test Communication with Main process', function () {
     expect(after_initiative.goals, 'Goals is not a map').to.be.instanceOf(Map);
     let goal1 = after_initiative.goals.get('0');
     //console.log(goal1)
-    expect(goal1, 'Goal does not have proper keys').to.be.an('object').that.has.keys('frequency', 'type', 'reminder');
+    expect(goal1, 'Not a goal object').to.be.instanceOf(template.Goal);
+    expect(goal1, 'Goal does not have proper keys').to.have.keys('frequency', 'type', 'reminder');
     expect(goal1.frequency, 'Frequency is not correct').to.be.a('number').that.equals(5);
     expect(goal1.type, 'Type is not correct').to.be.a('string').that.equals('text');
     expect(goal1.reminder, 'Reminder is not correct').to.be.a('string').that.equals('tomorrow');
@@ -72,7 +73,8 @@ describe('Test Communication with Main process', function () {
     expect(after_initiative.messages, 'Messages is not a map').to.be.instanceOf(Map);
     let message1 = after_initiative.messages.get('0');
     //console.log(message1)
-    expect(message1, 'Message does not have proper keys').to.be.an('object').that.has.keys('title', 'greeting', 'content', 'signature', 'avenue_ids');
+    expect(message1, 'Not a message object').to.be.instanceOf(template.Message);
+    expect(message1, 'Message does not have proper keys').to.have.keys('title', 'greeting', 'content', 'signature', 'avenue_ids');
     expect(message1.title, 'Title is not correct').to.be.a('string').that.equals('This is the title of the first message');
     expect(message1.greeting, 'Greeting is not correct').to.be.a('string').that.equals('this is its greeting');
     expect(message1.content, 'Content is not correct').to.be.a('string').that.equals('this is the content.');
@@ -83,7 +85,8 @@ describe('Test Communication with Main process', function () {
     expect(after_initiative.avenues, 'Avenues is not a map').to.be.instanceOf(Map);
     let avenue1 = after_initiative.avenues.get('0');
     //console.log(avenue1)
-    expect(avenue1, 'Avenue does not have proper keys').to.be.an('object').that.has.keys('avenue_type', 'description', 'person', 'date', 'sent', 'message_id');
+    expect(avenue1, 'Not an avenue object').to.be.instanceOf(template.Avenue);
+    expect(avenue1, 'Avenue does not have proper keys').to.have.keys('avenue_type', 'description', 'person', 'date', 'sent', 'message_id');
     expect(avenue1.avenue_type, 'Avenue_type is not correct').to.be.a('string').that.equals('email');
     expect(avenue1.description, 'Description is not correct').to.be.a('string').that.equals('for all my peeps');
     expect(avenue1.person, 'Person is not correct').to.be.an('array').that.includes('Bob');

@@ -477,15 +477,14 @@ describe("Initiative object", function () {
     
     // test converting back to maps and date objects from json string 
     it('should return unpacked objects', () => {
-        // Basic Json representation of initiative object 
-        file = {"description":"This is an initiavtive to communicate with people",
-                "groups":["my peeps"],
-                "goals":{"0":{"frequency":5,"reminder":"tomorrow","type":"text"}},
-                "messages":{"0":{"avenue_ids":["avenue1","avenue2"],"content":"this is the content.","greeting":"this is its greeting","signature":"this is the signature","title":"This is the title of the first message"}},
-                "avenues":{"0":{"avenue_type":"email","date":"2033-05-23T19:00:00.000Z", "description":"for all my peeps","message_id":"message23","person":["Bob"],"sent":true}},
-                "avenue_types":["Email","Text","Facebook","Instagram","Handout","Poster","Other"]
-                }
-        test_initiative.unpack_from_ipc(file)
+        test_initiative.change_description('This is an initiavtive to communicate with people');
+        test_initiative.change_group('my peeps')
+        test_initiative.add_goal(5, 'text', 'tomorrow');
+        test_initiative.add_message('This is the title of the first message', 'this is its greeting', 'this is the content.', 'this is the signature', ['avenue1', 'avenue2']);
+        test_initiative.add_avenue('email', 'for all my peeps', 'Bob', true, 'message23', 2033, 4, 23, 13, 0);
+        //console.log('Initiative before packing:', test_initiative);
+        returned_initiative = test_initiative.pack_for_ipc();
+        test_initiative.unpack_from_ipc(returned_initiative);
         //console.log('converted objects:', test_initiative);
         expect(test_initiative, 'Initiative does not have proper keys').to.be.an('object').that.has.keys('description', 'groups', 'goals', 'messages', 'avenues', 'avenue_types');
         expect(test_initiative.description, 'Description is not correct').to.be.a('string').that.equals('This is an initiavtive to communicate with people');
@@ -495,7 +494,8 @@ describe("Initiative object", function () {
         expect(test_initiative.goals, 'Goals is not a map').to.be.instanceOf(Map);
         let goal1 = test_initiative.goals.get('0');
         //console.log(goal1)
-        expect(goal1, 'Goal does not have proper keys').to.be.an('object').that.has.keys('frequency', 'type', 'reminder');
+        expect(goal1, 'Not a goal object').to.be.instanceOf(templates.Goal);
+        expect(goal1, 'Goal does not have proper keys').to.have.keys('frequency', 'type', 'reminder');
         expect(goal1.frequency, 'Frequency is not correct').to.be.a('number').that.equals(5);
         expect(goal1.type, 'Type is not correct').to.be.a('string').that.equals('text');
         expect(goal1.reminder, 'Reminder is not correct').to.be.a('string').that.equals('tomorrow');
@@ -504,7 +504,8 @@ describe("Initiative object", function () {
         expect(test_initiative.messages, 'Messages is not a map').to.be.instanceOf(Map);
         let message1 = test_initiative.messages.get('0');
         //console.log(message1)
-        expect(message1, 'Message does not have proper keys').to.be.an('object').that.has.keys('title', 'greeting', 'content', 'signature', 'avenue_ids');
+        expect(message1, 'Not a message object').to.be.instanceOf(templates.Message);
+        expect(message1, 'Message does not have proper keys').to.have.keys('title', 'greeting', 'content', 'signature', 'avenue_ids');
         expect(message1.title, 'Title is not correct').to.be.a('string').that.equals('This is the title of the first message');
         expect(message1.greeting, 'Greeting is not correct').to.be.a('string').that.equals('this is its greeting');
         expect(message1.content, 'Content is not correct').to.be.a('string').that.equals('this is the content.');
@@ -515,6 +516,7 @@ describe("Initiative object", function () {
         expect(test_initiative.avenues, 'Avenues is not a map').to.be.instanceOf(Map);
         let avenue1 = test_initiative.avenues.get('0');
         //console.log(avenue1)
+        expect(avenue1, 'Not an avenue object').to.be.instanceOf(templates.Avenue);
         expect(avenue1, 'Avenue does not have proper keys').to.be.an('object').that.has.keys('avenue_type', 'description', 'person', 'date', 'sent', 'message_id');
         expect(avenue1.avenue_type, 'Avenue_type is not correct').to.be.a('string').that.equals('email');
         expect(avenue1.description, 'Description is not correct').to.be.a('string').that.equals('for all my peeps');
