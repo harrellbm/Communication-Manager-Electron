@@ -7,7 +7,7 @@ const debug = require('electron-debug')
 // be closed automatically when the JavaScript object is garbage collected.
 
 // Open devTools for all browser windows
-debug({'devToolsMode': 'right'});
+//debug({'devToolsMode': 'right'});
 
 const windows = [];
 
