@@ -61,8 +61,14 @@ function saveFile () {
     initAve.sent = guiAve.children[4].children[0].checked;
     initAve.description = guiAve.children[5].value;
     initAve.person = guiAve.children[6].value;
-    initAve.date = guiAve.children[7].value;
-    
+    // Convert the date chooser date to place in date object 
+    rawDate = guiAve.children[7].value; // bug with date compatablitity 
+    aryDate = rawDate.split('-');
+    year = parseInt(aryDate[0]);
+    month = ( parseInt(aryDate[1]) - 1 ); // Subtract one to account for JavaScript dates starting month numbering at 0
+    day = parseInt(aryDate[2]);
+    console.log(year, month, day);
+    initAve.change_date(year, month, day);
     }
     //console.log('updated avenues: ', currentInitiative.avenues);
 

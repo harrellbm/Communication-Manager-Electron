@@ -458,7 +458,7 @@ class Avenue {
       }
 
    // Change the date object 
-   change_date(year, month, day, hour, min){  // TODO: need data validation
+   change_date(year, month, day, hour=0, min=0){  // TODO: need data validation
       this.date.setFullYear(year, month, day);
       this.date.setHours(hour, min, 0, 0);
       }
