@@ -1,6 +1,7 @@
 // This is the js file for the main window
 const ipc = require('electron').ipcRenderer;
 const templates = require('./objectTemplate.js');
+const moment = require('moment');
 const dragula = require('dragula');
 
 // Initialize initiative object to be used currently
@@ -61,18 +62,16 @@ function saveFile () {
     initAve.sent = guiAve.children[4].children[0].checked;
     initAve.description = guiAve.children[5].value;
     initAve.person = guiAve.children[6].value;
-    // Convert the date chooser date to place in date object 
-    rawDate = guiAve.children[7].value; // bug with date compatablitity 
-    aryDate = rawDate.split('-');
-    year = parseInt(aryDate[0]);
-    month = ( parseInt(aryDate[1]) - 1 ); // Subtract one to account for JavaScript dates starting month numbering at 0
-    day = parseInt(aryDate[2]);
-    console.log(year, month, day);
-    initAve.change_date(year, month, day);
+    // Add timezone stamp to date chooser date before storing 
+    let rawDate = guiAve.children[7].value;  
+    if (moment(rawDate).isValid()){ // Only load date into initiative object if it is a valid date
+      let date = moment(rawDate, 'YYYY-MM-DD', true).toString(); // Moment adds time zone stamp
+      initAve.change_date(date); // String
+      } 
     }
     //console.log('updated avenues: ', currentInitiative.avenues);
 
-  console.log('initiative to be saved: ', currentInitiative);
+  //console.log('initiative to be saved: ', currentInitiative);
   let data = currentInitiative.pack_for_ipc();
   ipc.send('save', data);
 };
@@ -82,7 +81,7 @@ document.getElementById('messOpen').addEventListener("click", openFile);
 function openFile () {
   let file = ipc.sendSync('open-file'); // Uses synchronous call to avoid user actions before data is loaded 
   currentInitiative.unpack_from_ipc(file);
-  console.log('Unpacked initiative', currentInitiative);
+  //console.log('Unpacked initiative', currentInitiative);
 
   // Clear old message and avenue Ui elements 
   oldMessages = document.getElementById('messageIn');
@@ -182,7 +181,7 @@ function deleteMess (mess) {
       let aveId = aves[0].id[6]; // grab id number of avenue
       let messId = mess.id[7];
       currentInitiative.unlink_ids(aveId, messId);
-      console.log('unlinked avenue: ', currentInitiative.avenues.get(aveId), 'unlinked message: ', currentInitiative.messages.get(messId));
+      //console.log('unlinked avenue: ', currentInitiative.avenues.get(aveId), 'unlinked message: ', currentInitiative.messages.get(messId));
       document.getElementById("avenueIn").appendChild(aves[0]);
       }
     }
@@ -190,8 +189,8 @@ function deleteMess (mess) {
   // Remove message from UI
   mess.parentElement.removeChild(mess);
   // Remove message from Initiative object 
-  let id = mess.id[7];
-  currentInitiative.messages.delete(id); // Take only the number off of the end of the ui id 
+  let id = mess.id[7]; // Take only the number off of the end of the ui id 
+  currentInitiative.messages.delete(id); 
 };
 
 // Adds an Avenue to do the DOM
@@ -298,8 +297,8 @@ function addAve (event='', aveId='', location='avenueIn') { // If avenue id is p
   date.setAttribute("id", `aveDate${id}`);
   date.setAttribute("type", "date");
   if(aveLoad != ''){// if creating an avenue that is being pulled from a file set it's value 
-    date.value = aveLoad.date.getFullYear().toString() + '-' + (aveLoad.date.getMonth() + 1).toString().padStart(2, 0) +
-    '-' + aveLoad.date.getDate().toString().padStart(2, 0); // convert to string for date chooser element, also add extra 0s for single didget dates
+    let momDate = moment(aveLoad.date, 'ddd MMM DD YYYY HH:mm:ss'); // Adjust to current timezone from saved timezone
+    date.value = momDate.format('YYYY-MM-DD'); // Format for display in date chooser 
     }
   ave.appendChild(date);
 
