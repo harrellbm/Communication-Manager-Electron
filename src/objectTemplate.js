@@ -101,7 +101,7 @@ class Initiative {
       }
    
    // Add an avenue to the avenues map in the initiative 
-   add_avenue(avenue_type='', description='', person='', sent=false, message_id='', year=1000, month=0, day=1, hour=0, min=0){
+   add_avenue(avenue_type='', description='', person='', sent=false, message_id='', dateString=''){
       let new_avenue = new Avenue();
       new_avenue.avenue_type = avenue_type;
       new_avenue.description = description;
@@ -130,8 +130,7 @@ class Initiative {
       new_avenue.message_id = message_id
       
       // Set date object
-      new_avenue.date.setFullYear(year, month, day);
-      new_avenue.date.setHours(hour, min, 0, 0);
+      new_avenue.date = dateString;
 
       let avenueId = this.id_fill(this.avenues)// fill in the lowest available id
       this.avenues.set(avenueId, new_avenue);
@@ -256,7 +255,7 @@ class Initiative {
          unpacked.avenue_type = content.avenue_type; // String 
          unpacked.description = content.description; // String 
          unpacked.person = content.person; // Array 
-         unpacked.date = new Date(content.date); // Convert stringified dates back to date object 
+         unpacked.date = content.date; // String 
          unpacked.sent = content.sent; // Boolean
          unpacked.message_id = content.message_id; // String
       
@@ -458,9 +457,8 @@ class Avenue {
       }
 
    // Change the date object 
-   change_date(year, month, day, hour=0, min=0){  // TODO: need data validation
-      this.date.setFullYear(year, month, day);
-      this.date.setHours(hour, min, 0, 0);
+   change_date(dateString){  // TODO: need data validation
+      this.date = dateString;
       }
  
    // Returns the date for the given avenue as a date object
