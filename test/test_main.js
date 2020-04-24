@@ -43,7 +43,7 @@ describe('Test Communication with Main process', function () {
     test_initiative.change_group('my peeps')
     test_initiative.add_goal(5, 'text', 'tomorrow');
     test_initiative.add_message('This is the title of the first message', 'this is its greeting', 'this is the content.', 'this is the signature', ['avenue1', 'avenue2']);
-    test_initiative.add_avenue('email', 'for all my peeps', 'Bob', true, 'message23', 2033, 4, 23, 13, 0);
+    test_initiative.add_avenue('email', 'for all my peeps', 'Bob', true, 'message23', '2016-01-08T00:00:00-06:00');
     //console.log('Initiative before sending: ', test_initiative);
     // Pack for compatability with Json and then send to main over ipc
     let returned_initiative = test_initiative.pack_for_ipc();
@@ -90,7 +90,7 @@ describe('Test Communication with Main process', function () {
     expect(avenue1.avenue_type, 'Avenue_type is not correct').to.be.a('string').that.equals('email');
     expect(avenue1.description, 'Description is not correct').to.be.a('string').that.equals('for all my peeps');
     expect(avenue1.person, 'Person is not correct').to.be.an('array').that.includes('Bob');
-    expect(avenue1.date, 'Date is not correct').to.be.instanceOf(Date).and.equalTime(new Date('May 23 2033 13:00'));
+    expect(avenue1.date, 'Date is not correct').to.be.a('string').and.equals('2016-01-08T00:00:00-06:00');
     expect(avenue1.sent, 'Sent is not correct').to.be.true; 
     expect(avenue1.message_id, 'Message_id is not correct').to.be.a('string').that.includes('message23'); 
 
