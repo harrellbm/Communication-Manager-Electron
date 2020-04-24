@@ -6,23 +6,24 @@ chai.use(require('chai-datetime'));
 const expect = require('chai').expect;
 const template = require('../src/objectTemplate.js');
 
-
-var app = new Application({
-    path: electronPath,
-    args: [path.join(__dirname, '..')]
-  });
-
 describe('Test Communication with Main process', function () {
   this.slow(6000);
   this.timeout(15000);
+  var app;
 
   beforeEach(function () {
-    return app.start();
+    app = new Application({
+      path: electronPath,
+      args: [path.join(__dirname, '..')]
     });
+    return app.start();
+  });
 
   afterEach(function () {
+    if (app && app.isRunning()) {
       return app.stop();
-    });
+    }
+  });
   
   // Test ipc messages to main
   it('should send data to save over ipc and receive it back from main', async () => {
@@ -31,7 +32,7 @@ describe('Test Communication with Main process', function () {
     let file = await app.electron.ipcRenderer.sendSync('open-file');
     //console.log('returned file: ', file);
     expect(file).to.be.a('string').that.equals('Test data to main');
-    });
+  });
 
   // Test passing initiatives to main and then reloading
   it('should pack, send and then unpack an initiative', async () => {

@@ -4,22 +4,24 @@ const path = require('path')
 const expect = require('chai').expect;
 
 
-var app = new Application({
-    path: electronPath,
-    args: [path.join(__dirname, '..')]
-  })
-
 describe('Test Message Editor Functionality', function () {
   this.slow(6000);
   this.timeout(15000);
+  var app;
 
   beforeEach(function () {
-    return app.start()
+    app = new Application({
+      path: electronPath,
+      args: [path.join(__dirname, '..')]
     });
+    return app.start();
+  });
 
   afterEach(function () {
-      return app.stop()
-    });
+    if (app && app.isRunning()) {
+      return app.stop();
+    }
+  });
   
   // Test full input, save to open loop
   it('should successfuly implement full input, save, to open loop', async () => {
