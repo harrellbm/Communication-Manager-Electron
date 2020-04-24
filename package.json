@@ -23,7 +23,8 @@
   "dependencies": {
     "dragula": "^3.7.2",
     "electron": "^8.2.3",
-    "electron-tabs": "^0.15.0"
+    "electron-tabs": "^0.15.0",
+    "moment": "^2.24.0"
   },
   "devDependencies": {
     "@types/mocha": "^7.0.2",
