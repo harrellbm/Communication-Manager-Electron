@@ -24,7 +24,7 @@ describe('Test Communication with Main process', function () {
       return app.stop();
     }
   });
-  
+
   // Test ipc messages to main
   it('should send data to save over ipc and receive it back from main', async () => {
     await app.client.waitUntilWindowLoaded();
@@ -32,6 +32,13 @@ describe('Test Communication with Main process', function () {
     let file = await app.electron.ipcRenderer.sendSync('open-file');
     //console.log('returned file: ', file);
     expect(file).to.be.a('string').that.equals('Test data to main');
+  });
+  
+  // Test open editor
+  it('should open editor by ipc', async () => {
+    await app.client.waitUntilWindowLoaded();
+    await app.electron.ipcRenderer.send('edit', 'open editor');
+    //expect(file).to.be.a('string').that.equals('Test data to main');
   });
 
   // Test passing initiatives to main and then reloading

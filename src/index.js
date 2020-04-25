@@ -154,17 +154,31 @@ function addMess (event='', messId='') {// If message id is passed in it will lo
     aveDrop.value = messLoad.avenue_ids;
     }
   mess.appendChild(aveDrop);
+  
+  // Div to hold all buttons
+  let btnArray = document.createElement("div");
+  btnArray.setAttribute("class", "btnArray");
+  btnArray.setAttribute("id", `btnArray${id}`);
 
-  /* add edit options */
+    // Creates and adds dynamic event listener to edit button
+    let editBtn = document.createElement("input");
+    editBtn.setAttribute("class", "messEdit");
+    editBtn.setAttribute("id", `messEdit${id}`);
+    editBtn.setAttribute("type", "button");
+    editBtn.setAttribute("value", "Edit");
+    editBtn.addEventListener("click", function () {editMess(mess)}) ;
+    btnArray.appendChild(editBtn);
 
-  // Creates and adds dynamic event listener to delete button
-  let deleteBtn = document.createElement("input");
-  deleteBtn.setAttribute("class", "messDelete");
-  deleteBtn.setAttribute("id", `messDelete${id}`);
-  deleteBtn.setAttribute("type", "button");
-  deleteBtn.setAttribute("value", "x");
-  deleteBtn.addEventListener("click", function () {deleteMess(mess)}) ;
-  mess.appendChild(deleteBtn);
+    // Creates and adds dynamic event listener to delete button
+    let deleteBtn = document.createElement("input");
+    deleteBtn.setAttribute("class", "messDelete");
+    deleteBtn.setAttribute("id", `messDelete${id}`);
+    deleteBtn.setAttribute("type", "button");
+    deleteBtn.setAttribute("value", "x");
+    deleteBtn.addEventListener("click", function () {deleteMess(mess)}) ;
+    btnArray.appendChild(deleteBtn);
+
+  mess.appendChild(btnArray)
 
   // Get the main div that holds all the avenues and append the new one
   //console.log("message", mess);
@@ -193,6 +207,10 @@ function deleteMess (mess) {
   currentInitiative.messages.delete(id); 
 };
 
+// Edit message 
+function editMess (mess) {
+ipc.send('edit', `opening editor${mess}`)
+}
 // Adds an Avenue to do the DOM
 document.getElementById('addAve').addEventListener("click", addAve);
 function addAve (event='', aveId='', location='avenueIn') { // If avenue id is passed in it will load it from the initative object. Otherwise it is treated as a new avenue

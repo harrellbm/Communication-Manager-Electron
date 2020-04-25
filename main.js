@@ -49,7 +49,7 @@ function createWindow (name, tag, html) {
 // Create all the initial windows 
 function setUpWindows() {
   createWindow('message_manager','manager', './src/index.html');
-  createWindow('message_editor','editor','./src/message_editor.html');
+  //createWindow('message_editor','editor','./src/message_editor.html');
   //console.log(windows)
 }
 
@@ -95,4 +95,9 @@ ipc.on('open-file', function (event, arg) {
   let fileData = JSON.parse(rawData)
   //console.log(fileData)
   event.returnValue = fileData
+})
+
+ipc.on('edit', function (event, arg) {
+  createWindow('message_editor','editor','./src/message_editor.html');
+  console.log(arg);
 })

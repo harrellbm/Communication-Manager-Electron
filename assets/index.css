@@ -180,15 +180,25 @@ textarea{
       grid-row-start: 1;
       grid-row-end: 4;
       }
-  
-    /* Delete button */
-    .messDelete{
-      width: 1.4rem;
-      height: 1.4rem;
+    
+    /* Div to hold buttons */
+    .btnArray{
       grid-column-start: 1;
       grid-column-end: 2;
       grid-row-start: 3;
       grid-row-end: 4;
+      }
+    
+    /* Edit button */
+    .messEdit{
+      width: 2.5rem;
+      height: 1.4rem;
+    }
+
+    /* Delete button */
+    .messDelete{
+      width: 1.4rem;
+      height: 1.4rem;
       }
 
   /* Rules for dynamically added Avenues */
