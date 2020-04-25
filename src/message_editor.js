@@ -5,34 +5,27 @@
 const ipc = require('electron').ipcRenderer;
 const templates = require('./objectTemplate.js')
 
-var currentMessage = templates.createMessage();
+// Take in the id and message object upon editor creation and load content
+var messageId, currentMessage;
+ipc.on('load', function (event, id, messageobj){ 
+  messageId = id;
+  currentMessage = messageobj;
+  console.log('messageId: ', messageId, 'message content; ', currentMessage);
+  document.getElementById('title').value = currentMessage.title
+  document.getElementById('greeting').value = currentMessage.greeting
+  document.getElementById('content').value = currentMessage.content
+  document.getElementById('signature').value = currentMessage.signature
+})
 
-// Save does not function quite right yet. Need to update message object so that double saves do not happen
-//handles event from the save button
-document.getElementById('save').addEventListener("click", saveFile);
-function saveFile () {
-  let titleValue = document.getElementById('title').value;
-  let greetingValue = document.getElementById('greeting').value;
-  let contentValue = document.getElementById('content').value;
-  let signatureValue = document.getElementById('signature').value;
-  currentMessage.change_title(titleValue);
-  currentMessage.change_greeting(greetingValue);
-  currentMessage.change_content(contentValue);
-  currentMessage.change_signature(signatureValue);
+// Saves message from editor on editor closed or save button clicked 
+window.onbeforeunload = function (e) { saveMessage(); };
+document.getElementById('save').addEventListener("click", saveMessage);
+function saveMessage () {
+  currentMessage.title = document.getElementById('title').value;
+  currentMessage.greeting = document.getElementById('greeting').value;
+  currentMessage.content = document.getElementById('content').value;
+  currentMessage.signature = document.getElementById('signature').value;
 
-  console.log('message to be saved: ', currentMessage)
-  ipc.send('save', currentMessage)
-};
-
-// Handles the event from the open button
-// Uses synchronous call for now 
-document.getElementById('open').addEventListener("click", openFile);
-function openFile () {
-  let file = ipc.sendSync('open-file')// Sents for file 
-  console.log('on renderer side' , file)
-  // Loads file values to static elements
-  document.getElementById('title').value = file.title
-  document.getElementById('greeting').value = file.greeting
-  document.getElementById('content').value = file.content
-  document.getElementById('signature').value = file.signature
+  console.log('message to be saved: ', messageId, currentMessage);
+  ipc.send('save-mess', messageId, currentMessage)
 };

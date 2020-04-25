@@ -209,8 +209,25 @@ function deleteMess (mess) {
 
 // Edit message 
 function editMess (mess) {
-ipc.send('edit', `opening editor${mess}`)
-}
+  let id = mess.id[7]; // Take only the number off of the end of the ui id 
+  let messContent = currentInitiative.messages.get(`${id}`); // get message object content
+  //console.log('message sent to main: ', messContent);
+  ipc.send('edit', id, messContent); // Send it all to main to be pinged to the editor
+};
+
+// On message editor save or close receive new message content and update
+ipc.on('update-mess', function (event, messageId, messageObj) {
+  let message = currentInitiative.messages.get(messageId);
+  let uiTitle = document.getElementById(`messTitle${messageId}`);
+  uiTitle.value = messageObj.title;
+  message.change_title(messageObj.title);
+  message.change_greeting(messageObj.greeting);
+  message.change_content(messageObj.content);
+  message.change_signature(messageObj.signature);
+  //console.log('updated message', message);
+})
+
+
 // Adds an Avenue to do the DOM
 document.getElementById('addAve').addEventListener("click", addAve);
 function addAve (event='', aveId='', location='avenueIn') { // If avenue id is passed in it will load it from the initative object. Otherwise it is treated as a new avenue
