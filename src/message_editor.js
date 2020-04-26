@@ -3,10 +3,10 @@
 // All of the Node.js APIs are available in this process.
 //this is the js file for the message manager tab
 const ipc = require('electron').ipcRenderer;
-const templates = require('./objectTemplate.js');
 const Quill = require('quill');
 
-// Set up editors 
+// Set up editors
+// Editor for Greeting  
 var greeting = new Quill('#greeting', {
   modules: { 
     toolbar: true    
@@ -15,6 +15,7 @@ var greeting = new Quill('#greeting', {
   theme: 'snow'
 });
 
+// Editor for Content
 var content = new Quill('#content', {
   modules: { 
     toolbar: [
@@ -35,6 +36,7 @@ var content = new Quill('#content', {
   theme: 'snow'
 });
 
+// Editor for Signature
 var signature = new Quill('#signature', {
   modules: { 
     toolbar: true    
@@ -57,16 +59,15 @@ ipc.on('load', function (event, id, messageobj){
 })
 
 // Collect content from editors 
-
 greeting.on('text-change', function() {
   currentMessage.greeting = greeting.getContents();
-  var justHtml = greeting.root.innerHTML;
+  //var justHtml = greeting.root.innerHTML; // get basic html from editor
   console.log('message object: ', currentMessage)
 });
 
 content.on('text-change', function() {
   currentMessage.content = content.getContents();
-  var justHtml = content.root.innerHTML;
+  //var justHtml = content.root.innerHTML;
   console.log('message object: ', currentMessage)
 });
 
@@ -86,3 +87,5 @@ function saveMessage () {
   console.log('message to be saved: ', messageId, currentMessage);
   ipc.send('save-mess', messageId, currentMessage)
 };
+
+/* add handler for copy event */

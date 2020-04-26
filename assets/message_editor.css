@@ -1,34 +1,25 @@
 /* Container for full grid */
-/*.wrapper{
+.wrapper{
   display: grid;
   grid-template-columns: 1fr;
-  grid-template-rows: 8vh 4vh 8vh 20vh 4vh 24vh 4vh 20vh 8vh;
+  grid-template-rows: 8vh 4vh 6vh 9vh 4vh 9vh 33vh 4vh 6vh 9vh 8vh;
   background-color: rgb(139, 203, 224);
 }
 
 /* global styles for element types */
-/*body{
+body{
   margin: 0;
+  background-color: rgb(139, 203, 224)
 }
 
-p{
+/* Common class for text titles */
+.title{
   text-align: center;
-  background-color: rgb(139, 203, 224);
-  margin: 0px;
+  margin: 0;
+  margin-top: 0.1rem;
 }
-
-textarea{
-  resize: none;
-}
-*/
-/* Common class for tags at top of message editor 
-.tag{
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-Common class button elements 
+ 
+/* Common class button elements */ 
 .button{
 padding-top: 0.3rem;
 padding-bottom: 0.3rem;
@@ -39,19 +30,20 @@ flex-grow: 0.1;
 flex-shrink: 1;
 }
 
- Common class for message textareas 
+ /* Common class for message textareas */ 
 .message{
-  height: 23vh;
+  /* height: 23vh; */
   width: 90%;
   margin: auto;
+  background-color: rgb(252, 252, 252);
 }
 
- input for title 
+/* input for title */ 
 #title{
   margin-left: 0.5rem;
 }
 
- Text title for greeting 
+/* Text title for greeting 
 #greeting_title{
   grid-row-start: 2;
   grid-row-end: 3;
@@ -111,13 +103,18 @@ flex-shrink: 1;
   grid-row-end: 9;
   grid-column-start: 1;
   grid-column-end: 2;
-}
+}*/
 
-/* container on the bottom 
-#bottom{
-  grid-column-start: 1;
-  grid-column-end: 2;
+/* container for top title and title input */
+#tag{
   display: flex;
   justify-content: center;
   align-items: center;
-}*/
+}
+
+/* container on the bottom */
+#bottom{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
