@@ -3,7 +3,16 @@
 // All of the Node.js APIs are available in this process.
 //this is the js file for the message manager tab
 const ipc = require('electron').ipcRenderer;
-const templates = require('./objectTemplate.js')
+const templates = require('./objectTemplate.js');
+const Quill = require('quill');
+
+var editor = new Quill('#content', {
+  modules: { 
+    toolbar: true    
+  },
+  theme: 'snow'
+});
+
 
 // Take in the id and message object upon editor creation and load content
 var messageId, currentMessage;
