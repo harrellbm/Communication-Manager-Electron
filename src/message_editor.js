@@ -3,6 +3,7 @@
 // All of the Node.js APIs are available in this process.
 //this is the js file for the message manager tab
 const ipc = require('electron').ipcRenderer;
+const clipboard = require('electron').clipboard;
 const Quill = require('quill');
 
 // Set up editors
@@ -88,4 +89,15 @@ function saveMessage () {
   ipc.send('save-mess', messageId, currentMessage)
 };
 
-/* add handler for copy event */
+
+// Copies message to clipboard for use ouside of manager 
+document.getElementById('copy').addEventListener("click", copyMessage)
+function copyMessage() {
+  let Htmlgreet = greeting.root.innerHTML; // get basic html from editor
+  let Htmlcontt = content.root.innerHTML; // get basic html from editor
+  let Htmlsignt = signature.root.innerHTML; // get basic html from editor
+  let HtmlMess = Htmlgreet + Htmlcontt + Htmlsignt;
+  //console.log('Greeting', Htmlgreet, 'content', Htmlcontt, 'signature', Htmlsignt)
+  //console.log('all together', HtmlMess)
+  clipboard.writeHTML(HtmlMess);
+  }
