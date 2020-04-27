@@ -52,22 +52,21 @@ flex-shrink: 1;
   display: flex;
   justify-content: center;
   align-items: center;
-}
-#toolBar{
-  grid-row-start: 3;
-  grid-row-end: 4;
-  grid-column-start: 1;
-  grid-column-end: 2;
-}
- Textarea for greeting 
-#greeting{
-  grid-row-start: 4;
-  grid-row-end: 5;
-  grid-column-start: 1;
-  grid-column-end: 2;
+}*/
+
+/* tool bar formatting */
+.ql-toolbar.ql-snow {
+    margin-left: 3%;
+    margin-right: 3%;
 }
 
- Text title for content 
+/*  for greeting */
+#greeting{
+  margin-left: 3%;
+  margin-right: 3%;
+}
+
+/* Text title for content 
 #content_title{
   grid-row-start: 5;
   grid-row-end: 6;
@@ -78,12 +77,10 @@ flex-shrink: 1;
   align-items: center;
 }
 
- Textarea for content 
+/* Textarea for content */ 
 #content{
-  grid-row-start: 6;
-  grid-row-end: 7;
-  grid-column-start: 1;
-  grid-column-end: 2;
+  margin-left: 3%;
+  margin-right: 3%;
 }
 
 /* Text title for signature 
@@ -97,13 +94,11 @@ flex-shrink: 1;
   align-items: center;
 }
 
-/* Textarea for signature 
+/* Textarea for signature */
 #signature{
-  grid-row-start: 8;
-  grid-row-end: 9;
-  grid-column-start: 1;
-  grid-column-end: 2;
-}*/
+  margin-left: 3%;
+  margin-right: 3%;
+}
 
 /* container for top title and title input */
 #tag{
