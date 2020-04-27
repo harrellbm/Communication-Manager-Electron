@@ -1,8 +1,8 @@
 // This is the js file for the main window
 const ipc = require('electron').ipcRenderer;
 const templates = require('./objectTemplate.js');
-const moment = require('moment');
-const dragula = require('dragula');
+const moment = require('moment'); // For date handling 
+const dragula = require('dragula'); // For drag and drop 
 
 // Initialize initiative object to be used currently
 var currentInitiative = templates.createInitiative();
@@ -39,8 +39,9 @@ document.getElementById("defaultOpen").click();
 
 /* ---- Message Manager related functions ---- */
 
-// Handles event from the save button
-document.getElementById('messSave').addEventListener("click", saveFile);
+// Handles events that trigger saving to file 
+window.onbeforeunload = function (e) { saveFile(); }; // Event on closing Index window 
+document.getElementById('messSave').addEventListener("click", saveFile); // Event from save button 
 function saveFile () {
   // Sync ui and initiative message objects before saving 
   let messKeys = currentInitiative.messages.keys(); 
@@ -217,14 +218,19 @@ function editMess (mess) {
 
 // On message editor save or close receive new message content and update
 ipc.on('update-mess', function (event, messageId, messageObj) {
+  // Get message linked with incoming save from editor
   let message = currentInitiative.messages.get(messageId);
+  // Update the Title in the message manager tab
   let uiTitle = document.getElementById(`messTitle${messageId}`);
   uiTitle.value = messageObj.title;
+  // Update initiative object 
   message.change_title(messageObj.title);
   message.change_greeting(messageObj.greeting);
   message.change_content(messageObj.content);
   message.change_signature(messageObj.signature);
   //console.log('updated message', message);
+  // Then save everything to file
+  saveFile(); 
 })
 
 
