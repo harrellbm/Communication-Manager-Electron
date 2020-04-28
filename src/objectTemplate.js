@@ -1,3 +1,31 @@
+class initiativeCollection {
+   initiatives = new Map();
+
+    // Makes sure that the lowest possible id is assigned to a new avenue 
+    id_fill(objects){
+      let Id = 0;
+      let strId; // holds id that is converted to string
+      let has = true; // holds boolean for if object has key or not 
+      while(has == true){
+         strId = Id.toString(); // turn id to string so that it can be evaluated and possibly returned
+         if (objects.has(strId) == true){ // check to see if map has id or not
+            Id += 1
+            } else { // when avenueId does not equal ave we know that the spot is empty
+               return strId
+               }
+      }
+   };
+
+   // Add a goal to the goals map in the initiative 
+   add_initiative(){
+      let new_initiative = new Initiative();
+      
+      let initiativeId = this.id_fill(this.initiatives)// fill in the lowest available id
+      this.initiatives.set(initiativeId, new_initiative);
+      return initiativeId
+      }
+};
+
 // Constructor for Initiative object.  Top tier data structure 
 class Initiative {
    constructor() {
@@ -502,6 +530,7 @@ module.exports = {
    createGoal, 
    createMessage,
    createAvenue,
+   initiativeCollection,
    Initiative,
    Goal,
    Message,
