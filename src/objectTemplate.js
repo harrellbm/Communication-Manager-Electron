@@ -1,8 +1,8 @@
 class initiativeCollection {
    initiatives = new Map();
 
-    // Makes sure that the lowest possible id is assigned to a new avenue 
-    id_fill(objects){
+   // Makes sure that the lowest possible id is assigned to a new avenue 
+   id_fill(objects){
       let Id = 0;
       let strId; // holds id that is converted to string
       let has = true; // holds boolean for if object has key or not 
@@ -24,6 +24,43 @@ class initiativeCollection {
       this.initiatives.set(initiativeId, new_initiative);
       return initiativeId
       }
+
+      
+   // Prepare initiative to be stringified for Json or sent over ipc by converting nonstandard objects
+   // Note: pack returns a new object that is packed and does not change the current collection
+   pack_for_file(){ // Note: dynamic test held in test_main.js, unit test in test_object_templates.js
+      // Create temporary collection 
+      var container = new initiativeCollection();
+      // Pack each initiative and put in the temporary collection
+      this.initiatives.forEach(function (initiative, key) {
+         let packed = initiative.pack_for_ipc()
+         container.initiatives.set(key, packed)
+      })
+      // Pack collection itself into a vanilla object  
+      let collection_for_ipc = new Object;
+      collection_for_ipc.initiatives = Object.fromEntries(container.initiatives); 
+      
+      return collection_for_ipc // Returns the packaged collection  
+   }
+
+   // Unpack values passed in by Json format from saved file or ipc
+   // Note: unpack from file changed current collection to match incoming data
+   unpack_from_file( file ){ // Note: dynamic test held in test_main.js, unit test in test_object_templates.js
+      // Convert Initiatives back from saved vanilla object
+      this.initiatives = new Map(); 
+      // Reload each initiative into the collection's map 
+      let initiative;
+      for (initiative of Object.entries(file.initiatives)) { // Iterate over the key value pairs from the vanilla object
+         let id = initiative[0];
+         let content = initiative[1];
+         let unpacked = new Initiative(); // Create new Initiative object 
+         // Load all contents into the new Initiative object       
+         unpacked.unpack_from_ipc(content); // unpack all of the initiative's properties  
+         // Add the new Initiative object back to the collection
+         this.initiatives.set(id, unpacked); 
+         }
+      //console.log('new unpacked initiative: ', this.initiatives);
+   }
 };
 
 // Constructor for Initiative object.  Top tier data structure 
@@ -212,10 +249,11 @@ class Initiative {
          }
       }
 
-   /* may need to convert date, message, goal, and avenue to vanilla objects */
+   /* may need to convert message, goal, and avenue to vanilla objects */
    // Prepare initiative to be stringified for Json or sent over ipc by converting nonstandard objects
+   // Note: pack returns a new packed object and does not change current initiative 
    pack_for_ipc(){ // Note: dynamic test held in test_main.js, unit test in test_object_templates.js
-      let initiative_for_ipc = new Initiative(); 
+      let initiative_for_ipc = new Object(); 
       initiative_for_ipc.description = this.description;
       initiative_for_ipc.groups = this.groups;
       initiative_for_ipc.goals = Object.fromEntries(this.goals);// Convert maps to vanilla objects
@@ -228,15 +266,16 @@ class Initiative {
    }
 
    // Unpack values passed in by Json format from saved file or ipc
-   unpack_from_ipc( file ){ // Note: dynamic test held in test_main.js, unit test in test_object_templates.js
-      this.description = file.description; // string 
-      this.groups = file.groups; // array 
+   // Note: unpack changes the current initiative to match the incoming data from ipc or file
+   unpack_from_ipc( ipc ){ // Note: dynamic test held in test_main.js, unit test in test_object_templates.js
+      this.description = ipc.description; // string 
+      this.groups = ipc.groups; // array 
 
       // Convert Goals back from saved vanilla objects
       this.goals = new Map(); // Reset initiative.goals to a map object
       // Reload each goal into an Goal object 
       let goal;
-      for (goal of Object.entries(file.goals)) { // Iterate over the key value pairs from the vanilla object
+      for (goal of Object.entries(ipc.goals)) { // Iterate over the key value pairs from the vanilla object
          let id = goal[0];
          let content = goal[1];
          let unpacked = new Goal(); // Create new Goal object 
@@ -255,7 +294,7 @@ class Initiative {
       this.messages = new Map(); // Reset initiative.messages to a map object
       // Reload each message into an Message object 
       let mess;
-      for (mess of Object.entries(file.messages)) { // Iterate over the key value pairs from the vanilla object
+      for (mess of Object.entries(ipc.messages)) { // Iterate over the key value pairs from the vanilla object
          let id = mess[0];
          let content = mess[1];
          let unpacked = new Message(); // Create new message object 
@@ -275,7 +314,7 @@ class Initiative {
       this.avenues = new Map(); // Reset initiative.avenues to a map object 
       // Reload each avenue into an Avenue object 
       let ave;
-      for (ave of Object.entries(file.avenues)) { // Iterate over the key value pairs from the vanilla object
+      for (ave of Object.entries(ipc.avenues)) { // Iterate over the key value pairs from the vanilla object
          let id = ave[0];
          let content = ave[1];
          let unpacked = new Avenue(); // Create new avenue object 
@@ -292,7 +331,7 @@ class Initiative {
          }
       //console.log('new unpacked avenues: ', this.avenues);
 
-      this.avenue_types = file.avenue_types; // array
+      this.avenue_types = ipc.avenue_types; // array
    }
 };
 
