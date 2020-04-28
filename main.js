@@ -11,7 +11,7 @@ const debug = require('electron-debug')
 //debug({'devToolsMode': 'right'});
 
 const windows = new Map();
-var initatives = template.initiativeCollection(); 
+var initatives = new template.initiativeCollection(); 
 
 function createIndex (name, tag, html) {
   // Create Message editor window
@@ -133,7 +133,7 @@ function save (event, args) {
 ipc.on('open-file', function (event, args) {
   let rawData = fs.readFileSync('data.json')
   let fileData = JSON.parse(rawData)
-  //console.log(fileData)
+  console.log(fileData)
   event.returnValue = fileData
 });
 

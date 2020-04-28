@@ -6,6 +6,31 @@ chai.use(require('chai-datetime'));
 const expect = require('chai').expect;
 const template = require('../src/objectTemplate.js');
 
+describe('Test Main process functions', function () {
+  this.slow(6000);
+  this.timeout(15000);
+  var app;
+  
+  beforeEach(function () {
+    app = new Application({
+      path: electronPath,
+      args: [path.join(__dirname, '..')]
+      });
+    return app.start();
+    });
+  
+  afterEach(function () {
+    if (app && app.isRunning()) {
+      return app.stop();
+      }
+    });
+  
+    /* --- Main related tests --- */
+
+    // need save and open file from collection object 
+  });
+  
+
 describe('Test Communication with Main process', function () {
   this.slow(6000);
   this.timeout(15000);
@@ -15,16 +40,17 @@ describe('Test Communication with Main process', function () {
     app = new Application({
       path: electronPath,
       args: [path.join(__dirname, '..')]
-    });
+      });
     return app.start();
-  });
+    });
 
   afterEach(function () {
     if (app && app.isRunning()) {
       return app.stop();
-    }
-  });
+      }
+    });
 
+  /* --- Index related ipc tests --- */
   // Test ipc messages to main
   it('should send data to save over ipc and receive it back from main', async () => {
     await app.client.waitUntilWindowLoaded();
@@ -32,15 +58,8 @@ describe('Test Communication with Main process', function () {
     let file = await app.electron.ipcRenderer.sendSync('open-file');
     //console.log('returned file: ', file);
     expect(file).to.be.a('string').that.equals('Test data to main');
-  });
+    });
   
-  // Test open editor
-  it('should open editor by ipc', async () => {
-    await app.client.waitUntilWindowLoaded();
-    await app.electron.ipcRenderer.send('edit', 'open editor');
-    //expect(file).to.be.a('string').that.equals('Test data to main');
-  });
-
   // Test passing initiatives to main and then reloading
   it('should pack, send and then unpack an initiative', async () => {
     await app.client.waitUntilWindowLoaded();
@@ -105,5 +124,13 @@ describe('Test Communication with Main process', function () {
     // Avenue types
     expect(after_initiative.avenue_types, 'avenue types are not correct').to.be.a('array').that.includes('Email').and.includes('Text').and.includes('Facebook').and.includes('Instagram').and.includes('Handout').and.includes('Poster').and.includes('Other');
     });
-  
+
+  /* --- Editor Related ipc tests --- */
+  // need to finish 
+  // Test open editor
+  it('should open editor by ipc', async () => {
+    await app.client.waitUntilWindowLoaded();
+    await app.electron.ipcRenderer.send('edit', 'open editor');
+    //expect(file).to.be.a('string').that.equals('Test data to main');
+    });
 });
