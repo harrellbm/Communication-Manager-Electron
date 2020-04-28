@@ -2,6 +2,7 @@
 const {app, BrowserWindow} = require('electron')
 const ipc = require('electron').ipcMain
 const fs = require('fs')
+const template = require('./src/objectTemplate.js')
 const debug = require('electron-debug')
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -10,6 +11,7 @@ const debug = require('electron-debug')
 //debug({'devToolsMode': 'right'});
 
 const windows = new Map();
+var initatives = template.initiativeCollection(); 
 
 function createIndex (name, tag, html) {
   // Create Message editor window
@@ -87,7 +89,7 @@ function createEditor (name, tag, html, messageId, messageObj) {
 function setUpWindows() {
   createIndex('message_manager','index', './src/index.html');
   //console.log(windows)
-}
+};
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
@@ -101,7 +103,7 @@ app.on('window-all-closed', function () {
   if (process.platform !== 'darwin') {
     app.quit();
   }
-})
+});
 
 app.on('activate', function () {
   // On OS X it's common to re-create a window in the app when the
@@ -109,21 +111,23 @@ app.on('activate', function () {
   if (mainWindow === null) {
     createIndex();
   }
-})
+});
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.
 
-// Message Manager ipcs
+
 // Save the current initiative to file as Json
-ipc.on('save', function (event, args) {
+ipc.on('save', function(event, args) {save ( event, args)});
+
+function save (event, args) {
   file = JSON.stringify(args);
   console.log("made it to main", file);
   fs.writeFile('data.json', file, function (err) {
     if (err) throw err;
     console.log('Replaced!');
-  });
-});
+  })
+};
 
 // Open the initative saved in file 
 ipc.on('open-file', function (event, args) {
@@ -133,9 +137,15 @@ ipc.on('open-file', function (event, args) {
   event.returnValue = fileData
 });
 
+// Message Manager ipc
 // Pass the message id and content to the newly created editor
 ipc.on('edit', function (event, messageId, messageObj) { 
   createEditor('message_editor', 'editor','./src/message_editor.html', messageId, messageObj);
+});
+
+ipc.on('update-init', function (event, args){
+  initatives.get
+  console.log('updating from index: ', args)
 });
 
 // Message Editor ipcs

@@ -41,8 +41,8 @@ document.getElementById("defaultOpen").click();
 
 // Handles events that trigger saving to file 
 window.onbeforeunload = function (e) { saveFile(); }; // Event on closing Index window 
-document.getElementById('messSave').addEventListener("click", saveFile); // Event from save button 
-function saveFile () {
+document.getElementById('messSave').addEventListener("click", saveToMain); // Event from save button 
+function saveToMain () {
   // Sync ui and initiative message objects before saving 
   let messKeys = currentInitiative.messages.keys(); 
   for (id of messKeys) {// Each iteration goes through one message
@@ -230,7 +230,7 @@ ipc.on('update-mess', function (event, messageId, messageObj) {
   message.change_signature(messageObj.signature);
   //console.log('updated message', message);
   // Then save everything to file
-  saveFile(); 
+  saveToMain(); 
 })
 
 
