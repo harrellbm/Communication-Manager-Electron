@@ -40,7 +40,7 @@ document.getElementById("defaultOpen").click();
 /* ---- Message Manager related functions ---- */
 
 // Handles events that trigger saving to file 
-window.onbeforeunload = function (e) { saveFile(); }; // Event on closing Index window 
+window.onbeforeunload = function (e) { saveToMain(); }; // Event on closing Index window 
 document.getElementById('messSave').addEventListener("click", saveToMain); // Event from save button 
 function saveToMain () {
   // Sync ui and initiative message objects before saving 
@@ -73,8 +73,8 @@ function saveToMain () {
     //console.log('updated avenues: ', currentInitiative.avenues);
 
   //console.log('initiative to be saved: ', currentInitiative);
-  let data = currentInitiative.pack_for_ipc();
-  ipc.send('save', data);
+  let ipcInit = currentInitiative.pack_for_ipc();
+  ipc.send('save', '0', ipcInit); // Hardcode id for first avenue for now until initative handling matures 
 };
 
 // Handles the event from the open button // Needs transitioned 
@@ -82,7 +82,7 @@ document.getElementById('messOpen').addEventListener("click", openFile);
 function openFile () {
   let file = ipc.sendSync('open-file'); // Uses synchronous call to avoid user actions before data is loaded 
   currentInitiative.unpack_from_ipc(file);
-  //console.log('Unpacked initiative', currentInitiative);
+  console.log('Unpacked initiative', currentInitiative);
 
   // Clear old message and avenue Ui elements 
   oldMessages = document.getElementById('messageIn');

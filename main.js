@@ -125,11 +125,11 @@ app.on('activate', function () {
 ipc.on('save', function(event, id, ipc) {
   collection.update_init(id, ipc);
   let file = collection.pack_for_file(); // Pack collection into Json 
-  save_to_file (file);
+  saveToFile(file);
 });
 
-// Save from packed Collection object 
-function save_to_file (file) {
+// Function to save from packed Collection object 
+function saveToFile (file) {
   file = JSON.stringify(file);
   console.log("made it to main", file);
   fs.writeFile('data.json', file, function (err) {
@@ -140,7 +140,7 @@ function save_to_file (file) {
 
 // Open the initative saved in file 
 ipc.on('open-file', function (event, args) { 
-  let fileData = open_from_file(); // Get raw Json 
+  let fileData = openFromFile(); // Get raw Json 
   collection.unpack_from_file(fileData); // Unpack into active Collection object
 
   // For now just return the first initiative until better initative handleing is implemented
@@ -149,23 +149,18 @@ ipc.on('open-file', function (event, args) {
   event.returnValue = ipcInit // Return packed initiative 
 });
 
-// Open from data.json file
-function open_from_file () {
+// Function to open from data.json file
+function openFromFile () {
   let rawData = fs.readFileSync('data.json')
   let fileData = JSON.parse(rawData)
   console.log(fileData)
   return fileData
   };
 
-// Message Manager ipc
+// Message Manager ipcs
 // Pass the message id and content to the newly created editor
 ipc.on('edit', function (event, messageId, messageObj) { 
   createEditor('message_editor', 'editor','./src/message_editor.html', messageId, messageObj);
-});
-
-ipc.on('update-init', function (event, args){
-  initatives.get
-  console.log('updating from index: ', args)
 });
 
 // Message Editor ipcs
