@@ -51,7 +51,7 @@ function createIndex (name, tag, html) {
   return newWindow;
 };
 
-function createEditor (name, tag, html, messageId, messageObj) {
+function createEditor (name, tag, html, initativeId, messageId, messageObj) {
   // Create Message editor window
   let newWindow = new BrowserWindow({
     width: 1000,
@@ -72,7 +72,8 @@ function createEditor (name, tag, html, messageId, messageObj) {
 
   // When loaded show 
   newWindow.once('ready-to-show', function () {
-    newWindow.webContents.send('load', messageId, messageObj); // Send the message id and message object to the editor's JavaScript
+    // Send the initiative id, message id, and message object to the editor's JavaScript process
+    newWindow.webContents.send('load', initativeId, messageId, messageObj); 
     newWindow.show();
   });
   
@@ -131,10 +132,10 @@ ipc.on('save', function(event, id, ipc) {
 // Function to save from packed Collection object 
 function saveToFile (file) {
   file = JSON.stringify(file);
-  console.log("made it to main", file);
+  console.log("made it to main save function", file);
   fs.writeFile('data.json', file, function (err) {
     if (err) throw err;
-    console.log('Replaced!');
+    console.log('Saved successfully!');
   })
 };
 
@@ -144,9 +145,14 @@ ipc.on('open-file', function (event, args) {
   collection.unpack_from_file(fileData); // Unpack into active Collection object
 
   // For now just return the first initiative until better initative handleing is implemented
-  let initiative = collection.initiatives.get('0');
+  let initId = '0';
+  let initiative = collection.initiatives.get(initId);
   let ipcInit = initiative.pack_for_ipc();
-  event.returnValue = ipcInit // Return packed initiative 
+  // Pack initiative id and packed initiative into one object for returning by ipc
+  let ipcPack = {};
+  ipcPack.initId = initId;
+  ipcPack.ipcInit = ipcInit;
+  event.returnValue = ipcPack // Return packed initiative 
 });
 
 // Function to open from data.json file
@@ -159,14 +165,21 @@ function openFromFile () {
 
 // Message Manager ipcs
 // Pass the message id and content to the newly created editor
-ipc.on('edit', function (event, messageId, messageObj) { 
-  createEditor('message_editor', 'editor','./src/message_editor.html', messageId, messageObj);
+ipc.on('edit', function (event, initativeId, messageId, messageObj) { 
+  createEditor('message_editor', 'editor','./src/message_editor.html', initativeId, messageId, messageObj);
 });
 
 // Message Editor ipcs
 // Receive the edited message from closed or saved message editor
-ipc.on('save-mess', function (event, messageId, currentMessage) {
-  //console.log('editor id: ', messageId, 'saved from editor: ', currentMessage);
+ipc.on('save-mess', function (event, initId,  messageId, currentMessage) {
+  //console.log('initiative id: ', initId, 'editor id: ', messageId, 'saved from editor: ', currentMessage);
+  // Send message to update the main window
   let index = windows.get('index'); // Pull up reference to webcontents for index window
-  index.webContents.send('update-mess', messageId, currentMessage); // Send message to the main window 
+  index.webContents.send('update-mess', messageId, currentMessage);
+  // Update collection object 
+  console.log('init id: ', initId, 'message content: ', currentMessage);
+  console.log(collection);
+  collection.update_mess(initId, messageId, currentMessage); 
+  let file = collection.pack_for_file();
+  saveToFile(file); 
 });

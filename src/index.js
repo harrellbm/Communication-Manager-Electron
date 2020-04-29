@@ -6,6 +6,7 @@ const dragula = require('dragula'); // For drag and drop
 
 // Initialize initiative object to be used currently
 var currentInitiative = templates.createInitiative();
+var currentInitiativeId;
 
 /* ---- Implement tabs ---- */
 function openPage(pageName, elmnt) { // linked to directly from html
@@ -74,15 +75,16 @@ function saveToMain () {
 
   //console.log('initiative to be saved: ', currentInitiative);
   let ipcInit = currentInitiative.pack_for_ipc();
-  ipc.send('save', '0', ipcInit); // Hardcode id for first avenue for now until initative handling matures 
+  ipc.send('save', currentInitiativeId, ipcInit);  
 };
 
 // Handles the event from the open button // Needs transitioned 
 document.getElementById('messOpen').addEventListener("click", openFile);
 function openFile () {
-  let file = ipc.sendSync('open-file'); // Uses synchronous call to avoid user actions before data is loaded 
-  currentInitiative.unpack_from_ipc(file);
-  console.log('Unpacked initiative', currentInitiative);
+  let ipcPack = ipc.sendSync('open-file'); // Uses synchronous call to avoid user actions before data is loaded 
+  currentInitiativeId = ipcPack.initId;
+  currentInitiative.unpack_from_ipc(ipcPack.ipcInit);
+  //console.log('init id: ', currentInitiativeId, 'Unpacked initiative', currentInitiative);
 
   // Clear old message and avenue Ui elements 
   oldMessages = document.getElementById('messageIn');
@@ -210,10 +212,10 @@ function deleteMess (mess) {
 
 // Edit message 
 function editMess (mess) {
-  let id = mess.id[7]; // Take only the number off of the end of the ui id 
-  let messContent = currentInitiative.messages.get(`${id}`); // get message object content
-  //console.log('message sent to main: ', messContent);
-  ipc.send('edit', id, messContent); // Send it all to main to be pinged to the editor
+  let messId = mess.id[7]; // Take only the number off of the end of the ui id 
+  let messContent = currentInitiative.messages.get(`${messId}`); // get message object content
+  //console.log('init id: ', currentInitiativeId, 'mess id: ', messId, 'message sent to main: ', messContent);
+  ipc.send('edit', currentInitiativeId, messId, messContent); // Send it all to main to be pinged to the editor
 };
 
 // On message editor save or close receive new message content and update
@@ -229,9 +231,7 @@ ipc.on('update-mess', function (event, messageId, messageObj) {
   message.change_content(messageObj.content);
   message.change_signature(messageObj.signature);
   //console.log('updated message', message);
-  // Then save everything to file
-  saveToMain(); 
-})
+  });
 
 
 // Adds an Avenue to do the DOM

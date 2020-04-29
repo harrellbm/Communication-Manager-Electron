@@ -65,11 +65,12 @@ describe('Test Communication with Main process', function () {
     // Send
     await app.electron.ipcRenderer.send('save', '0', ipcInit);
     // Call to open it back up 
-    let file = await app.electron.ipcRenderer.sendSync('open-file');
-    //console.log('returned file: ', file);
+    let ipcPack = await app.electron.ipcRenderer.sendSync('open-file');
+    //console.log('returned file: ', ipcPack);
     // Unpack from ipc
+    // Note: currently no need for ipcPack.initId but probably in the future 
     let afterInit = new templates.Initiative();
-    afterInit.unpack_from_ipc(file);
+    afterInit.unpack_from_ipc(ipcPack.ipcInit);
     //console.log('unpacked initative: ', afterInit);
     expect(afterInit, 'Initiative is not an instance of the initiative object').to.be.instanceOf(templates.Initiative);
     expect(afterInit.description, 'Does not have the proper description').to.be.a('string').that.equals('This is the updated description');

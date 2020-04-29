@@ -47,11 +47,12 @@ var signature = new Quill('#signature', {
 });
 
 // Take in the id and message object upon editor creation and load content
-var messageId, currentMessage;
-ipc.on('load', function (event, id, messageobj){ 
-  messageId = id;
+var initativeId, messageId, currentMessage;
+ipc.on('load', function (event, initId, messId, messageobj){ 
+  messageId = messId;
+  initativeId = initId;
   currentMessage = messageobj;
-  console.log('messageId: ', messageId, 'message content; ', currentMessage);
+  console.log('initativeId: ', initativeId, 'messageId: ', messageId, 'message content; ', currentMessage);
   document.getElementById('title').value = currentMessage.title
   // Load saved deltas to each editor 
   greeting.setContents(currentMessage.greeting);
@@ -63,19 +64,19 @@ ipc.on('load', function (event, id, messageobj){
 greeting.on('text-change', function() {
   currentMessage.greeting = greeting.getContents();
   //var justHtml = greeting.root.innerHTML; // get basic html from editor
-  console.log('message object: ', currentMessage)
+  //console.log('message object: ', currentMessage)
 });
 
 content.on('text-change', function() {
   currentMessage.content = content.getContents();
   //var justHtml = content.root.innerHTML;
-  console.log('message object: ', currentMessage)
+  //console.log('message object: ', currentMessage)
 });
 
 signature.on('text-change', function() {
   currentMessage.signature = signature.getContents();
   //var justHtml = signature.root.innerHTML;
-  console.log('message object: ', currentMessage)
+  //console.log('message object: ', currentMessage)
 });
 
 // Saves message from editor on editor closed or save button clicked 
@@ -85,8 +86,8 @@ function saveMessage () {
   currentMessage.title = document.getElementById('title').value;
   // Other text inputs are updated on the fly by Quill editors 
 
-  console.log('message to be saved: ', messageId, currentMessage);
-  ipc.send('save-mess', messageId, currentMessage)
+  console.log('initId: ', initativeId, 'message to be saved: ', messageId, currentMessage);
+  ipc.send('save-mess', initativeId, messageId, currentMessage);
 };
 
 

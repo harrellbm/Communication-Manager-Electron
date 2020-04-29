@@ -36,14 +36,14 @@ describe('Test Message Editor Functionality', function () {
     testMess.content = 'Change of plans.';
     testMess.signature = 'Your Boss';
     // Launch editor
-    await app.electron.ipcRenderer.send('edit', '0', testMess);
+    await app.electron.ipcRenderer.send('edit', '0', '0', testMess);
   
     let count = await app.client.getWindowCount()
     expect(count, 'Editor did not open').to.equal(2);
     });
 
   // Test full launch editor, input, click save then open loop
-  it('should successfuly implement full input, save, to open loop', async () => {
+  it('should successfully implement full input, save, to open loop', async () => {
     await app.client.waitUntilWindowLoaded();
     // Make a message object that mimics being sent over ipc 
     let testMess = {};
@@ -52,8 +52,8 @@ describe('Test Message Editor Functionality', function () {
     testMess.content = 'Change of plans.';
     testMess.signature = 'Your Boss';
     // Launch editor
-    await app.electron.ipcRenderer.send('edit', '0', testMess);
-    await app.client.waitUntilWindowLoaded();
+    await app.electron.ipcRenderer.send('edit','0', '0', testMess);
+    //await app.client.waitUntilWindowLoaded();
     await app.client.switchWindow('Message Editor');
 
     /*let titleCon = await app.client.$('#title').setValue('This is a test Title');
