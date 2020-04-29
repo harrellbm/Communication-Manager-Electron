@@ -18,15 +18,47 @@ class initiativeCollection {
    };
 
    // Add a goal to the goals map in the initiative 
-   add_initiative(){
+   add_initiative(description = '', groups = '') {
       let new_initiative = new Initiative();
+      new_initiative.description = description
+      
+      // Set any initial groups.  Can take a single string or array of strings
+      let array = [groups]
+      let value;
+      let id;
+      for(value of array){
+         if(typeof value === "string"){
+            new_initiative.groups.push(value)
+         } else if (value.constructor === Array){
+            for(id of value){
+               new_initiative.groups.push(id)
+            }
+         }
+      }
+      
+      // goals, messages, and avenues will be added after initialization 
       
       let initiativeId = this.id_fill(this.initiatives)// fill in the lowest available id
       this.initiatives.set(initiativeId, new_initiative);
       return initiativeId
       }
 
-      
+   update_init(initId, ipc) {
+      let initiative = new Initiative();
+      initiative.unpack_from_ipc(ipc);
+      this.initiatives.set(initId, initiative)
+      //console.log('updated collection: ', this.initiatives)
+
+   }
+
+   update_mess(initId, messId, ipc) {
+      let initiative = this.initiatives.get(initId);
+      let message = initiative.messages.get(messId);
+      message.change_title(ipc.title);
+      message.change_greeting(ipc.greeting);
+      message.change_content(ipc.content);
+      message.change_signature(ipc.signature);
+   }
    // Prepare initiative to be stringified for Json or sent over ipc by converting nonstandard objects
    // Note: pack returns a new object that is packed and does not change the current collection
    pack_for_file(){ // Note: dynamic test held in test_main.js, unit test in test_object_templates.js
@@ -91,6 +123,7 @@ class Initiative {
       return this.description
       }
 
+   /* Add logic to accept both single string and array */
    // Completely writes over current groups 
    change_group(new_group){   // TODO: need data validation
       this.groups = [new_group]
@@ -267,7 +300,7 @@ class Initiative {
    }
 
    // Unpack values passed in by Json format from saved file or ipc
-   // Note: unpack changes the current initiative to match the incoming data from ipc or file
+   // Note: unpack changes the current initiative from in coming ipc or file Json format to object template format
    unpack_from_ipc( ipc ){ // Note: dynamic test held in test_main.js, unit test in test_object_templates.js
       this.description = ipc.description; // string 
       this.groups = ipc.groups; // array 
