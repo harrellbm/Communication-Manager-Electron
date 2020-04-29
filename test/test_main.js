@@ -4,7 +4,7 @@ const path = require('path');
 const chai = require('chai');
 chai.use(require('chai-datetime'));
 const expect = require('chai').expect;
-const template = require('../src/objectTemplate.js');
+const templates = require('../src/objectTemplate.js');
 
 describe('Test Main process functions', function () {
   this.slow(6000);
@@ -56,10 +56,20 @@ describe('Test Communication with Main process', function () {
   // Test ipc messages to main
   it('should send data to save over ipc and receive it back from main', async () => {
     await app.client.waitUntilWindowLoaded();
-    await app.electron.ipcRenderer.send('save', '0', 'Test data to main');
+    // Make an updated initiative and mimic being sent over ipc
+    let testInit = new templates.Initiative();
+    testInit.change_description('This is the updated description');
+    testInit.change_group('Ben my roomate');
+    let ipcInit = testInit.pack_for_ipc();
+    await app.electron.ipcRenderer.send('save', '0', ipcInit);
     let file = await app.electron.ipcRenderer.sendSync('open-file');
-    console.log('returned file: ', file);
-    expect(file.description).to.be.a('string').that.equals('Test data to main');
+    //console.log('returned file: ', file);
+    let afterInit = new templates.Initiative();
+    afterInit.unpack_from_ipc(file);
+    //console.log('unpacked initative: ', afterInit);
+    expect(afterInit, 'Initiative is not an instance of the initiative object').to.be.instanceOf(templates.Initiative);
+    expect(afterInit.description, 'Does not have the proper description').to.be.a('string').that.equals('This is the updated description');
+    expect(afterInit.groups, 'Does not have the proper groups').to.be.an('array').that.includes('Ben my roomate');
     });
   
  /* // Test passing initiatives to main and then reloading
