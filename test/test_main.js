@@ -26,7 +26,9 @@ describe('Test Main process functions', function () {
     });
   
     /* --- Main related tests --- */
-
+    it('should be a filler ', function() {
+      console.log('test')
+    })
     // need save and open file from collection object 
   });
   
@@ -54,13 +56,13 @@ describe('Test Communication with Main process', function () {
   // Test ipc messages to main
   it('should send data to save over ipc and receive it back from main', async () => {
     await app.client.waitUntilWindowLoaded();
-    await app.electron.ipcRenderer.send('save', 'Test data to main');
+    await app.electron.ipcRenderer.send('save', '0', 'Test data to main');
     let file = await app.electron.ipcRenderer.sendSync('open-file');
-    //console.log('returned file: ', file);
-    expect(file).to.be.a('string').that.equals('Test data to main');
+    console.log('returned file: ', file);
+    expect(file.description).to.be.a('string').that.equals('Test data to main');
     });
   
-  // Test passing initiatives to main and then reloading
+ /* // Test passing initiatives to main and then reloading
   it('should pack, send and then unpack an initiative', async () => {
     await app.client.waitUntilWindowLoaded();
     // Create initiative 
@@ -125,12 +127,12 @@ describe('Test Communication with Main process', function () {
     expect(after_initiative.avenue_types, 'avenue types are not correct').to.be.a('array').that.includes('Email').and.includes('Text').and.includes('Facebook').and.includes('Instagram').and.includes('Handout').and.includes('Poster').and.includes('Other');
     });
 
-  /* --- Editor Related ipc tests --- */
+  /* --- Editor Related ipc tests --- 
   // need to finish 
   // Test open editor
   it('should open editor by ipc', async () => {
     await app.client.waitUntilWindowLoaded();
-    await app.electron.ipcRenderer.send('edit', 'open editor');
+    await app.electron.ipcRenderer.send('edit');
     //expect(file).to.be.a('string').that.equals('Test data to main');
-    });
+    });*/
 });

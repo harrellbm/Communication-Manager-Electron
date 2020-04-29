@@ -10,8 +10,11 @@ const debug = require('electron-debug')
 // Open devTools for all browser windows
 //debug({'devToolsMode': 'right'});
 
-const windows = new Map();
-var initatives = new template.initiativeCollection(); 
+const windows = new Map(); // Object to hold references to the webcontents for all windows 
+var collection = new template.initiativeCollection(); // Object to hold all of the initiatives 
+collection.add_initiative(); // For now just add a single initiative 
+
+
 
 function createIndex (name, tag, html) {
   // Create Message editor window
@@ -100,6 +103,7 @@ app.on('ready', setUpWindows);
 app.on('window-all-closed', function () {
   // On OS X it is common for applications and their menu bar
   // to stay active until the user quits explicitly with Cmd + Q
+  collection = null;
   if (process.platform !== 'darwin') {
     app.quit();
   }
@@ -118,9 +122,16 @@ app.on('activate', function () {
 
 
 // Save the current initiative to file as Json
-ipc.on('save', function(event, args) {save ( event, args)});
+ipc.on('save', function(event, id, initative) {
+  let initToSave = collection.initiatives.get(id);
+  initToSave.change_description(initative);
+  let file = initToSave.pack_for_ipc(); // Need to change this to collection object 
+  save (file)
+});
 
-function save (event, args) {
+// save from initiatives object 
+
+function save (args) {
   file = JSON.stringify(args);
   console.log("made it to main", file);
   fs.writeFile('data.json', file, function (err) {

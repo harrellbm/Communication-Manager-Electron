@@ -1,6 +1,7 @@
 class initiativeCollection {
-   initiatives = new Map();
-
+   constructor() {
+      this.initiatives = new Map();
+      };
    // Makes sure that the lowest possible id is assigned to a new avenue 
    id_fill(objects){
       let Id = 0;
