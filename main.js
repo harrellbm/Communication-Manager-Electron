@@ -2,7 +2,7 @@
 const {app, BrowserWindow} = require('electron')
 const ipc = require('electron').ipcMain
 const fs = require('fs')
-const template = require('./src/objectTemplate.js')
+const templates = require('./src/objectTemplate.js')
 const debug = require('electron-debug')
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -11,7 +11,7 @@ const debug = require('electron-debug')
 //debug({'devToolsMode': 'right'});
 
 const windows = new Map(); // Object to hold references to the webcontents for all windows 
-var collection = new template.initiativeCollection(); // Object to hold all of the initiatives 
+var collection = new templates.initiativeCollection(); // Object to hold all of the initiatives 
 collection.add_initiative(); // For now just add a single initiative 
 
 
@@ -122,17 +122,15 @@ app.on('activate', function () {
 
 
 // Save the current initiative to file as Json
-ipc.on('save', function(event, id, initative) {
-  let initToSave = collection.initiatives.get(id);
-  initToSave.change_description(initative);
-  let file = initToSave.pack_for_ipc(); // Need to change this to collection object 
-  save (file)
+ipc.on('save', function(event, id, ipc) {
+  collection.update_init(id, ipc);
+  let file = collection.pack_for_file(); // Pack collection into Json 
+  save_to_file (file);
 });
 
-// save from initiatives object 
-
-function save (args) {
-  file = JSON.stringify(args);
+// Save from packed Collection object 
+function save_to_file (file) {
+  file = JSON.stringify(file);
   console.log("made it to main", file);
   fs.writeFile('data.json', file, function (err) {
     if (err) throw err;
@@ -141,12 +139,23 @@ function save (args) {
 };
 
 // Open the initative saved in file 
-ipc.on('open-file', function (event, args) {
+ipc.on('open-file', function (event, args) { 
+  let fileData = open_from_file(); // Get raw Json 
+  collection.unpack_from_file(fileData); // Unpack into active Collection object
+
+  // For now just return the first initiative until better initative handleing is implemented
+  let initiative = collection.initiatives.get('0');
+  let ipcInit = initiative.pack_for_ipc();
+  event.returnValue = ipcInit // Return packed initiative 
+});
+
+// Open from data.json file
+function open_from_file () {
   let rawData = fs.readFileSync('data.json')
   let fileData = JSON.parse(rawData)
   console.log(fileData)
-  event.returnValue = fileData
-});
+  return fileData
+  };
 
 // Message Manager ipc
 // Pass the message id and content to the newly created editor
