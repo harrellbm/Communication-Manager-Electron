@@ -156,7 +156,7 @@ describe("initiativeCollection object", function () {
         testMess.title = 'This is the updated message';
         testMess.greeting = 'Hi,';
         testMess.content = 'Change of plans.';
-        testMess.signature = 'Your Boss'
+        testMess.signature = 'Your Boss';
 
         
         // Update initative in the collection
