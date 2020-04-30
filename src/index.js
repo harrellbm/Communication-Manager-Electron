@@ -47,10 +47,8 @@ document.getElementById("defaultOpen").click();
 
 /* ---- Message Manager related functions ---- */
 
-// Handles events that trigger saving to file 
-window.onbeforeunload = function (e) { saveToMain(); }; // Event on closing Index window 
-document.getElementById('messSave').addEventListener("click", saveToMain); // Event from save button 
-function saveToMain () {
+// Function to save and pack current initative for ipc
+function save () {
   // Sync ui and initiative message objects before saving 
   let messKeys = currentInitiative.messages.keys(); 
   for (id of messKeys) {// Each iteration goes through one message
@@ -82,6 +80,20 @@ function saveToMain () {
 
   //console.log('initiative to be saved: ', currentInitiative);
   let ipcInit = currentInitiative.pack_for_ipc();
+  return ipcInit;  
+};
+// Handles events that trigger saving to file 
+window.onbeforeunload = function (e) { indexClose(); }; // Event on closing Index window 
+// Function to handle packing and sending current initative to main on window close 
+function indexClose () {
+  let ipcInit = save();
+  ipc.send('index-close', currentInitiativeId, ipcInit);  
+};
+// Handles event from the message manager tab's save button 
+document.getElementById('messSave').addEventListener("click", saveToMain); // Event from save button 
+// Function to handle packing and sending current initiative to main on button save 
+function saveToMain () {
+  let ipcInit = save();
   ipc.send('save', currentInitiativeId, ipcInit);  
 };
 

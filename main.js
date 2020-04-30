@@ -40,7 +40,7 @@ function createIndex (name, tag, html) {
     let ipcPack = {};
     ipcPack.initId = initiativeId;
     ipcPack.initObj = initiativeObj;
-    console.log('initiative on initiatization: ', ipcPack)
+    //console.log('initiative on initiatization: ', ipcPack)
     newWindow.webContents.send('load', ipcPack);
     newWindow.maximize(); // maximize to full screen
     newWindow.show();
@@ -80,7 +80,7 @@ function createEditor (name, tag, html, initativeId, messageId, messageObj) {
   // When loaded show 
   newWindow.once('ready-to-show', function () {
     // Send the initiative id, message id, and message object to the editor's JavaScript process
-    console.log('init id on editor creation: ', initativeId);
+    //console.log('init id on editor creation: ', initativeId);
     newWindow.webContents.send('load', initativeId, messageId, messageObj); 
     newWindow.show();
   });
@@ -129,10 +129,19 @@ app.on('activate', function () {
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.
 
+// On index close save current initiative and open editors before closing everything
+ipc.on('index-close', function(event, initId, ipc) {
+  console.log('init id on index close', initId, 'initiative to be saved', ipc);
+  collection.update_init(initId, ipc);
+  // need to loop through open editors and update collection
+  let file = collection.pack_for_file(); // Pack collection into Json 
+  saveToFile(file);
+  // need to close open editors after save 
+});
 
-// Save the current initiative to file as Json
+// Save the current initiative to file as Json after manual save 
 ipc.on('save', function(event, initId, ipc) {
-  console.log('init id right before being sent to file', initId);
+  //console.log('init id right before being sent to file', initId);
   collection.update_init(initId, ipc);
   let file = collection.pack_for_file(); // Pack collection into Json 
   saveToFile(file);
@@ -168,28 +177,28 @@ ipc.on('open-file', function (event, args) {
 function openFromFile () {
   let rawData = fs.readFileSync('data.json')
   let fileData = JSON.parse(rawData)
-  console.log(fileData)
+  //console.log(fileData)
   return fileData
   };
 
 // Message Manager ipcs
 // Pass the message id and content to the newly created editor
 ipc.on('edit', function (event, initId, messageId, messageObj) { 
-  console.log('init id right before editor creation: ', initId)
+  //console.log('init id right before editor creation: ', initId)
   createEditor('message_editor', 'editor','./src/message_editor.html', initId, messageId, messageObj);
 });
 
 // Message Editor ipcs
 // Receive the edited message from closed or saved message editor
 ipc.on('save-mess', function (event, initId,  messageId, currentMessage) {
-  console.log('initiative id on save from editor: ', initId, 'editor id: ', messageId, 'saved from editor: ', currentMessage);
+  //console.log('initiative id on save from editor: ', initId, 'editor id: ', messageId, 'saved from editor: ', currentMessage);
   // Send message to update the main window
   let index = windows.get('index'); // Pull up reference to webcontents for index window
   index.webContents.send('update-mess', messageId, currentMessage);
   // Update collection object 
-  console.log(collection);
+  //console.log(collection);
   collection.update_mess(initId, messageId, currentMessage); 
-  console.log('collection after message update', collection.initiatives)
+  //console.log('collection after message update', collection.initiatives)
   let file = collection.pack_for_file();
   saveToFile(file); 
 });
