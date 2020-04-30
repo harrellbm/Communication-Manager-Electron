@@ -54,10 +54,19 @@ class initiativeCollection {
    update_mess(initId, messId, ipc) {
       let initiative = this.initiatives.get(initId);
       let message = initiative.messages.get(messId);
+      // Create message if it was not there before
+      let newMess;
+      if (message == undefined) {
+         newMess = new Message();
+         initiative.messages.set(messId, newMess)
+         message = initiative.messages.get(messId);
+      }
+      
       message.change_title(ipc.title);
       message.change_greeting(ipc.greeting);
       message.change_content(ipc.content);
       message.change_signature(ipc.signature);
+      console.log('message in update method: ', message)
    }
    // Prepare initiative to be stringified for Json or sent over ipc by converting nonstandard objects
    // Note: pack returns a new object that is packed and does not change the current collection

@@ -52,7 +52,7 @@ ipc.on('load', function (event, initId, messId, messageobj){
   messageId = messId;
   initativeId = initId;
   currentMessage = messageobj;
-  console.log('initativeId: ', initativeId, 'messageId: ', messageId, 'message content; ', currentMessage);
+  console.log('init Id on load from main: ', initativeId, 'messageId: ', messageId, 'message content; ', currentMessage);
   document.getElementById('title').value = currentMessage.title
   // Load saved deltas to each editor 
   greeting.setContents(currentMessage.greeting);
@@ -86,7 +86,7 @@ function saveMessage () {
   currentMessage.title = document.getElementById('title').value;
   // Other text inputs are updated on the fly by Quill editors 
 
-  console.log('initId: ', initativeId, 'message to be saved: ', messageId, currentMessage);
+  console.log('init Id on save from editor: ', initativeId, 'message to be saved: ', messageId, currentMessage);
   ipc.send('save-mess', initativeId, messageId, currentMessage);
 };
 

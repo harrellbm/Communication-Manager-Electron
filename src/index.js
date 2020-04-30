@@ -4,9 +4,16 @@ const templates = require('./objectTemplate.js');
 const moment = require('moment'); // For date handling 
 const dragula = require('dragula'); // For drag and drop 
 
-// Initialize initiative object to be used currently
-var currentInitiative = templates.createInitiative();
+var currentInitiative;
 var currentInitiativeId;
+// Initialize initiative object to be used currently
+ipc.on('load', function (event, ipcPack) {
+  currentInitiativeId = ipcPack.initId;
+  currentInitiative = new templates.Initiative;
+  currentInitiative.unpack_from_ipc(ipcPack.initObj);
+  //console.log('initiative and id on index load: ', currentInitiativeId, currentInitiative)
+});
+
 
 /* ---- Implement tabs ---- */
 function openPage(pageName, elmnt) { // linked to directly from html
@@ -84,7 +91,7 @@ function openFile () {
   let ipcPack = ipc.sendSync('open-file'); // Uses synchronous call to avoid user actions before data is loaded 
   currentInitiativeId = ipcPack.initId;
   currentInitiative.unpack_from_ipc(ipcPack.ipcInit);
-  //console.log('init id: ', currentInitiativeId, 'Unpacked initiative', currentInitiative);
+  console.log('init id on index load from file: ', currentInitiativeId, 'Unpacked initiative', currentInitiative);
 
   // Clear old message and avenue Ui elements 
   oldMessages = document.getElementById('messageIn');
@@ -214,7 +221,7 @@ function deleteMess (mess) {
 function editMess (mess) {
   let messId = mess.id[7]; // Take only the number off of the end of the ui id 
   let messContent = currentInitiative.messages.get(`${messId}`); // get message object content
-  //console.log('init id: ', currentInitiativeId, 'mess id: ', messId, 'message sent to main: ', messContent);
+  console.log('init id on ipc to launch editor: ', currentInitiativeId, 'mess id: ', messId, 'message sent to main: ', messContent);
   ipc.send('edit', currentInitiativeId, messId, messContent); // Send it all to main to be pinged to the editor
 };
 

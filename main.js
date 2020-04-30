@@ -14,8 +14,6 @@ const windows = new Map(); // Object to hold references to the webcontents for a
 var collection = new templates.initiativeCollection(); // Object to hold all of the initiatives 
 collection.add_initiative(); // For now just add a single initiative 
 
-
-
 function createIndex (name, tag, html) {
   // Create Message editor window
   let newWindow = new BrowserWindow({
@@ -35,6 +33,15 @@ function createIndex (name, tag, html) {
 
   // When loaded show 
   newWindow.once('ready-to-show', () => {
+    // For now just initiate with blank initiative
+    let temp = new templates.Initiative;
+    let initiativeObj = temp.pack_for_ipc();
+    let initiativeId = '0'
+    let ipcPack = {};
+    ipcPack.initId = initiativeId;
+    ipcPack.initObj = initiativeObj;
+    console.log('initiative on initiatization: ', ipcPack)
+    newWindow.webContents.send('load', ipcPack);
     newWindow.maximize(); // maximize to full screen
     newWindow.show();
   });
@@ -73,6 +80,7 @@ function createEditor (name, tag, html, initativeId, messageId, messageObj) {
   // When loaded show 
   newWindow.once('ready-to-show', function () {
     // Send the initiative id, message id, and message object to the editor's JavaScript process
+    console.log('init id on editor creation: ', initativeId);
     newWindow.webContents.send('load', initativeId, messageId, messageObj); 
     newWindow.show();
   });
@@ -104,7 +112,7 @@ app.on('ready', setUpWindows);
 app.on('window-all-closed', function () {
   // On OS X it is common for applications and their menu bar
   // to stay active until the user quits explicitly with Cmd + Q
-  collection = null;
+  //collection = null; // need to check when this event is triggered and when would be a better time to dereference 
   if (process.platform !== 'darwin') {
     app.quit();
   }
@@ -123,8 +131,9 @@ app.on('activate', function () {
 
 
 // Save the current initiative to file as Json
-ipc.on('save', function(event, id, ipc) {
-  collection.update_init(id, ipc);
+ipc.on('save', function(event, initId, ipc) {
+  console.log('init id right before being sent to file', initId);
+  collection.update_init(initId, ipc);
   let file = collection.pack_for_file(); // Pack collection into Json 
   saveToFile(file);
 });
@@ -165,21 +174,22 @@ function openFromFile () {
 
 // Message Manager ipcs
 // Pass the message id and content to the newly created editor
-ipc.on('edit', function (event, initativeId, messageId, messageObj) { 
-  createEditor('message_editor', 'editor','./src/message_editor.html', initativeId, messageId, messageObj);
+ipc.on('edit', function (event, initId, messageId, messageObj) { 
+  console.log('init id right before editor creation: ', initId)
+  createEditor('message_editor', 'editor','./src/message_editor.html', initId, messageId, messageObj);
 });
 
 // Message Editor ipcs
 // Receive the edited message from closed or saved message editor
 ipc.on('save-mess', function (event, initId,  messageId, currentMessage) {
-  //console.log('initiative id: ', initId, 'editor id: ', messageId, 'saved from editor: ', currentMessage);
+  console.log('initiative id on save from editor: ', initId, 'editor id: ', messageId, 'saved from editor: ', currentMessage);
   // Send message to update the main window
   let index = windows.get('index'); // Pull up reference to webcontents for index window
   index.webContents.send('update-mess', messageId, currentMessage);
   // Update collection object 
-  console.log('init id: ', initId, 'message content: ', currentMessage);
   console.log(collection);
   collection.update_mess(initId, messageId, currentMessage); 
+  console.log('collection after message update', collection.initiatives)
   let file = collection.pack_for_file();
   saveToFile(file); 
 });
