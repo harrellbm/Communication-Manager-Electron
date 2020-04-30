@@ -61,7 +61,7 @@ describe('Test Communication with Main process', function () {
     testInit.change_description('This is the updated description');
     testInit.change_group('Ben my roomate');
     // Pack for ipc
-    let ipcInit = testInit.pack_for_ipc();
+    let ipcInit = await testInit.pack_for_ipc();
     // Send
     await app.electron.ipcRenderer.send('save', '0', ipcInit);
     // Call to open it back up 
@@ -70,7 +70,7 @@ describe('Test Communication with Main process', function () {
     // Unpack from ipc
     // Note: currently no need for ipcPack.initId but probably in the future 
     let afterInit = new templates.Initiative();
-    afterInit.unpack_from_ipc(ipcPack.ipcInit);
+    await afterInit.unpack_from_ipc(ipcPack.ipcInit);
     //console.log('unpacked initative: ', afterInit);
     expect(afterInit, 'Initiative is not an instance of the initiative object').to.be.instanceOf(templates.Initiative);
     expect(afterInit.description, 'Does not have the proper description').to.be.a('string').that.equals('This is the updated description');
