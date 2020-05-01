@@ -80,7 +80,7 @@ function createEditor (name, tag, html, initativeId, messageId, messageObj) {
   // When loaded show 
   newWindow.once('ready-to-show', function () {
     // Send the initiative id, message id, and message object to the editor's JavaScript process
-    //console.log('init id on editor creation: ', initativeId);
+    console.log('init id on editor creation: ', initativeId);
     newWindow.webContents.send('load', initativeId, messageId, messageObj); 
     newWindow.show();
   });
@@ -93,7 +93,7 @@ function createEditor (name, tag, html, initativeId, messageId, messageObj) {
   });
 
   // Add reference to webcontents so ipcs to the editor can be assigned later
-  windows.set(messageId, newWindow.webContents);
+  windows.set(messageId, [newWindow.webContents, initativeId, messageId] );
   return newWindow;
 };
 
@@ -142,9 +142,10 @@ ipc.on('index-close', function(event, initId, ipc) {
   collection.update_init(initId, ipc);
   // Send close event to all open editors
    // Note: Saving content from editors is handled on the save-mess channel  
-  windows.forEach( function (webCont, key) {
+  windows.forEach( function (win, key) {
     if (key != 'index') {
-      webCont.send('index-close');
+      win[0].send('index-close');
+      // Note: Editor window references hold an array of [Webcontents, initativeId, messageId] 
     };
   })
   // Note: saveToFile function is called on the will-quit event to prevent unecessary multiple saves 
@@ -152,10 +153,24 @@ ipc.on('index-close', function(event, initId, ipc) {
 
 // Save the current initiative from index as Json after manual save 
 ipc.on('save', function(event, initId, ipc) {
+  // need to update open editors on index save 
   //console.log('init id right before being sent to file', initId);
   collection.update_init(initId, ipc);
   let file = collection.pack_for_file(); // Pack collection into Json 
   saveToFile(file);
+  // Update any open editors with any changes from index 
+  windows.forEach( function (win, key) {
+    if (key != 'index') {
+      // Note: Editor window references hold an array of [Webcontents, initativeId, messageId] 
+      let webCont = win[0];
+      let initId = win[1];
+      let messId = win[2];
+      let initative = collection.initiatives.get(initId);
+      let message = initative.messages.get(messId);
+      // Send updates to editor 
+      webCont.send('load', initId, messId, message);
+      };
+    });
 });
 
 // Function to save to file from packed Collection object 

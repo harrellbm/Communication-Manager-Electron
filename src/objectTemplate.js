@@ -66,7 +66,7 @@ class initiativeCollection {
       message.change_greeting(ipc.greeting);
       message.change_content(ipc.content);
       message.change_signature(ipc.signature);
-      console.log('message in update method: ', message)
+      //console.log('message in update method: ', message)
    }
    // Prepare initiative to be stringified for Json or sent over ipc by converting nonstandard objects
    // Note: pack returns a new object that is packed and does not change the current collection
