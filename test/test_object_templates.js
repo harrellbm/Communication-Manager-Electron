@@ -188,7 +188,7 @@ describe("initiativeCollection object", function () {
     })
     
     // test converting back to maps from json string 
-    it('should return unpacked collection', () => {
+    it('should unpack collection', () => {
         test_collection.add_initiative();
         test_collection.add_initiative();
         //console.log('Collection before packing:', test_collection);
