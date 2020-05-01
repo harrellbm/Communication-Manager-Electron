@@ -31,6 +31,7 @@ function createIndex (name, tag, html) {
     // Add __dirname so that electron-reload can watch render processes
   newWindow.loadFile(html);
 
+  /* need to handle multiple initiatives */
   // When loaded show 
   newWindow.once('ready-to-show', () => {
     // For now just initiate with blank initiative
@@ -135,6 +136,7 @@ app.on('activate', function () {
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.
 
+/* --- Index Related functions and ipcs --- */
 // On index close save current initiative and open editors before closing everything
 ipc.on('index-close', function(event, initId, ipc) {
   // Update collection with anything new from index window
@@ -219,7 +221,7 @@ ipc.on('edit', function (event, initId, messageId, messageObj) {
 // Receive the edited message from closed or saved message editor
   // Note: This event will also be triggered on index-close necessitating the extra if check
 ipc.on('save-mess', function (event, initId,  messageId, currentMessage) {
-  console.log('initiative id on save from editor: ', initId, 'editor id: ', messageId, 'saved from editor: ', currentMessage);
+  //console.log('initiative id on save from editor: ', initId, 'editor id: ', messageId, 'saved from editor: ', currentMessage);
   // Update collection object 
   collection.update_mess(initId, messageId, currentMessage); 
   //console.log('collection after message update', collection.initiatives)
@@ -227,7 +229,7 @@ ipc.on('save-mess', function (event, initId,  messageId, currentMessage) {
   // Send message to update the main window and save to file
   let index = windows.get('index'); // Pull up reference to webcontents for index window
   if(index != undefined) { // Check whether this event was been triggered on index close in which case skip 
-    console.log('index has not been destroyed');
+    //console.log('index has not been destroyed');
     index.webContents.send('update-mess', messageId, currentMessage);
     let file = collection.pack_for_file();
     saveToFile(file);
