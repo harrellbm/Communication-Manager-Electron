@@ -90,6 +90,10 @@ function saveMessage () {
   ipc.send('save-mess', initativeId, messageId, currentMessage);
 };
 
+// Sends contents to main for saving and then closes editor on index window being closed 
+ipc.on('index-close', function(event) {
+  window.close(); // Note: will trigger the onbeforeunload event
+})
 
 // Copies message to clipboard for use ouside of manager 
 document.getElementById('copy').addEventListener("click", copyMessage)

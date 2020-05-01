@@ -49,7 +49,7 @@ function createIndex (name, tag, html) {
   // Emitted when the window is closed.
   newWindow.on('closed', function () {
     // Dereference the window object and delete from set
-    delete windows[name];
+    windows.delete('index');
     newWindow = null;
   });
 
@@ -88,7 +88,7 @@ function createEditor (name, tag, html, initativeId, messageId, messageObj) {
   // Emitted when the window is closed.
   newWindow.on('closed', function () {
     // Dereference the window object and delete from set
-    delete windows[name];
+    windows.delete(messageId);
     newWindow = null;
   });
 
@@ -118,6 +118,12 @@ app.on('window-all-closed', function () {
   }
 });
 
+// Called right after window-all-closed event to save everything right before quitting 
+app.on('will-quit', function () {
+  let file = collection.pack_for_file(); // Pack collection into Json 
+  saveToFile(file);
+})
+
 app.on('activate', function () {
   // On OS X it's common to re-create a window in the app when the
   // dock icon is clicked and there are no other windows open.
@@ -131,15 +137,20 @@ app.on('activate', function () {
 
 // On index close save current initiative and open editors before closing everything
 ipc.on('index-close', function(event, initId, ipc) {
-  console.log('init id on index close', initId, 'initiative to be saved', ipc);
+  // Update collection with anything new from index window
+  //console.log('init id on index close', initId, 'initiative to be saved', ipc);
   collection.update_init(initId, ipc);
-  // need to loop through open editors and update collection
-  let file = collection.pack_for_file(); // Pack collection into Json 
-  saveToFile(file);
-  // need to close open editors after save 
+  // Send close event to all open editors
+   // Note: Saving content from editors is handled on the save-mess channel  
+  windows.forEach( function (webCont, key) {
+    if (key != 'index') {
+      webCont.send('index-close');
+    };
+  })
+  // Note: saveToFile function is called on the will-quit event to prevent unecessary multiple saves 
 });
 
-// Save the current initiative to file as Json after manual save 
+// Save the current initiative from index as Json after manual save 
 ipc.on('save', function(event, initId, ipc) {
   //console.log('init id right before being sent to file', initId);
   collection.update_init(initId, ipc);
@@ -147,7 +158,7 @@ ipc.on('save', function(event, initId, ipc) {
   saveToFile(file);
 });
 
-// Function to save from packed Collection object 
+// Function to save to file from packed Collection object 
 function saveToFile (file) {
   file = JSON.stringify(file);
   console.log("made it to main save function", file);
@@ -188,17 +199,21 @@ ipc.on('edit', function (event, initId, messageId, messageObj) {
   createEditor('message_editor', 'editor','./src/message_editor.html', initId, messageId, messageObj);
 });
 
-// Message Editor ipcs
+/* --- Message Editor ipcs --- */
 // Receive the edited message from closed or saved message editor
+  // Note: This event will also be triggered on index-close necessitating the extra if check
 ipc.on('save-mess', function (event, initId,  messageId, currentMessage) {
-  //console.log('initiative id on save from editor: ', initId, 'editor id: ', messageId, 'saved from editor: ', currentMessage);
-  // Send message to update the main window
-  let index = windows.get('index'); // Pull up reference to webcontents for index window
-  index.webContents.send('update-mess', messageId, currentMessage);
+  console.log('initiative id on save from editor: ', initId, 'editor id: ', messageId, 'saved from editor: ', currentMessage);
   // Update collection object 
-  //console.log(collection);
   collection.update_mess(initId, messageId, currentMessage); 
   //console.log('collection after message update', collection.initiatives)
-  let file = collection.pack_for_file();
-  saveToFile(file); 
+  
+  // Send message to update the main window and save to file
+  let index = windows.get('index'); // Pull up reference to webcontents for index window
+  if(index != undefined) { // Check whether this event was been triggered on index close in which case skip 
+    console.log('index has not been destroyed');
+    index.webContents.send('update-mess', messageId, currentMessage);
+    let file = collection.pack_for_file();
+    saveToFile(file);
+    }
 });
