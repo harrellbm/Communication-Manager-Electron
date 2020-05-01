@@ -48,7 +48,12 @@ var signature = new Quill('#signature', {
 
 // Take in the id and message object upon editor creation and load content
 var initativeId, messageId, currentMessage;
-ipc.on('load', function (event, initId, messId, messageobj){ 
+ipc.on('load', function (event, initId, messId, messageobj){
+  // Check to see if message has been deleted from index and if so close window 
+  if (messageobj == undefined) {
+    window.close();
+    currentMessage = messageobj; // This will be passed to escape from mess-save call on close
+    };
   messageId = messId;
   initativeId = initId;
   currentMessage = messageobj;
@@ -83,6 +88,10 @@ signature.on('text-change', function() {
 window.onbeforeunload = function (e) { saveMessage(); };
 document.getElementById('save').addEventListener("click", saveMessage);
 function saveMessage () {
+  // If message has been deleted escape from save on close 
+  if (currentMessage == undefined) {
+    return
+  }
   currentMessage.title = document.getElementById('title').value;
   // Other text inputs are updated on the fly by Quill editors 
 

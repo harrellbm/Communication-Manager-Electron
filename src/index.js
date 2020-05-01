@@ -228,6 +228,9 @@ function deleteMess (mess) {
   // Remove message from Initiative object 
   let id = mess.id[7]; // Take only the number off of the end of the ui id 
   currentInitiative.messages.delete(id); 
+  // Send updates to main
+  let ipcInit = currentInitiative.pack_for_ipc();
+  ipc.send('save', currentInitiativeId, ipcInit);  
 };
 
 // Edit message 
