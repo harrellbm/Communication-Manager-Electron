@@ -80,7 +80,7 @@ function createEditor (name, tag, html, initativeId, messageId, messageObj) {
   // When loaded show 
   newWindow.once('ready-to-show', function () {
     // Send the initiative id, message id, and message object to the editor's JavaScript process
-    console.log('init id on editor creation: ', initativeId);
+    //console.log('init id on editor creation: ', initativeId);
     newWindow.webContents.send('load', initativeId, messageId, messageObj); 
     newWindow.show();
   });
@@ -143,8 +143,9 @@ ipc.on('index-close', function(event, initId, ipc) {
   // Send close event to all open editors
    // Note: Saving content from editors is handled on the save-mess channel  
   windows.forEach( function (win, key) {
+    let webCont = win[0];
     if (key != 'index') {
-      win[0].send('index-close');
+      webCont.send('index-close');
       // Note: Editor window references hold an array of [Webcontents, initativeId, messageId] 
     };
   })

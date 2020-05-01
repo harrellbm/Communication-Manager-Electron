@@ -207,9 +207,10 @@ function addMess (event='', messId='') {// If message id is passed in it will lo
   document.getElementById("messageIn").appendChild(mess);
 };
 
+/* may need to add handleing for open editors on deletion */
 // Deletes a message from the DOM
 function deleteMess (mess) {
-  // Check if message has linked avenue
+  // Check if message has linked avenues
   let aves = mess.getElementsByClassName('avenue');
   if (aves.length != 0 ) { 
     // Unlink avenues and place them back in avenueIn 
@@ -219,8 +220,8 @@ function deleteMess (mess) {
       currentInitiative.unlink_ids(aveId, messId);
       //console.log('unlinked avenue: ', currentInitiative.avenues.get(aveId), 'unlinked message: ', currentInitiative.messages.get(messId));
       document.getElementById("avenueIn").appendChild(aves[0]);
-      }
-    }
+      };
+    };
   
   // Remove message from UI
   mess.parentElement.removeChild(mess);
@@ -232,9 +233,14 @@ function deleteMess (mess) {
 // Edit message 
 function editMess (mess) {
   let messId = mess.id[7]; // Take only the number off of the end of the ui id 
+  // Update Initiative from ui 
+  let uiTitle = document.getElementById(`messTitle${messId}`);
   let messContent = currentInitiative.messages.get(`${messId}`); // get message object content
+  messContent.change_title(uiTitle.value);
+  console.log('updated initiative: ', currentInitiative.messages)
   console.log('init id on ipc to launch editor: ', currentInitiativeId, 'mess id: ', messId, 'message sent to main: ', messContent);
-  ipc.send('edit', currentInitiativeId, messId, messContent); // Send it all to main to be pinged to the editor
+  // Send it all to main to be pinged to the editor
+  ipc.send('edit', currentInitiativeId, messId, messContent); 
 };
 
 // On message editor save or close receive new message content and update
