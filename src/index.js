@@ -94,6 +94,7 @@ function indexClose () {
 document.getElementById('messSave').addEventListener("click", saveToMain); // Event from save button 
 // Function to handle packing and sending current initiative to main on button save 
 function saveToMain () {
+  // Send alert to let user know that they have saves successfully 
   swal({ title: 'Saved!', icon: 'success', buttons: false });
   let ipcInit = save();
   ipc.send('save', currentInitiativeId, ipcInit);  
