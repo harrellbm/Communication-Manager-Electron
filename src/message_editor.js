@@ -73,7 +73,7 @@ ipc.on('load', function (event, initId, messId, messageobj){
   initativeId = initId;
   currentMessage = messageobj;
   console.log('init Id on load from main: ', initativeId, 'messageId: ', messageId, 'message content; ', currentMessage);
-  document.getElementById('title').value = currentMessage.title
+  document.getElementById('title').value = currentMessage.title;
   // Load saved deltas to each editor 
   greeting.setContents(currentMessage.greeting);
   content.setContents(currentMessage.content);
@@ -84,13 +84,13 @@ ipc.on('load', function (event, initId, messId, messageobj){
 greeting.on('text-change', function() {
   currentMessage.greeting = greeting.getContents();
   //var justHtml = greeting.root.innerHTML; // get basic html from editor
-  //console.log('message object: ', currentMessage)
+  //console.log('message object: ', currentMessage);
 });
 
 content.on('text-change', function() {
   currentMessage.content = content.getContents();
   //var justHtml = content.root.innerHTML;
-  console.log('message object: ', currentMessage)
+  console.log('message object: ', currentMessage);
 });
 
 signature.on('text-change', function() {
@@ -106,7 +106,7 @@ function saveMessage () {
   // If message has been deleted escape from save on close 
   if (currentMessage == undefined) {
     return
-  }
+  };
   currentMessage.title = document.getElementById('title').value;
   // Other text inputs are updated on the fly by Quill editors 
 
@@ -138,10 +138,10 @@ function copyMessage() {
     let converter = new QuillDeltaToHtmlConverter(delMess[id], cfg);
     let html = converter.convert(); 
     htmlMess += html;
-  };
+    };
   console.log('raw html before sending to clipboard', htmlMess);
   // Sent converted message to clipboard
   clipboard.writeHTML(htmlMess);
-  }
+  };
   
  
