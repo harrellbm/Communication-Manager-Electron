@@ -5,12 +5,21 @@
 const ipc = require('electron').ipcRenderer;
 const clipboard = require('electron').clipboard;
 const Quill = require('quill');
+const QuillDeltaToHtmlConverter = require('quill-delta-to-html').QuillDeltaToHtmlConverter;
 
 // Set up editors
 // Editor for Greeting  
 var greeting = new Quill('#greeting', {
   modules: { 
-    toolbar: true    
+    toolbar: [
+      [{ 'font': [] }, { 'size': [] }],
+      ['bold', 'italic', 'underline', 'strike'],
+      [{ 'color': [] }, { 'background': [] }],
+      [{ 'align': [] }, {'indent': '+1'}, {'indent': '-1'}],
+      [{'script': 'sub'}, {'script': 'super'}],              
+      [{ 'direction': 'rtl' }],         
+      ['clean']  
+    ]   
   },
   placeholder: 'Type your greeting here',
   theme: 'snow'
@@ -20,16 +29,14 @@ var greeting = new Quill('#greeting', {
 var content = new Quill('#content', {
   modules: { 
     toolbar: [
-      [{ 'font': [] }],
+      [{ 'font': [] }, { 'size': [] }],
       ['bold', 'italic', 'underline', 'strike'],
-      [{ 'align': [] }],
+      [{ 'color': [] }, { 'background': [] }],
+      [{ 'align': [] }, {'indent': '+1'}, {'indent': '-1'}],
       ['video', 'image', 'link'],
       [{'list': 'ordered'}, {'list': 'bullet'}],
-      [{'script': 'sub'}, {'script': 'super'}],
-      [{'indent': '+1'}, {'indent': '-1'}],
-      [{ 'direction': 'rtl' }],                   
-      [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
-      [{ 'color': [] }, { 'background': [] }],          
+      [{'script': 'sub'}, {'script': 'super'}],              
+      [{ 'direction': 'rtl' }],         
       ['clean']          
      ],
   },
@@ -40,7 +47,15 @@ var content = new Quill('#content', {
 // Editor for Signature
 var signature = new Quill('#signature', {
   modules: { 
-    toolbar: true    
+    toolbar: [
+      [{ 'font': [] }, { 'header': [] }],
+      ['bold', 'italic', 'underline', 'strike'],
+      [{ 'color': [] }, { 'background': [] }],
+      [{ 'align': [] }, {'indent': '+1'}, {'indent': '-1'}],
+      [{'script': 'sub'}, {'script': 'super'}],              
+      [{ 'direction': 'rtl' }],         
+      ['clean']  
+    ]       
   },
   placeholder: 'Type your signature here',
   theme: 'snow'
@@ -75,13 +90,13 @@ greeting.on('text-change', function() {
 content.on('text-change', function() {
   currentMessage.content = content.getContents();
   //var justHtml = content.root.innerHTML;
-  //console.log('message object: ', currentMessage)
+  console.log('message object: ', currentMessage)
 });
 
 signature.on('text-change', function() {
   currentMessage.signature = signature.getContents();
   //var justHtml = signature.root.innerHTML;
-  //console.log('message object: ', currentMessage)
+  console.log('message object: ', currentMessage)
 });
 
 // Saves message from editor on editor closed or save button clicked 
@@ -105,13 +120,28 @@ ipc.on('index-close', function(event) {
 });
 
 // Copies message to clipboard for use ouside of manager 
-document.getElementById('copy').addEventListener("click", copyMessage)
+document.getElementById('copy').addEventListener("click", copyMessage);
+var cfg = {}; // Configuration for converting
 function copyMessage() {
-  let Htmlgreet = greeting.root.innerHTML; // get basic html from editor
-  let Htmlcontt = content.root.innerHTML; // get basic html from editor
-  let Htmlsignt = signature.root.innerHTML; // get basic html from editor
-  let HtmlMess = Htmlgreet + Htmlcontt + Htmlsignt;
-  //console.log('Greeting', Htmlgreet, 'content', Htmlcontt, 'signature', Htmlsignt)
-  //console.log('all together', HtmlMess)
-  clipboard.writeHTML(HtmlMess);
+  // Get delta from editors
+  let delGreet = greeting.getContents(); 
+  let delContt = content.getContents(); 
+  let delSignt = signature.getContents();
+  // put them all in an array 
+  let delMess = [];
+  delMess.push(delGreet.ops);
+  delMess.push(delContt.ops);
+  delMess.push(delSignt.ops);
+  // Loop through deltas and conver to html
+  let htmlMess = '';
+  for (id in delMess) {
+    let converter = new QuillDeltaToHtmlConverter(delMess[id], cfg);
+    let html = converter.convert(); 
+    htmlMess += html;
+  };
+  console.log('raw html before sending to clipboard', htmlMess);
+  // Sent converted message to clipboard
+  clipboard.writeHTML(htmlMess);
   }
+  
+ 
