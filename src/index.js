@@ -191,6 +191,15 @@ function addMess (event='', messId='') {// If message id is passed in it will lo
     editBtn.addEventListener("click", function () {editMess(mess)}) ;
     btnArray.appendChild(editBtn);
 
+    // Creates and adds dynamic event listener to copy button
+    let copyBtn = document.createElement("input");
+    copyBtn.setAttribute("class", "messCopy");
+    copyBtn.setAttribute("id", `messCopy${id}`);
+    copyBtn.setAttribute("type", "button");
+    copyBtn.setAttribute("value", "Copy");
+    copyBtn.addEventListener("click", function () {copyMess(mess)}) ;
+    btnArray.appendChild(copyBtn);
+
     // Creates and adds dynamic event listener to delete button
     let deleteBtn = document.createElement("input");
     deleteBtn.setAttribute("class", "messDelete");
@@ -233,7 +242,7 @@ function deleteMess (mess) {
   ipc.send('save', currentInitiativeId, ipcInit);  
 };
 
-// Edit message 
+// Call back function for Edit button on message element 
 function editMess (mess) {
   let messId = mess.id[7]; // Take only the number off of the end of the ui id 
   // Update Initiative from ui 
@@ -244,6 +253,19 @@ function editMess (mess) {
   console.log('init id on ipc to launch editor: ', currentInitiativeId, 'mess id: ', messId, 'message sent to main: ', messContent);
   // Send it all to main to be pinged to the editor
   ipc.send('edit', currentInitiativeId, messId, messContent); 
+};
+
+// Call back function for Edit button on message element 
+function copyMess (mess) {
+  let messId = mess.id[7]; // Take only the number off of the end of the ui id 
+  // Update Initiative from ui 
+  let uiTitle = document.getElementById(`messTitle${messId}`);
+  let messContent = currentInitiative.messages.get(`${messId}`); // get message object content
+  messContent.change_title(uiTitle.value);
+  console.log('updated initiative: ', currentInitiative.messages)
+  console.log('init id on ipc to launch editor: ', currentInitiativeId, 'mess id: ', messId, 'message sent to main: ', messContent);
+  // Send it all to main to be pinged to the editor
+  //ipc.send('edit', currentInitiativeId, messId, messContent); 
 };
 
 // On message editor save or close receive new message content and update
