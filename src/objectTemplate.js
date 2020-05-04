@@ -378,11 +378,6 @@ class Initiative {
    }
 };
 
-// Constructor wrapper for exporting 
-function createInitiative () {
-   return new Initiative();
-   }
-
 class Goal {
    constructor() {
       // Frequency is going to eventually be some kind of date object to tell how often to schedule this communication
@@ -421,11 +416,6 @@ class Goal {
       /* need clear reminders */
       /* implement date object in reminder */
   };
-
-// Constructor wrapper for exporting 
-function createGoal () {
-   return new Goal();
-}
 
 class Message {
    constructor () {
@@ -499,12 +489,7 @@ class Message {
       }
 };
 
-// Constructor wrapper for exporting 
-function createMessage () {
-    return new Message();
-}
-
-// Constructor for Avenue object.  All methods are held within the Message object  
+ 
 class Avenue {
    constructor() {
       // date is a built in dat object only one date is assigned per avenue
@@ -602,16 +587,7 @@ class Avenue {
       }
 };
 
-// Constructor wrapper for exporting 
-function createAvenue () {
-    return new Avenue();
-}
-
 module.exports = {
-   createInitiative, // depricate these after the rest of the program is converted to normal constructors 
-   createGoal, 
-   createMessage,
-   createAvenue,
    initiativeCollection,
    Initiative,
    Goal,
