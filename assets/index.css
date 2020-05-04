@@ -2,17 +2,20 @@
 body, html {
     height: 100%;
     margin: 0;
-    font-family: Arial;
+    font-family: Helvetica, Arial, sans-serif;
   }
 
 p{
     text-align: center;
     background-color: rgb(139, 203, 224);
     margin: 0px;
+    font-size: 1.15rem;
 }
 
 textarea{
   resize: none;
+  font-size: 1rem;
+  font-family: Helvetica, Arial, sans-serif;
 }
 
 /* Common class for tags at top of tab contents */
@@ -78,7 +81,7 @@ textarea{
   /* Definition of grid for tab's content */
   #messWrapper{
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1.25fr 1fr;
     grid-template-rows: 12vh 69vh 10.5vh;
     background-color: rgb(139, 203, 224);
   }
@@ -112,6 +115,7 @@ textarea{
   }
 
   #messageIn{
+    max-width: 45.7rem;
     grid-row-start: 2;
     grid-row-end: 3;
     grid-column-start: 1;
@@ -119,6 +123,7 @@ textarea{
     }
 
   #avenueIn{
+    max-width: 36.4rem;
     grid-row-start: 2;
     grid-row-end: 3;
     grid-column-start: 2;
@@ -138,9 +143,9 @@ textarea{
   /* Rules for dynamically added Messages */
   .message{
     display: grid;
-    width: 37rem;
-    grid-template-columns: 8rem 29rem;
-    grid-template-rows: 1.4rem 4rem 1.4rem;
+    width: 44.5rem;
+    grid-template-columns: 8rem 36.5rem;
+    grid-template-rows: 1.55rem 5.4rem 1.4rem;
     background-color: #999;
     border: rgb(169, 169, 169);
     border-width: 1px;
@@ -195,6 +200,13 @@ textarea{
       height: 1.4rem;
     }
 
+    /* Copy button */
+    .messCopy{
+      width: 2.5rem;
+      height: 1.4rem;
+      padding-left: 2.5px;
+    }
+
     /* Delete button */
     .messDelete{
       width: 1.4rem;
@@ -203,10 +215,10 @@ textarea{
 
   /* Rules for dynamically added Avenues */
   .avenue{
-    width: 27.6rem;
+    width: 35.2rem;
     display: grid;
-    grid-template-columns: 5.2rem 9rem 6rem 6rem 1.4rem;
-    grid-template-rows: 1.5rem 2rem;
+    grid-template-columns: 6.5rem 9.15rem 9.15rem 9rem 1.4rem;
+    grid-template-rows: 1.5rem 2.5rem;
     background-color: #999;
     border: rgb(169, 169, 169);
     border-width: 1px;
@@ -216,11 +228,12 @@ textarea{
     /* First Row */
     /* Drop down box rules*/
     .aveDropdown{
-      display: inline-block;
       grid-column-start: 1;
       grid-column-end: 2;
       grid-row-start: 1;
       grid-row-end: 2;
+      font-size: 1rem;
+      border-width: 0px;
       }
 
     /* Titles */
@@ -257,6 +270,7 @@ textarea{
       grid-column-end: 2;
       grid-row-start: 2;
       grid-row-end: 3;
+      padding: 0.3rem;
       }
 
     .aveSent_checkbox{
@@ -275,8 +289,11 @@ textarea{
       grid-column-end: 3;
       grid-row-start: 2;
       grid-row-end: 3;
-
-    } .aveDescription{
+      font-size: 1rem;
+      font-family: Helvetica, Arial, sans-serif;
+    } 
+    
+    .aveDescription{
       grid-column-start: 3;
       grid-column-end: 4;
       grid-row-start: 2;
