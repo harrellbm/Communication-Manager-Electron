@@ -174,12 +174,12 @@ class Initiative {
       let new_goal = new Goal();
       new_goal.frequency = frequency;
       new_goal.type = type;
-      new_goal.reminder = reminder
+      new_goal.reminder = reminder;
 
-      let goalId = this.id_fill(this.goals)// fill in the lowest available id
+      let goalId = this.id_fill(this.goals);// fill in the lowest available id
       this.goals.set(goalId, new_goal);
-      return goalId
-      }
+      return goalId;
+      };
    
    // Add a message to the messages map in the initiative 
    add_message(title = '', greeting = '', content = '', signature ='', avenue_ids=''){
@@ -391,36 +391,36 @@ class Goal {
       this.frequency= 0;
       this.type = '';
       this.reminder = {};
-      }
+      };
    
    /* possibly implement date object for frequency */ 
    
    // Changes the goal's frequency 
    change_frequency(new_frequency){ 
       this.frequency = new_frequency;
-      }
+      };
    
    // Gets the goal's frequency 
    get_frequency(){
       return this.frequency;
-      }
+      };
    
    // Changes the goal's avenue type 
    change_type(new_type){ 
       this.type = new_type;
-      }
+      };
    
    // Gets the goal's avenue type 
    get_type(){
       return this.type;
-      }
+      };
       
       /* need add reminder */
       /* need get reminder */
       /* need remove reminder */
       /* need clear reminders */
       /* implement date object in reminder */
-  }
+  };
 
 // Constructor wrapper for exporting 
 function createGoal () {
