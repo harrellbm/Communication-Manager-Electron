@@ -27,7 +27,7 @@ describe('Test Main process functions', function () {
   
     /* --- Main related tests --- */
     it('should be a filler ', function() {
-      console.log('test')
+      console.log('test');
     })
     // need save and open file from collection object 
   });

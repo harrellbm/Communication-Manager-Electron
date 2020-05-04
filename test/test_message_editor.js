@@ -1,11 +1,11 @@
-const Application = require('spectron').Application
-const electronPath = require('electron') // Require Electron from the binaries included in node_modules.
-const path = require('path')
+const Application = require('spectron').Application;
+const electronPath = require('electron'); // Require Electron from the binaries included in node_modules.
+const path = require('path');
 const expect = require('chai').expect;
 
 
 describe('Test Message Editor Functionality', function () {
-  this.slow(6000);
+  this.slow(10000);
   this.timeout(15000);
   var app;
 
@@ -67,7 +67,7 @@ describe('Test Message Editor Functionality', function () {
                         app.client.$('#greeting').$('div').setValue('This is a test greeting'), 
                         app.client.$('#content').$('div').setValue('This is test content.  Blah Blah Blah.'), 
                         app.client.$('#signature').$('div').setValue('Testing that I can Sign it')
-                        ])
+                        ]);
 
     // Save Ui
     await app.client.click('#save');
@@ -77,12 +77,12 @@ describe('Test Message Editor Functionality', function () {
                         app.client.$('#greeting').$('div').setValue(''),
                         app.client.$('#content').$('div').setValue(''), 
                         app.client.$('#signature').$('div').setValue('')
-                      ])
+                      ]);
       // Verify elements clear
-      let titleC
-      let greetingC
-      let contentC
-      let signatureC
+      let titleC;
+      let greetingC;
+      let contentC;
+      let signatureC;
       await Promise.all([ app.client.$('#title').getValue(), 
                           app.client.$('#greeting').$('div').getValue(), 
                           app.client.$('#content').$('div').getValue(),
