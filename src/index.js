@@ -3,6 +3,7 @@ const ipc = require('electron').ipcRenderer;
 const templates = require('./objectTemplate.js');
 const moment = require('moment'); // For date handling 
 const dragula = require('dragula'); // For drag and drop 
+const swal = require('sweetalert'); // For styled alert/confirm boxes
 
 var currentInitiative;
 var currentInitiativeId;
@@ -93,6 +94,7 @@ function indexClose () {
 document.getElementById('messSave').addEventListener("click", saveToMain); // Event from save button 
 // Function to handle packing and sending current initiative to main on button save 
 function saveToMain () {
+  swal({ title: 'Saved!', icon: 'success', buttons: false });
   let ipcInit = save();
   ipc.send('save', currentInitiativeId, ipcInit);  
 };
@@ -219,27 +221,41 @@ function addMess (event='', messId='') {// If message id is passed in it will lo
 /* may need to add handleing for open editors on deletion */
 // Deletes a message from the DOM
 function deleteMess (mess) {
-  // Check if message has linked avenues
-  let aves = mess.getElementsByClassName('avenue');
-  if (aves.length != 0 ) { 
-    // Unlink avenues and place them back in avenueIn 
-    while (0 < aves.length){// Collection empties as they are appended back to avenueIn
-      let aveId = aves[0].id[6]; // grab id number of avenue
-      let messId = mess.id[7];
-      currentInitiative.unlink_ids(aveId, messId);
-      //console.log('unlinked avenue: ', currentInitiative.avenues.get(aveId), 'unlinked message: ', currentInitiative.messages.get(messId));
-      document.getElementById("avenueIn").appendChild(aves[0]);
-      };
-    };
+  // Confirm that user wants to delete message if not return
+  swal({
+    title: 'Deleting Message',
+    text: 'Are you sure you want to delete your Message?', 
+    icon: 'warning',
+    buttons: ['Cancel', 'Yes'],
+    dangerMode: true
+  })
+  .then(function (value) {
+    if (value == null) { // Escape deletion 
+      return
+    } else { // Proceed with deletion 
+      // Check if message has linked avenues
+      let aves = mess.getElementsByClassName('avenue');
+      if (aves.length != 0 ) { 
+        // Unlink avenues and place them back in avenueIn 
+        while (0 < aves.length){// Collection empties as they are appended back to avenueIn
+          let aveId = aves[0].id[6]; // grab id number of avenue
+          let messId = mess.id[7];
+          currentInitiative.unlink_ids(aveId, messId);
+          //console.log('unlinked avenue: ', currentInitiative.avenues.get(aveId), 'unlinked message: ', currentInitiative.messages.get(messId));
+          document.getElementById("avenueIn").appendChild(aves[0]);
+          };
+        };
   
-  // Remove message from UI
-  mess.parentElement.removeChild(mess);
-  // Remove message from Initiative object 
-  let id = mess.id[7]; // Take only the number off of the end of the ui id 
-  currentInitiative.messages.delete(id); 
-  // Send updates to main
-  let ipcInit = currentInitiative.pack_for_ipc();
-  ipc.send('save', currentInitiativeId, ipcInit);  
+      // Remove message from UI
+      mess.parentElement.removeChild(mess);
+      // Remove message from Initiative object 
+      let id = mess.id[7]; // Take only the number off of the end of the ui id 
+      currentInitiative.messages.delete(id); 
+      // Send updates to main
+      let ipcInit = currentInitiative.pack_for_ipc();
+      ipc.send('save', currentInitiativeId, ipcInit);  
+      };
+    });
 };
 
 // Call back function for Edit button on message element 
@@ -410,11 +426,24 @@ function addAve (event='', aveId='', location='avenueIn') { // If avenue id is p
 
 // Deletes an avenue from the DOM
 function deleteAve (ave) {
-  // Remove message from UI
-  ave.parentElement.removeChild(ave);
-  // Remove message from Initiative object 
-  let id = ave.id[6];
-  currentInitiative.avenues.delete(id); // Take only the number off of the end of the ui id 
+  swal({
+    title: 'Deleting Avenue',
+    text: 'Are you sure you want to delete your Avenue?', 
+    icon: 'warning',
+    buttons: ['Cancel', 'Yes'],
+    dangerMode: true
+  })
+  .then(function (value) {
+    if (value == null) { // Escape deletion 
+      return
+    } else { // Proceed with deletion 
+        // Remove message from UI
+        ave.parentElement.removeChild(ave);
+        // Remove message from Initiative object 
+        let id = ave.id[6];
+        currentInitiative.avenues.delete(id); // Take only the number off of the end of the ui id 
+        };
+    });
 };
 
 // Initalize dragula containers for drag and drop

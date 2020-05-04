@@ -3,9 +3,10 @@
 // All of the Node.js APIs are available in this process.
 //this is the js file for the message manager tab
 const ipc = require('electron').ipcRenderer;
-const clipboard = require('electron').clipboard;
-const Quill = require('quill');
-const QuillDeltaToHtmlConverter = require('quill-delta-to-html').QuillDeltaToHtmlConverter;
+const clipboard = require('electron').clipboard; // For accessing the clipboard
+const Quill = require('quill'); // For editor toolbar and save to delta
+const QuillDeltaToHtmlConverter = require('quill-delta-to-html').QuillDeltaToHtmlConverter; // Handle custom convertion of deltas to html
+const swal = require('sweetalert'); // For styled alert/confirm boxes
 
 // Set up editors
 // Editor for Greeting  
@@ -99,9 +100,7 @@ signature.on('text-change', function() {
   console.log('message object: ', currentMessage)
 });
 
-// Saves message from editor on editor closed or save button clicked 
-window.onbeforeunload = function (e) { saveMessage(); };
-document.getElementById('save').addEventListener("click", saveMessage);
+// Function to save message and send update to main
 function saveMessage () {
   // If message has been deleted escape from save on close 
   if (currentMessage == undefined) {
@@ -112,6 +111,16 @@ function saveMessage () {
 
   console.log('init Id on save from editor: ', initativeId, 'message to be saved: ', messageId, currentMessage);
   ipc.send('save-mess', initativeId, messageId, currentMessage);
+};
+// Handles event to save message on editor close 
+window.onbeforeunload = function (e) { saveMessage(); };
+
+// Handle even from the editor's save button
+document.getElementById('save').addEventListener("click", saveOnClick);
+// Display alert on button click save
+function saveOnClick () {
+  swal({ title: 'Saved!', icon: 'success', buttons: false });
+  saveMessage();
 };
 
 // Sends contents to main for saving and then closes editor on index window being closed 
