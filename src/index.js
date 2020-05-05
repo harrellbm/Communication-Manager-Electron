@@ -4,6 +4,8 @@ const templates = require('./objectTemplate.js');
 const moment = require('moment'); // For date handling 
 const dragula = require('dragula'); // For drag and drop 
 const swal = require('sweetalert'); // For styled alert/confirm boxes
+const clipboard = require('electron').clipboard; // For accessing the clipboard
+const QuillDeltaToHtmlConverter = require('quill-delta-to-html').QuillDeltaToHtmlConverter; // Handle custom convertion of deltas to html
 
 var currentInitiative;
 var currentInitiativeId;
@@ -106,7 +108,7 @@ function openFile () {
   let ipcPack = ipc.sendSync('open-file'); // Uses synchronous call to avoid user actions before data is loaded 
   currentInitiativeId = ipcPack.initId;
   currentInitiative.unpack_from_ipc(ipcPack.ipcInit);
-  console.log('init id on index load from file: ', currentInitiativeId, 'Unpacked initiative', currentInitiative);
+  //console.log('init id on index load from file: ', currentInitiativeId, 'Unpacked initiative', currentInitiative);
 
   // Clear old message and avenue Ui elements 
   oldMessages = document.getElementById('messageIn');
@@ -266,8 +268,8 @@ function editMess (mess) {
   let uiTitle = document.getElementById(`messTitle${messId}`);
   let messContent = currentInitiative.messages.get(`${messId}`); // get message object content
   messContent.change_title(uiTitle.value);
-  console.log('updated initiative: ', currentInitiative.messages)
-  console.log('init id on ipc to launch editor: ', currentInitiativeId, 'mess id: ', messId, 'message sent to main: ', messContent);
+  //console.log('updated initiative: ', currentInitiative.messages)
+  //console.log('init id on ipc to launch editor: ', currentInitiativeId, 'mess id: ', messId, 'message sent to main: ', messContent);
   // Send it all to main to be pinged to the editor
   ipc.send('edit', currentInitiativeId, messId, messContent); 
 };
@@ -275,14 +277,32 @@ function editMess (mess) {
 // Call back function for Edit button on message element 
 function copyMess (mess) {
   let messId = mess.id[7]; // Take only the number off of the end of the ui id 
-  // Update Initiative from ui 
+  // Gather message to copy from Initiative and ui 
   let uiTitle = document.getElementById(`messTitle${messId}`);
   let messContent = currentInitiative.messages.get(`${messId}`); // get message object content
   messContent.change_title(uiTitle.value);
-  console.log('updated initiative: ', currentInitiative.messages)
-  console.log('init id on ipc to launch editor: ', currentInitiativeId, 'mess id: ', messId, 'message sent to main: ', messContent);
-  // Send it all to main to be pinged to the editor
-  //ipc.send('edit', currentInitiativeId, messId, messContent); 
+  //console.log('message to copy: ', messContent)
+  // Set up configuration for converting
+  var cfg = {}; 
+  // Get delta from message object
+  let delGreet = messContent.greeting; 
+  let delContt = messContent.content; 
+  let delSignt = messContent.signature;
+  // Put the ops into an array  
+  let delMess = [];
+  delMess.push(delGreet.ops);
+  delMess.push(delContt.ops);
+  delMess.push(delSignt.ops);
+  // Loop through deltas and conver to html
+  let htmlMess = '';
+  for (id in delMess) {
+    let converter = new QuillDeltaToHtmlConverter(delMess[id], cfg);
+    let html = converter.convert(); 
+    htmlMess += html;
+    };
+  //console.log('raw html before sending to clipboard', htmlMess);
+  // Sent converted message to clipboard
+  clipboard.writeHTML(htmlMess);
 };
 
 // On message editor save or close receive new message content and update
