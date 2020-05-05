@@ -1,9 +1,9 @@
 // Modules to control application life and create native browser window
-const {app, BrowserWindow} = require('electron')
-const ipc = require('electron').ipcMain
-const fs = require('fs')
-const templates = require('./src/objectTemplate.js')
-const debug = require('electron-debug')
+const {app, BrowserWindow} = require('electron');
+const ipc = require('electron').ipcMain;
+const fs = require('fs');
+const templates = require('./src/objectTemplate.js');
+const debug = require('electron-debug');
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 
@@ -183,7 +183,7 @@ function saveToFile (file) {
   fs.writeFile('data.json', file, function (err) {
     if (err) throw err;
     console.log('Saved successfully!');
-  })
+  });
 };
 
 // Open the initative saved in file 
@@ -199,15 +199,15 @@ ipc.on('open-file', function (event, args) {
   let ipcPack = {};
   ipcPack.initId = initId;
   ipcPack.ipcInit = ipcInit;
-  event.returnValue = ipcPack // Return packed initiative 
+  event.returnValue = ipcPack; // Return packed initiative 
 });
 
 // Function to open from data.json file
 function openFromFile () {
-  let rawData = fs.readFileSync('data.json')
-  let fileData = JSON.parse(rawData)
-  //console.log(fileData)
-  return fileData
+  let rawData = fs.readFileSync('data.json');
+  let fileData = JSON.parse(rawData);
+  //console.log(fileData);
+  return fileData;
   };
 
 // Message Manager ipcs
