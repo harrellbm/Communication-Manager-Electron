@@ -443,7 +443,10 @@ function deleteAve (ave) {
         // Remove message from Initiative object 
         let id = ave.id[6];
         currentInitiative.avenues.delete(id); // Take only the number off of the end of the ui id 
-        };
+        // Send updates to main
+        let ipcInit = currentInitiative.pack_for_ipc();
+        ipc.send('save', currentInitiativeId, ipcInit);
+        }; 
     });
 };
 
