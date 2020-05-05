@@ -2,6 +2,7 @@ const Application = require('spectron').Application;
 const electronPath = require('electron'); // Require Electron from the binaries included in node_modules.
 const path = require('path');
 const expect = require('chai').expect;
+const fs = require('fs'); // For verifying file saves 
 
 
 describe('Test Message Editor Functionality', function () {
@@ -42,8 +43,56 @@ describe('Test Message Editor Functionality', function () {
     expect(count, 'Editor did not open').to.equal(2);
     });
 
-  // Test full launch editor, input, click save then open loop
-  it('should successfully implement full input, save, to open loop', async () => {
+  // Test save everything from an open editor on close 
+  it('should save everything from editor on close', async () => {
+    await app.client.waitUntilWindowLoaded();
+    // Switch to message manager tab 
+    await app.client.click('#messageTab');
+    // Add a message 
+    await app.client.click('#addMess');
+    // Click to open editor
+    await app.client.click('#messEdit0');
+    await app.client.waitUntilWindowLoaded();
+    await app.client.switchWindow('Message Editor');
+    // Set message values in editor
+    await Promise.all([ app.client.$('#title').setValue('This is a test Title'), 
+                        app.client.$('#greeting').$('div').setValue('This is a test greeting'), 
+                        app.client.$('#content').$('div').setValue('This is test content.  Blah Blah Blah.'), 
+                        app.client.$('#signature').$('div').setValue('Testing that I can Sign it')
+                      ]);
+    
+    // Quit the app
+    await app.browserWindow.close(); // Close editor
+    await app.stop();
+    // Read the file and verify things saved 
+    let rawData = fs.readFileSync('data.json');
+    let fileData = JSON.parse(rawData);
+    //console.log(fileData.initiatives['0'].messages['0'].greeting);
+    // Pull out message values 
+    let messTitle;
+    let messGreeting;
+    let messContent;
+    let messSignature;
+    await Promise.all([ fileData.initiatives['0'].messages['0'].title, 
+                        fileData.initiatives['0'].messages['0'].greeting, 
+                        fileData.initiatives['0'].messages['0'].content,
+                        fileData.initiatives['0'].messages['0'].signature
+                      ]).then(function (values) {
+                        messTitle = values[0]
+                        messGreeting = values[1]
+                        messContent = values[2]
+                        messSignature = values[3]
+                      });
+    // Verify message values are saved correctly 
+    expect(messTitle).to.be.a('string').that.equals('This is a test Title');
+    expect(messGreeting.ops[0].insert).to.be.a('string').that.equals('This is a test greeting\n'); //.includes({ ops: [ { insert: 'This is a test greeting\n' } ] });
+    expect(messContent.ops[0].insert).to.be.a('string').that.equals('This is test content.  Blah Blah Blah.\n');
+    expect(messSignature.ops[0].insert).to.be.a('string').that.equals('Testing that I can Sign it\n');
+    });
+
+  // Test edit ipc to main, and manual save
+  it('should launch editor and save manually', async () => {
+    /* change to launch editor from ui */
     await app.client.waitUntilWindowLoaded();
     // Make a message object that mimics being sent over ipc 
     let testMess = {};
@@ -56,12 +105,6 @@ describe('Test Message Editor Functionality', function () {
     //await app.client.waitUntilWindowLoaded();
     await app.client.switchWindow('Message Editor');
 
-    /*let titleCon = await app.client.$('#title').setValue('This is a test Title');
-    let greetCon = await app.client.$('#greeting').$('div').setValue('This is a test greeting');
-    let contentCon = await app.client.$('#content').$('div').setValue('This is test content.  Blah Blah Blah.');
-    let signCon = await app.client.$('#signature').$('div').setValue('Testing that I can Sign it');
-    */
-    
     // Set message values
     await Promise.all([ app.client.$('#title').setValue('This is a test Title'), 
                         app.client.$('#greeting').$('div').setValue('This is a test greeting'), 
@@ -97,30 +140,9 @@ describe('Test Message Editor Functionality', function () {
       expect(greetingC).to.equal(null); // Note: Quill editors have a value of null when there is nothing in them 
       expect(contentC).to.equal(null);
       expect(signatureC).to.equal(null);
-    /* figure out how to test loading 
-    // Open saved ui 
-    await app.client.click('#open');
-      // Get Values from Message Editor window
-      let title
-      let greeting   
-      let content
-      let signature
-      await Promise.all([ app.client.$('#title').getValue(), 
-                          app.client.$('#greeting').getValue(), 
-                          app.client.$('#content').getValue(),
-                          app.client.$('#signature').getValue()
-                        ]).then(function (values) {
-                          title = values[0]
-                          greeting = values[1]
-                          content = values[2]
-                          signature = values[3]
-                        }) 
-        // Verify message editor loaded
-        //console.log('title: ', title , '\nGreeting: ', greeting, '\nContent: ', content, '\nSignature: ', signature)
-        expect(title).to.be.a('string').that.is.equal('This is a test Title');
-        expect(greeting).to.be.a('string').that.is.equal('This is a test greeting');
-        expect(content).to.be.a('string').that.is.equal('This is test content.  Blah Blah Blah.');
-        expect(signature).to.be.a('string').that.is.equal('Testing that I can Sign it'); */
+
+    /* verify from file that it all saved */ 
+    
     });
   
 });
