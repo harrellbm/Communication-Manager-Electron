@@ -28,6 +28,9 @@ describe('Test index process', function () {
     });
   
   /* --- Main related tests --- */
+  
+  /* save on manual save */ 
+
   // Test save everything from index on index close
   it('should save everything from index on app close', async () => {
     await app.client.waitUntilWindowLoaded();
@@ -53,15 +56,20 @@ describe('Test index process', function () {
     expect(aveDescription, 'Avenue desctription incorrect').to.be.a('string').that.equals('Test Avenue Description')
     });
 
-    
-    // test save on click index 
-    // test save on click editor
-    // need save and open file from collection object 
-    //open-file from index
-    //window-all-close and will-quit events to save everything to file
+  
+  /* add avenues and messages */
+
+  /* open/load correctly */
+
+  /* update main on message and avenue delete */
+  // test from file 
+
+  /* update index on new things coming from editor */
+
+  /* drag and drop avenues */
 });
   
-
+// Note: These tests us ipcs to verify functionality indirectly for things that are impossible otherwise with Spectron's limitations
 describe('Test Communication with Main process', function () {
   this.slow(10000);
   this.timeout(15000);
@@ -81,10 +89,6 @@ describe('Test Communication with Main process', function () {
       }
     });
     
-
- //edit from index and paired load set to created editor
- //save which comes from index on delete message, delete avenue and manual save which sends load to all open editors
- //index-close sent from index and index-close then sent to open editors
  
   /* --- Index related ipc tests --- */
   // Test passing initiative to main, letting it save in the collection in main and then reloading
@@ -111,6 +115,54 @@ describe('Test Communication with Main process', function () {
     expect(afterInit.groups, 'Does not have the proper groups').to.be.an('array').that.includes('Ben my roomate');
     });
 
-    /* --- Editor related ipc tests --- */
-    // save-mess from editor, and paired update-mess sent to index
+  /* index-close sent from index and index-close then sent to open editors */
+
+  /* --- Editor related ipc tests --- */
+    /*
+  // Verify editor close on message delete 
+  it('should close editor on message delete', async () => {
+    note pass in undefined message through ipc to main's save message 
+    await app.client.waitUntilWindowLoaded();
+    // Switch to message manager tab 
+    await app.client.click('#messageTab');
+    // Add a message 
+    await app.client.click('#addMess');
+    // Click to open editor
+    await app.client.click('#messEdit0');
+    // Verify editor opened
+    let count = await app.client.getWindowCount();
+    expect(count, 'Editor did not open').to.equal(2);
+    // Make sure editor loads first 
+    await app.client.switchWindow('Message Editor');
+    await app.client.waitUntilWindowLoaded();
+    let edit = await app.webContents.isDestroyed();
+    console.log('open', edit);
+    // Delete message 
+    await app.client.switchWindow('Message Manager');
+    await app.client.click('#messDelete0');
+    let btn = await app.client.$$('.swal-button');
+    console.log(btn);
+    await btn[1].click();
+    //await app.client.click('//body/div[4]/div/div[4]/div[2]/button');
+    await app.client.waitUntilWindowLoaded();
+    //await btn.click(); // Click confirm button
+    // Add a message 
+    await app.client.click('#addMess');
+    await app.client.waitUntilWindowLoaded();
+    let mess = await app.client.$('#messageIn').getHTML();
+    console.log(mess);
+    await app.client.switchWindow('Message Editor');
+    //await app.client.windowByIndex(1); //getTitle();
+    await app.client.waitUntilWindowLoaded();
+    edit = await app.webContents.isDestroyed();
+     //await app.webcontents.isDestroyed();
+    await console.log('edit', edit);
+    //edit.isDisplayed();
+    // Verify editor closed
+    count = await app.client.getWindowCount();
+    expect(count, 'Editor did not close').to.equal(1);
+    await app.client.switchWindow('Message Manager');
+    
+  });
+  */
 });
