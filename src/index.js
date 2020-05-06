@@ -447,6 +447,7 @@ function addAve (event='', aveId='', location='avenueIn') { // If avenue id is p
 
 // Deletes an avenue from the DOM
 function deleteAve (ave) {
+  // Confirm that user wants to delete message if not return
   swal({
     title: 'Deleting Avenue',
     text: 'Are you sure you want to delete your Avenue?', 
