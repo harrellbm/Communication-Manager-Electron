@@ -4,11 +4,12 @@ const BrowserWindow = require('electron').BrowserWindow;
 const path = require('path');
 const chai = require('chai');
 chai.use(require('chai-datetime'));
+chai.use(require('chai-as-promised'));
 const expect = require('chai').expect;
 const templates = require('../src/objectTemplate.js');
 const fs = require('fs'); // For verifying file saves 
 
-describe('Test index process', function () {
+describe('Test Index process', function () {
   this.slow(10000);
   this.timeout(15000);
   var app;
@@ -27,12 +28,97 @@ describe('Test index process', function () {
       }; 
     });
   
-  /* --- Main related tests --- */
-  
-  /* save on manual save */ 
+  // Add and remove message in ui  
+ it('should add message, then delete it', async () => {
+    await app.client.waitUntilWindowLoaded();
+    // Switch to message manager tab 
+    await app.client.click('#messageTab');
+    // Add messages 
+    await app.client.click('#addMess');
+    // Verify elements exist
+    expect(app.client.$('#message0'), 'Message does not exist').to.eventually.exist;    
+    // Delete message 
+    await app.client.click('#messDelete0');
+    // Click confirm button
+    await setTimeout(async function (){ // Note: need to set time out to allow time popup to come up
+      try { 
+        await app.client.click('//body/div[4]/div/div[4]/div[2]/button');
+      }
+      catch(err) {
+        console.error(err);
+    }}, 2);
+    
+    // Verify elements are deleted in ui
+    await setTimeout(async function (){ // Note: need to set time out to allow time for avenue to be deleted
+      try { 
+        let container = await app.client.$('#messageIn').getHTML();
+        //console.log(container);
+        expect(container, 'Message exists').to.equal('<div id="messageIn" class="messIn"></div>');
+      }
+      catch(err) {
+        console.error('Did not check container: ', err);
+    }}, 5);
+  });
 
-  // Test save everything from index on index close
-  it('should save everything from index on app close', async () => {
+    // Add and remove avenue in ui  
+  it('should add avenue, then delete it', async () => {
+    await app.client.waitUntilWindowLoaded();
+    // Switch to message manager tab 
+    await app.client.click('#messageTab');
+    //Add avenues
+    await app.client.click('#addAve');
+    // Verify elements exist   
+    expect(app.client.$('#avenue0'), 'Avenue does not exist').to.eventually.exist;
+    // Delete message 
+    await app.client.click('#aveDelete0');
+    // Click confirm button
+    await setTimeout(async function (){ // Note: need to set time out to allow time popup to come up
+      try { 
+        await app.client.click('//body/div[4]/div/div[4]/div[2]/button');
+      }
+      catch(err) {
+        console.error(err);
+    }}, 2);
+    
+    // Verify elements are deleted in ui
+    await setTimeout(async function (){ // Note: need to set time out to allow time for avenue to be deleted
+      try { 
+        let container = await app.client.$('#avenueIn').getHTML();
+        //console.log(container);
+        expect(container, 'Avenue exists').to.equal('<div id="avenueIn" class="messIn"></div>');
+      }
+      catch(err) {
+        console.error('Did not check container: ', err);
+    }}, 5);
+  });
+
+  // save on manual save 
+ it('should save from index on manual save', async () => {
+    await app.client.waitUntilWindowLoaded();
+    // Switch to message manager tab 
+    await app.client.click('#messageTab');
+    // Add a message 
+    await app.client.click('#addMess');
+    await app.client.$('#messTitle0').setValue('This is a test Title');
+    //Add an avenue
+    await app.client.click('#addAve');
+    await app.client.$('#aveDescription0').setValue('Test Avenue Description');
+    // Manually save
+    await app.client.click('#messSave');
+    // Read the file and verify things saved 
+    let rawData = fs.readFileSync('data.json');
+    let fileData = JSON.parse(rawData);
+    //console.log(fileData.initiatives['0']);
+    // Verify message title
+    let messTitle = fileData.initiatives['0'].messages['0'].title
+    expect(messTitle, 'Message title incorrect').to.be.a('string').that.equals('This is a test Title')
+    // Verify avenue description
+    let aveDescription = fileData.initiatives['0'].avenues['0'].description
+    expect(aveDescription, 'Avenue desctription incorrect').to.be.a('string').that.equals('Test Avenue Description')
+    });
+
+  // save from index on index close
+  it('should save from index on app close', async () => {
     await app.client.waitUntilWindowLoaded();
     // Switch to message manager tab 
     await app.client.click('#messageTab');
@@ -50,21 +136,67 @@ describe('Test index process', function () {
     //console.log(fileData.initiatives['0']);
     // Verify message title
     let messTitle = fileData.initiatives['0'].messages['0'].title
-    expect(messTitle, 'Message title incorrect').to.be.a('string').that.equals('This is a test Title')
-    // Verify avenue description
-    let aveDescription = fileData.initiatives['0'].avenues['0'].description
-    expect(aveDescription, 'Avenue desctription incorrect').to.be.a('string').that.equals('Test Avenue Description')
+    expect(messTitle, 'Message title incorrect').to.be.a('string').that.equals('This is a test Title');
+    // Verify avenue description;
+    let aveDescription = fileData.initiatives['0'].avenues['0'].description;
+    expect(aveDescription, 'Avenue desctription incorrect').to.be.a('string').that.equals('Test Avenue Description');
     });
 
+  // Open/load correctly 
+  it('should load correctly', async () => {
+    await app.client.waitUntilWindowLoaded();
+    // Make an updated initiative and mimic being sent over ipc
+    let testInit = new templates.Initiative();
+    testInit.add_message('this is a message title', 'Hello,', 'Here is what I have to say.', 'Signed me', '1');
+    testInit.add_avenue('text', 'Text Blast', 'Bill', false, '0', '');
+    testInit.add_avenue('email', 'Email Blast', 'Phil', false, '', '');
+    // Pack for ipc
+    let ipcInit = await testInit.pack_for_ipc();
+    // Send
+    await app.electron.ipcRenderer.send('save', '0', ipcInit);
+    // Switch to message manager tab 
+    await app.client.click('#messageTab');
+    // Open initiative from file 
+    await app.client.click('#messOpen');
+    await app.client.waitUntilWindowLoaded();
+    // Check that loaded values are correct 
+    let title = await app.client.$('#messTitle0').getValue();
+    expect(title, 'Message title incorrect').to.be.a('string').that.equals('this is a message title');
+    let description0 = await app.client.$('#aveDescription0').getValue();
+    expect(description0, 'Avenue description incorrect').to.be.a('string').that.equals('Text Blast');
+    let  description1 = await app.client.$('#aveDescription1').getValue();
+    expect(description1, 'Avenue description incorrect').to.be.a('string').that.equals('Email Blast');
+    // Check that things are loaded in proper container
+    let container = await app.client.$('#messageIn').getHTML();
+    expect(container, 'Message and avenue did not load correctly').to.equal('<div id="messageIn" class="messIn"><div class="message" id="message0"><p class="messTitle_heading" id="messTitle_heading">Title:</p><textarea class="messTitle" id="messTitle0"></textarea><div class="aveDrop" id="aveDrop0"><div class="avenue" id="avenue0"><select class="aveDropdown" id="avenue_type0"><option value="Email">Email</option><option value="Text">Text</option><option value="Facebook">Facebook</option><option value="Instagram">Instagram</option><option value="Handout">Handout</option><option value="Poster">Poster</option><option value="Other">Other</option></select><p class="aveDescription_title" id="aveDescription_title">Description:</p><p class="avePersons_title" id="avePersons_title">Person:</p><p class="aveDate_title" id="aveDate_title">Date:</p><p class="aveSent_box" id="aveSent_box0"><input class="aveSent_checkbox" id="aveSent_checkbox0" type="checkbox"><label class="aveSent_label" id="aveSent_label" for="aveSent_checkbox">Sent</label></p><textarea class="aveDescription" id="aveDescription0"></textarea><textarea class="avePersons" id="avePersons0"></textarea><input class="aveDate" id="aveDate0" type="date"><input class="aveDelete" id="aveDelete0" type="button" value="x"></div></div><div class="btnArray" id="btnArray0"><input class="messEdit" id="messEdit0" type="button" value="Edit"><input class="messCopy" id="messCopy0" type="button" value="Copy"><input class="messDelete" id="messDelete0" type="button" value="x"></div></div></div>');
+    container = await app.client.$('#avenueIn').getHTML();
+    expect(container, 'Avenue did not load correctly').to.equal('<div id="avenueIn" class="messIn"><div class="avenue" id="avenue1"><select class="aveDropdown" id="avenue_type1"><option value="Email">Email</option><option value="Text">Text</option><option value="Facebook">Facebook</option><option value="Instagram">Instagram</option><option value="Handout">Handout</option><option value="Poster">Poster</option><option value="Other">Other</option></select><p class="aveDescription_title" id="aveDescription_title">Description:</p><p class="avePersons_title" id="avePersons_title">Person:</p><p class="aveDate_title" id="aveDate_title">Date:</p><p class="aveSent_box" id="aveSent_box1"><input class="aveSent_checkbox" id="aveSent_checkbox1" type="checkbox"><label class="aveSent_label" id="aveSent_label" for="aveSent_checkbox">Sent</label></p><textarea class="aveDescription" id="aveDescription1"></textarea><textarea class="avePersons" id="avePersons1"></textarea><input class="aveDate" id="aveDate1" type="date"><input class="aveDelete" id="aveDelete1" type="button" value="x"></div></div>');
+    });
+
+  // Update index on save from editor
+  it('should update index on editor save', async () => {
+    await app.client.waitUntilWindowLoaded();
+    // Switch to message manager tab 
+    await app.client.click('#messageTab');
+    // Add a message 
+    await app.client.click('#addMess');
+    // Click to open editor
+    await app.client.click('#messEdit0');
+    await app.client.switchWindow('Message Editor');
+    await app.client.waitUntilWindowLoaded();
+    // Set message values
+    await app.client.$('#title').setValue('This is a test Title'); 
+                      
+    // Save Ui
+    await app.client.click('#save');
+    // Check that index updated 
+    await app.client.switchWindow('Message Manager');
+    await app.client.waitUntilWindowLoaded();
+    let title = await app.client.$('#messTitle0').getValue();
+    expect(title, 'Message title incorrect').to.be.a('string').that.equals('This is a test Title');
+  });
   
-  /* add avenues and messages */
-
-  /* open/load correctly */
-
-  /* update main on message and avenue delete */
-  // test from file 
-
-  /* update index on new things coming from editor */
+  /* copy from message toolbar */
 
   /* drag and drop avenues */
 });
@@ -89,8 +221,6 @@ describe('Test Communication with Main process', function () {
       }
     });
     
- 
-  /* --- Index related ipc tests --- */
   // Test passing initiative to main, letting it save in the collection in main and then reloading
   it('should pack, send and then unpack an initiative', async () => {
     await app.client.waitUntilWindowLoaded();
@@ -114,55 +244,4 @@ describe('Test Communication with Main process', function () {
     expect(afterInit.description, 'Does not have the proper description').to.be.a('string').that.equals('This is the updated description');
     expect(afterInit.groups, 'Does not have the proper groups').to.be.an('array').that.includes('Ben my roomate');
     });
-
-  /* index-close sent from index and index-close then sent to open editors */
-
-  /* --- Editor related ipc tests --- */
-    /*
-  // Verify editor close on message delete 
-  it('should close editor on message delete', async () => {
-    note pass in undefined message through ipc to main's save message 
-    await app.client.waitUntilWindowLoaded();
-    // Switch to message manager tab 
-    await app.client.click('#messageTab');
-    // Add a message 
-    await app.client.click('#addMess');
-    // Click to open editor
-    await app.client.click('#messEdit0');
-    // Verify editor opened
-    let count = await app.client.getWindowCount();
-    expect(count, 'Editor did not open').to.equal(2);
-    // Make sure editor loads first 
-    await app.client.switchWindow('Message Editor');
-    await app.client.waitUntilWindowLoaded();
-    let edit = await app.webContents.isDestroyed();
-    console.log('open', edit);
-    // Delete message 
-    await app.client.switchWindow('Message Manager');
-    await app.client.click('#messDelete0');
-    let btn = await app.client.$$('.swal-button');
-    console.log(btn);
-    await btn[1].click();
-    //await app.client.click('//body/div[4]/div/div[4]/div[2]/button');
-    await app.client.waitUntilWindowLoaded();
-    //await btn.click(); // Click confirm button
-    // Add a message 
-    await app.client.click('#addMess');
-    await app.client.waitUntilWindowLoaded();
-    let mess = await app.client.$('#messageIn').getHTML();
-    console.log(mess);
-    await app.client.switchWindow('Message Editor');
-    //await app.client.windowByIndex(1); //getTitle();
-    await app.client.waitUntilWindowLoaded();
-    edit = await app.webContents.isDestroyed();
-     //await app.webcontents.isDestroyed();
-    await console.log('edit', edit);
-    //edit.isDisplayed();
-    // Verify editor closed
-    count = await app.client.getWindowCount();
-    expect(count, 'Editor did not close').to.equal(1);
-    await app.client.switchWindow('Message Manager');
-    
-  });
-  */
 });
