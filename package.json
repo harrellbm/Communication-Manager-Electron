@@ -15,7 +15,7 @@
     "start": "electron .",
     "test": "xvfb-maybe mocha",
     "test-object": "mocha test/test_object_templates.js",
-    "test-main": "mocha test/test_index.js",
+    "test-index": "mocha test/test_index.js",
     "test-editor": "mocha test/test_message_editor.js",
     "write-test": "mocha --watch ./test",
     "debug-test-objects": "mocha --inspect-brk test/test_object_templates.js",
