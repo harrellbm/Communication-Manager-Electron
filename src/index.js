@@ -386,7 +386,7 @@ function addAve (event='', aveId='', location='avenueIn') { // If avenue id is p
 
   let sent_checkbox = document.createElement("input");
   sent_checkbox.setAttribute("class", "aveSent_checkbox");
-  sent_checkbox.setAttribute("id", `avaeSent_checkbox${id}`);
+  sent_checkbox.setAttribute("id", `aveSent_checkbox${id}`);
   sent_checkbox.setAttribute("type", "checkbox");
   if(aveLoad != ''){// if creating an avenue that is being pulled from a file set it's value
     sent_checkbox.checked = aveLoad.sent;
@@ -467,6 +467,7 @@ function deleteAve (ave) {
         // Send updates to main
         let ipcInit = currentInitiative.pack_for_ipc();
         ipc.send('save', currentInitiativeId, ipcInit);
+        return
         }; 
     });
 };
