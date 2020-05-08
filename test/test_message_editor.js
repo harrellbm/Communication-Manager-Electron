@@ -102,8 +102,8 @@ describe('Test Message Editor Functionality', function () {
     await app.browserWindow.close(); // Close editor
     await app.stop();
     // Read the file and verify things saved 
-    let rawData = fs.readFileSync('data.json');
-    let fileData = JSON.parse(rawData);
+    let rawData = await fs.readFileSync('data.json');
+    let fileData = await JSON.parse(rawData);
     //console.log(fileData.initiatives['0'].messages['0'].greeting);
     // Pull out message values 
     let messTitle = fileData.initiatives['0'].messages['0'].title;
