@@ -9,8 +9,9 @@ Lightweight way to keep track of and send your communications
 
 Nonprofit organizations often have to settle for the tools that are made for big for profit corporations.  This puts smaller nonprofit organizations at a disadvantage when having to pay for these kinds of software.  In my experience, the solution for these organizations is to do things by hand or the old fashion way because there is no affordable alternative. 
 
-The Communication Manager is aimed at Small to medium sized organizations or leaders who have a lot of emails, texts, social media, etc. to keep track of and need a way to organize and make sure that communication flows smoothly and effectivly.  It offers a tool to organize communication campaigns and set up automations to make communicating to many people and sub-groups in your organization easier. 
+The Communication Manager is aimed at Small to medium sized organizations or leaders who have a lot of emails, texts, social media, etc. to keep track of and need a way to organize and make sure that communication flows smoothly and effectivly.  It offers a tool to organize communication campaigns and set up automations to make communicating to many people and sub-groups in your organization easier.
 
+![Processes Flowchart](https://github.com/harrellbm/Communication-Manager-Electron/blob/dev-latest/docs/Processes%20Flowchart.PNG)
 # Potential Features
 Set up schedule with multiple dates and locations to send
 
@@ -81,21 +82,6 @@ Insert pictures and graphics
 autocorrect
 
 scrolling columns for dynamically added rows (waiting on pysimplegui enhancment)
-
-
-
-
-
-The 0.1.1 milestone
-Easy add button on message manager window
-Move away from tab
-
-The 0.1.2 milestone
-Add drop down menu on Windows for save, open, etc.
-
-The 0.2.0 milestone
-Add Tabs that organize everything by
-By each value: date, avenue, etc. in message manager window.
 
 The 0.3.0 milestone
 Auto send email on date
