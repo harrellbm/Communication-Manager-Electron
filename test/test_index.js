@@ -62,8 +62,8 @@ describe('Test Index process', function () {
     //console.log(container);
     expect(container, 'Message exists').to.equal('<div id="messageIn" class="messIn"></div>');
     // Read the file and verify deleted in file  
-    rawData = fs.readFileSync('data.json');
-    fileData = JSON.parse(rawData);
+    rawData = await fs.readFileSync('data.json');
+    fileData = await JSON.parse(rawData);
     //console.log(fileData.initiatives['0']);
     messTitle = fileData.initiatives['0'].messages['0']
     expect(messTitle, 'Message title incorrect').to.be.undefined;
@@ -84,8 +84,8 @@ describe('Test Index process', function () {
       elem[0].click();
     });
     // Verify message was added in file
-    let rawData = fs.readFileSync('data.json');
-    let fileData = JSON.parse(rawData);
+    let rawData = await fs.readFileSync('data.json');
+    let fileData = await JSON.parse(rawData);
     //console.log(fileData.initiatives['0']);
     let ave = fileData.initiatives['0'].avenues['0'];
     expect(ave, 'Avenue does not exist').to.be.an('object').with.keys('sent', 'avenue_type', 'description', 'person', 'message_id', 'date');
@@ -103,8 +103,8 @@ describe('Test Index process', function () {
     //console.log(container);
     expect(container, 'Avenue exists').to.equal('<div id="avenueIn" class="messIn"></div>');
     // Read the file and verify deleted in file 
-    rawData = fs.readFileSync('data.json');
-    fileData = JSON.parse(rawData);
+    rawData = await fs.readFileSync('data.json');
+    fileData = await JSON.parse(rawData);
     //console.log(fileData.initiatives['0']);
     // Verify message title
     messTitle = fileData.initiatives['0'].avenues['0']
@@ -125,8 +125,8 @@ describe('Test Index process', function () {
     // Manually save
     await app.client.click('#messSave');
     // Read the file and verify things saved 
-    let rawData = fs.readFileSync('data.json');
-    let fileData = JSON.parse(rawData);
+    let rawData = await fs.readFileSync('data.json');
+    let fileData = await JSON.parse(rawData);
     //console.log(fileData.initiatives['0']);
     // Verify message title
     let messTitle = fileData.initiatives['0'].messages['0'].title
@@ -150,8 +150,8 @@ describe('Test Index process', function () {
     // Quit the app
     await app.stop();
     // Read the file and verify things saved 
-    let rawData = fs.readFileSync('data.json');
-    let fileData = JSON.parse(rawData);
+    let rawData = await fs.readFileSync('data.json');
+    let fileData = await JSON.parse(rawData);
     //console.log(fileData.initiatives['0']);
     // Verify message title
     let messTitle = fileData.initiatives['0'].messages['0'].title
