@@ -239,7 +239,7 @@ describe('Test Index process', function () {
     // Verify content on clipboard 
     let content = await app.electron.clipboard.readHTML();
     //console.log(content);
-    expect(content, 'Content on clipboard incorrect').to.be.a('string').that.equals('<p>This is a test greeting</p><p>This is test content.  Blah Blah Blah.</p><p>Testing that I can Sign it</p>');
+    expect(content, 'Content on clipboard incorrect').to.be.a('string').that.includes('<p>This is a test greeting</p><p>This is test content.  Blah Blah Blah.</p><p>Testing that I can Sign it</p>');
   }); 
 
   /* drag and drop avenues */
