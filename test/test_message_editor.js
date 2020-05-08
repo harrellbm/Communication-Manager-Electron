@@ -69,26 +69,15 @@ describe('Test Message Editor Functionality', function () {
     let fileData = JSON.parse(rawData);
     //console.log(fileData.initiatives['0'].messages['0'].greeting);
     // Pull out message values 
-    let messTitle;
-    let messGreeting;
-    let messContent;
-    let messSignature;
-    await Promise.all([ fileData.initiatives['0'].messages['0'].title, 
-                        fileData.initiatives['0'].messages['0'].greeting, 
-                        fileData.initiatives['0'].messages['0'].content,
-                        fileData.initiatives['0'].messages['0'].signature
-                      ]).then(function (values) {
-                        messTitle = values[0]
-                        messGreeting = values[1]
-                        messContent = values[2]
-                        messSignature = values[3]
-                      });
+    let messTitle = fileData.initiatives['0'].messages['0'].title;
+    let messGreeting = fileData.initiatives['0'].messages['0'].greeting;
+    let messContent = fileData.initiatives['0'].messages['0'].content;
+    let messSignature = fileData.initiatives['0'].messages['0'].signature;
     // Verify message values are saved correctly 
-    await Promise.all([ expect(messTitle, 'Message title incorrect').to.be.a('string').that.equals('This is a test Title'),
-                        expect(messGreeting.ops[0].insert, 'Message greeting incorrect').to.be.a('string').that.equals('This is a test greeting\n'), 
-                        expect(messContent.ops[0].insert, 'Message content incorrect').to.be.a('string').that.equals('This is test content.  Blah Blah Blah.\n'),
-                        expect(messSignature.ops[0].insert, 'Message signature incorrect').to.be.a('string').that.equals('Testing that I can Sign it\n')
-                      ]);
+    expect(messTitle, 'Message title incorrect').to.be.a('string').that.equals('This is a test Title');
+    expect(messGreeting.ops[0].insert, 'Message greeting incorrect').to.be.a('string').that.equals('This is a test greeting\n');
+    expect(messContent.ops[0].insert, 'Message content incorrect').to.be.a('string').that.equals('This is test content.  Blah Blah Blah.\n');
+    expect(messSignature.ops[0].insert, 'Message signature incorrect').to.be.a('string').that.equals('Testing that I can Sign it\n');
   });
 
   // Verify save on editor close 
@@ -117,26 +106,15 @@ describe('Test Message Editor Functionality', function () {
     let fileData = JSON.parse(rawData);
     //console.log(fileData.initiatives['0'].messages['0'].greeting);
     // Pull out message values 
-    let messTitle;
-    let messGreeting;
-    let messContent;
-    let messSignature;
-    await Promise.all([ fileData.initiatives['0'].messages['0'].title, 
-                        fileData.initiatives['0'].messages['0'].greeting, 
-                        fileData.initiatives['0'].messages['0'].content,
-                        fileData.initiatives['0'].messages['0'].signature
-                      ]).then(function (values) {
-                        messTitle = values[0]
-                        messGreeting = values[1]
-                        messContent = values[2]
-                        messSignature = values[3]
-                      });
+    let messTitle = fileData.initiatives['0'].messages['0'].title;
+    let messGreeting = fileData.initiatives['0'].messages['0'].greeting;
+    let messContent = fileData.initiatives['0'].messages['0'].content;
+    let messSignature = fileData.initiatives['0'].messages['0'].signature;
     // Verify message values are saved correctly 
-    await Promise.all([ expect(messTitle, 'Message title incorrect').to.be.a('string').that.equals('This is a test Title'),
-                        expect(messGreeting.ops[0].insert, 'Message greeting incorrect').to.be.a('string').that.equals('This is a test greeting\n'),
-                        expect(messContent.ops[0].insert, 'Message content incorrect').to.be.a('string').that.equals('This is test content.  Blah Blah Blah.\n'),
-                        expect(messSignature.ops[0].insert, 'Message signature incorrect').to.be.a('string').that.equals('Testing that I can Sign it\n')
-                      ]);
+    expect(messTitle, 'Message title incorrect').to.be.a('string').that.equals('This is a test Title');
+    expect(messGreeting.ops[0].insert, 'Message greeting incorrect').to.be.a('string').that.equals('This is a test greeting\n');
+    expect(messContent.ops[0].insert, 'Message content incorrect').to.be.a('string').that.equals('This is test content.  Blah Blah Blah.\n');
+    expect(messSignature.ops[0].insert, 'Message signature incorrect').to.be.a('string').that.equals('Testing that I can Sign it\n');
   });
 
   // Verify load title from index with new message on editor launch  
@@ -195,15 +173,14 @@ describe('Test Message Editor Functionality', function () {
                         content = values[2]
                         signature = values[3]
                         });
-    await Promise.all([ expect(title, 'Message title incorrect').to.be.a('string').that.equals('This is a test Title'),
-                        expect(greeting, 'Message greeting incorrect').to.be.a('string').that.equals('This is a test greeting'),
-                        expect(content, 'Message content incorrect').to.be.a('string').that.equals('This is test content.  Blah Blah Blah.'),
-                        expect(signature, 'Message signature incorrect').to.be.a('string').that.equals('Testing that I can Sign it')
-                        ]);
+    expect(title, 'Message title incorrect').to.be.a('string').that.equals('This is a test Title');
+    expect(greeting, 'Message greeting incorrect').to.be.a('string').that.equals('This is a test greeting');
+    expect(content, 'Message content incorrect').to.be.a('string').that.equals('This is test content.  Blah Blah Blah.');
+    expect(signature, 'Message signature incorrect').to.be.a('string').that.equals('Testing that I can Sign it');
   }); 
 
-  // Verify editor update from change in index 
-  it('should update open editor on index update', async () => {
+   // Verify save on editor close 
+   it('should save everything from editor on close', async () => {
     await app.client.waitUntilWindowLoaded();
     // Switch to message manager tab 
     await app.client.click('#messageTab');
@@ -213,21 +190,54 @@ describe('Test Message Editor Functionality', function () {
     await app.client.click('#messEdit0');
     await app.client.switchWindow('Message Editor');
     await app.client.waitUntilWindowLoaded();
-    // Set message value in editor
-    await app.client.$('#title').setValue('This is a test Title');
-    // Verify initial value 
-    let title = await app.client.$('#title').getValue(); 
-    expect(title, 'Initial message title incorrect').to.be.a('string').that.equals('This is a test Title');
-    // Switch to Message manager tab and change title
-    await app.client.switchWindow('Message Manager');
-    await app.client.$('#messTitle0').setValue('Updated Title');
-    await app.client.click('#messSave');
-    // Switch back to editor and verify update 
-    await app.client.switchWindow('Message Editor');
-    title = await app.client.$('#title').getValue();
-    expect(title, 'Updated message title incorrect').to.be.a('string').that.equals('Updated Title');
-  }); 
-  
-  /* need test for copy here */
+    // Set message values in editor
+    await Promise.all([ app.client.$('#title').setValue('This is a test Title'), 
+                        app.client.$('#greeting').$('div').setValue('This is a test greeting'), 
+                        app.client.$('#content').$('div').setValue('This is test content.  Blah Blah Blah.'), 
+                        app.client.$('#signature').$('div').setValue('Testing that I can Sign it')
+                      ]);
+    
+    // Quit the app
+    await app.browserWindow.close(); // Close editor
+    await app.stop();
+    // Read the file and verify things saved 
+    let rawData = fs.readFileSync('data.json');
+    let fileData = JSON.parse(rawData);
+    //console.log(fileData.initiatives['0'].messages['0'].greeting);
+    // Pull out message values 
+    let messTitle = fileData.initiatives['0'].messages['0'].title;
+    let messGreeting = fileData.initiatives['0'].messages['0'].greeting;
+    let messContent = fileData.initiatives['0'].messages['0'].content;
+    let messSignature = fileData.initiatives['0'].messages['0'].signature;
+    
+    // Verify message values are saved correctly 
+    expect(messTitle, 'Message title incorrect').to.be.a('string').that.equals('This is a test Title');
+    expect(messGreeting.ops[0].insert, 'Message greeting incorrect').to.be.a('string').that.equals('This is a test greeting\n');
+    expect(messContent.ops[0].insert, 'Message content incorrect').to.be.a('string').that.equals('This is test content.  Blah Blah Blah.\n');
+    expect(messSignature.ops[0].insert, 'Message signature incorrect').to.be.a('string').that.equals('Testing that I can Sign it\n');
+  });
 
+  // Verify editor copy button sents all contents to clipboard 
+  it('should copy to clipboard', async () => {
+    await app.client.waitUntilWindowLoaded();
+    // Switch to message manager tab 
+    await app.client.click('#messageTab');
+    // Add a message 
+    await app.client.click('#addMess');
+    // Click to open editor
+    await app.client.click('#messEdit0');
+    await app.client.switchWindow('Message Editor');
+    await app.client.waitUntilWindowLoaded();
+    // Set message values in editor
+    await Promise.all([ app.client.$('#greeting').$('div').setValue('This is a test greeting'), 
+                        app.client.$('#content').$('div').setValue('This is test content.  Blah Blah Blah.'), 
+                        app.client.$('#signature').$('div').setValue('Testing that I can Sign it')
+                      ]);
+    // Copy to clipboard  
+    await app.client.click('#copy');
+    // Verify content on clipboard 
+    let content = await app.electron.clipboard.readHTML();
+    //console.log(content);
+    expect(content, 'Content on clipboard incorrect').to.be.a('string').that.equals('<p>This is a test greeting</p><p>This is test content.  Blah Blah Blah.</p><p>Testing that I can Sign it</p>');
+  }); 
 });

@@ -28,7 +28,7 @@ describe('Test Index process', function () {
       }; 
     });
   
-  // Add and remove message in ui  
+ // Add and remove message in ui  
  it('should add message, then delete it', async () => {
     await app.client.waitUntilWindowLoaded();
     // Switch to message manager tab 
@@ -210,12 +210,37 @@ describe('Test Index process', function () {
     await app.client.click('#save');
     // Check that index updated 
     await app.client.switchWindow('Message Manager');
-    await app.client.waitUntilWindowLoaded();
     let title = await app.client.$('#messTitle0').getValue();
     expect(title, 'Message title incorrect').to.be.a('string').that.equals('This is a test Title');
   });
   
-  /* copy from message toolbar */
+  // Verify toolbar copy button sents all contents to clipboard 
+  it('should copy to clipboard', async () => {
+    await app.client.waitUntilWindowLoaded();
+    // Switch to message manager tab 
+    await app.client.click('#messageTab');
+    // Add a message 
+    await app.client.click('#addMess');
+    // Click to open editor
+    await app.client.click('#messEdit0');
+    await app.client.switchWindow('Message Editor');
+    await app.client.waitUntilWindowLoaded();
+    // Set message values in editor
+    await Promise.all([ app.client.$('#greeting').$('div').setValue('This is a test greeting'), 
+                        app.client.$('#content').$('div').setValue('This is test content.  Blah Blah Blah.'), 
+                        app.client.$('#signature').$('div').setValue('Testing that I can Sign it')
+                      ]);
+    // Close editor
+    await app.browserWindow.close();
+    // Switch to message manager tab
+    await app.client.switchWindow('Message Manager');
+    // Copy to clipboard  
+    await app.client.click('#messCopy0');
+    // Verify content on clipboard 
+    let content = await app.electron.clipboard.readHTML();
+    //console.log(content);
+    expect(content, 'Content on clipboard incorrect').to.be.a('string').that.equals('<p>This is a test greeting</p><p>This is test content.  Blah Blah Blah.</p><p>Testing that I can Sign it</p>');
+  }); 
 
   /* drag and drop avenues */
 });
