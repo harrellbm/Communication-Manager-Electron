@@ -33,63 +33,82 @@ describe('Test Index process', function () {
     await app.client.waitUntilWindowLoaded();
     // Switch to message manager tab 
     await app.client.click('#messageTab');
-    // Add messages 
+    // Add message 
     await app.client.click('#addMess');
-    // Verify elements exist
+    // Manually save
+    await app.client.click('#messSave');
+    // Dismiss popup
+    await app.client.execute(function () {
+      let elem = document.getElementsByClassName('swal-overlay swal-overlay--show-modal');
+      elem[0].click();
+    });
+    // Verify message was added in file
+    let rawData = await fs.readFileSync('data.json');
+    let fileData = await JSON.parse(rawData);
+    //console.log(fileData.initiatives['0']);
+    let mess = fileData.initiatives['0'].messages['0'];
+    expect(mess, 'Message does not exist').to.be.an('object').with.keys('title', 'greeting', 'content', 'signature', 'avenue_ids');
+    // Verify message was added in ui 
     expect(app.client.$('#message0'), 'Message does not exist').to.eventually.exist;    
     // Delete message 
     await app.client.click('#messDelete0');
-    // Click confirm button
-    await setTimeout(async function (){ // Note: need to set time out to allow time popup to come up
-      try { 
-        await app.client.click('//body/div[4]/div/div[4]/div[2]/button');
-      }
-      catch(err) {
-        console.error(err);
-    }}, 2);
-    
+    // Click confirm on popup
+    await app.client.execute(function () {
+      let elem = document.getElementsByClassName("swal-button swal-button--confirm swal-button--danger");
+      elem[0].click();
+    });
     // Verify elements are deleted in ui
-    await setTimeout(async function (){ // Note: need to set time out to allow time for avenue to be deleted
-      try { 
-        let container = await app.client.$('#messageIn').getHTML();
-        //console.log(container);
-        expect(container, 'Message exists').to.equal('<div id="messageIn" class="messIn"></div>');
-      }
-      catch(err) {
-        console.error('Did not check container: ', err);
-    }}, 5);
+    let container = await app.client.$('#messageIn').getHTML();
+    //console.log(container);
+    expect(container, 'Message exists').to.equal('<div id="messageIn" class="messIn"></div>');
+    // Read the file and verify deleted in file  
+    rawData = fs.readFileSync('data.json');
+    fileData = JSON.parse(rawData);
+    //console.log(fileData.initiatives['0']);
+    messTitle = fileData.initiatives['0'].messages['0']
+    expect(messTitle, 'Message title incorrect').to.be.undefined;
   });
 
     // Add and remove avenue in ui  
-  it('should add avenue, then delete it', async () => {
+ it('should add avenue, then delete it', async () => {
     await app.client.waitUntilWindowLoaded();
     // Switch to message manager tab 
     await app.client.click('#messageTab');
-    //Add avenues
+    // Add avenue
     await app.client.click('#addAve');
-    // Verify elements exist   
+    // Manually save
+    await app.client.click('#messSave');
+    // Dismiss popup
+    await app.client.execute(function () {
+      let elem = document.getElementsByClassName('swal-overlay swal-overlay--show-modal');
+      elem[0].click();
+    });
+    // Verify message was added in file
+    let rawData = fs.readFileSync('data.json');
+    let fileData = JSON.parse(rawData);
+    //console.log(fileData.initiatives['0']);
+    let ave = fileData.initiatives['0'].avenues['0'];
+    expect(ave, 'Avenue does not exist').to.be.an('object').with.keys('sent', 'avenue_type', 'description', 'person', 'message_id', 'date');
+    // Verify message was added in ui 
     expect(app.client.$('#avenue0'), 'Avenue does not exist').to.eventually.exist;
-    // Delete message 
+    // Delete avenue 
     await app.client.click('#aveDelete0');
-    // Click confirm button
-    await setTimeout(async function (){ // Note: need to set time out to allow time popup to come up
-      try { 
-        await app.client.click('//body/div[4]/div/div[4]/div[2]/button');
-      }
-      catch(err) {
-        console.error(err);
-    }}, 2);
-    
+    // Click confirm on popup
+    await app.client.execute(function () {
+      let elem = document.getElementsByClassName("swal-button swal-button--confirm swal-button--danger");
+      elem[0].click();
+    });
     // Verify elements are deleted in ui
-    await setTimeout(async function (){ // Note: need to set time out to allow time for avenue to be deleted
-      try { 
-        let container = await app.client.$('#avenueIn').getHTML();
-        //console.log(container);
-        expect(container, 'Avenue exists').to.equal('<div id="avenueIn" class="messIn"></div>');
-      }
-      catch(err) {
-        console.error('Did not check container: ', err);
-    }}, 5);
+    let container = await app.client.$('#avenueIn').getHTML();
+    //console.log(container);
+    expect(container, 'Avenue exists').to.equal('<div id="avenueIn" class="messIn"></div>');
+    // Read the file and verify deleted in file 
+    rawData = fs.readFileSync('data.json');
+    fileData = JSON.parse(rawData);
+    //console.log(fileData.initiatives['0']);
+    // Verify message title
+    messTitle = fileData.initiatives['0'].avenues['0']
+    expect(messTitle, 'Message title incorrect').to.be.undefined;
   });
 
   // save on manual save 
