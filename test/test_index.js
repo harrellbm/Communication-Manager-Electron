@@ -12,19 +12,22 @@ const fs = require('fs'); // For verifying file saves
 describe('Test Index process', function () {
   this.slow(10000);
   this.timeout(15000);
-  var app;
+  let app;
   
   beforeEach(function () {
     app = new Application({
       path: electronPath,
-      args: [path.join(__dirname, '..')]
+      args: [path.join(__dirname, '..',  'main.js')],
+      startTimeout: 10000
       });
     return app.start();
     });
   
   afterEach( function () {
    if (app && app.isRunning()) {
-      return app.stop();
+      return app.stop().then(function (){
+        app = null;
+      });
       }; 
     });
   
@@ -160,7 +163,30 @@ describe('Test Index process', function () {
     let aveDescription = fileData.initiatives['0'].avenues['0'].description;
     expect(aveDescription, 'Avenue desctription incorrect').to.be.a('string').that.equals('Test Avenue Description');
     });
+});
 
+describe('Test Index process part 2', function () {
+  this.slow(10000);
+  this.timeout(15000);
+  let app;
+  
+  beforeEach(function () {
+    app = new Application({
+      path: electronPath,
+      args: [path.join(__dirname, '..',  'main.js')],
+      startTimeout: 10000
+      });
+    return app.start();
+    });
+  
+  afterEach( function () {
+   if (app && app.isRunning()) {
+      return app.stop().then(function (){
+        app = null;
+      });
+      }; 
+    });
+  
   // Open/load correctly 
   it('should load correctly', async () => {
     await app.client.waitUntilWindowLoaded();
@@ -249,7 +275,7 @@ describe('Test Index process', function () {
 describe('Test Communication with Main process', function () {
   this.slow(10000);
   this.timeout(15000);
-  var app;
+  let app;
 
   beforeEach(function () {
     app = new Application({
@@ -261,8 +287,10 @@ describe('Test Communication with Main process', function () {
 
   afterEach(function () {
     if (app && app.isRunning()) {
-      return app.stop();
-      }
+      return app.stop().then(function (){
+        app = null;
+      });
+      };
     });
     
   // Test passing initiative to main, letting it save in the collection in main and then reloading

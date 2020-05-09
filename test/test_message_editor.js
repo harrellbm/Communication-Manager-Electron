@@ -8,20 +8,24 @@ const fs = require('fs'); // For verifying file saves
 describe('Test Message Editor Functionality', function () {
   this.slow(12000);
   this.timeout(16000);
-  var app;
+  let app;
 
   beforeEach(function () {
     app = new Application({
       path: electronPath,
-      args: [path.join(__dirname, '..')]
+      args: [path.join(__dirname, '..', 'main.js')],
+      startTimeout: 10000
     });
+    //console.log(app)
     return app.start();
   });
 
   afterEach(function () {
     if (app && app.isRunning()) {
-      return app.stop();
-    }
+      return app.stop().then(function (){
+        app = null;
+      });
+    };
   });
   
 
@@ -101,6 +105,7 @@ describe('Test Message Editor Functionality', function () {
     // Quit the app
     await app.browserWindow.close(); // Close editor
     await app.stop();
+    await function () { new Promise(resolve => setTimeout(console.log(resolve), 5))};
     // Read the file and verify things saved 
     let rawData = await fs.readFileSync('data.json');
     let fileData = await JSON.parse(rawData);
