@@ -11,7 +11,7 @@ Nonprofit organizations often have to settle for the tools that are made for big
 
 The Communication Manager is aimed at Small to medium sized organizations or leaders who have a lot of emails, texts, social media, etc. to keep track of and need a way to organize and make sure that communication flows smoothly and effectivly.  It offers a tool to organize communication campaigns and set up automations to make communicating to many people and sub-groups in your organization easier.
 
-![Processes Flowchart](https://github.com/harrellbm/Communication-Manager-Electron/blob/dev-latest/docs/Processes%20Flowchart.PNG)
+![Processes Flowchart](https://github.com/harrellbm/Communication-Manager-Electron/blob/master/docs/Processes%20Flowchart.PNG)
 # Potential Features
 Set up schedule with multiple dates and locations to send
 
