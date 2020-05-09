@@ -10,7 +10,7 @@ Main Process: main.js
 # Add 'Main Window' label
 Main Window:
 - src/index.html
-- src.index.js
+- src/index.js
 
 # Add 'Message Editor' label
 Message Editor:

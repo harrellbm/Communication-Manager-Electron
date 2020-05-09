@@ -1,3 +1,110 @@
+class initiativeCollection {
+   constructor() {
+      this.initiatives = new Map();
+      };
+   // Makes sure that the lowest possible id is assigned to a new avenue 
+   id_fill(objects){
+      let Id = 0;
+      let strId; // holds id that is converted to string
+      let has = true; // holds boolean for if object has key or not 
+      while(has == true){
+         strId = Id.toString(); // turn id to string so that it can be evaluated and possibly returned
+         if (objects.has(strId) == true){ // check to see if map has id or not
+            Id += 1
+            } else { // when avenueId does not equal ave we know that the spot is empty
+               return strId
+               }
+      }
+   };
+
+   // Add a goal to the goals map in the initiative 
+   add_initiative(description = '', groups = '') {
+      let new_initiative = new Initiative();
+      new_initiative.description = description
+      
+      // Set any initial groups.  Can take a single string or array of strings
+      let array = [groups]
+      let value;
+      let id;
+      for(value of array){
+         if(typeof value === "string"){
+            new_initiative.groups.push(value)
+         } else if (value.constructor === Array){
+            for(id of value){
+               new_initiative.groups.push(id)
+            }
+         }
+      }
+      
+      // goals, messages, and avenues will be added after initialization 
+      
+      let initiativeId = this.id_fill(this.initiatives)// fill in the lowest available id
+      this.initiatives.set(initiativeId, new_initiative);
+      return initiativeId
+      }
+
+   update_init(initId, ipc) {
+      let initiative = new Initiative();
+      initiative.unpack_from_ipc(ipc);
+      this.initiatives.set(initId, initiative)
+      //console.log('updated collection: ', this.initiatives)
+
+   }
+
+   update_mess(initId, messId, ipc) {
+      let initiative = this.initiatives.get(initId);
+      let message = initiative.messages.get(messId);
+      // Create message if it was not there before
+      let newMess;
+      if (message == undefined) {
+         newMess = new Message();
+         initiative.messages.set(messId, newMess)
+         message = initiative.messages.get(messId);
+      }
+      
+      message.change_title(ipc.title);
+      message.change_greeting(ipc.greeting);
+      message.change_content(ipc.content);
+      message.change_signature(ipc.signature);
+      //console.log('message in update method: ', message)
+   }
+   // Prepare initiative to be stringified for Json or sent over ipc by converting nonstandard objects
+   // Note: pack returns a new object that is packed and does not change the current collection
+   pack_for_file(){ // Note: dynamic test held in test_main.js, unit test in test_object_templates.js
+      // Create temporary collection 
+      var container = new initiativeCollection();
+      // Pack each initiative and put in the temporary collection
+      this.initiatives.forEach(function (initiative, key) {
+         let packed = initiative.pack_for_ipc()
+         container.initiatives.set(key, packed)
+      })
+      // Pack collection itself into a vanilla object  
+      let collection_for_ipc = new Object;
+      collection_for_ipc.initiatives = Object.fromEntries(container.initiatives); 
+      
+      return collection_for_ipc // Returns the packaged collection  
+   }
+
+   // Unpack values passed in by Json format from saved file or ipc
+   // Note: unpack from file changed current collection to match incoming data
+   unpack_from_file( file ){ // Note: dynamic test held in test_main.js, unit test in test_object_templates.js
+      // Convert Initiatives back from saved vanilla object
+      this.initiatives = new Map(); 
+      // Reload each initiative into the collection's map 
+      let initiative;
+      for (initiative of Object.entries(file.initiatives)) { // Iterate over the key value pairs from the vanilla object
+         let id = initiative[0];
+         let content = initiative[1];
+         let unpacked = new Initiative(); // Create new Initiative object 
+         // Load all contents into the new Initiative object       
+         unpacked.unpack_from_ipc(content); // unpack all of the initiative's properties  
+         // Add the new Initiative object back to the collection
+         this.initiatives.set(id, unpacked); 
+         }
+      //console.log('new unpacked initiative: ', this.initiatives);
+   }
+};
+
 // Constructor for Initiative object.  Top tier data structure 
 class Initiative {
    constructor() {
@@ -25,6 +132,7 @@ class Initiative {
       return this.description
       }
 
+   /* Add logic to accept both single string and array */
    // Completely writes over current groups 
    change_group(new_group){   // TODO: need data validation
       this.groups = [new_group]
@@ -66,12 +174,12 @@ class Initiative {
       let new_goal = new Goal();
       new_goal.frequency = frequency;
       new_goal.type = type;
-      new_goal.reminder = reminder
+      new_goal.reminder = reminder;
 
-      let goalId = this.id_fill(this.goals)// fill in the lowest available id
+      let goalId = this.id_fill(this.goals);// fill in the lowest available id
       this.goals.set(goalId, new_goal);
-      return goalId
-      }
+      return goalId;
+      };
    
    // Add a message to the messages map in the initiative 
    add_message(title = '', greeting = '', content = '', signature ='', avenue_ids=''){
@@ -101,7 +209,7 @@ class Initiative {
       }
    
    // Add an avenue to the avenues map in the initiative 
-   add_avenue(avenue_type='', description='', person='', sent=false, message_id='', year=1000, month=0, day=1, hour=0, min=0){
+   add_avenue(avenue_type='', description='', person='', sent=false, message_id='', dateString=''){
       let new_avenue = new Avenue();
       new_avenue.avenue_type = avenue_type;
       new_avenue.description = description;
@@ -130,8 +238,7 @@ class Initiative {
       new_avenue.message_id = message_id
       
       // Set date object
-      new_avenue.date.setFullYear(year, month, day);
-      new_avenue.date.setHours(hour, min, 0, 0);
+      new_avenue.date = dateString;
 
       let avenueId = this.id_fill(this.avenues)// fill in the lowest available id
       this.avenues.set(avenueId, new_avenue);
@@ -178,41 +285,98 @@ class Initiative {
       avenue.change_message_id('');
       let id;
       for (id in message.avenue_ids){
-         if (aveId == id){
-            message.avenue_ids.splice(aveId, 1);
+         if (aveId == message.avenue_ids[id]){
+            message.avenue_ids.splice(id, 1);
             return true;
             }
          }
       }
 
-   
+   /* may need to convert message, goal, and avenue to vanilla objects */
    // Prepare initiative to be stringified for Json or sent over ipc by converting nonstandard objects
+   // Note: pack returns a new packed object and does not change current initiative 
    pack_for_ipc(){ // Note: dynamic test held in test_main.js, unit test in test_object_templates.js
-      this.messages = Object.fromEntries(this.messages); // convert maps to vanilla objects 
-      this.avenues = Object.fromEntries(this.avenues)
-      this.goals = Object.fromEntries(this.goals)
-         // Note: date objects are not converted here because Json stringify will convert them to strings without lost of data
+      let initiative_for_ipc = new Object(); 
+      initiative_for_ipc.description = this.description;
+      initiative_for_ipc.groups = this.groups;
+      initiative_for_ipc.goals = Object.fromEntries(this.goals);// Convert maps to vanilla objects
+      initiative_for_ipc.messages = Object.fromEntries(this.messages);  
+      initiative_for_ipc.avenues = Object.fromEntries(this.avenues);
+      initiative_for_ipc.avenue_types = this.avenue_types
+
+      return initiative_for_ipc // returns the packaged initiative 
+      // Note: date objects are not converted here because Json stringify will convert them to strings without lost of data
    }
 
    // Unpack values passed in by Json format from saved file or ipc
-   unpack_from_ipc(file){ // Note: dynamic test held in test_main.js, unit test in test_object_templates.js
-      this.description = file.description; // string 
-      this.groups = file.groups; // array 
-      this.goals = new Map(Object.entries(file.goals)); // convert objects back to maps
-      this.messages = new Map(Object.entries(file.messages)); 
-      this.avenues = new Map(Object.entries(file.avenues));
-      this.avenues.forEach(function (value){ // convert all stringified dates back to date objects 
-         let dateObj = new Date(value.date);
-         value.date = dateObj;
-         })
-      this.avenue_types = file.avenue_types; // array
+   // Note: unpack changes the current initiative from in coming ipc or file Json format to object template format
+   unpack_from_ipc( ipc ){ // Note: dynamic test held in test_main.js, unit test in test_object_templates.js
+      this.description = ipc.description; // string 
+      this.groups = ipc.groups; // array 
+
+      // Convert Goals back from saved vanilla objects
+      this.goals = new Map(); // Reset initiative.goals to a map object
+      // Reload each goal into an Goal object 
+      let goal;
+      for (goal of Object.entries(ipc.goals)) { // Iterate over the key value pairs from the vanilla object
+         let id = goal[0];
+         let content = goal[1];
+         let unpacked = new Goal(); // Create new Goal object 
+         // Load all contents into new Goal object
+         unpacked.frequency= content.frequency;
+         unpacked.type = content.type;
+         unpacked.reminder = content.reminder;
+         
+         // Add the new goal object back to the Initiative.goals map
+         this.goals.set(id, unpacked); 
+         }
+      //console.log('new unpacked goals: ', this.goals);
+
+       
+      // Convert Messages back from saved vanilla objects
+      this.messages = new Map(); // Reset initiative.messages to a map object
+      // Reload each message into an Message object 
+      let mess;
+      for (mess of Object.entries(ipc.messages)) { // Iterate over the key value pairs from the vanilla object
+         let id = mess[0];
+         let content = mess[1];
+         let unpacked = new Message(); // Create new message object 
+         // Load all contents into new Message object
+         unpacked.title = content.title;
+         unpacked.greeting = content.greeting;
+         unpacked.content = content.content;
+         unpacked.signature = content.signature;
+         unpacked.avenue_ids = content.avenue_ids;
+      
+         // Add the new message object back to the Initiative.messages map
+         this.messages.set(id, unpacked); 
+         }
+      //console.log('new unpacked messages: ', this.messages);
+
+      // Convert Avenues back from saved vanilla objects
+      this.avenues = new Map(); // Reset initiative.avenues to a map object 
+      // Reload each avenue into an Avenue object 
+      let ave;
+      for (ave of Object.entries(ipc.avenues)) { // Iterate over the key value pairs from the vanilla object
+         let id = ave[0];
+         let content = ave[1];
+         let unpacked = new Avenue(); // Create new avenue object 
+         // Load all contents into new Avenue object
+         unpacked.avenue_type = content.avenue_type; // String 
+         unpacked.description = content.description; // String 
+         unpacked.person = content.person; // Array 
+         unpacked.date = content.date; // String 
+         unpacked.sent = content.sent; // Boolean
+         unpacked.message_id = content.message_id; // String
+      
+         // Add the new avenue object back to the Initiative.avenues map
+         this.avenues.set(id, unpacked); 
+         }
+      //console.log('new unpacked avenues: ', this.avenues);
+
+      this.avenue_types = ipc.avenue_types; // array
    }
 };
-
-// Constructor wrapper for exporting 
-function createInitiative () {
-   return new Initiative();
-   }
 
 class Goal {
    constructor() {
@@ -222,41 +386,36 @@ class Goal {
       this.frequency= 0;
       this.type = '';
       this.reminder = {};
-      }
+      };
    
    /* possibly implement date object for frequency */ 
    
    // Changes the goal's frequency 
    change_frequency(new_frequency){ 
       this.frequency = new_frequency;
-      }
+      };
    
    // Gets the goal's frequency 
    get_frequency(){
       return this.frequency;
-      }
+      };
    
    // Changes the goal's avenue type 
    change_type(new_type){ 
       this.type = new_type;
-      }
+      };
    
    // Gets the goal's avenue type 
    get_type(){
       return this.type;
-      }
+      };
       
       /* need add reminder */
       /* need get reminder */
       /* need remove reminder */
       /* need clear reminders */
       /* implement date object in reminder */
-  }
-
-// Constructor wrapper for exporting 
-function createGoal () {
-   return new Goal();
-}
+  };
 
 class Message {
    constructor () {
@@ -330,12 +489,7 @@ class Message {
       }
 };
 
-// Constructor wrapper for exporting 
-function createMessage () {
-    return new Message();
-}
-
-// Constructor for Avenue object.  All methods are held within the Message object  
+ 
 class Avenue {
    constructor() {
       // date is a built in dat object only one date is assigned per avenue
@@ -398,9 +552,8 @@ class Avenue {
       }
 
    // Change the date object 
-   change_date(year, month, day, hour, min){  // TODO: need data validation
-      this.date.setFullYear(year, month, day);
-      this.date.setHours(hour, min, 0, 0);
+   change_date(dateString){  // TODO: need data validation
+      this.date = dateString;
       }
  
    // Returns the date for the given avenue as a date object
@@ -434,16 +587,12 @@ class Avenue {
       }
 };
 
-// Constructor wrapper for exporting 
-function createAvenue () {
-    return new Avenue();
-}
-
 module.exports = {
-   createInitiative,
-   createGoal, 
-   createMessage,
-   createAvenue,
+   initiativeCollection,
+   Initiative,
+   Goal,
+   Message,
+   Avenue
 }
 
 /*
