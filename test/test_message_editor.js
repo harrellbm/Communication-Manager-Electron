@@ -105,6 +105,7 @@ describe('Test Message Editor Functionality', function () {
     // Quit the app
     await app.browserWindow.close(); // Close editor
     await app.stop();
+    await function () { new Promise(resolve => setTimeout(console.log(resolve), 5))};
     // Read the file and verify things saved 
     let rawData = await fs.readFileSync('data.json');
     let fileData = await JSON.parse(rawData);
