@@ -47,6 +47,7 @@ describe('Test Index process', function () {
     });
     // Verify message was added in file
     let rawData = await fs.readFileSync('data.json');
+    await function () { new Promise(resolve => setTimeout(console.log(resolve), 5))};
     let fileData = await JSON.parse(rawData);
     //console.log(fileData.initiatives['0']);
     let mess = fileData.initiatives['0'].messages['0'];
@@ -66,6 +67,7 @@ describe('Test Index process', function () {
     expect(container, 'Message exists').to.equal('<div id="messageIn" class="messIn"></div>');
     // Read the file and verify deleted in file  
     rawData = await fs.readFileSync('data.json');
+    await function () { new Promise(resolve => setTimeout(console.log(resolve), 5))};
     fileData = await JSON.parse(rawData);
     //console.log(fileData.initiatives['0']);
     messTitle = fileData.initiatives['0'].messages['0']
@@ -88,6 +90,7 @@ describe('Test Index process', function () {
     });
     // Verify message was added in file
     let rawData = await fs.readFileSync('data.json');
+    await function () { new Promise(resolve => setTimeout(console.log(resolve), 5))};
     let fileData = await JSON.parse(rawData);
     //console.log(fileData.initiatives['0']);
     let ave = fileData.initiatives['0'].avenues['0'];
@@ -107,6 +110,7 @@ describe('Test Index process', function () {
     expect(container, 'Avenue exists').to.equal('<div id="avenueIn" class="messIn"></div>');
     // Read the file and verify deleted in file 
     rawData = await fs.readFileSync('data.json');
+    await function () { new Promise(resolve => setTimeout(console.log(resolve), 5))};
     fileData = await JSON.parse(rawData);
     //console.log(fileData.initiatives['0']);
     // Verify message title
@@ -129,6 +133,7 @@ describe('Test Index process', function () {
     await app.client.click('#messSave');
     // Read the file and verify things saved 
     let rawData = await fs.readFileSync('data.json');
+    await function () { new Promise(resolve => setTimeout(console.log(resolve), 5))};
     let fileData = await JSON.parse(rawData);
     //console.log(fileData.initiatives['0']);
     // Verify message title
