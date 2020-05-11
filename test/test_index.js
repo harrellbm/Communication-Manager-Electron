@@ -46,6 +46,7 @@ describe('Test Index process', function () {
       elem[0].click();
     });
     // Verify message was added in file
+    await function () { new Promise(resolve => setTimeout(console.log(resolve), 5))};
     let rawData = await fs.readFileSync('data.json');
     await function () { new Promise(resolve => setTimeout(console.log(resolve), 5))};
     let fileData = await JSON.parse(rawData);
@@ -65,7 +66,8 @@ describe('Test Index process', function () {
     let container = await app.client.$('#messageIn').getHTML();
     //console.log(container);
     expect(container, 'Message exists').to.equal('<div id="messageIn" class="messIn"></div>');
-    // Read the file and verify deleted in file  
+    // Read the file and verify deleted in file 
+    await function () { new Promise(resolve => setTimeout(console.log(resolve), 5))}; 
     rawData = await fs.readFileSync('data.json');
     await function () { new Promise(resolve => setTimeout(console.log(resolve), 5))};
     fileData = await JSON.parse(rawData);
@@ -89,6 +91,7 @@ describe('Test Index process', function () {
       elem[0].click();
     });
     // Verify message was added in file
+    await function () { new Promise(resolve => setTimeout(console.log(resolve), 5))};
     let rawData = await fs.readFileSync('data.json');
     await function () { new Promise(resolve => setTimeout(console.log(resolve), 5))};
     let fileData = await JSON.parse(rawData);
@@ -109,6 +112,7 @@ describe('Test Index process', function () {
     //console.log(container);
     expect(container, 'Avenue exists').to.equal('<div id="avenueIn" class="messIn"></div>');
     // Read the file and verify deleted in file 
+    await function () { new Promise(resolve => setTimeout(console.log(resolve), 5))};
     rawData = await fs.readFileSync('data.json');
     await function () { new Promise(resolve => setTimeout(console.log(resolve), 5))};
     fileData = await JSON.parse(rawData);
@@ -132,6 +136,7 @@ describe('Test Index process', function () {
     // Manually save
     await app.client.click('#messSave');
     // Read the file and verify things saved 
+    await function () { new Promise(resolve => setTimeout(console.log(resolve), 5))};
     let rawData = await fs.readFileSync('data.json');
     await function () { new Promise(resolve => setTimeout(console.log(resolve), 5))};
     let fileData = await JSON.parse(rawData);
@@ -160,9 +165,9 @@ describe('Test Index process', function () {
     await app.stop();
     // Read the file and verify things saved 
     await function () { new Promise(resolve => setTimeout(console.log(resolve), 5))};
-    let rawData = fs.readFileSync('data.json');
+    let rawData = await fs.readFileSync('data.json');
     await function () { new Promise(resolve => setTimeout(console.log(resolve), 5))};
-    let fileData = JSON.parse(rawData);
+    let fileData = await JSON.parse(rawData);
     //console.log(fileData.initiatives['0']);
     // Verify message title
     let messTitle = fileData.initiatives['0'].messages['0'].title
