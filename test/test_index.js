@@ -154,6 +154,7 @@ describe('Test Index process', function () {
     await app.stop();
     // Read the file and verify things saved 
     let rawData = await fs.readFileSync('data.json');
+    await function () { new Promise(resolve => setTimeout(console.log(resolve), 5))};
     let fileData = await JSON.parse(rawData);
     //console.log(fileData.initiatives['0']);
     // Verify message title
