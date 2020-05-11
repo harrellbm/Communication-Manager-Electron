@@ -141,6 +141,7 @@ describe('Test Index process', function () {
 
   // save from index on index close
   it('should save from index on app close', async () => {
+    
     await app.client.waitUntilWindowLoaded();
     // Switch to message manager tab 
     await app.client.click('#messageTab');
@@ -153,9 +154,9 @@ describe('Test Index process', function () {
     // Quit the app
     await app.stop();
     // Read the file and verify things saved 
-    let rawData = await fs.readFileSync('data.json');
+    let rawData = fs.readFileSync('data.json');
     await function () { new Promise(resolve => setTimeout(console.log(resolve), 5))};
-    let fileData = await JSON.parse(rawData);
+    let fileData = JSON.parse(rawData);
     //console.log(fileData.initiatives['0']);
     // Verify message title
     let messTitle = fileData.initiatives['0'].messages['0'].title
@@ -313,7 +314,8 @@ describe('Test Communication with Main process', function () {
     // Unpack from ipc
     // Note: currently no need for ipcPack.initId but probably in the future 
     let afterInit = new templates.Initiative();
-    await afterInit.unpack_from_ipc(ipcPack.ipcInit);
+    afterInit.unpack_from_ipc(ipcPack.ipcInit);
+    await function () { new Promise(resolve => setTimeout(console.log(resolve), 5))};
     //console.log('unpacked initative: ', afterInit);
     expect(afterInit, 'Initiative is not an instance of the initiative object').to.be.instanceOf(templates.Initiative);
     expect(afterInit.description, 'Does not have the proper description').to.be.a('string').that.equals('This is the updated description');
