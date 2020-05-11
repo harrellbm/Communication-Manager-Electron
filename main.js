@@ -1,5 +1,5 @@
 // Modules to control application life and create native browser window
-const {app, BrowserWindow} = require('electron');
+const {app, BrowserWindow, Menu, MenuItem} = require('electron');
 const ipc = require('electron').ipcMain;
 const fs = require('fs');
 const templates = require('./src/objectTemplate.js');
@@ -19,7 +19,8 @@ function createIndex (name, tag, html) {
   let newWindow = new BrowserWindow({
     show: false,
     webPreferences: {
-      nodeIntegration: true
+      nodeIntegration: true,
+      spellcheck: true
     }
   });
 
@@ -30,6 +31,41 @@ function createIndex (name, tag, html) {
   // And load the html of the window
     // Add __dirname so that electron-reload can watch render processes
   newWindow.loadFile(html);
+
+  // Set up right click menu for spellchecker
+  const session =  newWindow.webContents.session;
+  session.setSpellCheckerLanguages(['en-US']);
+  newWindow.webContents.on('context-menu', (_e, params) => {
+    if(params.dictionarySuggestions && params.dictionarySuggestions.length)
+    {
+      const objMenu = new Menu();
+      const objMenuHead = new MenuItem({
+        label: 'Corrections',
+        enabled: false
+      });
+      objMenu.append(objMenuHead);
+      const objMenuSep = new MenuItem({
+        type: 'separator'
+      });
+      objMenu.append(objMenuSep);
+      params.dictionarySuggestions.map(strSuggestion => {
+        const objMenuItem = new MenuItem({
+          click(_this, objWindow)
+          {
+            objWindow.webContents.insertText(strSuggestion);
+            objMenu.closePopup(this);
+          },
+          label: strSuggestion
+        });
+        objMenu.append(objMenuItem);
+      });
+      objMenu.popup({
+        window: newWindow,
+        x: params.x,
+        y: params.y
+      });
+    }
+  });
 
   /* need to handle multiple initiatives */
   // When loaded show 
@@ -43,7 +79,7 @@ function createIndex (name, tag, html) {
     ipcPack.initObj = initiativeObj;
     //console.log('initiative on initiatization: ', ipcPack)
     newWindow.webContents.send('load', ipcPack);
-    newWindow.maximize(); // maximize to full screen
+    newWindow.maximize(); // maximize to full screen // Possibly move this to webpreferences with fullscreen option
     newWindow.show();
   });
 
@@ -66,7 +102,8 @@ function createEditor (name, tag, html, initativeId, messageId, messageObj) {
     height: 600,
     show: false,
     webPreferences: {
-      nodeIntegration: true
+      nodeIntegration: true,
+      spellcheck: true
     }
   });
 
@@ -77,6 +114,43 @@ function createEditor (name, tag, html, initativeId, messageId, messageObj) {
   // And load the html of the window
     // Add __dirname so that electron-reload can watch render processes
   newWindow.loadFile(html);
+
+  // Set up right click menu for spellchecker
+  const session =  newWindow.webContents.session;
+  session.setSpellCheckerLanguages(['en-US']);
+  newWindow.webContents.on('context-menu', (_e, params) => {
+
+    if(params.dictionarySuggestions && params.dictionarySuggestions.length)
+    {
+      const objMenu = new Menu();
+      const objMenuHead = new MenuItem({
+        label: 'Corrections',
+        enabled: false
+      });
+      objMenu.append(objMenuHead);
+      const objMenuSep = new MenuItem({
+        type: 'separator'
+      });
+      objMenu.append(objMenuSep);
+      params.dictionarySuggestions.map(strSuggestion => {
+
+        const objMenuItem = new MenuItem({
+          click(_this, objWindow)
+          {
+            objWindow.webContents.insertText(strSuggestion);
+            objMenu.closePopup(this);
+          },
+          label: strSuggestion
+        });
+        objMenu.append(objMenuItem);
+      });
+      objMenu.popup({
+        window: newWindow,
+        x: params.x,
+        y: params.y
+      });
+    }
+  });
 
   // When loaded show 
   newWindow.once('ready-to-show', function () {
