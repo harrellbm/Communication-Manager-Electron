@@ -20,3 +20,7 @@ Message Editor:
 # Add 'Object Template' label 
 Object Template:
 - src/objectTemplate.js
+
+# Add 'documentation' label 
+documentation:
+- docs/*
