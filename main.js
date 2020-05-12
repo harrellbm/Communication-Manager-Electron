@@ -3,12 +3,10 @@ const {app, BrowserWindow, Menu, MenuItem} = require('electron');
 const ipc = require('electron').ipcMain;
 const fs = require('fs');
 const templates = require('./src/objectTemplate.js');
-const debug = require('electron-debug');
+// Handle installation by squirrel
+if(require('electron-squirrel-startup')) app.quit();
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
-
-// Open devTools for all browser windows
-//debug({'devToolsMode': 'right'});
 
 const windows = new Map(); // Object to hold references to the webcontents for all windows 
 var collection = new templates.initiativeCollection(); // Object to hold all of the initiatives 
