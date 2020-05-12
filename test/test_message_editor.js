@@ -2,7 +2,7 @@ const Application = require('spectron').Application;
 const electronPath = require('electron'); // Require Electron from the binaries included in node_modules.
 const path = require('path');
 const expect = require('chai').expect;
-const fs = require('fs'); // For verifying file saves 
+const fs = require('fs').promises; // For verifying file saves 
 
 
 describe('Test Message Editor Functionality', function () {
@@ -69,9 +69,9 @@ describe('Test Message Editor Functionality', function () {
     await app.client.click('#save');
 
     // Read the file and verify things saved 
-    await function () { new Promise(resolve => setTimeout(console.log(resolve), 5))};
-    let rawData = await fs.readFileSync('data.json');
-    await function () { new Promise(resolve => setTimeout(console.log(resolve), 5))};
+    //await function () { new Promise(resolve => setTimeout(console.log(resolve), 5))};
+    let rawData = await fs.readFile('data.json');
+    //await function () { new Promise(resolve => setTimeout(console.log(resolve), 5))};
     let fileData = await JSON.parse(rawData);
     //console.log(fileData.initiatives['0'].messages['0'].greeting);
     // Pull out message values 
@@ -107,10 +107,10 @@ describe('Test Message Editor Functionality', function () {
     // Quit the app
     await app.browserWindow.close(); // Close editor
     await app.stop();
-    await function () { new Promise(resolve => setTimeout(console.log(resolve), 5))};
+    //await function () { new Promise(resolve => setTimeout(console.log(resolve), 5))};
     // Read the file and verify things saved 
-    let rawData = await fs.readFileSync('data.json');
-    await function () { new Promise(resolve => setTimeout(console.log(resolve), 5))};
+    let rawData = await fs.readFile('data.json');
+    //await function () { new Promise(resolve => setTimeout(console.log(resolve), 5))};
     let fileData = await JSON.parse(rawData);
     //console.log(fileData.initiatives['0'].messages['0'].greeting);
     // Pull out message values 
@@ -209,9 +209,9 @@ describe('Test Message Editor Functionality', function () {
     await app.browserWindow.close(); // Close editor
     await app.stop();
     // Read the file and verify things saved 
-    await function () { new Promise(resolve => setTimeout(console.log(resolve), 5))};
-    let rawData = await fs.readFileSync('data.json');
-    await function () { new Promise(resolve => setTimeout(console.log(resolve), 5))};
+    //await function () { new Promise(resolve => setTimeout(console.log(resolve), 5))};
+    let rawData = await fs.readFile('data.json');
+    //await function () { new Promise(resolve => setTimeout(console.log(resolve), 5))};
     let fileData = await JSON.parse(rawData);
     //console.log(fileData.initiatives['0'].messages['0'].greeting);
     // Pull out message values 
