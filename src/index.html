@@ -25,21 +25,25 @@
         </div>
 
         <div id="Initiative" class="tabcontent">
-            <div class="wrapper">
+            <div class="initWrapper">
                 <p class="initHeader">
                   <text>Initiative:</text>
-                  <input class="input" type="text" id="initName">
+                  <input class="text" type="text" id="initName">
+                  <br>
                   <text>Description:</text>
-                  <input class="input" type="text" id="initDescription">
+                  <input class="text" type="text" id="initDescription">
                 </p>
                 <textarea id="groupIn">add your groups here</textarea>
-                <p class="goalHeader">
+                <p id="goalHeader">
                   <text>Goals:</text>
                   <input class="button" type="button" id="addGoal" value="add">
                 </p>
-                <textarea id="goalsIn">add your goals here</textarea>
-                <textarea id="goalsIn">this will be a calendar eventually</textarea>
-                <p id="bottom">
+                <textarea id="goalIn">add your goals here</textarea>
+                <p id="initMid">
+                  <input class="button" type="button" id="schedule" value="schedule">
+                </p>
+                <textarea class="calendar" id="calendar">this will be a calendar eventually</textarea>
+                <p id="initBottom">
                   <input class="button" type="button" id="save" value="Save">
                   <input class="button" type="button" id="open" value="Open">
                 </p>

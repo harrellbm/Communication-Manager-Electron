@@ -261,8 +261,6 @@ textarea{
       grid-row-end: 2;
       }
 
-    
-
     /* Seccond row */
     /* Sent box rules */
     .aveSent_box{
@@ -307,8 +305,6 @@ textarea{
       grid-row-end: 3;
       }
 
-    
-
     /* Outside rows */
     /* Delete button */
     .aveDelete{
@@ -320,9 +316,87 @@ textarea{
       grid-row-end: 2;
       }
 
+/* ---- Initiative tab ---- */
+/* Note: use top div to toggle visibility on and off nested div holds the actual grid */
+.initWrapper{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 14vh 4vh 19.5vh 4vh 46vh 4vh;
+    background-color: rgb(139, 203, 224);
+  }
+  
+  /* input for title */
+  #initHeader{
+    margin-left: 0.5rem;
+  }
+  
+  /* Container for adding groups */
+  #groupIn{
+    max-height: 85vh;
+    vertical-align: top;
+    grid-row-start: 1;
+    grid-row-end: 2;
+    grid-column-start: 2;
+    grid-column-end: 3;
+    overflow-y: scroll;
+    background-color: rgb(255, 255, 255);
+    border-width: 1px;
+    border-style: solid;
+    border-color: rgb(169, 169, 169);
+    margin-left: 1vh;
+    margin-right: 1vh;
+  }
+
+  #goalHeader{
+    grid-row-start: 2;
+    grid-row-end: 3;
+    grid-column-start: 1;
+    grid-column-end: 3;
+  }
+  /* Container for adding goals */
+  #goalIn{
+    max-height: 85vh;
+    vertical-align: top;
+    grid-row-start: 3;
+    grid-row-end: 4;
+    grid-column-start: 1;
+    grid-column-end: 3;
+    overflow-y: scroll;
+    background-color: rgb(255, 255, 255);
+    border-width: 1px;
+    border-style: solid;
+    border-color: rgb(169, 169, 169);
+    margin-left: 1vh;
+    margin-right: 1vh;
+  }
+
+  #initMid{
+    grid-row-start: 4;
+    grid-row-end: 5;
+    grid-column-start: 1;
+    grid-column-end: 3;
+  }
+
+  #calendar{
+    grid-row-start: 5;
+    grid-row-end: 6;
+    grid-column-start: 1;
+    grid-column-end: 3;
+    margin-left: 1vh;
+    margin-right: 1vh;
+  }
+
+  /* container on the bottom */
+  #initBottom{
+    grid-column-start: 1;
+    grid-column-end: 3;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
 
 /* ---- other Tab rules ---- */
-/* Note: nested div used top one is used to toggle visibility on and off second holds the actual grid
+/* Note: use top div to toggle visibility on and off nested div holds the actual grid
 /* Container for full grid */
 .wrapper{
     display: grid;
