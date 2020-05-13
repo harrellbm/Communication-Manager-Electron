@@ -13,6 +13,7 @@
   "license": "MIT",
   "scripts": {
     "start": "electron-forge start",
+    "start-bare": "electron .",
     "test": "xvfb-maybe mocha",
     "test-object": "mocha test/test_object_templates.js",
     "test-index": "mocha test/test_index.js",
