@@ -14,7 +14,7 @@ ipc.on('load', function (event, ipcPack) {
   currentInitiativeId = ipcPack.initId;
   currentInitiative = new templates.Initiative;
   currentInitiative.unpack_from_ipc(ipcPack.initObj);
-  //console.log('initiative and id on index load: ', currentInitiativeId, currentInitiative)
+  console.log('initiative and id on index load: ', currentInitiativeId, currentInitiative)
 });
 
 
@@ -509,3 +509,5 @@ dragDrop.on('drop', function (ave, target, source) {
       //console.log('unlinked ave: ', currentInitiative.avenues.get(aveId), 'unlinked mess: ', currentInitiative.messages.get(messId));
       }
 });
+
+/* ---- Initiative tab related functions ---- */

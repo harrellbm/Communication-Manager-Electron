@@ -10,7 +10,7 @@ if(require('electron-squirrel-startup')) app.quit();
 
 const windows = new Map(); // Object to hold references to the webcontents for all windows 
 var collection = new templates.initiativeCollection(); // Object to hold all of the initiatives 
-collection.add_initiative(); // For now just add a single initiative 
+
 
 function createIndex (name, tag, html) {
   // Create Message editor window
@@ -66,17 +66,36 @@ function createIndex (name, tag, html) {
   });
 
   /* need to handle multiple initiatives */
-  // When loaded show 
-  newWindow.once('ready-to-show', () => {
-    // For now just initiate with blank initiative
-    let temp = new templates.Initiative;
-    let initiativeObj = temp.pack_for_ipc();
-    let initiativeId = '0'
+  // Load from file on creation when loaded show 
+  function load (){
+    let initiativeId;
+    let initiativeObj 
+    let fileData = openFromFile(); // Get raw Json 
+    if (fileData != undefined) { 
+      // Make sure previous collection exists 
+      collection.unpack_from_file(fileData); // Unpack into active Collection object
+      initiativeId = '0'; // for now just load first initiative in collection
+      let initiative = collection.initiatives.get(initiativeId);
+      initiativeObj = initiative.pack_for_ipc();
+    } else { 
+      // else pass in empty initative to get us started 
+      collection.add_initiative();       
+      initiativeId = '0';
+      let initiative = collection.initiatives.get(initiativeId);
+      initiativeObj = initiative.pack_for_ipc();
+    }
+  
     let ipcPack = {};
     ipcPack.initId = initiativeId;
     ipcPack.initObj = initiativeObj;
-    //console.log('initiative on initiatization: ', ipcPack)
-    newWindow.webContents.send('load', ipcPack);
+    console.log('initiative on initiatization: ', ipcPack)
+    return ipcPack
+  };
+
+  // When loaded show 
+  newWindow.once('ready-to-show', () => {
+    let ipcPack = load();
+    newWindow.webContents.send('load', ipcPack); // Send loaded content to browser window
     newWindow.maximize(); // maximize to full screen // Possibly move this to webpreferences with fullscreen option
     newWindow.show();
   });
@@ -276,11 +295,17 @@ ipc.on('open-file', function (event, args) {
 
 // Function to open from data.json file
 function openFromFile () {
-  let rawData = fs.readFileSync('data.json');
-  let fileData = JSON.parse(rawData);
-  //console.log(fileData);
-  return fileData;
+  try {
+    if (fs.existsSync('data.json')){
+      let rawData = fs.readFileSync('data.json');
+      let fileData = JSON.parse(rawData);
+      //console.log(fileData);
+      return fileData;
+    };
+  } catch (err) {
+    console.error(err);
   };
+};
 
 // Message Manager ipcs
 // Pass the message id and content to the newly created editor
