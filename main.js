@@ -71,13 +71,16 @@ function createIndex (name, tag, html) {
     let initiativeId;
     let initiativeObj 
     let fileData = openFromFile(); // Get raw Json 
+    //console.log('file before if statment:', fileData);
     if (fileData != undefined) { 
+      console.log('loading old file')
       // Make sure previous collection exists 
       collection.unpack_from_file(fileData); // Unpack into active Collection object
       initiativeId = '0'; // for now just load first initiative in collection
       let initiative = collection.initiatives.get(initiativeId);
       initiativeObj = initiative.pack_for_ipc();
     } else { 
+      console.log('starting fresh')
       // else pass in empty initative to get us started 
       collection.add_initiative();       
       initiativeId = '0';
@@ -88,7 +91,7 @@ function createIndex (name, tag, html) {
     let ipcPack = {};
     ipcPack.initId = initiativeId;
     ipcPack.initObj = initiativeObj;
-    console.log('initiative on initiatization: ', ipcPack)
+    //console.log('initiative on initiatization: ', ipcPack)
     return ipcPack
   };
 
@@ -298,9 +301,14 @@ function openFromFile () {
   try {
     if (fs.existsSync('data.json')){
       let rawData = fs.readFileSync('data.json');
-      let fileData = JSON.parse(rawData);
-      //console.log(fileData);
-      return fileData;
+      if (rawData.length != 0) { // verify that file is not empty 
+        let fileData = JSON.parse(rawData);
+        //console.log('loading parsed file: ', fileData);
+        return fileData;
+      } else { // else if buffer is empty return undefined 
+        //console.log('empty file')
+        return undefined
+      } 
     };
   } catch (err) {
     console.error(err);
