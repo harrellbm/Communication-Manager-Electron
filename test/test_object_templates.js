@@ -57,19 +57,20 @@ describe("initiativeCollection object", function () {
     // test adding initiative method 
     it('should add a new initiative', () => {
         // test giving array of avenue ids
-        test_collection.add_initiative('this is a new initiative', ['my peeps', 'everyone']);
+        test_collection.add_initiative('my init', 'this is a new initiative', ['my peeps', 'everyone']);
         //console.log('new initiative', test_collection.initiatives);
 
         let initiative0 = test_collection.initiatives.get('0')
         //console.log('initiative0:', test_collection.initiatives.get('0'))
         expect(initiative0, 'Initiative is not an instance of the initiative object').to.be.instanceOf(templates.Initiative);
+        expect(initiative0.name, 'Does not have the proper name').to.be.a('string').that.equals('my init');
         expect(initiative0.description, 'Does not have the proper description').to.be.a('string').that.equals('this is a new initiative');
         expect(initiative0.groups, 'Does not have the proper groups').to.be.an('array').that.includes('my peeps').and.includes('everyone');
     });
 
     // test the return id of the add initiative method 
     it('should return the id of the initiative from add initiative method return', () => {
-        let id = test_collection.add_initiative('this is a new initiative', ['my peeps', 'everyone']);
+        let id = test_collection.add_initiative('my init', 'this is a new initiative', ['my peeps', 'everyone']);
         
         //console.log('new initiative', test_collection.initiatives);
         expect(id, "Does not return correct id").to.equal('0');
@@ -77,8 +78,8 @@ describe("initiativeCollection object", function () {
 
     // test dynamic preformace of initiativeCollection map 
     it('should remove an initiative then re-add', () => {
-        test_collection.add_initiative('This is the first initiative', 'some people');
-        test_collection.add_initiative('this is a new initiative', ['my peeps', 'everyone']);
+        test_collection.add_initiative('my init', 'This is the first initiative', 'some people');
+        test_collection.add_initiative('Youth', 'this is a new initiative', ['my peeps', 'everyone']);
         //console.log('new initiative: ', test_collection.initiatives);
         // remove initiative and test
         test_collection.initiatives.delete('0');
@@ -88,22 +89,25 @@ describe("initiativeCollection object", function () {
         let initiative1 = test_collection.initiatives.get('1');
         //console.log('initiative1:', test_collection.initiatives.get('1'));
         expect(initiative1, 'Initiative is not an instance of the initiative object').to.be.instanceOf(templates.Initiative);
+        expect(initiative1.name, 'Does not have the proper name').to.be.a('string').that.equals('Youth');
         expect(initiative1.description, 'Does not have the proper description').to.be.a('string').that.equals('this is a new initiative');
         expect(initiative1.groups, 'Does not have the proper groups').to.be.an('array').that.includes('my peeps').and.includes('everyone');
         // Test re-add avenue
-        test_collection.add_initiative('This is the first initiative', 'some people');
+        test_collection.add_initiative('my init', 'This is the first initiative', 'some people');
         //console.log('re-added initiative: ', test_collection.initiatives);
         initiative0 = test_collection.initiatives.get('0');
         //console.log('initiative0:',  test_collection.initiatives.get('0'));
         expect(initiative0, 'Initiative is not an instance of the initiative object').to.be.instanceOf(templates.Initiative);
+        expect(initiative0.name, 'Does not have the proper name').to.be.a('string').that.equals('my init');
         expect(initiative0.description, 'Does not have the proper description').to.be.a('string').that.equals('This is the first initiative');
         expect(initiative0.groups, 'Does not have the proper groups').to.be.an('array').that.includes('some people');
         // Test adding additional avenue after that
-        test_collection.add_initiative('This is another initiative', 'my best friends');
+        test_collection.add_initiative('Golf Team','This is another initiative', 'my best friends');
         //console.log('added additional initiative: ', test_collection.initiatives) 
         initiative2 = test_collection.initiatives.get('2');
         //console.log('initiative2: ', test_collection.initiatives.get('2'))
         expect(initiative2, 'Initiative is not an instance of the initiative object').to.be.instanceOf(templates.Initiative);
+        expect(initiative2.name, 'Does not have the proper name').to.be.a('string').that.equals('Golf Team');
         expect(initiative2.description, 'Does not have the proper description').to.be.a('string').that.equals('This is another initiative');
         expect(initiative2.groups, 'Does not have the proper groups').to.be.an('array').that.includes('my best friends');
     });
@@ -111,15 +115,17 @@ describe("initiativeCollection object", function () {
     // Test update collection with initiative coming from ipc/file
     it('should update the collection with new initiative values', () => {
         // Add an initial initiative 
-        test_collection.add_initiative('this is a new initiative', ['my peeps', 'everyone']);
+        test_collection.add_initiative('my init', 'this is a new initiative', ['my peeps', 'everyone']);
         //console.log('initial initiative: ', test_collection.initiatives);
         initiative0 = test_collection.initiatives.get('0');
         expect(initiative0, 'Initiative is not an instance of the initiative object').to.be.instanceOf(templates.Initiative);
+        expect(initiative0.name, 'Does not have the proper name').to.be.a('string').that.equals('my init');
         expect(initiative0.description, 'Does not have the proper description').to.be.a('string').that.equals('this is a new initiative');
         expect(initiative0.groups, 'Does not have the proper groups').to.be.an('array').that.includes('my peeps').and.includes('everyone');
         
         // Make an updated initiative and mimic being sent over ipc
-        let testInit = new templates.Initiative()
+        let testInit = new templates.Initiative();
+        testInit.change_name('new initiative name')
         testInit.change_description('This is the updated description');
         testInit.change_group('Ben my roomate');
         let updateInit = testInit.pack_for_ipc();
@@ -128,6 +134,7 @@ describe("initiativeCollection object", function () {
         //console.log('updated initiative: ', test_collection.initiatives);
         initiative0 = test_collection.initiatives.get('0');
         expect(initiative0, 'Initiative is not an instance of the initiative object').to.be.instanceOf(templates.Initiative);
+        expect(initiative0.name, 'Does not have the proper name').to.be.a('string').that.equals('new initiative name');
         expect(initiative0.description, 'Does not have the proper description').to.be.a('string').that.equals('This is the updated description');
         expect(initiative0.groups, 'Does not have the proper groups').to.be.an('array').that.includes('Ben my roomate');
     });
@@ -135,12 +142,13 @@ describe("initiativeCollection object", function () {
     // Test update message coming from ipc
     it('should update it\'s respective initiative with new message value in the collection', () => {
         // Add an initial initiative and message
-        test_collection.add_initiative('this is a new initiative', ['my peeps', 'everyone']);
+        test_collection.add_initiative('my init', 'this is a new initiative', ['my peeps', 'everyone']);
         let initiative = test_collection.initiatives.get('0');
         initiative.add_message('This is a message', 'Hello,', 'Lets make sure we get the project done.', 'Your Boss', ['avenue2', 'avenue3']);
         //console.log('initial initiative: ', test_collection.initiatives);
         let initiative0 = test_collection.initiatives.get('0');
         expect(initiative0, 'Initiative is not an instance of the initiative object').to.be.instanceOf(templates.Initiative);
+        expect(initiative0.name, 'Does not have the proper name').to.be.a('string').that.equals('my init');
         expect(initiative0.description, 'Does not have the proper description').to.be.a('string').that.equals('this is a new initiative');
         expect(initiative0.groups, 'Does not have the proper groups').to.be.an('array').that.includes('my peeps').and.includes('everyone');
         //console.log('initial message: ', initiative0.messages)
@@ -164,6 +172,7 @@ describe("initiativeCollection object", function () {
         //console.log('same initiative: ', test_collection.initiatives);
         initiative0 = test_collection.initiatives.get('0');
         expect(initiative0, 'Initiative is not an instance of the initiative object').to.be.instanceOf(templates.Initiative);
+        expect(initiative0.name, 'Does not have the proper name').to.be.a('string').that.equals('my init');
         expect(initiative0.description, 'Does not have the proper description').to.be.a('string').that.equals('this is a new initiative');
         expect(initiative0.groups, 'Does not have the proper groups').to.be.an('array').that.includes('my peeps').and.includes('everyone');
         //console.log('updated message: ', initiative0.messages)
@@ -183,8 +192,8 @@ describe("initiativeCollection object", function () {
         let returned_collection = test_collection.pack_for_file();
         //console.log('Packed collection:', returned_collection);
         expect(returned_collection, 'Collection does not have proper keys').to.be.an('object').that.has.keys('initiatives');
-        expect(returned_collection.initiatives[0], 'initiative does not have proper keys').to.be.an('object').that.has.keys('description', 'groups', 'goals', 'messages', 'avenues', 'avenue_types');
-        expect(returned_collection.initiatives[1], 'initiative does not have proper keys').to.be.an('object').that.has.keys('description', 'groups', 'goals', 'messages', 'avenues', 'avenue_types');
+        expect(returned_collection.initiatives[0], 'initiative does not have proper keys').to.be.an('object').that.has.keys('name', 'description', 'groups', 'goals', 'messages', 'avenues', 'avenue_types');
+        expect(returned_collection.initiatives[1], 'initiative does not have proper keys').to.be.an('object').that.has.keys('name', 'description', 'groups', 'goals', 'messages', 'avenues', 'avenue_types');
     });
     
     // test converting back to maps from json string 
@@ -196,10 +205,10 @@ describe("initiativeCollection object", function () {
         test_collection.unpack_from_file(returned_collection);
         //console.log('converted objects:', test_collection);
         expect(test_collection, 'Collection does not have proper keys').to.be.instanceOf(templates.initiativeCollection).that.has.keys('initiatives');
-        let initiative0 = test_collection.initiatives.get('0')
-        expect(initiative0, 'initiative does not have proper keys').to.be.instanceOf(templates.Initiative).that.has.keys('description', 'groups', 'goals', 'messages', 'avenues', 'avenue_types');
-        let initiative1 = test_collection.initiatives.get('1')
-        expect(initiative1, 'initiative does not have proper keys').to.be.instanceOf(templates.Initiative).that.has.keys('description', 'groups', 'goals', 'messages', 'avenues', 'avenue_types');
+        let initiative0 = test_collection.initiatives.get('0');
+        expect(initiative0, 'initiative does not have proper keys').to.be.instanceOf(templates.Initiative).that.has.keys('name', 'description', 'groups', 'goals', 'messages', 'avenues', 'avenue_types');
+        let initiative1 = test_collection.initiatives.get('1');
+        expect(initiative1, 'initiative does not have proper keys').to.be.instanceOf(templates.Initiative).that.has.keys('name', 'description', 'groups', 'goals', 'messages', 'avenues', 'avenue_types');
     });
 });
 
@@ -216,7 +225,8 @@ describe("Initiative object", function () {
 
     it('should have all initial Initiative object keys', function () {
        //console.log(test_initiative);
-       expect(test_initiative, 'Missing a key').to.include.keys('description', 'groups', 'goals', 'messages', 'avenues')
+       expect(test_initiative, 'Missing a key').to.include.keys('name','description', 'groups', 'goals', 'messages', 'avenues')
+       expect(test_initiative.name, 'Name is not a string').is.a('string');
        expect(test_initiative.description, 'Description is not a string').is.a('string');
        expect(test_initiative.groups, 'Groups is not an array').is.a('array');
        expect(test_initiative.goals, 'Goals is not an object').is.instanceOf(Map);
@@ -225,10 +235,25 @@ describe("Initiative object", function () {
        expect(test_initiative.avenue_types, 'Avenue_types is not an array').is.an('array');
     });
 
+    // test change name
+    it('should change name', () => {
+        test_initiative.change_name('This is a new name');
+        //console.log('new description:', test_initiative);
+        expect(test_initiative.name, 'Name was not changed').to.be.an('string').that.includes('This is a new name');
+    });
+    
+    // test return name
+    it('should return name', () => {
+        test_initiative.change_name('This is a new name');
+        let initiative_name = test_initiative.get_name();
+        //console.log('returned description:', initiative_name);
+        expect(initiative_name, 'Initiative name was not returned').to.be.an('string').that.includes('This is a new name');
+    });
+
     // test change description
     it('should change description', () => {
         test_initiative.change_description('This is a new description');
-        //console.log('new description:', test_avenue);
+        //console.log('new description:', test_initiative);
         expect(test_initiative.description, 'Description was not changed').to.be.an('string').that.includes('This is a new description');
     });
     
@@ -236,7 +261,7 @@ describe("Initiative object", function () {
     it('should return description', () => {
         test_initiative.change_description('This is a new description');
         let initiative_description = test_initiative.get_description();
-        //console.log('returned description:', avenue_initiative);
+        //console.log('returned description:', initiative_description);
         expect(initiative_description, 'Initiative description was not returned').to.be.an('string').that.includes('This is a new description');
     });
     
@@ -627,6 +652,7 @@ describe("Initiative object", function () {
 
     // test pack for Json or ipc 
     it('should convert and pack all objects to vanilla', () => {
+        test_initiative.change_name('My Initiative');
         test_initiative.change_description('This is an initiavtive to communicate with people');
         test_initiative.change_group('my peeps')
         test_initiative.add_goal(5, 'text', 'tomorrow');
@@ -635,7 +661,8 @@ describe("Initiative object", function () {
         //console.log('Initiative before packing:', test_initiative);
         let returned_initiative = test_initiative.pack_for_ipc();
         //console.log('Packed initiative:', returned_initiative);
-        expect(returned_initiative, 'Initiative does not have proper keys').to.be.an('object').that.has.keys('description', 'groups', 'goals', 'messages', 'avenues', 'avenue_types');
+        expect(returned_initiative, 'Initiative does not have proper keys').to.be.an('object').that.has.keys('name', 'description', 'groups', 'goals', 'messages', 'avenues', 'avenue_types');
+        expect(returned_initiative.name, 'Name is not correct').to.be.a('string').that.equals('My Initiative');
         expect(returned_initiative.description, 'Description is not correct').to.be.a('string').that.equals('This is an initiavtive to communicate with people');
         expect(returned_initiative.groups, 'Groups are not correct').to.be.a('array').that.includes('my peeps');
         
@@ -677,6 +704,7 @@ describe("Initiative object", function () {
     
     // test converting back to maps and date objects from json string 
     it('should return unpacked objects', () => {
+        test_initiative.change_name('My Initiative');
         test_initiative.change_description('This is an initiavtive to communicate with people');
         test_initiative.change_group('my peeps')
         test_initiative.add_goal(5, 'text', 'tomorrow');
@@ -686,7 +714,8 @@ describe("Initiative object", function () {
         returned_initiative = test_initiative.pack_for_ipc();
         test_initiative.unpack_from_ipc(returned_initiative);
         //console.log('converted objects:', test_initiative);
-        expect(test_initiative, 'Initiative does not have proper keys').to.be.instanceOf(templates.Initiative).that.has.keys('description', 'groups', 'goals', 'messages', 'avenues', 'avenue_types');
+        expect(test_initiative, 'Initiative does not have proper keys').to.be.instanceOf(templates.Initiative).that.has.keys('name', 'description', 'groups', 'goals', 'messages', 'avenues', 'avenue_types');
+        expect(returned_initiative.name, 'Name is not correct').to.be.a('string').that.equals('My Initiative');
         expect(test_initiative.description, 'Description is not correct').to.be.a('string').that.equals('This is an initiavtive to communicate with people');
         expect(test_initiative.groups, 'Groups are not correct').to.be.a('array').that.includes('my peeps');
         

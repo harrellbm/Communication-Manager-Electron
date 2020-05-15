@@ -18,8 +18,9 @@ class initiativeCollection {
    };
 
    // Add a goal to the goals map in the initiative 
-   add_initiative(description = '', groups = '') {
+   add_initiative(name='', description='', groups='') {
       let new_initiative = new Initiative();
+      new_initiative.name = name
       new_initiative.description = description
       
       // Set any initial groups.  Can take a single string or array of strings
@@ -48,7 +49,6 @@ class initiativeCollection {
       initiative.unpack_from_ipc(ipc);
       this.initiatives.set(initId, initiative)
       //console.log('updated collection: ', this.initiatives)
-
    }
 
    update_mess(initId, messId, ipc) {
@@ -112,6 +112,7 @@ class Initiative {
       // goals, messages, and avenues are all map objects so that they can be added and manipulated more easily
         // Note: they as well as the date objects used need converted before saving to json
       // avenue_type holds the basic types of avenues, can add new on the fly with add_type method
+      this.name = '';
       this.description = ''; //used to state the purpose of initiative 
       this.groups = [];
       this.goals = new Map();  
@@ -121,7 +122,17 @@ class Initiative {
       }
    // Note: useful built in methods for maps: set(key, value), delete(key), get(key), has(key), clear()
       // keys(), values(), entries(), forEach(), size
-   
+
+   // Changes the initiative's name  
+   change_name(new_name){ 
+      this.name = new_name;
+   };
+
+   // Gets the initiative's name 
+   get_name(){
+      return this.name;
+   };
+
    // Changes the initiative's description  
    change_description(new_description){ 
       this.description = new_description
@@ -297,20 +308,22 @@ class Initiative {
    // Note: pack returns a new packed object and does not change current initiative 
    pack_for_ipc(){ // Note: dynamic test held in test_main.js, unit test in test_object_templates.js
       let initiative_for_ipc = new Object(); 
+      initiative_for_ipc.name = this.name;
       initiative_for_ipc.description = this.description;
       initiative_for_ipc.groups = this.groups;
       initiative_for_ipc.goals = Object.fromEntries(this.goals);// Convert maps to vanilla objects
       initiative_for_ipc.messages = Object.fromEntries(this.messages);  
       initiative_for_ipc.avenues = Object.fromEntries(this.avenues);
-      initiative_for_ipc.avenue_types = this.avenue_types
+      initiative_for_ipc.avenue_types = this.avenue_types;
 
-      return initiative_for_ipc // returns the packaged initiative 
+      return initiative_for_ipc; // returns the packaged initiative 
       // Note: date objects are not converted here because Json stringify will convert them to strings without lost of data
    }
 
    // Unpack values passed in by Json format from saved file or ipc
    // Note: unpack changes the current initiative from in coming ipc or file Json format to object template format
    unpack_from_ipc( ipc ){ // Note: dynamic test held in test_main.js, unit test in test_object_templates.js
+      this.name = ipc.name;
       this.description = ipc.description; // string 
       this.groups = ipc.groups; // array 
 
