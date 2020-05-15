@@ -66,36 +66,7 @@ function createIndex (name, tag, html) {
   });
 
   /* need to handle multiple initiatives */
-  // Load from file on creation when loaded show 
-  function load (){
-    let initiativeId;
-    let initiativeObj 
-    let fileData = openFromFile(); // Get raw Json 
-    //console.log('file before if statment:', fileData);
-    if (fileData != undefined) { 
-      console.log('loading old file')
-      // Make sure previous collection exists 
-      collection.unpack_from_file(fileData); // Unpack into active Collection object
-      initiativeId = '0'; // for now just load first initiative in collection
-      let initiative = collection.initiatives.get(initiativeId);
-      initiativeObj = initiative.pack_for_ipc();
-    } else { 
-      console.log('starting fresh')
-      // else pass in empty initative to get us started 
-      collection.add_initiative();       
-      initiativeId = '0';
-      let initiative = collection.initiatives.get(initiativeId);
-      initiativeObj = initiative.pack_for_ipc();
-    }
-  
-    let ipcPack = {};
-    ipcPack.initId = initiativeId;
-    ipcPack.initObj = initiativeObj;
-    //console.log('initiative on initiatization: ', ipcPack)
-    return ipcPack
-  };
-
-  // When loaded show 
+  // Load from file on creation then show 
   newWindow.once('ready-to-show', () => {
     let ipcPack = load();
     newWindow.webContents.send('load', ipcPack); // Send loaded content to browser window
@@ -282,17 +253,7 @@ function saveToFile (file) {
 
 // Open the initative saved in file 
 ipc.on('open-file', function (event, args) { 
-  let fileData = openFromFile(); // Get raw Json 
-  collection.unpack_from_file(fileData); // Unpack into active Collection object
-
-  // For now just return the first initiative until better initative handleing is implemented
-  let initId = '0';
-  let initiative = collection.initiatives.get(initId);
-  let ipcInit = initiative.pack_for_ipc();
-  // Pack initiative id and packed initiative into one object for returning by ipc
-  let ipcPack = {};
-  ipcPack.initId = initId;
-  ipcPack.ipcInit = ipcInit;
+  let ipcPack = load();
   event.returnValue = ipcPack; // Return packed initiative 
 });
 
@@ -315,6 +276,33 @@ function openFromFile () {
   };
 };
 
+function load (){
+  let initiativeId;
+  let initiativeObj 
+  let fileData = openFromFile(); // Get raw Json 
+  //console.log('file before if statment:', fileData);
+  if (fileData != undefined) { 
+    console.log('loading old file')
+    // Make sure previous collection exists 
+    collection.unpack_from_file(fileData); // Unpack into active Collection object
+    initiativeId = '0'; // for now just load first initiative in collection
+    let initiative = collection.initiatives.get(initiativeId);
+    initiativeObj = initiative.pack_for_ipc();
+  } else { 
+    console.log('starting fresh')
+    // else pass in empty initative to get us started 
+    collection.add_initiative();       
+    initiativeId = '0';
+    let initiative = collection.initiatives.get(initiativeId);
+    initiativeObj = initiative.pack_for_ipc();
+  }
+
+  let ipcPack = {};
+  ipcPack.initId = initiativeId;
+  ipcPack.initObj = initiativeObj;
+  //console.log('initiative on initiatization: ', ipcPack)
+  return ipcPack
+};
 // Message Manager ipcs
 // Pass the message id and content to the newly created editor
 ipc.on('edit', function (event, initId, messageId, messageObj) { 
