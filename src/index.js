@@ -14,7 +14,26 @@ ipc.on('load', function (event, ipcPack) {
   currentInitiativeId = ipcPack.initId;
   currentInitiative = new templates.Initiative;
   currentInitiative.unpack_from_ipc(ipcPack.initObj);
-  console.log('initiative and id on index load: ', currentInitiativeId, currentInitiative)
+  console.log('initiative and id on index load: ', currentInitiativeId, currentInitiative);
+  // Load Message manager tab
+    // Send initiative messages and avenues to ui
+    let messKeys = currentInitiative.messages.keys();
+    for ( id of messKeys ){
+     addMess('load', id ); // Note: Event is not used programatically but helps with debugging input to addMess
+    };
+  
+    let aveKeys = currentInitiative.avenues.keys();
+    for ( id of aveKeys ){
+      // Check to see if avenue is linked to a message
+      let aveObj = currentInitiative.avenues.get(id);
+      let messId = aveObj.message_id
+      if (messId != '') { // If so send to respective message drop box
+        addAve('load', id, `aveDrop${messId}`) // Note: event is not used programatically but helps with debugging input to addAve
+      }
+      else { // Else just add it to the default container
+        addAve('load', id ); 
+      }
+  };
 });
 
 
