@@ -330,14 +330,18 @@ textarea{
     margin-left: 0.5rem;
   }
   
-  /* Container for adding groups */
-  #groupIn{
-    max-height: 85vh;
-    vertical-align: top;
+  /* wrapper for group ui objects */
+  #groups{
     grid-row-start: 1;
     grid-row-end: 2;
     grid-column-start: 2;
     grid-column-end: 3;
+  }
+
+  /* Container for adding groups */
+  #groupIn{
+    max-height: 85vh;
+    vertical-align: top;
     overflow-y: scroll;
     background-color: rgb(255, 255, 255);
     border-width: 1px;
