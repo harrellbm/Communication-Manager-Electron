@@ -15,6 +15,11 @@ ipc.on('load', function (event, ipcPack) {
   currentInitiative = new templates.Initiative;
   currentInitiative.unpack_from_ipc(ipcPack.initObj);
   console.log('initiative and id on index load: ', currentInitiativeId, currentInitiative);
+
+  // Load Initiative tab
+  document.getElementById('initName').value = currentInitiative.name; // Update title from ui
+  document.getElementById('initDescription').value = currentInitiative.description; // Update title from ui
+
   // Load Message manager tab
     // Send initiative messages and avenues to ui
     let messKeys = currentInitiative.messages.keys();
@@ -67,40 +72,43 @@ function openPage(pageName, elmnt) { // linked to directly from html
 document.getElementById("defaultOpen").click();
 
 
-/* ---- Message Manager related functions ---- */
+/* ---- Common index functions ---- */
 
 // Function to save and pack current initative for ipc
 function save () {
-  // Sync ui and initiative message objects before saving 
-  let messKeys = currentInitiative.messages.keys(); 
-  for (id of messKeys) {// Each iteration goes through one message
-    let guiMess = document.getElementById(`message${id}`); // Message object from the ui
-    let initMess = currentInitiative.messages.get(id); // Message object from the initiative object 
+  // Sync ui before saving 
+    // Initiative tab ui
+    currentInitiative.name = document.getElementById('initName').value; // Update name from ui
+    currentInitiative.description = document.getElementById('initDescription').value; // Update description from ui
 
-    initMess.title = guiMess.children[1].value; // Update title in initiative object 
-    
-    }
+    // Message Manager ui
+    let messKeys = currentInitiative.messages.keys(); 
+    for (id of messKeys) {// Each iteration goes through one message
+      let guiMess = document.getElementById(`message${id}`); // Message object from the ui
+      let initMess = currentInitiative.messages.get(id); // Message object from the initiative object 
+      initMess.title = guiMess.children[1].value; // Update title in initiative object 
+      }
     //console.log('updated messages: ', currentInitiative.messages);
-  // Sync ui and initiative avenue objects before saving 
-  let aveKeys = currentInitiative.avenues.keys(); 
-  for (id of aveKeys) {// Each iteration goes through one avenue
-    let guiAve = document.getElementById(`avenue${id}`); // Avenue object from the ui
-    let initAve = currentInitiative.avenues.get(id); // Avenue object from the initiative object 
+    // Sync ui and initiative avenue objects before saving 
+    let aveKeys = currentInitiative.avenues.keys(); 
+    for (id of aveKeys) {// Each iteration goes through one avenue
+      let guiAve = document.getElementById(`avenue${id}`); // Avenue object from the ui
+      let initAve = currentInitiative.avenues.get(id); // Avenue object from the initiative object 
     
-    initAve.avenue_type = guiAve.children[0].value;
-    initAve.sent = guiAve.children[4].children[0].checked;
-    initAve.description = guiAve.children[5].value;
-    initAve.person = guiAve.children[6].value;
-    // Add timezone stamp to date chooser date before storing 
-    let rawDate = guiAve.children[7].value;  
-    if (moment(rawDate).isValid()){ // Only load date into initiative object if it is a valid date
-      let date = moment(rawDate, 'YYYY-MM-DD', true).toString(); // Moment adds time zone stamp
-      initAve.change_date(date); // String
+      initAve.avenue_type = guiAve.children[0].value;
+      initAve.sent = guiAve.children[4].children[0].checked;
+      initAve.description = guiAve.children[5].value;
+      initAve.person = guiAve.children[6].value;
+      // Add timezone stamp to date chooser date before storing 
+      let rawDate = guiAve.children[7].value;  
+      if (moment(rawDate).isValid()){ // Only load date into initiative object if it is a valid date
+        let date = moment(rawDate, 'YYYY-MM-DD', true).toString(); // Moment adds time zone stamp
+        initAve.change_date(date); // String
       } 
     }
     //console.log('updated avenues: ', currentInitiative.avenues);
 
-  //console.log('initiative to be saved: ', currentInitiative);
+  console.log('initiative to be saved: ', currentInitiative);
   let ipcInit = currentInitiative.pack_for_ipc();
   return ipcInit;  
 };
@@ -112,7 +120,8 @@ function indexClose () {
   ipc.send('index-close', currentInitiativeId, ipcInit);  
 };
 // Handles event from the message manager tab's save button 
-document.getElementById('messSave').addEventListener("click", saveToMain); // Event from save button 
+document.getElementById('messSave').addEventListener("click", saveToMain); // Event from message manager save button 
+document.getElementById('initSave').addEventListener("click", saveToMain); // Event from initiative save button
 // Function to handle packing and sending current initiative to main on button save 
 function saveToMain () {
   // Send alert to let user know that they have saves successfully 
@@ -154,6 +163,8 @@ function openFile () {
         }
   };
 };
+
+/* ---- Message Manager related functions ---- */
 
 // Adds a message to do the DOM
 document.getElementById('addMess').addEventListener("click", addMess);
