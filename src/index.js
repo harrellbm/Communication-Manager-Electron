@@ -17,9 +17,13 @@ ipc.on('load', function (event, ipcPack) {
   console.log('initiative and id on index load: ', currentInitiativeId, currentInitiative);
 
   // Load Initiative tab
-  document.getElementById('initName').value = currentInitiative.name; // Update title from ui
-  document.getElementById('initDescription').value = currentInitiative.description; // Update title from ui
-
+    document.getElementById('initName').value = currentInitiative.name; // Update title from ui
+    document.getElementById('initDescription').value = currentInitiative.description; // Update title from ui
+    // Load Goals
+    let goalKeys = currentInitiative.goals.keys();
+      for ( id of goalKeys ){
+        addGoal('load', id ); // Note: Event is not used programatically but helps with debugging input to addMess
+      };
   // Load Message manager tab
     // Send initiative messages and avenues to ui
     let messKeys = currentInitiative.messages.keys();
@@ -541,3 +545,95 @@ dragDrop.on('drop', function (ave, target, source) {
 });
 
 /* ---- Initiative tab related functions ---- */
+
+// Adds a message to do the DOM
+document.getElementById('addGoal').addEventListener("click", addGoal);
+function addGoal (event='', goalId='') {// If message id is passed in it will load it from the initative object. Otherwise it is treated as a new message
+  // Update the current initiative object if this is a new message 
+  var id; 
+  var goalLoad = '';
+  if ( goalId == '') { // If message is being added for the first time 
+    id = currentInitiative.add_goal();
+    } else { // Else load existing message from initiative object 
+      id = goalId
+      goalLoad = currentInitiative.goals.get(id);
+      console.log(goalLoad);
+      }
+
+  //creates main div to hold an individual Message
+  let goal = document.createElement("div");
+  goal.setAttribute("class", "goal");
+  goal.setAttribute("id", `goal${id}`);
+  
+  // Creates title paragraphs 
+  let freq_heading = document.createElement("p");// Title for Goal Frequency  
+  freq_heading.setAttribute("class", "goal_title");
+  freq_heading.setAttribute("id", "goalFreq_title");
+  freq_heading.innerHTML = "Frequency:";
+  goal.appendChild(freq_heading);// Add the title to the goal
+ 
+  let type_title = document.createElement("p");// Title for Goal Type 
+  type_title.setAttribute("class", "goal_title");
+  type_title.setAttribute("id", "goalType_title");
+  type_title.innerHTML = "Type:";
+  goal.appendChild(type_title);// Add the title to the goal
+
+  let reminder_title = document.createElement("p");// Title for Goal Reminder 
+  reminder_title.setAttribute("class", "goal_title");
+  reminder_title.setAttribute("id", "goalReminder_title");
+  reminder_title.innerHTML = "Reminder:";
+  goal.appendChild(reminder_title);// Add the title to the goal
+
+  // Avenue dropbox
+  let freq = document.createElement("textarea");
+  freq.setAttribute("class", "aveDrop");
+  freq.setAttribute("id", `aveDrop${id}`);
+  //console.log(dragDrop.containers)
+  if(goalId != ''){// if creating an avenue that is being pulled from a file set it's value 
+  freq.value = goalLoad.avenue_ids;
+    }
+  goal.appendChild(freq);
+
+  // Creates and adds dynamic event listener to delete button
+  let deleteBtn = document.createElement("input");
+  deleteBtn.setAttribute("class", "goalDelete");
+  deleteBtn.setAttribute("id", `goalDelete${id}`);
+  deleteBtn.setAttribute("type", "button");
+  deleteBtn.setAttribute("value", "x");
+  deleteBtn.addEventListener("click", function () {deleteGoal(goal)}) ;
+
+  goal.appendChild(deleteBtn);
+
+  // Get the main div that holds all the avenues and append the new one
+  //console.log("goal", goal);
+  document.getElementById("goalIn").appendChild(goal);
+};
+
+/* may need to add handleing for open editors on deletion */
+// Deletes a message from the DOM
+function deleteGoal (goal) {
+  // Confirm that user wants to delete message if not return
+  swal({
+    title: 'Deleting Message',
+    text: 'Are you sure you want to delete your Message?', 
+    icon: 'warning',
+    buttons: ['Cancel', 'Yes'],
+    dangerMode: true
+  })
+  .then(function (value) {
+    if (value == null) { // Escape deletion 
+      return
+    } else { // Proceed with deletion 
+      
+      // Remove message from UI
+      goal.parentElement.removeChild(goal);
+      // Remove message from Initiative object 
+      let id = goal.id[4]; // Take only the number off of the end of the ui id 
+      //console.log("goal object in delete:", goal.id[4])
+      currentInitiative.goals.delete(id); 
+      // Send updates to main
+      let ipcInit = currentInitiative.pack_for_ipc();
+      ipc.send('save', currentInitiativeId, ipcInit);  
+      };
+    });
+};
