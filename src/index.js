@@ -546,21 +546,21 @@ dragDrop.on('drop', function (ave, target, source) {
 
 /* ---- Initiative tab related functions ---- */
 
-// Adds a message to do the DOM
+// Adds a Goal to do the DOM
 document.getElementById('addGoal').addEventListener("click", addGoal);
-function addGoal (event='', goalId='') {// If message id is passed in it will load it from the initative object. Otherwise it is treated as a new message
-  // Update the current initiative object if this is a new message 
+function addGoal (event='', goalId='') {// If Goal id is passed in it will load it from the initative object. Otherwise it is treated as a new Goal
+  // Update the current initiative object if this is a new Goal 
   var id; 
   var goalLoad = '';
-  if ( goalId == '') { // If message is being added for the first time 
+  if ( goalId == '') { // If goal is being added for the first time 
     id = currentInitiative.add_goal();
-    } else { // Else load existing message from initiative object 
+    } else { // Else load existing goal from initiative object 
       id = goalId
       goalLoad = currentInitiative.goals.get(id);
       console.log(goalLoad);
       }
 
-  //creates main div to hold an individual Message
+  //creates main div to hold an individual Goal
   let goal = document.createElement("div");
   goal.setAttribute("class", "goal");
   goal.setAttribute("id", `goal${id}`);
@@ -588,7 +588,7 @@ function addGoal (event='', goalId='') {// If message id is passed in it will lo
   let type = document.createElement("textarea");
   type.setAttribute("class", "type");
   type.setAttribute("id", `type${id}`);
-  if(goalId != ''){// if creating an avenue that is being pulled from a file set it's value 
+  if(goalId != ''){// if creating a goal that is being pulled from a file set it's value 
   type.value = goalLoad.type;
     }
   goal.appendChild(type);
@@ -596,7 +596,7 @@ function addGoal (event='', goalId='') {// If message id is passed in it will lo
   let freq = document.createElement("textarea");
   freq.setAttribute("class", "frequency");
   freq.setAttribute("id", `frequency${id}`);
-  if(goalId != ''){// if creating an avenue that is being pulled from a file set it's value 
+  if(goalId != ''){// if creating a goal that is being pulled from a file set it's value 
   freq.value = goalLoad.frequency;
     }
   goal.appendChild(freq);
@@ -604,7 +604,7 @@ function addGoal (event='', goalId='') {// If message id is passed in it will lo
   let remd = document.createElement("textarea");
   remd.setAttribute("class", "reminder");
   remd.setAttribute("id", `reminder${id}`);
-  if(goalId != ''){// if creating an avenue that is being pulled from a file set it's value 
+  if(goalId != ''){// if creating an goal that is being pulled from a file set it's value 
   remd.value = goalLoad.reminder;
     }
   goal.appendChild(remd);
@@ -619,18 +619,123 @@ function addGoal (event='', goalId='') {// If message id is passed in it will lo
 
   goal.appendChild(deleteBtn);
 
-  // Get the main div that holds all the avenues and append the new one
+  // Get the main div that holds all the goals and append the new one
   //console.log("goal", goal);
   document.getElementById("goalIn").appendChild(goal);
 };
 
-/* may need to add handleing for open editors on deletion */
-// Deletes a message from the DOM
+// Deletes a goal from the DOM
 function deleteGoal (goal) {
+  // Confirm that user wants to delete Goal. If not return
+  swal({
+    title: 'Deleting Goal',
+    text: 'Are you sure you want to delete your Goal?', 
+    icon: 'warning',
+    buttons: ['Cancel', 'Yes'],
+    dangerMode: true
+  })
+  .then(function (value) {
+    if (value == null) { // Escape deletion 
+      return
+    } else { // Proceed with deletion 
+      
+      // Remove goal from UI
+      goal.parentElement.removeChild(goal);
+      // Remove goal from Initiative object 
+      let id = goal.id[4]; // Take only the number off of the end of the ui id 
+      //console.log("goal object in delete:", goal.id[4])
+      currentInitiative.goals.delete(id); 
+      // Send updates to main
+      let ipcInit = currentInitiative.pack_for_ipc();
+      ipc.send('save', currentInitiativeId, ipcInit);  
+      };
+    });
+};
+
+// Adds a group to do the DOM
+/*document.getElementById('addGroup').addEventListener("click", addGroup);
+function addGroup (event='', groupId='') {// If group id is passed in it will load it from the initative object. Otherwise it is treated as a new group
+  // Update the current initiative object if this is a new group  
+  var id; 
+  var groupLoad = '';
+  if ( groupId == '') { // If group is being added for the first time 
+    id = currentInitiative.add_group();
+    } else { // Else load existing group from initiative object 
+      id = groupId
+      groupLoad = currentInitiative.groups.get(id);
+      console.log(groupLoad);
+      }
+
+  //creates main div to hold an individual Group 
+  let group = document.createElement("div");
+  group.setAttribute("class", "group");
+  group.setAttribute("id", `group${id}`);
+  
+  // Creates title paragraphs 
+  let freq_heading = document.createElement("p");// Title for Group  
+  freq_heading.setAttribute("class", "group_title");
+  freq_heading.setAttribute("id", "groupFreq_title");
+  freq_heading.innerHTML = "Frequency:";
+  group.appendChild(freq_heading);// Add the title to the group 
+ 
+  let type_title = document.createElement("p");// Title for Group 
+  type_title.setAttribute("class", "group_title");
+  type_title.setAttribute("id", "groupType_title");
+  type_title.innerHTML = "Type:";
+  group.appendChild(type_title);// Add the title to the group
+
+  let reminder_title = document.createElement("p");// Title for Group 
+  reminder_title.setAttribute("class", "group_title");
+  reminder_title.setAttribute("id", "groupReminder_title");
+  reminder_title.innerHTML = "Reminder:";
+  group.appendChild(reminder_title);// Add the title to the group
+
+  // Textareas 
+  let type = document.createElement("textarea");
+  type.setAttribute("class", "type");
+  type.setAttribute("id", `type${id}`);
+  if(groupId != ''){// if creating a group that is being pulled from a file set it's value 
+  type.value = groupLoad.type;
+    }
+  group.appendChild(type);
+
+  let freq = document.createElement("textarea");
+  freq.setAttribute("class", "frequency");
+  freq.setAttribute("id", `frequency${id}`);
+  if(groupId != ''){// if creating a group that is being pulled from a file set it's value 
+  freq.value = groupLoad.frequency;
+    }
+  group.appendChild(freq);
+
+  let remd = document.createElement("textarea");
+  remd.setAttribute("class", "reminder");
+  remd.setAttribute("id", `reminder${id}`);
+  if(groupId != ''){// if creating an group that is being pulled from a file set it's value 
+  remd.value = groupLoad.reminder;
+    }
+  group.appendChild(remd);
+
+  // Creates and adds dynamic event listener to delete button
+  let deleteBtn = document.createElement("input");
+  deleteBtn.setAttribute("class", "groupDelete");
+  deleteBtn.setAttribute("id", `groupDelete${id}`);
+  deleteBtn.setAttribute("type", "button");
+  deleteBtn.setAttribute("value", "x");
+  deleteBtn.addEventListener("click", function () {deleteGroup(group)}) ;
+
+  group.appendChild(deleteBtn);
+
+  // Get the main div that holds all the groups and append the new one
+  //console.log("group", group);
+  document.getElementById("groupIn").appendChild(group);
+};
+
+// Deletes a group from the DOM
+function deleteGroup (group) {
   // Confirm that user wants to delete message if not return
   swal({
-    title: 'Deleting Message',
-    text: 'Are you sure you want to delete your Message?', 
+    title: 'Deleting Group',
+    text: 'Are you sure you want to delete your Group?', 
     icon: 'warning',
     buttons: ['Cancel', 'Yes'],
     dangerMode: true
@@ -641,14 +746,15 @@ function deleteGoal (goal) {
     } else { // Proceed with deletion 
       
       // Remove message from UI
-      goal.parentElement.removeChild(goal);
+      group.parentElement.removeChild(group);
       // Remove message from Initiative object 
-      let id = goal.id[4]; // Take only the number off of the end of the ui id 
-      //console.log("goal object in delete:", goal.id[4])
-      currentInitiative.goals.delete(id); 
+      let id = group.id[4]; // Take only the number off of the end of the ui id 
+      //console.log("group object in delete:", group.id[4])
+      currentInitiative.groups.delete(id); 
       // Send updates to main
       let ipcInit = currentInitiative.pack_for_ipc();
       ipc.send('save', currentInitiativeId, ipcInit);  
       };
     });
-};
+};*/
+
