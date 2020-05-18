@@ -584,15 +584,30 @@ function addGoal (event='', goalId='') {// If message id is passed in it will lo
   reminder_title.innerHTML = "Reminder:";
   goal.appendChild(reminder_title);// Add the title to the goal
 
-  // Avenue dropbox
-  let freq = document.createElement("textarea");
-  freq.setAttribute("class", "aveDrop");
-  freq.setAttribute("id", `aveDrop${id}`);
-  //console.log(dragDrop.containers)
+  // Textareas 
+  let type = document.createElement("textarea");
+  type.setAttribute("class", "type");
+  type.setAttribute("id", `type${id}`);
   if(goalId != ''){// if creating an avenue that is being pulled from a file set it's value 
-  freq.value = goalLoad.avenue_ids;
+  type.value = goalLoad.type;
+    }
+  goal.appendChild(type);
+
+  let freq = document.createElement("textarea");
+  freq.setAttribute("class", "frequency");
+  freq.setAttribute("id", `frequency${id}`);
+  if(goalId != ''){// if creating an avenue that is being pulled from a file set it's value 
+  freq.value = goalLoad.frequency;
     }
   goal.appendChild(freq);
+
+  let remd = document.createElement("textarea");
+  remd.setAttribute("class", "reminder");
+  remd.setAttribute("id", `reminder${id}`);
+  if(goalId != ''){// if creating an avenue that is being pulled from a file set it's value 
+  remd.value = goalLoad.reminder;
+    }
+  goal.appendChild(remd);
 
   // Creates and adds dynamic event listener to delete button
   let deleteBtn = document.createElement("input");
