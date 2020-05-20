@@ -570,8 +570,7 @@ function addGoal (event='', goalId='') {// If Goal id is passed in it will load 
     } else { // Else load existing goal from initiative object 
       id = goalId
       goalLoad = currentInitiative.goals.get(id);
-      console.log(goalLoad);
-      }
+    }
 
   //creates main div to hold an individual Goal
   let goal = document.createElement("div");
