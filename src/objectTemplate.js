@@ -18,26 +18,12 @@ class initiativeCollection {
    };
 
    // Add a goal to the goals map in the initiative 
-   add_initiative(name='', description='', groups='') {
+   add_initiative(name='', description='') {
       let new_initiative = new Initiative();
       new_initiative.name = name
       new_initiative.description = description
       
-      // Set any initial groups.  Can take a single string or array of strings
-      let array = [groups]
-      let value;
-      let id;
-      for(value of array){
-         if(typeof value === "string"){
-            new_initiative.groups.push(value)
-         } else if (value.constructor === Array){
-            for(id of value){
-               new_initiative.groups.push(id)
-            }
-         }
-      }
-      
-      // goals, messages, and avenues will be added after initialization 
+      // groups, goals, messages, and avenues will be added after initialization 
       
       let initiativeId = this.id_fill(this.initiatives)// fill in the lowest available id
       this.initiatives.set(initiativeId, new_initiative);
@@ -114,7 +100,7 @@ class Initiative {
       // avenue_type holds the basic types of avenues, can add new on the fly with add_type method
       this.name = '';
       this.description = ''; //used to state the purpose of initiative 
-      this.groups = [];
+      this.groups = new Map();
       this.goals = new Map();  
       this.messages = new Map();
       this.avenues = new Map();
@@ -135,35 +121,14 @@ class Initiative {
 
    // Changes the initiative's description  
    change_description(new_description){ 
-      this.description = new_description
-      }
+      this.description = new_description;
+   };
 
    // Gets the initiative's description 
    get_description(){
-      return this.description
-      }
+      return this.description;
+   };
 
-   /* Add logic to accept both single string and array */
-   // Completely writes over current groups 
-   change_group(new_group){   // TODO: need data validation
-      this.groups = [new_group]
-      }
-
-   // Adds a group to the groups list for that specific avenue
-   add_group(new_group){  // TODO: need data validation
-      this.groups.push(new_group)
-      }
-   
-   // Returns the list of groups as an array
-   get_groups(){  
-      return this.groups   
-      }
-
-   // Clears all groups from this initiative   
-   clear_groups(){
-      this.groups = []
-      }
-   
    // Makes sure that the lowest possible id is assigned to a new avenue 
    id_fill(objects){
       let Id = 0;
@@ -180,6 +145,15 @@ class Initiative {
    };
 
    // Add a goal to the goals map in the initiative 
+   add_group(name, contacts){ // Note: Contact are accepted in the following structure [ [name, [phone, email]], etc. ]
+      let new_group = new Group(name, contacts);
+
+      let groupId = this.id_fill(this.groups);// fill in the lowest available id
+      this.groups.set(groupId, new_group);
+      return groupId;
+   };
+
+   // Add a goal to the goals map in the initiative 
    add_goal(frequency = 0, type = '', reminder = {}){
       
       let new_goal = new Goal();
@@ -190,7 +164,7 @@ class Initiative {
       let goalId = this.id_fill(this.goals);// fill in the lowest available id
       this.goals.set(goalId, new_goal);
       return goalId;
-      };
+   };
    
    // Add a message to the messages map in the initiative 
    add_message(title = '', greeting = '', content = '', signature ='', avenue_ids=''){
@@ -217,7 +191,7 @@ class Initiative {
       let messageId = this.id_fill(this.messages)// fill in the lowest available id
       this.messages.set(messageId, new_message);
       return messageId
-      }
+   };
    
    // Add an avenue to the avenues map in the initiative 
    add_avenue(avenue_type='', description='', person='', sent=false, message_id='', dateString=''){
@@ -254,17 +228,17 @@ class Initiative {
       let avenueId = this.id_fill(this.avenues)// fill in the lowest available id
       this.avenues.set(avenueId, new_avenue);
       return avenueId
-      }
+   };
    
    // Add new type of avenue on the fly
    add_type(new_type){
       this.avenue_types[this.avenue_types.length] = new_type;
-      }
+   };
    
    // Returns avenue types as an array
    get_types(){
       return this.avenue_types
-      }
+   };
    
    // Link an avenue and message 
       // Note: avenues can only have one linked message assigning a new message will override any old ones 
@@ -282,7 +256,7 @@ class Initiative {
          } catch(err){
             console.log('Invalid Id: ' + err);
             }
-      }
+   };
 
    // Unlink an avenue and message 
       // Note: method will return true if unlinking is successful, otherwise false in order to avoid accidentally deleting one id
@@ -301,16 +275,23 @@ class Initiative {
             return true;
             }
          }
-      }
+   };
 
-   /* may need to convert message, goal, and avenue to vanilla objects */
    // Prepare initiative to be stringified for Json or sent over ipc by converting nonstandard objects
    // Note: pack returns a new packed object and does not change current initiative 
    pack_for_ipc(){ // Note: dynamic test held in test_main.js, unit test in test_object_templates.js
       let initiative_for_ipc = new Object(); 
       initiative_for_ipc.name = this.name;
       initiative_for_ipc.description = this.description;
-      initiative_for_ipc.groups = this.groups;
+      
+      // Convert both groups map and nested contacts map to vanilla objects 
+      initiative_for_ipc.groups = new Object;
+      this.groups.forEach(function (value, key){
+         let packed = value.pack_grp_for_ipc();
+         //console.log('packed: ', packed)
+         initiative_for_ipc.groups[key] = packed;
+      })
+
       initiative_for_ipc.goals = Object.fromEntries(this.goals);// Convert maps to vanilla objects
       initiative_for_ipc.messages = Object.fromEntries(this.messages);  
       initiative_for_ipc.avenues = Object.fromEntries(this.avenues);
@@ -318,14 +299,36 @@ class Initiative {
 
       return initiative_for_ipc; // returns the packaged initiative 
       // Note: date objects are not converted here because Json stringify will convert them to strings without lost of data
-   }
+   };
 
    // Unpack values passed in by Json format from saved file or ipc
    // Note: unpack changes the current initiative from in coming ipc or file Json format to object template format
    unpack_from_ipc( ipc ){ // Note: dynamic test held in test_main.js, unit test in test_object_templates.js
       this.name = ipc.name;
       this.description = ipc.description; // string 
-      this.groups = ipc.groups; // array 
+      
+      // Convert Groups back from saved vanilla objects
+      this.groups = new Map(); // Reset initiative.groups to a map object
+      // Reload each group into a Group object 
+      let group;
+      for (group of Object.entries(ipc.groups)) { // Iterate over the key value pairs from the vanilla object
+         let id = group[0];
+         let content = group[1];
+         let unpacked = new Group(); // Create new Group object 
+         // Load all contents into new Goal object
+         unpacked.name = content.name;
+         // Unpack contacts into a new map
+         unpacked.contacts = new Map();
+         let contact;
+         for (contact of Object.entries(content.contacts)) {  
+            let id = contact[0];
+            let content = contact[1];
+            unpacked.contacts.set(id, content);
+         };
+         // Add the new group object back to the Initiative.ggroups map
+         this.groups.set(id, unpacked); 
+      };
+      //console.log('new unpacked group: ', this.groups);
 
       // Convert Goals back from saved vanilla objects
       this.goals = new Map(); // Reset initiative.goals to a map object
@@ -388,7 +391,52 @@ class Initiative {
       //console.log('new unpacked avenues: ', this.avenues);
 
       this.avenue_types = ipc.avenue_types; // array
-   }
+   };
+};
+
+class Group {
+   // Constructor takes new contacts in the form of [ [name, [phone, email]], etc. ]
+   constructor(name='', new_contacts=[]) {
+      this.name = name; // Name of the contact group 
+      this.contacts = new Map(); // Key is the name of individual, value is contact info
+      
+      let leng = new_contacts.length;
+      if (new_contacts != []) {
+         for (let i=0; i<leng; i++) {
+            this.contacts.set(new_contacts[i][0], new_contacts[i][1]);
+         };
+      };
+   };
+   // Note: useful built in methods for maps: set(key, value), delete(key), get(key), has(key), clear()
+      // keys(), values(), entries(), forEach(), size
+   
+   // Changes the groups name 
+   change_name(new_name){ 
+      this.name = new_name;
+   };
+   
+   // Gets the groups name  
+   get_name(){
+      return this.name;
+   };
+
+   // Add a contact to the contacts map  
+   add_contact(name, phone, email){ 
+      this.contacts.set(name, [phone, email]);
+   };
+
+   get_all_contacts(){
+      return this.contacts
+   }; 
+
+   pack_grp_for_ipc(){ // Note: dynamic test held in test_main.js, unit test in test_object_templates.js
+      // Pack group into a vanilla object  
+      let group_for_ipc = new Object;
+      group_for_ipc.name = this.name;
+      group_for_ipc.contacts = Object.fromEntries(this.contacts); 
+      //console.log('packed group', group_for_ipc);
+      return group_for_ipc; // Returns the packaged group  
+   };
 };
 
 class Goal {
@@ -603,6 +651,7 @@ class Avenue {
 module.exports = {
    initiativeCollection,
    Initiative,
+   Group,
    Goal,
    Message,
    Avenue
