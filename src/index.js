@@ -781,6 +781,8 @@ function deleteGroup (group) {
       };
     });
 };*/
+
+// Calendar object for initiative tab
 var calendar = new Calendar('#calendar', {
   defaultView: 'month',
   useCreationPopup: true,
