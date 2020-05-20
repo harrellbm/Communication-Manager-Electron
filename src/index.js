@@ -85,6 +85,18 @@ function save () {
     currentInitiative.name = document.getElementById('initName').value; // Update name from ui
     currentInitiative.description = document.getElementById('initDescription').value; // Update description from ui
 
+    // Sync ui and initiative goal objects before saving 
+    let goalKeys = currentInitiative.goals.keys(); 
+    for (id of goalKeys) {// Each iteration goes through one goal
+      let guiGoal = document.getElementById(`goal${id}`); // Goal object from the ui
+      let initGoal = currentInitiative.goals.get(id); // Goal object from the initiative object 
+      console.log(guiGoal)
+      initGoal.type = guiGoal.children[3].value;
+      initGoal.frequency = guiGoal.children[4].value;
+      initGoal.reminder = guiGoal.children[5].value;
+    };
+    console.log('updated goal: ', currentInitiative.goals);
+
     // Message Manager ui
     let messKeys = currentInitiative.messages.keys(); 
     for (id of messKeys) {// Each iteration goes through one message
@@ -380,7 +392,7 @@ function addAve (event='', aveId='', location='avenueIn') { // If avenue id is p
   dropdown.setAttribute("class", "aveDropdown");
   dropdown.setAttribute("id", `avenue_type${id}`);
   
-  // Set dropdown options from list held in the message object 
+  // Set dropdown options from list held in the initiative object 
   let options = currentInitiative.avenue_types;
   for (i in options){
     let opElem = document.createElement("option");
@@ -584,15 +596,27 @@ function addGoal (event='', goalId='') {// If Goal id is passed in it will load 
   reminder_title.innerHTML = "Reminder:";
   goal.appendChild(reminder_title);// Add the title to the goal
 
-  // Textareas 
-  let type = document.createElement("textarea");
-  type.setAttribute("class", "type");
-  type.setAttribute("id", `type${id}`);
-  if(goalId != ''){// if creating a goal that is being pulled from a file set it's value 
-  type.value = goalLoad.type;
+  
+  // Creates drop down list 
+  let dropdown = document.createElement("select");
+  dropdown.setAttribute("class", "typeDropdown");
+  dropdown.setAttribute("id", `goal_type${id}`);
+  
+  // Set dropdown options from list held in the initiative object 
+  let options = currentInitiative.avenue_types;
+  for (i in options){
+    let opElem = document.createElement("option");
+    let opText = currentInitiative.avenue_types[i]
+    opElem.setAttribute("value", `${opText}`);
+    opElem.innerHTML = `${opText}`;
+    dropdown.appendChild(opElem);
     }
-  goal.appendChild(type);
+  if(goalLoad != ''){// if creating an goal that is being pulled from a file set it's value   
+    dropdown.value = goalLoad.type;
+  };
+  goal.appendChild(dropdown); //add the dropdown menu to the goal
 
+  // Textareas 
   let freq = document.createElement("textarea");
   freq.setAttribute("class", "frequency");
   freq.setAttribute("id", `frequency${id}`);
