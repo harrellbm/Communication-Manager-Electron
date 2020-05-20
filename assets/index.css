@@ -452,7 +452,8 @@ textarea{
     grid-column-end: 3;
   }
 
-  #calendar{
+  /* rules for calendar wrapper and container divs */
+  #calWrapper{
     grid-row-start: 5;
     grid-row-end: 6;
     grid-column-start: 1;
@@ -460,6 +461,9 @@ textarea{
     margin-left: 1vh;
     margin-right: 1vh;
     overflow-y: scroll;
+  }
+  #calendar{
+    height: 800px
   }
 
   /* container on the bottom */

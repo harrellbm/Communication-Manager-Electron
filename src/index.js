@@ -782,16 +782,17 @@ function deleteGroup (group) {
     });
 };*/
 
+const themeConfig = {
+  };
+
 // Calendar object for initiative tab
 var calendar = new Calendar('#calendar', {
+  theme: themeConfig,
   defaultView: 'month',
   useCreationPopup: true,
   useDetailPopup: true,
+  
   month: {
-    moreLayerSize: {
-        height: 'auto'
-    },
-    visibleWeeksCount: 4,
-    visibleScheduleCount: 4
+    visibleWeeksCount: 4
   }
 });
