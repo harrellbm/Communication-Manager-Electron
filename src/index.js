@@ -6,6 +6,7 @@ const dragula = require('dragula'); // For drag and drop
 const swal = require('sweetalert'); // For styled alert/confirm boxes
 const clipboard = require('electron').clipboard; // For accessing the clipboard
 const QuillDeltaToHtmlConverter = require('quill-delta-to-html').QuillDeltaToHtmlConverter; // Handle custom convertion of deltas to html
+const Calendar = require('tui-calendar');// used for calendar on initiaive tab
 
 var currentInitiative;
 var currentInitiativeId;
@@ -781,4 +782,15 @@ function deleteGroup (group) {
       };
     });
 };*/
-
+var calendar = new Calendar('#calendar', {
+  defaultView: 'month',
+  useCreationPopup: true,
+  useDetailPopup: true,
+  month: {
+    moreLayerSize: {
+        height: 'auto'
+    },
+    visibleWeeksCount: 4,
+    visibleScheduleCount: 4
+  }
+});

@@ -459,6 +459,7 @@ textarea{
     grid-column-end: 3;
     margin-left: 1vh;
     margin-right: 1vh;
+    overflow-y: scroll;
   }
 
   /* container on the bottom */
