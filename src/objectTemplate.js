@@ -549,7 +549,6 @@ class Message {
       this.avenue_ids = []
       }
 };
-
  
 class Avenue {
    constructor() {

@@ -6,6 +6,7 @@ const dragula = require('dragula'); // For drag and drop
 const swal = require('sweetalert'); // For styled alert/confirm boxes
 const clipboard = require('electron').clipboard; // For accessing the clipboard
 const QuillDeltaToHtmlConverter = require('quill-delta-to-html').QuillDeltaToHtmlConverter; // Handle custom convertion of deltas to html
+const Calendar = require('tui-calendar');// used for calendar on initiaive tab
 
 var currentInitiative;
 var currentInitiativeId;
@@ -15,6 +16,15 @@ ipc.on('load', function (event, ipcPack) {
   currentInitiative = new templates.Initiative;
   currentInitiative.unpack_from_ipc(ipcPack.initObj);
   console.log('initiative and id on index load: ', currentInitiativeId, currentInitiative);
+
+  // Load Initiative tab
+    document.getElementById('initName').value = currentInitiative.name; // Update title from ui
+    document.getElementById('initDescription').value = currentInitiative.description; // Update title from ui
+    // Load Goals
+    let goalKeys = currentInitiative.goals.keys();
+      for ( id of goalKeys ){
+        addGoal('load', id ); // Note: Event is not used programatically but helps with debugging input to addMess
+      };
   // Load Message manager tab
     // Send initiative messages and avenues to ui
     let messKeys = currentInitiative.messages.keys();
@@ -67,40 +77,55 @@ function openPage(pageName, elmnt) { // linked to directly from html
 document.getElementById("defaultOpen").click();
 
 
-/* ---- Message Manager related functions ---- */
+/* ---- Common index functions ---- */
 
 // Function to save and pack current initative for ipc
 function save () {
-  // Sync ui and initiative message objects before saving 
-  let messKeys = currentInitiative.messages.keys(); 
-  for (id of messKeys) {// Each iteration goes through one message
-    let guiMess = document.getElementById(`message${id}`); // Message object from the ui
-    let initMess = currentInitiative.messages.get(id); // Message object from the initiative object 
+  // Sync ui before saving 
+    // Initiative tab ui
+    currentInitiative.name = document.getElementById('initName').value; // Update name from ui
+    currentInitiative.description = document.getElementById('initDescription').value; // Update description from ui
 
-    initMess.title = guiMess.children[1].value; // Update title in initiative object 
-    
-    }
+    // Sync ui and initiative goal objects before saving 
+    let goalKeys = currentInitiative.goals.keys(); 
+    for (id of goalKeys) {// Each iteration goes through one goal
+      let guiGoal = document.getElementById(`goal${id}`); // Goal object from the ui
+      let initGoal = currentInitiative.goals.get(id); // Goal object from the initiative object 
+      console.log(guiGoal)
+      initGoal.type = guiGoal.children[3].value;
+      initGoal.frequency = guiGoal.children[4].value;
+      initGoal.reminder = guiGoal.children[5].value;
+    };
+    console.log('updated goal: ', currentInitiative.goals);
+
+    // Message Manager ui
+    let messKeys = currentInitiative.messages.keys(); 
+    for (id of messKeys) {// Each iteration goes through one message
+      let guiMess = document.getElementById(`message${id}`); // Message object from the ui
+      let initMess = currentInitiative.messages.get(id); // Message object from the initiative object 
+      initMess.title = guiMess.children[1].value; // Update title in initiative object 
+      }
     //console.log('updated messages: ', currentInitiative.messages);
-  // Sync ui and initiative avenue objects before saving 
-  let aveKeys = currentInitiative.avenues.keys(); 
-  for (id of aveKeys) {// Each iteration goes through one avenue
-    let guiAve = document.getElementById(`avenue${id}`); // Avenue object from the ui
-    let initAve = currentInitiative.avenues.get(id); // Avenue object from the initiative object 
+    // Sync ui and initiative avenue objects before saving 
+    let aveKeys = currentInitiative.avenues.keys(); 
+    for (id of aveKeys) {// Each iteration goes through one avenue
+      let guiAve = document.getElementById(`avenue${id}`); // Avenue object from the ui
+      let initAve = currentInitiative.avenues.get(id); // Avenue object from the initiative object 
     
-    initAve.avenue_type = guiAve.children[0].value;
-    initAve.sent = guiAve.children[4].children[0].checked;
-    initAve.description = guiAve.children[5].value;
-    initAve.person = guiAve.children[6].value;
-    // Add timezone stamp to date chooser date before storing 
-    let rawDate = guiAve.children[7].value;  
-    if (moment(rawDate).isValid()){ // Only load date into initiative object if it is a valid date
-      let date = moment(rawDate, 'YYYY-MM-DD', true).toString(); // Moment adds time zone stamp
-      initAve.change_date(date); // String
+      initAve.avenue_type = guiAve.children[0].value;
+      initAve.sent = guiAve.children[4].children[0].checked;
+      initAve.description = guiAve.children[5].value;
+      initAve.person = guiAve.children[6].value;
+      // Add timezone stamp to date chooser date before storing 
+      let rawDate = guiAve.children[7].value;  
+      if (moment(rawDate).isValid()){ // Only load date into initiative object if it is a valid date
+        let date = moment(rawDate, 'YYYY-MM-DD', true).toString(); // Moment adds time zone stamp
+        initAve.change_date(date); // String
       } 
     }
     //console.log('updated avenues: ', currentInitiative.avenues);
 
-  //console.log('initiative to be saved: ', currentInitiative);
+  console.log('initiative to be saved: ', currentInitiative);
   let ipcInit = currentInitiative.pack_for_ipc();
   return ipcInit;  
 };
@@ -112,7 +137,8 @@ function indexClose () {
   ipc.send('index-close', currentInitiativeId, ipcInit);  
 };
 // Handles event from the message manager tab's save button 
-document.getElementById('messSave').addEventListener("click", saveToMain); // Event from save button 
+document.getElementById('messSave').addEventListener("click", saveToMain); // Event from message manager save button 
+document.getElementById('initSave').addEventListener("click", saveToMain); // Event from initiative save button
 // Function to handle packing and sending current initiative to main on button save 
 function saveToMain () {
   // Send alert to let user know that they have saves successfully 
@@ -154,6 +180,8 @@ function openFile () {
         }
   };
 };
+
+/* ---- Message Manager related functions ---- */
 
 // Adds a message to do the DOM
 document.getElementById('addMess').addEventListener("click", addMess);
@@ -365,7 +393,7 @@ function addAve (event='', aveId='', location='avenueIn') { // If avenue id is p
   dropdown.setAttribute("class", "aveDropdown");
   dropdown.setAttribute("id", `avenue_type${id}`);
   
-  // Set dropdown options from list held in the message object 
+  // Set dropdown options from list held in the initiative object 
   let options = currentInitiative.avenue_types;
   for (i in options){
     let opElem = document.createElement("option");
@@ -530,3 +558,240 @@ dragDrop.on('drop', function (ave, target, source) {
 });
 
 /* ---- Initiative tab related functions ---- */
+
+// Adds a Goal to do the DOM
+document.getElementById('addGoal').addEventListener("click", addGoal);
+function addGoal (event='', goalId='') {// If Goal id is passed in it will load it from the initative object. Otherwise it is treated as a new Goal
+  // Update the current initiative object if this is a new Goal 
+  var id; 
+  var goalLoad = '';
+  if ( goalId == '') { // If goal is being added for the first time 
+    id = currentInitiative.add_goal();
+    } else { // Else load existing goal from initiative object 
+      id = goalId
+      goalLoad = currentInitiative.goals.get(id);
+    }
+
+  //creates main div to hold an individual Goal
+  let goal = document.createElement("div");
+  goal.setAttribute("class", "goal");
+  goal.setAttribute("id", `goal${id}`);
+  
+  // Creates title paragraphs 
+  let freq_heading = document.createElement("p");// Title for Goal Frequency  
+  freq_heading.setAttribute("class", "goal_title");
+  freq_heading.setAttribute("id", "goalFreq_title");
+  freq_heading.innerHTML = "Frequency:";
+  goal.appendChild(freq_heading);// Add the title to the goal
+ 
+  let type_title = document.createElement("p");// Title for Goal Type 
+  type_title.setAttribute("class", "goal_title");
+  type_title.setAttribute("id", "goalType_title");
+  type_title.innerHTML = "Type:";
+  goal.appendChild(type_title);// Add the title to the goal
+
+  let reminder_title = document.createElement("p");// Title for Goal Reminder 
+  reminder_title.setAttribute("class", "goal_title");
+  reminder_title.setAttribute("id", "goalReminder_title");
+  reminder_title.innerHTML = "Reminder:";
+  goal.appendChild(reminder_title);// Add the title to the goal
+
+  
+  // Creates drop down list 
+  let dropdown = document.createElement("select");
+  dropdown.setAttribute("class", "typeDropdown");
+  dropdown.setAttribute("id", `goal_type${id}`);
+  
+  // Set dropdown options from list held in the initiative object 
+  let options = currentInitiative.avenue_types;
+  for (i in options){
+    let opElem = document.createElement("option");
+    let opText = currentInitiative.avenue_types[i]
+    opElem.setAttribute("value", `${opText}`);
+    opElem.innerHTML = `${opText}`;
+    dropdown.appendChild(opElem);
+    }
+  if(goalLoad != ''){// if creating an goal that is being pulled from a file set it's value   
+    dropdown.value = goalLoad.type;
+  };
+  goal.appendChild(dropdown); //add the dropdown menu to the goal
+
+  // Textareas 
+  let freq = document.createElement("textarea");
+  freq.setAttribute("class", "frequency");
+  freq.setAttribute("id", `frequency${id}`);
+  if(goalId != ''){// if creating a goal that is being pulled from a file set it's value 
+  freq.value = goalLoad.frequency;
+    }
+  goal.appendChild(freq);
+
+  let remd = document.createElement("textarea");
+  remd.setAttribute("class", "reminder");
+  remd.setAttribute("id", `reminder${id}`);
+  if(goalId != ''){// if creating an goal that is being pulled from a file set it's value 
+  remd.value = goalLoad.reminder;
+    }
+  goal.appendChild(remd);
+
+  // Creates and adds dynamic event listener to delete button
+  let deleteBtn = document.createElement("input");
+  deleteBtn.setAttribute("class", "goalDelete");
+  deleteBtn.setAttribute("id", `goalDelete${id}`);
+  deleteBtn.setAttribute("type", "button");
+  deleteBtn.setAttribute("value", "x");
+  deleteBtn.addEventListener("click", function () {deleteGoal(goal)}) ;
+
+  goal.appendChild(deleteBtn);
+
+  // Get the main div that holds all the goals and append the new one
+  //console.log("goal", goal);
+  document.getElementById("goalIn").appendChild(goal);
+};
+
+// Deletes a goal from the DOM
+function deleteGoal (goal) {
+  // Confirm that user wants to delete Goal. If not return
+  swal({
+    title: 'Deleting Goal',
+    text: 'Are you sure you want to delete your Goal?', 
+    icon: 'warning',
+    buttons: ['Cancel', 'Yes'],
+    dangerMode: true
+  })
+  .then(function (value) {
+    if (value == null) { // Escape deletion 
+      return
+    } else { // Proceed with deletion 
+      
+      // Remove goal from UI
+      goal.parentElement.removeChild(goal);
+      // Remove goal from Initiative object 
+      let id = goal.id[4]; // Take only the number off of the end of the ui id 
+      //console.log("goal object in delete:", goal.id[4])
+      currentInitiative.goals.delete(id); 
+      // Send updates to main
+      let ipcInit = currentInitiative.pack_for_ipc();
+      ipc.send('save', currentInitiativeId, ipcInit);  
+      };
+    });
+};
+
+// Adds a group to do the DOM
+/*document.getElementById('addGroup').addEventListener("click", addGroup);
+function addGroup (event='', groupId='') {// If group id is passed in it will load it from the initative object. Otherwise it is treated as a new group
+  // Update the current initiative object if this is a new group  
+  var id; 
+  var groupLoad = '';
+  if ( groupId == '') { // If group is being added for the first time 
+    id = currentInitiative.add_group();
+    } else { // Else load existing group from initiative object 
+      id = groupId
+      groupLoad = currentInitiative.groups.get(id);
+      console.log(groupLoad);
+      }
+
+  //creates main div to hold an individual Group 
+  let group = document.createElement("div");
+  group.setAttribute("class", "group");
+  group.setAttribute("id", `group${id}`);
+  
+  // Creates title paragraphs 
+  let freq_heading = document.createElement("p");// Title for Group  
+  freq_heading.setAttribute("class", "group_title");
+  freq_heading.setAttribute("id", "groupFreq_title");
+  freq_heading.innerHTML = "Frequency:";
+  group.appendChild(freq_heading);// Add the title to the group 
+ 
+  let type_title = document.createElement("p");// Title for Group 
+  type_title.setAttribute("class", "group_title");
+  type_title.setAttribute("id", "groupType_title");
+  type_title.innerHTML = "Type:";
+  group.appendChild(type_title);// Add the title to the group
+
+  let reminder_title = document.createElement("p");// Title for Group 
+  reminder_title.setAttribute("class", "group_title");
+  reminder_title.setAttribute("id", "groupReminder_title");
+  reminder_title.innerHTML = "Reminder:";
+  group.appendChild(reminder_title);// Add the title to the group
+
+  // Textareas 
+  let type = document.createElement("textarea");
+  type.setAttribute("class", "type");
+  type.setAttribute("id", `type${id}`);
+  if(groupId != ''){// if creating a group that is being pulled from a file set it's value 
+  type.value = groupLoad.type;
+    }
+  group.appendChild(type);
+
+  let freq = document.createElement("textarea");
+  freq.setAttribute("class", "frequency");
+  freq.setAttribute("id", `frequency${id}`);
+  if(groupId != ''){// if creating a group that is being pulled from a file set it's value 
+  freq.value = groupLoad.frequency;
+    }
+  group.appendChild(freq);
+
+  let remd = document.createElement("textarea");
+  remd.setAttribute("class", "reminder");
+  remd.setAttribute("id", `reminder${id}`);
+  if(groupId != ''){// if creating an group that is being pulled from a file set it's value 
+  remd.value = groupLoad.reminder;
+    }
+  group.appendChild(remd);
+
+  // Creates and adds dynamic event listener to delete button
+  let deleteBtn = document.createElement("input");
+  deleteBtn.setAttribute("class", "groupDelete");
+  deleteBtn.setAttribute("id", `groupDelete${id}`);
+  deleteBtn.setAttribute("type", "button");
+  deleteBtn.setAttribute("value", "x");
+  deleteBtn.addEventListener("click", function () {deleteGroup(group)}) ;
+
+  group.appendChild(deleteBtn);
+
+  // Get the main div that holds all the groups and append the new one
+  //console.log("group", group);
+  document.getElementById("groupIn").appendChild(group);
+};
+
+// Deletes a group from the DOM
+function deleteGroup (group) {
+  // Confirm that user wants to delete message if not return
+  swal({
+    title: 'Deleting Group',
+    text: 'Are you sure you want to delete your Group?', 
+    icon: 'warning',
+    buttons: ['Cancel', 'Yes'],
+    dangerMode: true
+  })
+  .then(function (value) {
+    if (value == null) { // Escape deletion 
+      return
+    } else { // Proceed with deletion 
+      
+      // Remove message from UI
+      group.parentElement.removeChild(group);
+      // Remove message from Initiative object 
+      let id = group.id[4]; // Take only the number off of the end of the ui id 
+      //console.log("group object in delete:", group.id[4])
+      currentInitiative.groups.delete(id); 
+      // Send updates to main
+      let ipcInit = currentInitiative.pack_for_ipc();
+      ipc.send('save', currentInitiativeId, ipcInit);  
+      };
+    });
+};*/
+
+// Calendar object for initiative tab
+var calendar = new Calendar('#calendar', {
+  defaultView: 'month',
+  useCreationPopup: true,
+  useDetailPopup: true,
+  month: {
+    moreLayerSize: {
+        height: 'auto'
+    },
+    visibleWeeksCount: 4,
+    visibleScheduleCount: 4
+  }
+});

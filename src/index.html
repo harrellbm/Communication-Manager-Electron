@@ -3,6 +3,10 @@
         <link rel="stylesheet" href="../assets/index.css"
         meta charset="UTF-8">
         <link rel="stylesheet" href="../node_modules/dragula/dist/dragula.min.css">
+        <link rel="stylesheet" href="../node_modules/tui-calendar/dist/tui-calendar.css">
+        <link rel="stylesheet" href="../node_modules/tui-date-picker/dist/tui-date-picker.css">
+        <link rel="stylesheet" href="../node_modules/tui-time-picker/dist/tui-time-picker.css">
+
         <title>Message Manager</title>
     </head>
     <body>
@@ -33,19 +37,25 @@
                   <text>Description:</text>
                   <input class="text" type="text" id="initDescription">
                 </p>
-                <textarea id="groupIn">add your groups here</textarea>
+                <div id="groups">
+                  <p>
+                    <text>Groups:</text>
+                    <input class="button" type="button" id="addGroup" value="add">
+                  </p>
+                  <div id="groupIn">add your groups here</div> 
+                </div>
                 <p id="goalHeader">
                   <text>Goals:</text>
                   <input class="button" type="button" id="addGoal" value="add">
                 </p>
-                <textarea id="goalIn">add your goals here</textarea>
+                <div id="goalIn"></div>
                 <p id="initMid">
                   <input class="button" type="button" id="schedule" value="schedule">
                 </p>
-                <textarea class="calendar" id="calendar">this will be a calendar eventually</textarea>
+                <div id="calendar"></div>
                 <p id="initBottom">
-                  <input class="button" type="button" id="save" value="Save">
-                  <input class="button" type="button" id="open" value="Open">
+                  <input class="button" type="button" id="initSave" value="Save">
+                  <input class="button" type="button" id="initOpen" value="Open">
                 </p>
             </div>
         </div>
