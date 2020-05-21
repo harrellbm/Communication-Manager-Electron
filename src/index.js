@@ -20,6 +20,11 @@ ipc.on('load', function (event, ipcPack) {
   // Load Initiative tab
     document.getElementById('initName').value = currentInitiative.name; // Update title from ui
     document.getElementById('initDescription').value = currentInitiative.description; // Update title from ui
+    // Load Groups
+    let groupKeys = currentInitiative.groups.keys();
+      for ( id of groupKeys ){
+        addGroup('load', id ); // Note: Event is not used programatically but helps with debugging input to addMess
+      };
     // Load Goals
     let goalKeys = currentInitiative.goals.keys();
       for ( id of goalKeys ){
@@ -83,15 +88,25 @@ document.getElementById("defaultOpen").click();
 function save () {
   // Sync ui before saving 
     // Initiative tab ui
+    // Initiative Name and Description
     currentInitiative.name = document.getElementById('initName').value; // Update name from ui
     currentInitiative.description = document.getElementById('initDescription').value; // Update description from ui
-
+    // Sync ui and initiative group objects before saving 
+    let groupKeys = currentInitiative.groups.keys();
+    for (id of groupKeys) {// Each iteration goes through one goal
+      let guiGroup = document.getElementById(`group${id}`); // Goal object from the ui
+      let initGroup = currentInitiative.groups.get(id); // Goal object from the initiative object 
+      //console.log(guiGroup)
+      initGroup.name = guiGroup.children[2].value;
+      /* need to save contacts */
+    };
+    console.log('updated group: ', currentInitiative.groups);
     // Sync ui and initiative goal objects before saving 
     let goalKeys = currentInitiative.goals.keys(); 
     for (id of goalKeys) {// Each iteration goes through one goal
       let guiGoal = document.getElementById(`goal${id}`); // Goal object from the ui
       let initGoal = currentInitiative.goals.get(id); // Goal object from the initiative object 
-      console.log(guiGoal)
+      //console.log(guiGoal)
       initGoal.type = guiGoal.children[3].value;
       initGoal.frequency = guiGoal.children[4].value;
       initGoal.reminder = guiGoal.children[5].value;
@@ -99,6 +114,7 @@ function save () {
     console.log('updated goal: ', currentInitiative.goals);
 
     // Message Manager ui
+    // Sync ui and initiative message objects before saving 
     let messKeys = currentInitiative.messages.keys(); 
     for (id of messKeys) {// Each iteration goes through one message
       let guiMess = document.getElementById(`message${id}`); // Message object from the ui
@@ -677,7 +693,7 @@ function deleteGoal (goal) {
 };
 
 // Adds a group to do the DOM
-/*document.getElementById('addGroup').addEventListener("click", addGroup);
+document.getElementById('addGroup').addEventListener("click", addGroup);
 function addGroup (event='', groupId='') {// If group id is passed in it will load it from the initative object. Otherwise it is treated as a new group
   // Update the current initiative object if this is a new group  
   var id; 
@@ -695,49 +711,35 @@ function addGroup (event='', groupId='') {// If group id is passed in it will lo
   group.setAttribute("class", "group");
   group.setAttribute("id", `group${id}`);
   
-  // Creates title paragraphs 
-  let freq_heading = document.createElement("p");// Title for Group  
-  freq_heading.setAttribute("class", "group_title");
-  freq_heading.setAttribute("id", "groupFreq_title");
-  freq_heading.innerHTML = "Frequency:";
-  group.appendChild(freq_heading);// Add the title to the group 
- 
-  let type_title = document.createElement("p");// Title for Group 
-  type_title.setAttribute("class", "group_title");
-  type_title.setAttribute("id", "groupType_title");
-  type_title.innerHTML = "Type:";
-  group.appendChild(type_title);// Add the title to the group
+  // Creates title paragraphs  
+  let name_title = document.createElement("p");// Title for Group 
+  name_title.setAttribute("class", "group_title");
+  name_title.setAttribute("id", "groupName_title");
+  name_title.innerHTML = "Name:";
+  group.appendChild(name_title);// Add the title to the group
 
-  let reminder_title = document.createElement("p");// Title for Group 
-  reminder_title.setAttribute("class", "group_title");
-  reminder_title.setAttribute("id", "groupReminder_title");
-  reminder_title.innerHTML = "Reminder:";
-  group.appendChild(reminder_title);// Add the title to the group
+  let contacts_title = document.createElement("p");// Title for Group 
+  contacts_title.setAttribute("class", "group_title");
+  contacts_title.setAttribute("id", "groupContacts_title");
+  contacts_title.innerHTML = "Contacts:";
+  group.appendChild(contacts_title);// Add the title to the group
 
   // Textareas 
-  let type = document.createElement("textarea");
-  type.setAttribute("class", "type");
-  type.setAttribute("id", `type${id}`);
+  let name = document.createElement("textarea");
+  name.setAttribute("class", "name");
+  name.setAttribute("id", `name${id}`);
   if(groupId != ''){// if creating a group that is being pulled from a file set it's value 
-  type.value = groupLoad.type;
+  name.value = groupLoad.name;
     }
-  group.appendChild(type);
+  group.appendChild(name);
 
-  let freq = document.createElement("textarea");
-  freq.setAttribute("class", "frequency");
-  freq.setAttribute("id", `frequency${id}`);
+  let contacts = document.createElement("div");
+  contacts.setAttribute("class", "contacts");
+  contacts.setAttribute("id", `contacts${id}`);
   if(groupId != ''){// if creating a group that is being pulled from a file set it's value 
-  freq.value = groupLoad.frequency;
+  contacts.value = groupLoad.contacts;
     }
-  group.appendChild(freq);
-
-  let remd = document.createElement("textarea");
-  remd.setAttribute("class", "reminder");
-  remd.setAttribute("id", `reminder${id}`);
-  if(groupId != ''){// if creating an group that is being pulled from a file set it's value 
-  remd.value = groupLoad.reminder;
-    }
-  group.appendChild(remd);
+  group.appendChild(contacts);
 
   // Creates and adds dynamic event listener to delete button
   let deleteBtn = document.createElement("input");
@@ -780,7 +782,7 @@ function deleteGroup (group) {
       ipc.send('save', currentInitiativeId, ipcInit);  
       };
     });
-};*/
+};
 
 const themeConfig = {
   };

@@ -321,7 +321,7 @@ textarea{
 .initWrapper{
     display: grid;
     grid-template-columns: 1fr 1fr;
-    grid-template-rows: 14vh 4vh 19.5vh 4vh 46vh 4vh;
+    grid-template-rows: 16.8vh 4vh 16.7vh 4vh 46vh 4vh;
     background-color: rgb(139, 203, 224);
   }
   
@@ -340,7 +340,8 @@ textarea{
 
   /* Container for adding groups */
   #groupIn{
-    max-height: 85vh;
+    height:73%;
+    max-height: 13vh;
     vertical-align: top;
     overflow-y: scroll;
     background-color: rgb(255, 255, 255);
@@ -350,6 +351,63 @@ textarea{
     margin-left: 1vh;
     margin-right: 1vh;
   }
+  /* Group rules */
+  .group{
+    display: grid;
+    grid-template-columns: 1fr 2fr 1.4rem;
+    grid-template-rows: 1.4rem 2rem;
+    background-color: #999;
+    border: rgb(169, 169, 169);
+    border-width: 1px;
+    border-style: solid;
+    }
+
+  /* Titles */
+  #name_title{
+    padding: 0.1rem;
+    grid-column-start: 2;
+    grid-column-end: 3;
+    grid-row-start: 1;
+    grid-row-end: 2;
+    }
+
+  #contacts_title{
+    padding: 0.1rem;
+    grid-column-start: 3;
+    grid-column-end:4;
+    grid-row-start: 1;
+    grid-row-end: 2;
+    }
+  
+  /* Textareas*/
+  .name{
+    grid-column-start: 1;
+    grid-column-end: 2;
+    grid-row-start: 2;
+    grid-row-end: 3;
+    }
+
+  .contacts{
+    grid-column-start: 2;
+    grid-column-end: 3;
+    grid-row-start: 2;
+    grid-row-end: 3;
+    border-width: 1px;
+    border-style: solid;
+    border-color: rgb(169, 169, 169);
+    background-color: rgb(255, 255, 255);
+    }
+
+  /* Outside rows */
+  /* Delete button */
+  .groupDelete{
+    width: 1.4rem;
+    height: 1.4rem;
+    grid-column-start: 3;
+    grid-column-end: 4;
+    grid-row-start: 1;
+    grid-row-end: 2;
+    }
 
   #goalHeader{
     grid-row-start: 2;
@@ -378,7 +436,7 @@ textarea{
     .goal{
       display: grid;
       grid-template-columns: 1fr 1fr 1fr 1.4rem;
-      grid-template-rows: 1.4rem 1.5rem 2rem;
+      grid-template-rows: 1.4rem 2rem;
       background-color: #999;
       border: rgb(169, 169, 169);
       border-width: 1px;
@@ -390,32 +448,32 @@ textarea{
       padding: 0.1rem;
       grid-column-start: 1;
       grid-column-end: 2;
-      grid-row-start: 2;
-      grid-row-end: 3;
+      grid-row-start: 1;
+      grid-row-end: 2;
       }
 
     #goalFreq_title{
       padding: 0.1rem;
       grid-column-start: 2;
       grid-column-end: 3;
-      grid-row-start: 2;
-      grid-row-end: 3;
+      grid-row-start: 1;
+      grid-row-end: 2;
       }
   
     #goalReminder_title{
       padding: 0.1rem;
       grid-column-start: 3;
       grid-column-end:4;
-      grid-row-start: 2;
-      grid-row-end: 3;
+      grid-row-start: 1;
+      grid-row-end: 2;
       }
   
     /* Dropdown for goal type */
     .typeDropdown{
       grid-column-start: 1;
       grid-column-end: 2;
-      grid-row-start: 3;
-      grid-row-end: 4;
+      grid-row-start: 2;
+      grid-row-end: 3;
       }
     
     /* need to develop frequency and reminder */
@@ -423,15 +481,15 @@ textarea{
     .frequency{
       grid-column-start: 2;
       grid-column-end: 3;
-      grid-row-start: 3;
-      grid-row-end: 4;
+      grid-row-start: 2;
+      grid-row-end: 3;
       }
   
     .reminder{
       grid-column-start: 3;
       grid-column-end: 4;
-      grid-row-start: 3;
-      grid-row-end: 4;
+      grid-row-start: 2;
+      grid-row-end: 3;
       }
   
     /* Outside rows */
