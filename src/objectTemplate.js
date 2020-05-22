@@ -104,7 +104,7 @@ class Initiative {
       this.goals = new Map();  
       this.messages = new Map();
       this.avenues = new Map();
-      this.avenue_types = ['Email', 'Text', 'Facebook', 'Instagram', 'Handout', 'Poster','Other']
+      this.avenue_types = ['Email', 'Text', 'Phone Call', 'Facebook', 'Instagram', 'Card', 'Handout', 'Poster','Other']
       }
    // Note: useful built in methods for maps: set(key, value), delete(key), get(key), has(key), clear()
       // keys(), values(), entries(), forEach(), size
