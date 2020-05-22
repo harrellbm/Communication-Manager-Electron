@@ -320,8 +320,8 @@ textarea{
 /* Note: use top div to toggle visibility on and off nested div holds the actual grid */
 .initWrapper{
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: 16.8vh 4vh 16.7vh 4vh 46vh 4vh;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 18.8vh 4vh 16.7vh 4vh 44vh 4vh;
     background-color: rgb(139, 203, 224);
   }
   
@@ -335,7 +335,7 @@ textarea{
     grid-row-start: 1;
     grid-row-end: 2;
     grid-column-start: 2;
-    grid-column-end: 3;
+    grid-column-end: 4;
   }
 
   /* Container for adding groups */
@@ -354,8 +354,8 @@ textarea{
   /* Group rules */
   .group{
     display: grid;
-    grid-template-columns: 1fr 2fr 1.4rem;
-    grid-template-rows: 1.4rem 2rem;
+    grid-template-columns: 1fr 1.5fr 0.5fr 1.4rem;
+    grid-template-rows: 1.4rem 3.5rem;
     background-color: #999;
     border: rgb(169, 169, 169);
     border-width: 1px;
@@ -379,41 +379,73 @@ textarea{
     grid-row-end: 2;
     }
   
-  /* Textareas*/
+  /* Button to add contacts */ 
+  .addContact{
+    grid-column-start: 3;
+    grid-column-end:4;
+    grid-row-start: 1;
+    grid-row-end: 2;
+  }
+
+  /* Textarea*/
   .name{
     grid-column-start: 1;
     grid-column-end: 2;
     grid-row-start: 2;
     grid-row-end: 3;
     }
+  
+  /* Delete button */
+  .groupDelete{
+    width: 1.4rem;
+    height: 1.4rem;
+    grid-column-start: 4;
+    grid-column-end: 5;
+    grid-row-start: 1;
+    grid-row-end: 2;
+    }
 
+  /* Container div for all contact elements */
   .contacts{
     grid-column-start: 2;
-    grid-column-end: 3;
+    grid-column-end: 4;
     grid-row-start: 2;
     grid-row-end: 3;
+    overflow-y: scroll;
     border-width: 1px;
     border-style: solid;
     border-color: rgb(169, 169, 169);
     background-color: rgb(255, 255, 255);
     }
 
-  /* Outside rows */
-  /* Delete button */
-  .groupDelete{
+    /* Individual contact div */
+    .contact{
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr 1.4rem;
+      grid-template-rows: 1.4rem 2rem;
+      border-width: 1px;
+      border-style: solid;
+      border-color: rgb(169, 169, 169);
+      background-color: rgb(169, 169, 169);
+      }
+
+      /*  Delete button for contact */
+    .contactDelete{
     width: 1.4rem;
     height: 1.4rem;
-    grid-column-start: 3;
-    grid-column-end: 4;
+    grid-column-start: 4;
+    grid-column-end: 5;
     grid-row-start: 1;
     grid-row-end: 2;
     }
+
+  
 
   #goalHeader{
     grid-row-start: 2;
     grid-row-end: 3;
     grid-column-start: 1;
-    grid-column-end: 3;
+    grid-column-end: 4;
   }
   /* Container for adding goals */
   #goalIn{
@@ -422,7 +454,7 @@ textarea{
     grid-row-start: 3;
     grid-row-end: 4;
     grid-column-start: 1;
-    grid-column-end: 3;
+    grid-column-end: 4;
     overflow-y: scroll;
     background-color: rgb(255, 255, 255);
     border-width: 1px;
@@ -507,7 +539,7 @@ textarea{
     grid-row-start: 4;
     grid-row-end: 5;
     grid-column-start: 1;
-    grid-column-end: 3;
+    grid-column-end: 4;
   }
 
   /* rules for calendar wrapper and container divs */
@@ -515,7 +547,7 @@ textarea{
     grid-row-start: 5;
     grid-row-end: 6;
     grid-column-start: 1;
-    grid-column-end: 3;
+    grid-column-end: 4;
     margin-left: 1vh;
     margin-right: 1vh;
     overflow-y: scroll;
@@ -527,7 +559,7 @@ textarea{
   /* container on the bottom */
   #initBottom{
     grid-column-start: 1;
-    grid-column-end: 3;
+    grid-column-end: 4;
     display: flex;
     justify-content: center;
     align-items: center;

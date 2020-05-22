@@ -96,7 +96,7 @@ function save () {
     for (id of groupKeys) {// Each iteration goes through one goal
       let guiGroup = document.getElementById(`group${id}`); // Goal object from the ui
       let initGroup = currentInitiative.groups.get(id); // Goal object from the initiative object 
-      //console.log(guiGroup)
+      console.log(guiGroup)
       initGroup.name = guiGroup.children[2].value;
       /* need to save contacts */
     };
@@ -706,7 +706,7 @@ function addGroup (event='', groupId='') {// If group id is passed in it will lo
       console.log(groupLoad);
       }
 
-  //creates main div to hold an individual Group 
+  // Creates main div to hold an individual Group 
   let group = document.createElement("div");
   group.setAttribute("class", "group");
   group.setAttribute("id", `group${id}`);
@@ -724,7 +724,17 @@ function addGroup (event='', groupId='') {// If group id is passed in it will lo
   contacts_title.innerHTML = "Contacts:";
   group.appendChild(contacts_title);// Add the title to the group
 
-  // Textareas 
+  // Button to add a new contact 
+  let add_contact = document.createElement("input");// Title for Group 
+  
+  add_contact.setAttribute("class", "addContact");
+  add_contact.setAttribute("id", `addContact${id}`);
+  add_contact.setAttribute("type", "button");
+  add_contact.setAttribute("value", "add");
+  add_contact.addEventListener("click", function () {addContact('add', id)}) ;
+  group.appendChild(add_contact);// Add the title to the group
+
+  // Textarea for name  
   let name = document.createElement("textarea");
   name.setAttribute("class", "name");
   name.setAttribute("id", `name${id}`);
@@ -733,6 +743,7 @@ function addGroup (event='', groupId='') {// If group id is passed in it will lo
     }
   group.appendChild(name);
 
+  // Div to hold all contacts ui elements 
   let contacts = document.createElement("div");
   contacts.setAttribute("class", "contacts");
   contacts.setAttribute("id", `contacts${id}`);
@@ -747,7 +758,7 @@ function addGroup (event='', groupId='') {// If group id is passed in it will lo
   deleteBtn.setAttribute("id", `groupDelete${id}`);
   deleteBtn.setAttribute("type", "button");
   deleteBtn.setAttribute("value", "x");
-  deleteBtn.addEventListener("click", function () {deleteGroup(group)}) ;
+  deleteBtn.addEventListener("click", function () {deleteGroup(group)});
 
   group.appendChild(deleteBtn);
 
@@ -774,9 +785,119 @@ function deleteGroup (group) {
       // Remove message from UI
       group.parentElement.removeChild(group);
       // Remove message from Initiative object 
-      let id = group.id[4]; // Take only the number off of the end of the ui id 
-      //console.log("group object in delete:", group.id[4])
+      let id = group.id[5]; // Take only the number off of the end of the ui id 
+      console.log("group object in delete:", group.id[5])
       currentInitiative.groups.delete(id); 
+      // Send updates to main
+      let ipcInit = currentInitiative.pack_for_ipc();
+      ipc.send('save', currentInitiativeId, ipcInit);  
+      };
+    });
+};
+
+function addContact (event='', groupId='', contactId='') {// Takes in a group idea and adds contact to ui and group object 
+  // If no group id provided throw error and return from function  
+  if (groupId == '') { console.error('No group id provided'); return;}; 
+  // Update the current initiative object if this is a new contact 
+  let id;
+  let group = currentInitiative.groups.get(groupId);
+  let contact;
+  if ( contactId == '') { // If contact is being added for the first time 
+    id = group.add_contact();
+  } else { // Else load existing contact from group object 
+    contact = groups.get(contactId);
+    id = contactId;
+    console.log(contact);
+  }
+
+  // Creates main div to hold an individual Contact 
+  let contactUi = document.createElement("div");
+  contactUi.setAttribute("class", "contact");
+  contactUi.setAttribute("id", `contact${id}`);
+  
+  // Creates title paragraphs  
+  let name_title = document.createElement("p");// Title for Group 
+  name_title.setAttribute("class", "contName_title");
+  name_title.setAttribute("id", "contName_title");
+  name_title.innerHTML = "Name:";
+  contactUi.appendChild(name_title);// Add the title to the group
+
+  let phone_title = document.createElement("p");// Title for Group 
+  phone_title.setAttribute("class", "phone_title");
+  phone_title.setAttribute("id", "contactPhone_title");
+  phone_title.innerHTML = "Phone:";
+  contactUi.appendChild(phone_title);// Add the title to the group
+
+  let email_title = document.createElement("p");// Title for Group 
+  email_title.setAttribute("class", "email_title");
+  email_title.setAttribute("id", "contactEmail_title");
+  email_title.innerHTML = "Email:";
+  contactUi.appendChild(email_title);// Add the title to the group
+
+  // Textareas for name  
+  let name = document.createElement("textarea");
+  name.setAttribute("class", "name");
+  name.setAttribute("id", `name${id}`);
+  if(contactId != ''){// if creating a contact that is being pulled from a file set it's value 
+  name.value = contact[0];
+    }
+  contactUi.appendChild(name);
+
+  let phone = document.createElement("textarea");
+  phone.setAttribute("class", "phone");
+  phone.setAttribute("id", `phone${id}`);
+  contactUi.appendChild(phone);
+  if(contactId != ''){// if creating a contact that is being pulled from a file set it's value 
+  phone.value = contact[1];
+    }
+  contactUi.appendChild(phone);
+
+  let email = document.createElement("textarea");
+  email.setAttribute("class", "email");
+  email.setAttribute("id", `email${id}`);
+  contactUi.appendChild(email);
+  if(contactId != ''){// if creating a contact that is being pulled from a file set it's value 
+  contacts.value = contact[2];
+  }
+  contactUi.appendChild(email);
+
+  // Creates and adds dynamic event listener to delete button
+  let deleteBtn = document.createElement("input");
+  deleteBtn.setAttribute("class", "contactDelete");
+  deleteBtn.setAttribute("id", `contactDelete${id}`);
+  deleteBtn.setAttribute("type", "button");
+  deleteBtn.setAttribute("value", "x");
+  deleteBtn.addEventListener("click", function () {deleteContact(groupId, contactUi)}) ;
+  contactUi.appendChild(deleteBtn);
+
+  // Get the main div that holds all the contact's info and append to groups contact container
+  console.log("contact", contactUi);
+  document.getElementById(`contacts${groupId}`).appendChild(contactUi);
+};
+
+// Deletes a contact from the DOM
+function deleteContact (groupId, contactUi) {
+  // Confirm that user wants to delete message if not return
+  swal({
+    title: 'Deleting Contact',
+    text: 'Are you sure you want to delete your Contact?', 
+    icon: 'warning',
+    buttons: ['Cancel', 'Yes'],
+    dangerMode: true
+  })
+  .then(function (value) {
+    if (value == null) { // Escape deletion 
+      return
+    } else { // Proceed with deletion 
+      
+      // Remove Contact from UI
+      contactUi.parentElement.removeChild(contactUi);
+      // Remove Contact from group object 
+      let name = contactUi.id[7]; 
+      console.log("contact object in delete:", contactUi.id[7])
+      let group = currentInitiative.groups.get(groupId); 
+      console.log("group object:", group)
+      group.contacts.delete(name);
       // Send updates to main
       let ipcInit = currentInitiative.pack_for_ipc();
       ipc.send('save', currentInitiativeId, ipcInit);  
