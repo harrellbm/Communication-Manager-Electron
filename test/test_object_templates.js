@@ -294,21 +294,21 @@ describe("Initiative object", function () {
     // test adding group method 
     it('should add a new group', () => {
         // test adding groups to initiative object
-        test_initiative.add_group('my peeps', [ ['Phil', ['342-235-7653', 'myEmail@email.com']] ]);
-        test_initiative.add_group('Youth group', [ ['Kevin', ['235-345-3454', 'heythere@email.com']] ]);
+        test_initiative.add_group('my peeps', [ ['Phil', '342-235-7653', 'myEmail@email.com'] ]);
+        test_initiative.add_group('Youth group', [ ['Kevin', '235-345-3454', 'heythere@email.com'] ]);
         //console.log('new groups', test_initiative.groups);
         // Verify each group
         let group0 = test_initiative.groups.get('0')
         //console.log('group0:', test_initiative.groups.get('0'))
-        expect(group0.name, 'name incorrect').to.be.a('string').that.equals('my peeps');
-        let contact0 = group0.contacts.get('Phil');
-        expect(contact0, 'contact incorrect').to.be.an('array').that.includes('342-235-7653').and.includes('myEmail@email.com');
+        expect(group0.group_name, 'name incorrect').to.be.a('string').that.equals('my peeps');
+        let contact0 = group0.contacts.get('0');
+        expect(contact0, 'contact incorrect').to.be.an('array').that.includes('Phil').that.includes('342-235-7653').and.includes('myEmail@email.com');
        
         let group1 = test_initiative.groups.get('1')
         //console.log('group1:', test_initiative.groups.get('1'))
-        expect(group1.name, 'name incorrect').to.be.a('string').that.equals('Youth group');
-        let contact1 = group1.contacts.get('Kevin');
-        expect(contact1, 'contact incorrect').to.be.an('array').that.includes('235-345-3454').and.includes('heythere@email.com');
+        expect(group1.group_name, 'name incorrect').to.be.a('string').that.equals('Youth group');
+        let contact1 = group1.contacts.get('0');
+        expect(contact1, 'contact incorrect').to.be.an('array').that.includes('Kevin').that.includes('235-345-3454').and.includes('heythere@email.com');
     });
 
     // test the return of the add group method 
@@ -323,8 +323,8 @@ describe("Initiative object", function () {
 
     // test dynamic preformace of group map 
     it('should remove a group then re-add', () => {
-        test_initiative.add_group('my peeps', [ ['Phil', ['342-235-7653', 'myEmail@email.com']] ]);
-        test_initiative.add_group('Youth group', [ ['Kevin', ['235-345-3454', 'heythere@email.com']] ]);
+        test_initiative.add_group('my peeps', [ ['Phil', '342-235-7653', 'myEmail@email.com'] ]);
+        test_initiative.add_group('Youth group', [ ['Kevin', '235-345-3454', 'heythere@email.com'] ]);
         //console.log('new groups', test_initiative.groups);
         // remove group and test
         test_initiative.groups.delete('0');
@@ -333,29 +333,28 @@ describe("Initiative object", function () {
         expect(group0).to.be.false;
         let group1 = test_initiative.groups.get('1');
         //console.log('groups1:', test_initiative.groups.get('1'));
-        expect(group1.name, 'name incorrect').to.be.a('string').that.equals('Youth group');
-        let contact1 = group1.contacts.get('Kevin');
-        expect(contact1, 'contact incorrect').to.be.an('array').that.includes('235-345-3454').and.includes('heythere@email.com');
+        expect(group1.group_name, 'name incorrect').to.be.a('string').that.equals('Youth group');
+        let contact1 = group1.contacts.get('0');
+        expect(contact1, 'contact incorrect').to.be.an('array').that.includes('Kevin').that.includes('235-345-3454').and.includes('heythere@email.com');
         
         // Test re-add group
-        test_initiative.add_group('my peeps', [ ['Phil', ['342-235-7653', 'myEmail@email.com']] ]); 
+        test_initiative.add_group('my peeps', [ ['Phil', '342-235-7653', 'myEmail@email.com'] ]); 
         //console.log('re-added group:', test_initiative.groups)
         group0 = test_initiative.groups.get('0')
         //console.log('group0:', test_initiative.groups.get('0'))
-        expect(group0.name, 'name incorrect').to.be.a('string').that.equals('my peeps');
-        let contact0 = group0.contacts.get('Phil');
-        expect(contact0, 'contact incorrect').to.be.an('array').that.includes('342-235-7653').and.includes('myEmail@email.com');
+        expect(group0.group_name, 'name incorrect').to.be.a('string').that.equals('my peeps');
+        let contact0 = group0.contacts.get('0');
+        expect(contact0, 'contact incorrect').to.be.an('array').that.includes('Phil').that.includes('342-235-7653').and.includes('myEmail@email.com');
 
         // Test adding additional group after that
-        test_initiative.add_group('My best friends', [ ['Don', ['564-434-5354', 'don.don@email.com']] ]);  
+        test_initiative.add_group('My best friends', [ ['Don', '564-434-5354', 'don.don@email.com'] ]);  
         //console.log('added additional group:', test_initiative.groups) 
         let group2 = test_initiative.groups.get('2')
         //console.log('group0:', test_initiative.groups.get('0'))
-        expect(group2.name, 'name incorrect').to.be.a('string').that.equals('My best friends');
-        let contact2 = group2.contacts.get('Don');
-        expect(contact2, 'contact incorrect').to.be.an('array').that.includes('564-434-5354').and.includes('don.don@email.com');
+        expect(group2.group_name, 'name incorrect').to.be.a('string').that.equals('My best friends');
+        let contact2 = group2.contacts.get('0');
+        expect(contact2, 'contact incorrect').to.be.an('array').that.includes('Don').that.includes('564-434-5354').and.includes('don.don@email.com');
     });
-
 
     // test adding goal method 
     it('should add a new goal', () => {
@@ -671,8 +670,7 @@ describe("Initiative object", function () {
     it('should convert and pack all objects to vanilla', () => {
         test_initiative.change_name('My Initiative');
         test_initiative.change_description('This is an initiavtive to communicate with people');
-        test_initiative.add_group('my peeps', [ ['Phil', ['703-123-4565', 'philsemail@email.com']] ]);
-        let group = test_initiative.groups.get('0');
+        test_initiative.add_group('my peeps', [ ['Phil', '703-123-4565', 'philsemail@email.com'] ]);
         test_initiative.add_goal(5, 'text', 'tomorrow');
         test_initiative.add_message('This is the title of the first message', 'this is its greeting', 'this is the content.', 'this is the signature', ['avenue1', 'avenue2']);
         test_initiative.add_avenue('email', 'for all my peeps', 'Bob', true, 'message23', '2022-01-12T00:00:00-06:00');
@@ -687,10 +685,10 @@ describe("Initiative object", function () {
         expect(returned_initiative.groups, 'Groups type not packed').to.be.a('object').that.is.not.instanceOf(Map);
         let group0 = returned_initiative.groups['0'];
         //console.log(group0)
-        expect(group0.name, 'name incorrect').to.be.a('string').that.equals('my peeps');
+        expect(group0.group_name, 'name incorrect').to.be.a('string').that.equals('my peeps');
         expect(group0.contacts, 'Groups type not packed').to.not.be.instanceOf(Map);
-        let contact0 = group0.contacts['Phil'];
-        expect(contact0).to.be.an('array').that.includes('703-123-4565').and.includes('philsemail@email.com');
+        let contact0 = group0.contacts['0'];
+        expect(contact0).to.be.an('array').that.includes('Phil').that.includes('703-123-4565').and.includes('philsemail@email.com');
 
         // Nested Goals object
         expect(returned_initiative.goals, 'Goals is not a map').to.be.instanceOf(Object);
@@ -733,7 +731,7 @@ describe("Initiative object", function () {
         debugger
         test_initiative.change_name('My Initiative');
         test_initiative.change_description('This is an initiavtive to communicate with people');
-        test_initiative.add_group('my peeps', [ ['Phil', ['342-235-7653', 'myEmail@email.com']] ]);
+        test_initiative.add_group('my peeps', [ ['Phil', '342-235-7653', 'myEmail@email.com'] ]);
         test_initiative.add_goal(5, 'text', 'tomorrow');
         test_initiative.add_message('This is the title of the first message', 'this is its greeting', 'this is the content.', 'this is the signature', ['avenue1', 'avenue2']);
         test_initiative.add_avenue('email', 'for all my peeps', 'Bob', true, 'message23', '2016-01-08T00:00:00-06:00');
@@ -748,11 +746,11 @@ describe("Initiative object", function () {
         // Nested Group Object
         expect(test_initiative.groups, 'Groups type not unpacked').to.be.instanceOf(Map);
         let group0 = test_initiative.groups.get('0');
-        //console.log('groups: ', test_initiative.groups)
-        expect(group0.name, 'name incorrect').to.be.a('string').that.equals('my peeps');
+        console.log('groups: ', test_initiative.groups)
+        expect(group0.group_name, 'name incorrect').to.be.a('string').that.equals('my peeps');
         expect(group0.contacts, 'Groups contacts not unpacked').to.be.instanceOf(Map);
-        let contact0 = group0.contacts.get('Phil');
-        expect(contact0).to.be.an('array').that.includes('342-235-7653').and.includes('myEmail@email.com');
+        let contact0 = group0.contacts.get('0');
+        expect(contact0).to.be.an('array').that.includes('Phil').that.includes('342-235-7653').and.includes('myEmail@email.com');
 
         
         // Nested Goals object
@@ -807,47 +805,49 @@ describe("Group object", function () {
 
    it('should have all initial Group object keys', function () {
        //console.log(test_group);
-       expect(test_group, 'Missing a key').to.include.keys('name', 'contacts');
-       expect(test_group.name, 'name is not a string').is.a('string');
+       expect(test_group, 'Missing a key').to.include.keys('group_name', 'contacts');
+       expect(test_group.group_name, 'name is not a string').is.a('string');
        expect(test_group.contacts, 'Contacts is not a map').is.instanceOf(Map);
     });
 
    it('should add name and contacts on group creation', function () {
         // Add new group with contacts
-        let new_group = new templates.Group('my group', [ ['Phil',['343-452-2343', 'email']], ['Bill', ['800-123-2342', 'myEmail@email.com']] ])
+        let new_group = new templates.Group('my group', [ ['Phil','343-452-2343', 'email'], ['Bill', '800-123-2342', 'myEmail@email.com'] ])
         expect(new_group.contacts, 'Contacts is not a map').is.instanceOf(Map);
         //console.log('group with contacts: ', new_group)
         // Verify name
-        let name = new_group.name;
-        expect(name, 'Name is incorrect').to.be.a('string').that.equals('my group');
+        let name = new_group.group_name;
+        expect(name, 'Group_name is incorrect').to.be.a('string').that.equals('my group');
         // Verify contacts added correctly 
-        let contact0 = new_group.contacts.get('Phil');
-        expect(contact0[0], 'Phone number incorrect').to.be.a('string').that.equals('343-452-2343');
-        expect(contact0[1], 'Email incorrect').to.be.a('string').that.equals('email');
-        let contact1 = new_group.contacts.get('Bill');
-        expect(contact1[0], 'Phone number incorrect').to.be.a('string').that.equals('800-123-2342');
-        expect(contact1[1], 'Email incorrect').to.be.a('string').that.equals('myEmail@email.com');
+        let contact0 = new_group.contacts.get('0');
+        expect(contact0[0], 'Name incorrect').to.be.a('string').that.equals('Phil');
+        expect(contact0[1], 'Phone number incorrect').to.be.a('string').that.equals('343-452-2343');
+        expect(contact0[2], 'Email incorrect').to.be.a('string').that.equals('email');
+        let contact1 = new_group.contacts.get('1');
+        expect(contact1[0], 'Name incorrect').to.be.a('string').that.equals('Bill');
+        expect(contact1[1], 'Phone number incorrect').to.be.a('string').that.equals('800-123-2342');
+        expect(contact1[2], 'Email incorrect').to.be.a('string').that.equals('myEmail@email.com');
     });
 
     // test change group name 
     it('should change group name', () => {
         // Make sure that name is empty on start
-        expect(test_group.name).to.be.a('string').that.equals('');
+        expect(test_group.group_name).to.be.a('string').that.equals('');
         // Change name
-        test_group.change_name('John');
+        test_group.change_group_name('John');
         // Verify change
         //console.log('new group name', test_group);
-        expect(test_group.name, 'Name was not changed').to.be.a('string').equal('John');
+        expect(test_group.group_name, 'Name was not changed').to.be.a('string').equal('John');
     });
   
     // test get group name
     it('should return group name', () => {
-        let name = test_group.get_name();
+        let name = test_group.get_group_name();
         expect(name, 'Name was not changed').to.be.a('string').equal('');
         // Change name 
-        test_group.change_name('John');
+        test_group.change_group_name('John');
         // Get the new name
-        name = test_group.get_name();
+        name = test_group.get_group_name();
         expect(name, 'Name was not changed').to.be.a('string').equal('John');
         //console.log('returned name', name);
     });
@@ -855,43 +855,28 @@ describe("Group object", function () {
     // test add contact  
     it('should add contact', () => {
         test_group.add_contact('Bill', '745-123-3457', 'myEmail@email.com');
-        let contact0 = test_group.contacts.get('Bill')
-        expect(contact0[0], 'Phone number was not changed').to.be.a('string').that.equals('745-123-3457');
-        expect(contact0[1], 'Email was not changed').to.be.a('string').that.equals('myEmail@email.com');
+        let contact0 = test_group.contacts.get('0');
+        expect(contact0[0], 'Name was not changed').to.be.a('string').that.equals('Bill');
+        expect(contact0[1], 'Phone number was not changed').to.be.a('string').that.equals('745-123-3457');
+        expect(contact0[2], 'Email was not changed').to.be.a('string').that.equals('myEmail@email.com');
         //console.log('new contact', test_group);
-    });
- 
-    // test get all contacts group name
-    it('should return all contacts', () => {
-        // Add contacts 
-        test_group.add_contact('John', '345-234-3523', 'johnHere@email.com');
-        test_group.add_contact('Bill', '745-123-3457', 'myEmail@email.com');
-        // get all contacts 
-        let contacts = test_group.get_all_contacts();
-        // Verify returned contacts 
-        //console.log('returned contacts', contacts);
-        let contact0 = test_group.contacts.get('John')
-        expect(contact0[0], 'Phone number incorrect').to.be.a('string').that.equals('345-234-3523');
-        expect(contact0[1], 'Email incorrect').to.be.a('string').that.equals('johnHere@email.com');
-        let contact1 = test_group.contacts.get('Bill')
-        expect(contact1[0], 'Phone number incorrect').to.be.a('string').that.equals('745-123-3457');
-        expect(contact1[1], 'Email incorrect').to.be.a('string').that.equals('myEmail@email.com');
     });
 
     // test pack group into vanilla objects 
     it('should pack group for ipc', () => {
         // Fill group
-        test_group.change_name('My group'); 
+        test_group.change_group_name('My group'); 
         test_group.add_contact('Bill', '745-123-3457', 'myEmail@email.com');
         //console.log('group before packing: ', test_group);
         // Pack for ipc
         let packed_group = test_group.pack_grp_for_ipc();
         //console.log('group after packing: ', packed_group);
-        expect(packed_group.name, 'Name did not pack correctly').to.be.a('string');
+        expect(packed_group.group_name, 'Name did not pack correctly').to.be.a('string');
         expect(packed_group.contacts, 'Contacts did not pack correctly').to.be.an('object').and.not.instanceof(Map);
         let contacts = packed_group.contacts;
-        expect(contacts['Bill'][0], 'Phone number incorrect').to.be.a('string').that.equals('745-123-3457');
-        expect(contacts['Bill'][1], 'Email incorrect').to.be.a('string').that.equals('myEmail@email.com');
+        expect(contacts[0][0], 'Name incorrect').to.be.a('string').that.equals('Bill');
+        expect(contacts[0][1], 'Phone number incorrect').to.be.a('string').that.equals('745-123-3457');
+        expect(contacts[0][2], 'Email incorrect').to.be.a('string').that.equals('myEmail@email.com');
     });
 });
 
