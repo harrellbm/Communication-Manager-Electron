@@ -145,7 +145,7 @@ class Initiative {
    };
 
    // Add a goal to the goals map in the initiative 
-   add_group(name, contacts){ // Note: Contact are accepted in the following structure [ [name, [phone, email]], etc. ]
+   add_group(name, contacts){ // Note: Contact are accepted in the following structure [ [name, phone, email], etc. ]
       let new_group = new Group(name, contacts);
 
       let groupId = this.id_fill(this.groups);// fill in the lowest available id
@@ -316,7 +316,7 @@ class Initiative {
          let content = group[1];
          let unpacked = new Group(); // Create new Group object 
          // Load all contents into new Goal object
-         unpacked.name = content.name;
+         unpacked.group_name = content.group_name;
          // Unpack contacts into a new map
          unpacked.contacts = new Map();
          let contact;
@@ -395,15 +395,15 @@ class Initiative {
 };
 
 class Group {
-   // Constructor takes new contacts in the form of [ [name, [phone, email]], etc. ]
-   constructor(name='', new_contacts=[]) {
-      this.name = name; // Name of the contact group 
+   // Constructor takes new contacts in the form of [ [name, phone, email], etc. ]
+   constructor(group_name='', new_contacts=[]) {
+      this.group_name = group_name; // Name of the contact group 
       this.contacts = new Map(); // Key is the name of individual, value is contact info
       
       let leng = new_contacts.length;
       if (new_contacts != []) {
          for (let i=0; i<leng; i++) {
-            this.contacts.set(new_contacts[i][0], new_contacts[i][1]);
+            this.add_contact(new_contacts[i][0], new_contacts[i][1], new_contacts[i][2]);
          };
       };
    };
@@ -411,28 +411,41 @@ class Group {
       // keys(), values(), entries(), forEach(), size
    
    // Changes the groups name 
-   change_name(new_name){ 
-      this.name = new_name;
+   change_group_name(new_name){ 
+      this.group_name = new_name;
    };
    
    // Gets the groups name  
-   get_name(){
-      return this.name;
+   get_group_name(){
+      return this.group_name;
+   };
+
+    // Makes sure that the lowest possible id is assigned to a new contact 
+    id_fill(objects){
+      let Id = 0;
+      let strId; // holds id that is converted to string
+      let has = true; // holds boolean for if object has key or not 
+      while(has == true){
+         strId = Id.toString(); // turn id to string so that it can be evaluated and possibly returned
+         if (objects.has(strId) == true){ // check to see if map has id or not
+            Id += 1
+            } else { // when avenueId does not equal ave we know that the spot is empty
+               return strId
+               }
+      }
    };
 
    // Add a contact to the contacts map  
-   add_contact(name, phone, email){ 
-      this.contacts.set(name, [phone, email]);
+   add_contact(name='', phone='', email=''){ 
+      let contactId = this.id_fill(this.contacts)// fill in the lowest available id
+      this.contacts.set(contactId, [name, phone, email]);
+      return contactId;
    };
-
-   get_all_contacts(){
-      return this.contacts
-   }; 
 
    pack_grp_for_ipc(){ // Note: dynamic test held in test_main.js, unit test in test_object_templates.js
       // Pack group into a vanilla object  
       let group_for_ipc = new Object;
-      group_for_ipc.name = this.name;
+      group_for_ipc.group_name = this.group_name;
       group_for_ipc.contacts = Object.fromEntries(this.contacts); 
       //console.log('packed group', group_for_ipc);
       return group_for_ipc; // Returns the packaged group  
