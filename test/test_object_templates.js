@@ -905,7 +905,7 @@ describe("Group object", function () {
         let packed_group = test_group.pack_grp_for_ipc();
         //console.log('group after packing: ', packed_group);
         expect(packed_group.group_id, 'Id did not pack correctly').to.be.a('string').that.equals('0');
-        expect(packed_group.group_name, 'Name did not pack correctly').to.be.a('string');
+        expect(packed_group.group_name, 'Name did not pack correctly').to.be.a('string').that.equals('My group');
         expect(packed_group.contacts, 'Contacts did not pack correctly').to.be.an('object').and.not.instanceof(Map);
         let contacts = packed_group.contacts;
         expect(contacts['00'][0], 'Name incorrect').to.be.a('string').that.equals('Bill');

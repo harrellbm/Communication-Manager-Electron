@@ -396,6 +396,7 @@ class Initiative {
 
 class Group {
    // Constructor takes new contacts in the form of [ [name, phone, email], etc. ]
+   // Note: Group has to be initialized with its respective id otherwise contact id tagging will not work correctly
    constructor(group_id='', group_name='', new_contacts=[]) {
       this.group_id = group_id;
       this.group_name = group_name; // Name of the contact group 
