@@ -799,13 +799,14 @@ describe("Group object", function () {
    var test_group;
     
    this.beforeEach( function () {
-       test_group = new templates.Group();
+       test_group = new templates.Group('0');
    });
 
    it('should have all initial Group object keys', function () {
        //console.log(test_group);
-       expect(test_group, 'Missing a key').to.include.keys('group_name', 'contacts');
-       expect(test_group.group_name, 'name is not a string').is.a('string');
+       expect(test_group, 'Missing a key').to.include.keys('group_id','group_name', 'contacts');
+       expect(test_group.group_id, 'Id is not a string').is.a('string');
+       expect(test_group.group_name, 'Name is not a string').is.a('string');
        expect(test_group.contacts, 'Contacts is not a map').is.instanceOf(Map);
     });
 
@@ -854,7 +855,40 @@ describe("Group object", function () {
     // test add contact  
     it('should add contact', () => {
         test_group.add_contact('Bill', '745-123-3457', 'myEmail@email.com');
-        let contact0 = test_group.contacts.get('0');
+        let contact0 = test_group.contacts.get('00');
+        expect(contact0[0], 'Name was not changed').to.be.a('string').that.equals('Bill');
+        expect(contact0[1], 'Phone number was not changed').to.be.a('string').that.equals('745-123-3457');
+        expect(contact0[2], 'Email was not changed').to.be.a('string').that.equals('myEmail@email.com');
+        //console.log('new contact', test_group);
+    });
+
+    // test the return of the add avenue method 
+    it('should return the id of the avenue from add avenue method return', () => {
+        let id = test_group.add_contact('Bill', '745-123-3457', 'myEmail@email.com');
+        let id1 = test_group.add_contact('Phil', '234-345-5432', 'philphil@email.com');
+        //console.log('New contacts', test_group.contacts);
+        //console.log('contact 1 id: ', id, '\ncontact 2 id: ', id1);
+        expect(id,"Does not return correct id").to.equal('00');
+        expect(id1, "Does not return correct id").to.equal('01');
+    });
+
+    // test dynamic preformance of contact map  
+    it('should remove a contact then re-add', () => {
+        test_group.add_contact('Bill', '745-123-3457', 'myEmail@email.com');
+        test_group.add_contact('Phil', '432-234-2343', 'philphil@email.com');
+        // remove contact and test
+        test_group.contacts.delete('00');
+        //console.log('removed contact',  test_group.contacts);
+        let contact0 = test_group.contacts.has('00');
+        expect(contact0).to.be.false;
+        let contact1 = test_group.contacts.get('01')
+        //console.log('contact1:', test_group.contacts.get('01'))
+        expect(contact1[0], 'Name was not changed').to.be.a('string').that.equals('Phil');
+        expect(contact1[1], 'Phone number was not changed').to.be.a('string').that.equals('432-234-2343');
+        expect(contact1[2], 'Email was not changed').to.be.a('string').that.equals('philphil@email.com');
+        // re-add contact
+        test_group.add_contact('Bill', '745-123-3457', 'myEmail@email.com');
+        contact0 = test_group.contacts.get('00');
         expect(contact0[0], 'Name was not changed').to.be.a('string').that.equals('Bill');
         expect(contact0[1], 'Phone number was not changed').to.be.a('string').that.equals('745-123-3457');
         expect(contact0[2], 'Email was not changed').to.be.a('string').that.equals('myEmail@email.com');
@@ -870,12 +904,13 @@ describe("Group object", function () {
         // Pack for ipc
         let packed_group = test_group.pack_grp_for_ipc();
         //console.log('group after packing: ', packed_group);
+        expect(packed_group.group_id, 'Id did not pack correctly').to.be.a('string').that.equals('0');
         expect(packed_group.group_name, 'Name did not pack correctly').to.be.a('string');
         expect(packed_group.contacts, 'Contacts did not pack correctly').to.be.an('object').and.not.instanceof(Map);
         let contacts = packed_group.contacts;
-        expect(contacts[0][0], 'Name incorrect').to.be.a('string').that.equals('Bill');
-        expect(contacts[0][1], 'Phone number incorrect').to.be.a('string').that.equals('745-123-3457');
-        expect(contacts[0][2], 'Email incorrect').to.be.a('string').that.equals('myEmail@email.com');
+        expect(contacts['00'][0], 'Name incorrect').to.be.a('string').that.equals('Bill');
+        expect(contacts['00'][1], 'Phone number incorrect').to.be.a('string').that.equals('745-123-3457');
+        expect(contacts['00'][2], 'Email incorrect').to.be.a('string').that.equals('myEmail@email.com');
     });
 });
 

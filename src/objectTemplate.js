@@ -448,6 +448,7 @@ class Group {
    pack_grp_for_ipc(){ // Note: dynamic test held in test_main.js, unit test in test_object_templates.js
       // Pack group into a vanilla object  
       let group_for_ipc = new Object;
+      group_for_ipc.group_id = this.group_id;
       group_for_ipc.group_name = this.group_name;
       group_for_ipc.contacts = Object.fromEntries(this.contacts); 
       //console.log('packed group', group_for_ipc);
