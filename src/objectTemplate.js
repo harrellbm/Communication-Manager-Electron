@@ -146,9 +146,9 @@ class Initiative {
 
    // Add a goal to the goals map in the initiative 
    add_group(name, contacts){ // Note: Contact are accepted in the following structure [ [name, phone, email], etc. ]
-      let new_group = new Group(name, contacts);
-
       let groupId = this.id_fill(this.groups);// fill in the lowest available id
+      let new_group = new Group(groupId, name, contacts); // Pass in group Id so that contacts can be tagged 
+
       this.groups.set(groupId, new_group);
       return groupId;
    };
@@ -396,7 +396,8 @@ class Initiative {
 
 class Group {
    // Constructor takes new contacts in the form of [ [name, phone, email], etc. ]
-   constructor(group_name='', new_contacts=[]) {
+   constructor(group_id='', group_name='', new_contacts=[]) {
+      this.group_id = group_id;
       this.group_name = group_name; // Name of the contact group 
       this.contacts = new Map(); // Key is the name of individual, value is contact info
       
@@ -420,26 +421,28 @@ class Group {
       return this.group_name;
    };
 
-    // Makes sure that the lowest possible id is assigned to a new contact 
-    id_fill(objects){
+   // Makes sure that the lowest possible id is assigned to a new contact 
+   contact_id_fill(objects){
       let Id = 0;
       let strId; // holds id that is converted to string
       let has = true; // holds boolean for if object has key or not 
       while(has == true){
          strId = Id.toString(); // turn id to string so that it can be evaluated and possibly returned
-         if (objects.has(strId) == true){ // check to see if map has id or not
-            Id += 1
+         let fullId = this.group_id + strId // add the group id on front for full contact id
+         if (objects.has(fullId) == true){ // check to see if map has id or not
+            Id += 1;
             } else { // when avenueId does not equal ave we know that the spot is empty
-               return strId
+               return strId;
                }
       }
    };
 
    // Add a contact to the contacts map  
    add_contact(name='', phone='', email=''){ 
-      let contactId = this.id_fill(this.contacts)// fill in the lowest available id
-      this.contacts.set(contactId, [name, phone, email]);
-      return contactId;
+      let contactId = this.contact_id_fill(this.contacts); // fill in the lowest available id
+      let id = this.group_id + contactId;
+      this.contacts.set(id, [name, phone, email]); // Use group id in front of contact id to make it unique 
+      return id;
    };
 
    pack_grp_for_ipc(){ // Note: dynamic test held in test_main.js, unit test in test_object_templates.js
