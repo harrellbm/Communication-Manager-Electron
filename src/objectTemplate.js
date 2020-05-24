@@ -33,8 +33,8 @@ class initiativeCollection {
    update_init(initId, ipc) {
       let initiative = new Initiative();
       initiative.unpack_from_ipc(ipc);
-      this.initiatives.set(initId, initiative)
-      //console.log('updated collection: ', this.initiatives)
+      this.initiatives.set(initId, initiative);
+      //console.log('updated collection: ', this.initiatives);
    }
 
    update_mess(initId, messId, ipc) {
@@ -254,7 +254,7 @@ class Initiative {
             message.add_avenue_id(aveId); 
             }
          } catch(err){
-            console.log('Invalid Id: ' + err);
+            console.error('Invalid Id: ' + err);
             }
    };
 
@@ -265,7 +265,7 @@ class Initiative {
          var avenue = this.avenues.get(aveId);
          var message = this.messages.get(mesId);
          } catch(err){
-            console.log('Invalid Id: ' + err);
+            console.error('Invalid Id: ' + err);
             }
       avenue.change_message_id('');
       let id;
@@ -314,9 +314,9 @@ class Initiative {
       for (group of Object.entries(ipc.groups)) { // Iterate over the key value pairs from the vanilla object
          let id = group[0];
          let content = group[1];
-         let unpacked = new Group(); // Create new Group object 
-         // Load all contents into new Goal object
-         unpacked.group_name = content.group_name;
+         // Load name and id into new Group object
+         let unpacked = new Group(content.group_id, content.group_name); // Create new Group object 
+   
          // Unpack contacts into a new map
          unpacked.contacts = new Map();
          let contact;
@@ -447,7 +447,7 @@ class Group {
    };
 
    pack_grp_for_ipc(){ // Note: dynamic test held in test_main.js, unit test in test_object_templates.js
-      // Pack group into a vanilla object  
+      // Pack group into a vanilla object 
       let group_for_ipc = new Object;
       group_for_ipc.group_id = this.group_id;
       group_for_ipc.group_name = this.group_name;

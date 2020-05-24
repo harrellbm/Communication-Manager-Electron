@@ -22,8 +22,14 @@ ipc.on('load', function (event, ipcPack) {
     document.getElementById('initDescription').value = currentInitiative.description; // Update title from ui
     // Load Groups
     let groupKeys = currentInitiative.groups.keys();
-      for ( id of groupKeys ){
-        addGroup('load', id ); // Note: Event is not used programatically but helps with debugging input to addMess
+      for ( grpId of groupKeys ){
+        addGroup( 'load', grpId ); // Note: Event is not used programatically but helps with debugging input to addGroup
+        // Iterate through group's contacts and add to ui 
+        let group = currentInitiative.groups.get(grpId);
+        let contactKeys = group.contacts.keys();
+        for ( contId of contactKeys ){
+          addContact( 'load', grpId, contId );
+        };
       };
     // Load Goals
     let goalKeys = currentInitiative.goals.keys();
@@ -96,9 +102,20 @@ function save () {
     for (id of groupKeys) {// Each iteration goes through one goal
       let guiGroup = document.getElementById(`group${id}`); // Goal object from the ui
       let initGroup = currentInitiative.groups.get(id); // Goal object from the initiative object 
-      console.log(guiGroup)
-      initGroup.name = guiGroup.children[2].value;
-      /* need to save contacts */
+      //console.log('init group', initGroup)
+      initGroup.group_name = guiGroup.children[3].value;
+
+      let contactsKeys = initGroup.contacts.keys(); 
+      //console.log(contactsKeys)
+      for (contId of contactsKeys) {// Each iteration goes through one goal
+        let guiContact = document.getElementById(`contact${contId}`); // Contact object from the ui
+        //console.log('gui', guiContact, 'object', initGroup.contacts);
+        let name = guiContact.children[3].value;
+        let phone = guiContact.children[4].value;
+        let email = guiContact.children[5].value;
+        initGroup.contacts.set(contId, [name, phone, email]);
+        //console.log('after update', initGroup.contacts);
+      };
     };
     console.log('updated group: ', currentInitiative.groups);
     // Sync ui and initiative goal objects before saving 
@@ -111,7 +128,7 @@ function save () {
       initGoal.frequency = guiGoal.children[4].value;
       initGoal.reminder = guiGoal.children[5].value;
     };
-    console.log('updated goal: ', currentInitiative.goals);
+    //console.log('updated goal: ', currentInitiative.goals);
 
     // Message Manager ui
     // Sync ui and initiative message objects before saving 
@@ -703,7 +720,7 @@ function addGroup (event='', groupId='') {// If group id is passed in it will lo
     } else { // Else load existing group from initiative object 
       id = groupId
       groupLoad = currentInitiative.groups.get(id);
-      console.log(groupLoad);
+      //console.log(groupLoad);
       }
 
   // Creates main div to hold an individual Group 
@@ -739,7 +756,7 @@ function addGroup (event='', groupId='') {// If group id is passed in it will lo
   name.setAttribute("class", "name");
   name.setAttribute("id", `name${id}`);
   if(groupId != ''){// if creating a group that is being pulled from a file set it's value 
-  name.value = groupLoad.name;
+  name.value = groupLoad.group_name;
     }
   group.appendChild(name);
 
@@ -763,7 +780,7 @@ function addGroup (event='', groupId='') {// If group id is passed in it will lo
   group.appendChild(deleteBtn);
 
   // Get the main div that holds all the groups and append the new one
-  //console.log("group", group);
+  //console.log("group", group, "initative", currentInitiative);
   document.getElementById("groupIn").appendChild(group);
 };
 
@@ -786,7 +803,7 @@ function deleteGroup (group) {
       group.parentElement.removeChild(group);
       // Remove message from Initiative object 
       let id = group.id[5]; // Take only the number off of the end of the ui id 
-      console.log("group object in delete:", group.id[5])
+      //console.log("group object in delete:", group.id[5])
       currentInitiative.groups.delete(id); 
       // Send updates to main
       let ipcInit = currentInitiative.pack_for_ipc();
@@ -805,9 +822,9 @@ function addContact (event='', groupId='', contactId='') {// Takes in a group id
   if ( contactId == '') { // If contact is being added for the first time 
     id = group.add_contact();
   } else { // Else load existing contact from group object 
-    contact = groups.get(contactId);
+    contact = group.contacts.get(contactId);
     id = contactId;
-    console.log(contact);
+    //console.log(contact);
   }
 
   // Creates main div to hold an individual Contact 
@@ -846,7 +863,6 @@ function addContact (event='', groupId='', contactId='') {// Takes in a group id
   let phone = document.createElement("textarea");
   phone.setAttribute("class", "phone");
   phone.setAttribute("id", `phone${id}`);
-  contactUi.appendChild(phone);
   if(contactId != ''){// if creating a contact that is being pulled from a file set it's value 
   phone.value = contact[1];
     }
@@ -855,9 +871,8 @@ function addContact (event='', groupId='', contactId='') {// Takes in a group id
   let email = document.createElement("textarea");
   email.setAttribute("class", "email");
   email.setAttribute("id", `email${id}`);
-  contactUi.appendChild(email);
   if(contactId != ''){// if creating a contact that is being pulled from a file set it's value 
-  contacts.value = contact[2];
+  email.value = contact[2];
   }
   contactUi.appendChild(email);
 
@@ -871,7 +886,7 @@ function addContact (event='', groupId='', contactId='') {// Takes in a group id
   contactUi.appendChild(deleteBtn);
 
   // Get the main div that holds all the contact's info and append to groups contact container
-  console.log("contact", contactUi);
+  //console.log("contact", contactUi);
   document.getElementById(`contacts${groupId}`).appendChild(contactUi);
 };
 
@@ -893,11 +908,11 @@ function deleteContact (groupId, contactUi) {
       // Remove Contact from UI
       contactUi.parentElement.removeChild(contactUi);
       // Remove Contact from group object 
-      let name = contactUi.id[7]; 
-      console.log("contact object in delete:", contactUi.id[7])
+      let contId = contactUi.id[7] + contactUi.id[8]; 
+      //console.log("contact object in delete:", contId)
       let group = currentInitiative.groups.get(groupId); 
-      console.log("group object:", group)
-      group.contacts.delete(name);
+      //console.log("group object:", group)
+      group.contacts.delete(contId);
       // Send updates to main
       let ipcInit = currentInitiative.pack_for_ipc();
       ipc.send('save', currentInitiativeId, ipcInit);  
