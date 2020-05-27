@@ -919,19 +919,19 @@ function addContact (event='', groupId='', contactId='') {// Takes in a group id
   
   // Creates title paragraphs  
   let name_title = document.createElement("p");// Title for Group 
-  name_title.setAttribute("class", "contName_title");
+  name_title.setAttribute("class", "cont_title");
   name_title.setAttribute("id", "contName_title");
   name_title.innerHTML = "Name:";
   contactUi.appendChild(name_title);// Add the title to the group
 
   let email_title = document.createElement("p");// Title for Group 
-  email_title.setAttribute("class", "email_title");
+  email_title.setAttribute("class", "cont_title");
   email_title.setAttribute("id", "contactEmail_title");
   email_title.innerHTML = "Email:";
   contactUi.appendChild(email_title);// Add the title to the group
 
 let phone_title = document.createElement("p");// Title for Group 
-  phone_title.setAttribute("class", "phone_title");
+  phone_title.setAttribute("class", "cont_title");
   phone_title.setAttribute("id", "contactPhone_title");
   phone_title.innerHTML = "Phone:";
   contactUi.appendChild(phone_title);// Add the title to the group
