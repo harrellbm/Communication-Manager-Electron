@@ -187,7 +187,7 @@ textarea{
       }
     
     /* Div to hold buttons */
-    .btnArray{
+    .aveBtnArray{
       grid-column-start: 1;
       grid-column-end: 2;
       grid-row-start: 3;
@@ -325,11 +325,36 @@ textarea{
     background-color: rgb(139, 203, 224);
   }
   
-  /* input for title */
+  /* Wrapper div for initative description and name */
   #initHeader{
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    grid-template-rows: 1.5rem 1.5rem 1fr;
     margin-left: 0.5rem;
   }
-  
+
+  /* Input for Initiative's name */
+  #initName{
+    margin-left: 0.5rem;
+    grid-column-start: 2;
+    grid-column-end: 3;
+  }
+
+  /* Title for Initiative's description */
+  #initDescripTitle{
+    grid-column-start: 1;
+    grid-column-end: 3;
+    grid-row-start: 2;
+    grid-row-end: 3;
+  }
+
+  /* Textarea for Initiative's description */
+  #initDescription{
+    grid-column-start: 1;
+    grid-column-end: 3;
+    grid-row-start: 3;
+    grid-row-end: 4;
+  }
   /* wrapper for group ui objects */
   #groups{
     grid-row-start: 1;
@@ -340,8 +365,7 @@ textarea{
 
   /* Container for adding groups */
   #groupIn{
-    height:73%;
-    max-height: 13vh;
+    height:76%;
     vertical-align: top;
     overflow-y: scroll;
     background-color: rgb(255, 255, 255);
@@ -351,11 +375,12 @@ textarea{
     margin-left: 1vh;
     margin-right: 1vh;
   }
+
   /* Group rules */
   .group{
     display: grid;
-    grid-template-columns: 1fr 1.5fr 0.5fr 1.4rem;
-    grid-template-rows: 1.4rem 3.5rem;
+    grid-template-columns: 1fr 2fr 9.9rem 1.4rem;
+    grid-template-rows: 1.4rem 4.8rem;
     background-color: #999;
     border: rgb(169, 169, 169);
     border-width: 1px;
@@ -363,7 +388,7 @@ textarea{
     }
 
   /* Titles */
-  #name_title{
+  /*#name_title{
     padding: 0.1rem;
     grid-column-start: 2;
     grid-column-end: 3;
@@ -377,33 +402,43 @@ textarea{
     grid-column-end:4;
     grid-row-start: 1;
     grid-row-end: 2;
-    }
+    }*/
   
-  /* Button to add contacts */ 
-  .addContact{
-    grid-column-start: 3;
-    grid-column-end:4;
-    grid-row-start: 1;
-    grid-row-end: 2;
-  }
-
-  /* Textarea*/
+  /* Textarea for Group name*/
   .name{
     grid-column-start: 1;
     grid-column-end: 2;
     grid-row-start: 2;
     grid-row-end: 3;
-    }
+  }
   
-  /* Delete button */
+  /* Button to add contacts */ 
+  .grpBtnArray{
+    padding-left: 1px;
+    grid-column-start: 3;
+    grid-column-end:5;
+    grid-row-start: 1;
+    grid-row-end: 2;
+  }
+  
+  /* Buttons for group manipulation */
+  .addContact{
+    height: 1.4rem;
+  }
+
+  .copyEmails{
+    height: 1.4rem;
+  }
+
+  .copyPhones{
+    height: 1.4rem;
+  }
+
+  /* Delete button for group elements */
   .groupDelete{
     width: 1.4rem;
     height: 1.4rem;
-    grid-column-start: 4;
-    grid-column-end: 5;
-    grid-row-start: 1;
-    grid-row-end: 2;
-    }
+  }
 
   /* Container div for all contact elements */
   .contacts{
@@ -422,14 +457,18 @@ textarea{
     .contact{
       display: grid;
       grid-template-columns: 1fr 1fr 1fr 1.4rem;
-      grid-template-rows: 1.4rem 2rem;
+      grid-template-rows: 1.4rem 2.5rem;
       border-width: 1px;
       border-style: solid;
       border-color: rgb(169, 169, 169);
-      background-color: rgb(169, 169, 169);
+      background-color: rgb(170, 180, 190);
       }
 
-      /*  Delete button for contact */
+    /* Common class for contact textareas */
+    .contactIn{
+      white-space: nowrap;
+    }
+    /*  Delete button for contact */
     .contactDelete{
     width: 1.4rem;
     height: 1.4rem;
@@ -439,8 +478,11 @@ textarea{
     grid-row-end: 2;
     }
 
-  
+    .cont_title{
+      background-color: rgb(170, 180, 190);
+    }
 
+  /* Title to hold header and add button for goalIn */
   #goalHeader{
     grid-row-start: 2;
     grid-row-end: 3;

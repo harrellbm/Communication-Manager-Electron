@@ -405,7 +405,7 @@ class Group {
       let leng = new_contacts.length;
       if (new_contacts != []) {
          for (let i=0; i<leng; i++) {
-            this.add_contact(new_contacts[i][0], new_contacts[i][1], new_contacts[i][2]);
+            this.add_contact(new_contacts[i][0], new_contacts[i][1], new_contacts[i][2]); // Note: argument order: ( Name, Phone , Email )
          };
       };
    };

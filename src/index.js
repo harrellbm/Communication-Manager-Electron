@@ -111,13 +111,15 @@ function save () {
         let guiContact = document.getElementById(`contact${contId}`); // Contact object from the ui
         //console.log('gui', guiContact, 'object', initGroup.contacts);
         let name = guiContact.children[3].value;
-        let phone = guiContact.children[4].value;
-        let email = guiContact.children[5].value;
+        let email = guiContact.children[4].value;
+        let phone = guiContact.children[5].value;
+        
         initGroup.contacts.set(contId, [name, phone, email]);
         //console.log('after update', initGroup.contacts);
       };
     };
     console.log('updated group: ', currentInitiative.groups);
+
     // Sync ui and initiative goal objects before saving 
     let goalKeys = currentInitiative.goals.keys(); 
     for (id of goalKeys) {// Each iteration goes through one goal
@@ -264,8 +266,8 @@ function addMess (event='', messId='') {// If message id is passed in it will lo
   
   // Div to hold all buttons
   let btnArray = document.createElement("div");
-  btnArray.setAttribute("class", "btnArray");
-  btnArray.setAttribute("id", `btnArray${id}`);
+  btnArray.setAttribute("class", "aveBtnArray");
+  btnArray.setAttribute("id", `aveBtnArray${id}`);
 
     // Creates and adds dynamic event listener to edit button
     let editBtn = document.createElement("input");
@@ -740,16 +742,49 @@ function addGroup (event='', groupId='') {// If group id is passed in it will lo
   contacts_title.setAttribute("id", "groupContacts_title");
   contacts_title.innerHTML = "Contacts:";
   group.appendChild(contacts_title);// Add the title to the group
+  
+  // Div to hold all buttons
+  let btnArray = document.createElement("div");
+  btnArray.setAttribute("class", "grpBtnArray");
+  btnArray.setAttribute("id", `grpBtnArray${id}`);
 
   // Button to add a new contact 
-  let add_contact = document.createElement("input");// Title for Group 
+  let addContactBtn = document.createElement("input");
+  addContactBtn.setAttribute("class", "addContact");
+  addContactBtn.setAttribute("id", `addContact${id}`);
+  addContactBtn.setAttribute("type", "button");
+  addContactBtn.setAttribute("value", "Add");
+  addContactBtn.addEventListener("click", function () {addContact('Add', id)}) ;
+  btnArray.appendChild(addContactBtn);// Add the button to the array
+
+  // Button to copy all group emails 
+  let emailBtn = document.createElement("input");
+  emailBtn.setAttribute("class", "copyEmails");
+  emailBtn.setAttribute("id", `copyEmails${id}`);
+  emailBtn.setAttribute("type", "button");
+  emailBtn.setAttribute("value", "Emails");
+  emailBtn.addEventListener("click", function () {copyEmails('copy', id)}) ;
+  btnArray.appendChild(emailBtn);// Add the button to the array
   
-  add_contact.setAttribute("class", "addContact");
-  add_contact.setAttribute("id", `addContact${id}`);
-  add_contact.setAttribute("type", "button");
-  add_contact.setAttribute("value", "add");
-  add_contact.addEventListener("click", function () {addContact('add', id)}) ;
-  group.appendChild(add_contact);// Add the title to the group
+  // Button to copy all group phone numbers 
+  let phoneBtn = document.createElement("input");
+  phoneBtn.setAttribute("class", "copyPhones");
+  phoneBtn.setAttribute("id", `copyPhones${id}`);
+  phoneBtn.setAttribute("type", "button");
+  phoneBtn.setAttribute("value", "Phones");
+  phoneBtn.addEventListener("click", function () {copyPhones('copy', id)}) ;
+  btnArray.appendChild(phoneBtn);// Add the button to the array
+
+  // Creates and adds dynamic event listener to delete button
+  let deleteBtn = document.createElement("input");
+  deleteBtn.setAttribute("class", "groupDelete");
+  deleteBtn.setAttribute("id", `groupDelete${id}`);
+  deleteBtn.setAttribute("type", "button");
+  deleteBtn.setAttribute("value", "x");
+  deleteBtn.addEventListener("click", function () {deleteGroup(group)});
+  btnArray.appendChild(deleteBtn); // Add the button to the array
+
+  group.appendChild(btnArray) // Append all buttons to the group
 
   // Textarea for name  
   let name = document.createElement("textarea");
@@ -769,20 +804,70 @@ function addGroup (event='', groupId='') {// If group id is passed in it will lo
     }
   group.appendChild(contacts);
 
-  // Creates and adds dynamic event listener to delete button
-  let deleteBtn = document.createElement("input");
-  deleteBtn.setAttribute("class", "groupDelete");
-  deleteBtn.setAttribute("id", `groupDelete${id}`);
-  deleteBtn.setAttribute("type", "button");
-  deleteBtn.setAttribute("value", "x");
-  deleteBtn.addEventListener("click", function () {deleteGroup(group)});
-
-  group.appendChild(deleteBtn);
+  
 
   // Get the main div that holds all the groups and append the new one
   //console.log("group", group, "initative", currentInitiative);
   document.getElementById("groupIn").appendChild(group);
 };
+
+// Copy all emails from group to clipboard
+function copyEmails (event='', groupId='') {// Takes in a group id and adds contact to ui and group object 
+  let emails = ''; // String to append emails to
+  // If no group id provided throw error and return from function  
+  if (groupId == '') { console.error('No group id provided'); return;}; 
+  // Update the current group object from ui before copying  
+  let initGroup = currentInitiative.groups.get(groupId); // Group object from the initiative object 
+  //console.log('init group', initGroup)
+  let contactsKeys = initGroup.contacts.keys(); // Get contact keys from group object 
+  //console.log('contact keys: ', contactsKeys)
+  for (contId of contactsKeys) {// Each iteration goes through one goal
+    let guiContact = document.getElementById(`contact${contId}`); // Contact object from the ui
+    //console.log('gui contact: ', guiContact, 'object', initGroup.contacts);
+    let name = guiContact.children[3].value;
+    let email = guiContact.children[4].value;
+    let phone = guiContact.children[5].value;
+    
+    initGroup.contacts.set(contId, [name, phone, email]);
+    if (email != '') { // If email field is not blank add to string
+      emails += '\n' + email.trim(); // remove any whitespace and then add back one new line
+      console.log('emails: ', emails);
+    };
+  };
+  
+  console.log('updated group: ', currentInitiative.groups);
+  clipboard.writeText(emails);
+};
+
+// Copy all emails from group to clipboard
+function copyPhones (event='', groupId='') {// Takes in a group id and adds contact to ui and group object 
+  let phones = ''; // String to append emails to
+  // If no group id provided throw error and return from function  
+  if (groupId == '') { console.error('No group id provided'); return;}; 
+  // Update the current group object from ui before copying  
+  let initGroup = currentInitiative.groups.get(groupId); // Group object from the initiative object 
+  //console.log('init group', initGroup)
+  let contactsKeys = initGroup.contacts.keys(); // Get contact keys from group object 
+  //console.log('contact keys: ', contactsKeys)
+  for (contId of contactsKeys) {// Each iteration goes through one goal
+    let guiContact = document.getElementById(`contact${contId}`); // Contact object from the ui
+    //console.log('gui contact: ', guiContact, 'object', initGroup.contacts);
+    let name = guiContact.children[3].value;
+    let email = guiContact.children[4].value;
+    let phone = guiContact.children[5].value;
+    
+    initGroup.contacts.set(contId, [name, phone, email]);
+    if (phone != '') { // If phone number field is not blank add to string
+      phones += '\n' + phone.trim(); // remove any whitespace and then add back one new line
+      console.log('phones: ', phones);
+    };
+  };
+  
+  console.log('updated group: ', currentInitiative.groups);
+  
+  clipboard.writeText(phones);
+};
+
 
 // Deletes a group from the DOM
 function deleteGroup (group) {
@@ -812,7 +897,7 @@ function deleteGroup (group) {
     });
 };
 
-function addContact (event='', groupId='', contactId='') {// Takes in a group idea and adds contact to ui and group object 
+function addContact (event='', groupId='', contactId='') {// Takes in a group id and adds contact to ui and group object 
   // If no group id provided throw error and return from function  
   if (groupId == '') { console.error('No group id provided'); return;}; 
   // Update the current initiative object if this is a new contact 
@@ -834,47 +919,48 @@ function addContact (event='', groupId='', contactId='') {// Takes in a group id
   
   // Creates title paragraphs  
   let name_title = document.createElement("p");// Title for Group 
-  name_title.setAttribute("class", "contName_title");
+  name_title.setAttribute("class", "cont_title");
   name_title.setAttribute("id", "contName_title");
   name_title.innerHTML = "Name:";
   contactUi.appendChild(name_title);// Add the title to the group
 
-  let phone_title = document.createElement("p");// Title for Group 
-  phone_title.setAttribute("class", "phone_title");
-  phone_title.setAttribute("id", "contactPhone_title");
-  phone_title.innerHTML = "Phone:";
-  contactUi.appendChild(phone_title);// Add the title to the group
-
   let email_title = document.createElement("p");// Title for Group 
-  email_title.setAttribute("class", "email_title");
+  email_title.setAttribute("class", "cont_title");
   email_title.setAttribute("id", "contactEmail_title");
   email_title.innerHTML = "Email:";
   contactUi.appendChild(email_title);// Add the title to the group
 
+let phone_title = document.createElement("p");// Title for Group 
+  phone_title.setAttribute("class", "cont_title");
+  phone_title.setAttribute("id", "contactPhone_title");
+  phone_title.innerHTML = "Phone:";
+  contactUi.appendChild(phone_title);// Add the title to the group
+
   // Textareas for name  
   let name = document.createElement("textarea");
-  name.setAttribute("class", "name");
+  name.setAttribute("class", "contactIn");
   name.setAttribute("id", `name${id}`);
   if(contactId != ''){// if creating a contact that is being pulled from a file set it's value 
   name.value = contact[0];
     }
   contactUi.appendChild(name);
 
-  let phone = document.createElement("textarea");
-  phone.setAttribute("class", "phone");
-  phone.setAttribute("id", `phone${id}`);
-  if(contactId != ''){// if creating a contact that is being pulled from a file set it's value 
-  phone.value = contact[1];
-    }
-  contactUi.appendChild(phone);
-
+  
   let email = document.createElement("textarea");
-  email.setAttribute("class", "email");
+  email.setAttribute("class", "contactIn");
   email.setAttribute("id", `email${id}`);
   if(contactId != ''){// if creating a contact that is being pulled from a file set it's value 
   email.value = contact[2];
   }
   contactUi.appendChild(email);
+
+  let phone = document.createElement("textarea");
+  phone.setAttribute("class", "contactIn");
+  phone.setAttribute("id", `phone${id}`);
+  if(contactId != ''){// if creating a contact that is being pulled from a file set it's value 
+  phone.value = contact[1];
+    }
+  contactUi.appendChild(phone);
 
   // Creates and adds dynamic event listener to delete button
   let deleteBtn = document.createElement("input");
