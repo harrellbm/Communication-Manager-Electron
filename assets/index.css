@@ -321,7 +321,7 @@ textarea{
 .initWrapper{
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
-    grid-template-rows: 18.8vh 4vh 16.7vh 4vh 44vh 4vh;
+    grid-template-rows: 18.9vh 4.3vh 16.7vh 4.3vh 43vh 4.3vh;
     background-color: rgb(139, 203, 224);
   }
   
@@ -386,23 +386,6 @@ textarea{
     border-width: 1px;
     border-style: solid;
     }
-
-  /* Titles */
-  /*#name_title{
-    padding: 0.1rem;
-    grid-column-start: 2;
-    grid-column-end: 3;
-    grid-row-start: 1;
-    grid-row-end: 2;
-    }
-
-  #contacts_title{
-    padding: 0.1rem;
-    grid-column-start: 3;
-    grid-column-end:4;
-    grid-row-start: 1;
-    grid-row-end: 2;
-    }*/
   
   /* Textarea for Group name*/
   .name{
@@ -576,12 +559,52 @@ textarea{
       grid-row-start: 1;
       grid-row-end: 2;
       }
-
+  
+  /* Holds all Controls for Calendar */
   #initMid{
     grid-row-start: 4;
     grid-row-end: 5;
     grid-column-start: 1;
     grid-column-end: 4;
+    border-width: 1px;
+    border-style: solid;
+    border-color: rgb(169, 169, 169);
+    border-top: none;
+    border-bottom: none;
+    margin-left: 1vh;
+    margin-right: 1vh;
+    text-align: left;
+  }
+
+  /* Calendar control buttons */
+  .initMidBtn{
+    padding-top: 0.3rem;
+    padding-bottom: 0.3rem;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+    flex-grow: 0.1;
+    flex-shrink: 1;
+    vertical-align: top;
+  }
+
+  /* Displays current date range of Calendar */
+  .dateDisplay{
+    height: 100%;
+    background: none;
+    color: white;
+    font-size: 1.35rem;
+    text-align: center;
+    border-width: 1px;
+    border-style: solid;
+    border-color: rgb(169, 169, 169);
+  }
+
+  #year{
+    width: 4rem;
+  }
+
+  #month{
+    width: 8.5rem;
   }
 
   /* rules for calendar wrapper and container divs */

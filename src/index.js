@@ -1010,7 +1010,6 @@ const themeConfig = {
   };
 
 // Calendar object for initiative tab
-
 var calendar = new Calendar('#calendar', {
   defaultView: 'month',
   taskView: true,    // Can be also ['milestone', 'task']
@@ -1080,7 +1079,6 @@ var calendar = new Calendar('#calendar', {
   month: {
       daynames: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
       startDayOfWeek: 0,
-      visibleWeeksCount: 4,
       narrowWeekend: true
   },
   week: {
@@ -1090,7 +1088,12 @@ var calendar = new Calendar('#calendar', {
   }
 });
 
-console.log(calendar)
+// Display date range on top of calendar on first render
+calendar.on('afterRenderSchedule', function () {
+  document.getElementById('year').value = `${end.getFullYear()}`;
+  document.getElementById('month').value = `${start.getMonth() + 1}` + '.' + `${start.getDate()}` + ' - ' + `${end.getMonth() + 1}` + '.' + `${end.getDate()}`;
+});
+
 calendar.on('clickSchedule', function() {
   console.log('clickSchedule');
 })
@@ -1155,16 +1158,19 @@ document.getElementById('prev').addEventListener('click', function (event) {
   let start = calendar.getDateRangeStart();
   let end = calendar.getDateRangeEnd();
   console.log('prev', start, end);
-  
-  //calendar.render();
+  // Display date range on top of calendar 
+  document.getElementById('year').value = `${end.getFullYear()}`;
+  document.getElementById('month').value = `${start.getMonth() + 1}` + '.' + `${start.getDate()}` + ' - ' + `${end.getMonth() + 1}` + '.' + `${end.getDate()}`;
 });
 
 document.getElementById('today').addEventListener('click', function (event) {
   calendar.today();
   let start = calendar.getDateRangeStart();
   let end = calendar.getDateRangeEnd();
-  console.log('today', start, end);
-  //calendar.render();
+  console.log('today', start.getDate(), end);
+  // Display date range on top of calendar 
+  document.getElementById('year').value = `${end.getFullYear()}`;
+  document.getElementById('month').value = `${start.getMonth() + 1}` + '.' + `${start.getDate()}` + ' - ' + `${end.getMonth() + 1}` + '.' + `${end.getDate()}`;
 });
 
 document.getElementById('next').addEventListener('click', function (event) {
@@ -1172,5 +1178,7 @@ document.getElementById('next').addEventListener('click', function (event) {
   let start = calendar.getDateRangeStart();
   let end = calendar.getDateRangeEnd();
   console.log('next', start, end);
-  //calendar.render();
+  // Display date range on top of calendar 
+  document.getElementById('year').value = `${end.getFullYear()}`;
+  document.getElementById('month').value = `${start.getMonth() + 1}` + '.' + `${start.getDate()}` + ' - ' + `${end.getMonth() + 1}` + '.' + `${end.getDate()}`;
 });
