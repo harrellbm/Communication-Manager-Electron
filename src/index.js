@@ -924,13 +924,167 @@ const themeConfig = {
   };
 
 // Calendar object for initiative tab
+
 var calendar = new Calendar('#calendar', {
-  theme: themeConfig,
   defaultView: 'month',
+  taskView: true,    // Can be also ['milestone', 'task']
+  scheduleView: true,  // Can be also ['allday', 'time']
   useCreationPopup: true,
   useDetailPopup: true,
+  template: {
+    popupIsAllDay: function() {
+      return 'All Day';
+    },
+    popupStateBusy: function() {
+      return 'Crazy';
+    },
+    popupStateFree: function() {
+      return 'Free';
+    },
+    titlePlaceholder: function() {
+      return 'Subject';
+    },
+    locationPlaceholder: function() {
+      return 'Location';
+    },
+    startDatePlaceholder: function() {
+      return 'Start date';
+    },
+    endDatePlaceholder: function() {
+      return 'End date';
+    },
+    popupSave: function() {
+      return 'Save';
+    },
+    popupUpdate: function() {
+      return 'Update';
+    },
+    popupDetailDate: function(isAllDay, start, end) {
+      var isSameDate = moment(start).isSame(end);
+      var endFormat = (isSameDate ? '' : 'YYYY.MM.DD ') + 'hh:mm a';
   
+      if (isAllDay) {
+        return moment(start).format('YYYY.MM.DD') + (isSameDate ? '' : ' - ' + moment(end).format('YYYY.MM.DD'));
+      }
+  
+      return (moment(start).format('YYYY.MM.DD hh:mm a') + ' - ' + moment(end).format(endFormat));
+    },
+    popupDetailLocation: function(schedule) {
+      return 'Location : ' + schedule.location;
+    },
+    popupDetailUser: function(schedule) {
+      return 'User : ' + (schedule.attendees || []).join(', ');
+    },
+    popupDetailState: function(schedule) {
+      return 'State : ' + schedule.state || 'Busy';
+    },
+    popupDetailRepeat: function(schedule) {
+      return 'Repeat : ' + schedule.recurrenceRule;
+    },
+    popupDetailBody: function(schedule) {
+      return 'Body : ' + schedule.body;
+    },
+    popupEdit: function() {
+      return 'Edit';
+    },
+    popupDelete: function() {
+      return 'Delete';
+    }
+  },
   month: {
-    visibleWeeksCount: 4
+      daynames: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+      startDayOfWeek: 0,
+      visibleWeeksCount: 4,
+      narrowWeekend: true
+  },
+  week: {
+      daynames: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+      startDayOfWeek: 0,
+      narrowWeekend: true
   }
+});
+
+console.log(calendar)
+calendar.on('clickSchedule', function() {
+  console.log('clickSchedule');
+})
+
+calendar.on('clickMore', function() {
+  console.log('clickMore');
+})
+
+calendar.on('clickDayname', function() {
+  console.log('clickDayname');
+})
+
+calendar.on('beforeUpdateSchedule', function() {
+  console.log('beforeUpdateSchedule');
+})
+
+
+//document.getElementsById('calendar > div > div.tui-full-calendar-floating-layer.tui-view-14 > div > div.tui-full-calendar-popup-container > div.tui-full-calendar-section-button-save > button').addEventListener("click", )
+calendar.on('beforeCreateSchedule', function(event) {
+  let startTime = event.start;
+  let endTime = event.end;
+  let iisAllDay = event.isAllDay;
+  let guide = event.guide;
+  let triggerEventName = event.triggerEventName;
+  let title = event.title;
+  let location = event.location;
+  let state = event.state;
+  let schedule = {
+    id: '1',
+      calendarId: '1',
+      title: title,
+      location: location,
+      category: 'time',
+      dueDateClass: '',
+      start: startTime,
+      end: endTime,
+  };
+  console.log('event: ', event, 'guide: ', event.guide)
+  /*if (triggerEventName === 'click') {
+      // open writing simple schedule popup
+      schedule = {
+        calendarId: '1',
+        id: '1',
+        title: title,
+        location: location,
+        start: startTime,
+        end: endTime,
+        isAllDay: isAllDay,
+        state: state
+      };
+  } /*else if (triggerEventName === 'dblclick') {
+      // open writing detail schedule popup
+      schedule = {...};
+  }*/
+  console.log('schedule', schedule);
+  calendar.createSchedules([schedule]);
+  calendar.render();
+});
+
+document.getElementById('prev').addEventListener('click', function (event) {
+  calendar.prev();
+  let start = calendar.getDateRangeStart();
+  let end = calendar.getDateRangeEnd();
+  console.log('prev', start, end);
+  
+  //calendar.render();
+});
+
+document.getElementById('today').addEventListener('click', function (event) {
+  calendar.today();
+  let start = calendar.getDateRangeStart();
+  let end = calendar.getDateRangeEnd();
+  console.log('today', start, end);
+  //calendar.render();
+});
+
+document.getElementById('next').addEventListener('click', function (event) {
+  calendar.next();
+  let start = calendar.getDateRangeStart();
+  let end = calendar.getDateRangeEnd();
+  console.log('next', start, end);
+  //calendar.render();
 });
