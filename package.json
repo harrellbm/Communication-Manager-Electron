@@ -20,6 +20,7 @@
     "test-editor": "mocha test/test_message_editor.js",
     "write-test": "mocha --watch ./test",
     "debug-test-objects": "mocha --inspect-brk test/test_object_templates.js",
+    "debug-test-index": "mocha --inspect-brk test/test_index.js",
     "debug-test-messEditor": "mocha --inspect-brk test/test_message_manager.js",
     "package": "electron-forge package",
     "make": "electron-forge make"
