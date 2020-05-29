@@ -621,6 +621,11 @@ textarea{
     height: 800px
   }
 
+  /* Default popups from tui calendar */
+  .tui-full-calendar-popup{
+    color:black;
+  }
+
   /* container on the bottom */
   #initBottom{
     grid-column-start: 1;
