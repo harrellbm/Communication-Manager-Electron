@@ -7,7 +7,6 @@ const swal = require('sweetalert'); // For styled alert/confirm boxes
 const clipboard = require('electron').clipboard; // For accessing the clipboard
 const QuillDeltaToHtmlConverter = require('quill-delta-to-html').QuillDeltaToHtmlConverter; // Handle custom convertion of deltas to html
 const Calendar = require('tui-calendar');// used for calendar on initiaive tab
-const TZDate = require('tui-calendar').TZDate;// Get native date constructor used by tui calendar
 
 
 var currentInitiative;
