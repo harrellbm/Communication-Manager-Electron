@@ -7,6 +7,8 @@ const swal = require('sweetalert'); // For styled alert/confirm boxes
 const clipboard = require('electron').clipboard; // For accessing the clipboard
 const QuillDeltaToHtmlConverter = require('quill-delta-to-html').QuillDeltaToHtmlConverter; // Handle custom convertion of deltas to html
 const Calendar = require('tui-calendar');// used for calendar on initiaive tab
+const TZDate = require('tui-calendar').TZDate;// Get native date constructor used by tui calendar
+
 
 var currentInitiative;
 var currentInitiativeId;
@@ -16,12 +18,11 @@ ipc.on('load', function (event, ipcPack) {
   currentInitiative = new templates.Initiative;
   currentInitiative.unpack_from_ipc(ipcPack.initObj);
   console.log('initiative and id on index load: ', currentInitiativeId, currentInitiative);
-
   // Load Initiative tab
     document.getElementById('initName').value = currentInitiative.name; // Update title from ui
     document.getElementById('initDescription').value = currentInitiative.description; // Update title from ui
     // Load Groups
-    let groupKeys = currentInitiative.groups.keys();
+      let groupKeys = currentInitiative.groups.keys();
       for ( grpId of groupKeys ){
         addGroup( 'load', grpId ); // Note: Event is not used programatically but helps with debugging input to addGroup
         // Iterate through group's contacts and add to ui 
@@ -32,19 +33,49 @@ ipc.on('load', function (event, ipcPack) {
         };
       };
     // Load Goals
-    let goalKeys = currentInitiative.goals.keys();
+      let goalKeys = currentInitiative.goals.keys();
       for ( id of goalKeys ){
         addGoal('load', id ); // Note: Event is not used programatically but helps with debugging input to addMess
       };
+    // Load Calendar 
+    // Load avenues into Calendar on creation
+      let aveKeys = currentInitiative.avenues.keys();
+        for( id of aveKeys ){
+          console.log('ave id for calender load', id);
+          let ave = currentInitiative.avenues.get(id);
+          console.log('avenue to load in calendar', ave);
+          // Convert saved date into moment object for easier formatting 
+          let momDate = moment(ave.date, 'ddd MMM DD YYYY HH:mm:ss'); // Adjust to current timezone from saved timezone
+          console.log('moment date object', momDate)
+          // Schedule object to display in calendar 
+          let schedule = {
+            id: id,
+            calendarId: '1',
+            title: ave.description,
+            location: '',
+            category: 'time',
+            start: momDate.format('ddd MMM DD YYYY HH:mm:ss'), // Format for display in calendar 
+            end: momDate.format('ddd MMM DD YYYY HH:mm:ss'),
+          };
+          calendar.createSchedules([schedule]);
+          calendar.render();
+        };
+    // Display date range on top of calendar on first render
+      let start = calendar.getDateRangeStart();
+      let end = calendar.getDateRangeEnd();
+      document.getElementById('year').value = `${end.getFullYear()}`;
+      document.getElementById('month').value = `${start.getMonth() + 1}` + '.' + `${start.getDate()}` + ' - ' + `${end.getMonth() + 1}` + '.' + `${end.getDate()}`;
+
   // Load Message manager tab
     // Send initiative messages and avenues to ui
     let messKeys = currentInitiative.messages.keys();
     for ( id of messKeys ){
      addMess('load', id ); // Note: Event is not used programatically but helps with debugging input to addMess
     };
-  
-    let aveKeys = currentInitiative.avenues.keys();
+
+    aveKeys = currentInitiative.avenues.keys();
     for ( id of aveKeys ){
+      console.log('ave id for mess tab load', id);
       // Check to see if avenue is linked to a message
       let aveObj = currentInitiative.avenues.get(id);
       let messId = aveObj.message_id
@@ -868,7 +899,6 @@ function copyPhones (event='', groupId='') {// Takes in a group id and adds cont
   clipboard.writeText(phones);
 };
 
-
 // Deletes a group from the DOM
 function deleteGroup (group) {
   // Confirm that user wants to delete message if not return
@@ -1017,7 +1047,7 @@ var calendar = new Calendar('#calendar', {
   useCreationPopup: true,
   useDetailPopup: true,
   template: {
-    popupIsAllDay: function() {
+    /*popupIsAllDay: function() {
       return 'All Day';
     },
     popupStateBusy: function() {
@@ -1074,26 +1104,21 @@ var calendar = new Calendar('#calendar', {
     },
     popupDelete: function() {
       return 'Delete';
-    }
+    }*/
   },
   month: {
-      daynames: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
-      startDayOfWeek: 0,
-      narrowWeekend: true
+    daynames: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+    startDayOfWeek: 0,
+    narrowWeekend: true
   },
   week: {
-      daynames: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
-      startDayOfWeek: 0,
-      narrowWeekend: true
+    daynames: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+    startDayOfWeek: 0,
+    narrowWeekend: true
   }
 });
-
-// Display date range on top of calendar on first render
-calendar.on('afterRenderSchedule', function () {
-  document.getElementById('year').value = `${end.getFullYear()}`;
-  document.getElementById('month').value = `${start.getMonth() + 1}` + '.' + `${start.getDate()}` + ' - ' + `${end.getMonth() + 1}` + '.' + `${end.getDate()}`;
-});
-
+  
+// Events from calendar object 
 calendar.on('clickSchedule', function() {
   console.log('clickSchedule');
 })
@@ -1106,23 +1131,19 @@ calendar.on('clickDayname', function() {
   console.log('clickDayname');
 })
 
-calendar.on('beforeUpdateSchedule', function() {
-  console.log('beforeUpdateSchedule');
-})
-
-
-//document.getElementsById('calendar > div > div.tui-full-calendar-floating-layer.tui-view-14 > div > div.tui-full-calendar-popup-container > div.tui-full-calendar-section-button-save > button').addEventListener("click", )
-calendar.on('beforeCreateSchedule', function(event) {
-  let startTime = event.start;
-  let endTime = event.end;
-  let iisAllDay = event.isAllDay;
-  let guide = event.guide;
-  let triggerEventName = event.triggerEventName;
-  let title = event.title;
-  let location = event.location;
-  let state = event.state;
-  let schedule = {
-    id: '1',
+calendar.on({
+  // Create schedule from popup
+  'beforeCreateSchedule': function(event) {
+    let startTime = event.start;
+    let endTime = event.end;
+    let iisAllDay = event.isAllDay;
+    let guide = event.guide;
+    let triggerEventName = event.triggerEventName;
+    let title = event.title;
+    let location = event.location;
+    let state = event.state;
+    let schedule = {
+      id: '1',
       calendarId: '1',
       title: title,
       location: location,
@@ -1130,9 +1151,9 @@ calendar.on('beforeCreateSchedule', function(event) {
       dueDateClass: '',
       start: startTime,
       end: endTime,
-  };
-  console.log('event: ', event, 'guide: ', event.guide)
-  /*if (triggerEventName === 'click') {
+    };
+    console.log('event: ', event, 'guide: ', event.guide)
+    /*if (triggerEventName === 'click') {
       // open writing simple schedule popup
       schedule = {
         calendarId: '1',
@@ -1144,15 +1165,30 @@ calendar.on('beforeCreateSchedule', function(event) {
         isAllDay: isAllDay,
         state: state
       };
-  } /*else if (triggerEventName === 'dblclick') {
+    } /*else if (triggerEventName === 'dblclick') {
       // open writing detail schedule popup
       schedule = {...};
-  }*/
-  console.log('schedule', schedule);
-  calendar.createSchedules([schedule]);
-  calendar.render();
+    }*/
+    console.log('schedule', schedule);
+    calendar.createSchedules([schedule]);
+    calendar.render();
+  },
+  // Update schedule on drag
+  'beforeUpdateSchedule': function(event) {
+    let schedule = event.schedule;
+    let changes = event.changes;
+    console.log('schedule', schedule, 'changes', changes)
+    calendar.updateSchedule(schedule.id, schedule.calendarId, changes);
+  },
+  // Delete schedule from popup 
+  'beforeDeleteSchedule': function(e) {
+    console.log('beforeDeleteSchedule', e);
+    calendar.deleteSchedule(e.schedule.id, e.schedule.calendarId);
+  }
 });
 
+// Navigate Calendar 
+// Go back a month
 document.getElementById('prev').addEventListener('click', function (event) {
   calendar.prev();
   let start = calendar.getDateRangeStart();
@@ -1163,6 +1199,7 @@ document.getElementById('prev').addEventListener('click', function (event) {
   document.getElementById('month').value = `${start.getMonth() + 1}` + '.' + `${start.getDate()}` + ' - ' + `${end.getMonth() + 1}` + '.' + `${end.getDate()}`;
 });
 
+// Go to today
 document.getElementById('today').addEventListener('click', function (event) {
   calendar.today();
   let start = calendar.getDateRangeStart();
@@ -1173,6 +1210,7 @@ document.getElementById('today').addEventListener('click', function (event) {
   document.getElementById('month').value = `${start.getMonth() + 1}` + '.' + `${start.getDate()}` + ' - ' + `${end.getMonth() + 1}` + '.' + `${end.getDate()}`;
 });
 
+// Go to next month
 document.getElementById('next').addEventListener('click', function (event) {
   calendar.next();
   let start = calendar.getDateRangeStart();
