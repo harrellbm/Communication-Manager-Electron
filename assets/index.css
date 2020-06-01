@@ -660,8 +660,34 @@ textarea{
   padding: 15px;
   border: 1px solid #888;
   width: 80%; /* Could be more or less, depending on screen size */
+  border-radius: 5px; /* Round corners */
 }
 
+/* elements with rounded corners within main box */
+#modalPersTitle{
+  border-radius: 0px 4px;
+}
+
+#modalTypeTitle{
+  border-radius: 4px 0px;
+}
+
+#aveDropModal{
+  border-radius: 0px 0px 0px 4px;
+}
+
+#avePersModal{
+  border-radius: 0px 0px 4px 0px;
+}
+
+/* Change datechooser boarder to match other inputs */
+#aveDateModal {
+  border-width: 1px;
+  border-style: solid;
+  border-color: rgb(169, 169, 169);
+}
+
+/* Save button for Modal */
 #saveModal{
   grid-row-start: 3;
   grid-row-end: 4;

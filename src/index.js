@@ -434,14 +434,15 @@ ipc.on('update-mess', function (event, messageId, messageObj) {
 
 
 // Adds an Avenue to do the DOM
-document.getElementById('addAve').addEventListener("click", addAve);
-function addAve (event='', aveId='', location='avenueIn', modalAdd='') { // If avenue id is passed in it will load it from the initative object. Otherwise it is treated as a new avenue
+   // Note: Avenue added through the unified modal popup called modalAve or loaded from file
+function addAve (event='', aveId='', location='avenueIn', modalAddType='', modalAddDesc='', modalAddPers='', modalAddDate='') { // If avenue id is passed in it will load it from the initative object. Otherwise it is treated as a new avenue
   // Note: event is not used programatically but helps with debugging input form different sources
   // Update current initiative object if this is a new avenue 
   var id; 
   var aveLoad = '';
-  if ( aveId == '') {// If message is being added for the first time 
-    id = currentInitiative.add_avenue(modalAdd.type, modalAdd.description, modalAdd.person, modalAdd.date);
+  if ( aveId == '') {// If message is being added for the first time from the modal popup
+    id = currentInitiative.add_avenue(modalAddType, modalAddDesc, modalAddPers, false, '', modalAddDate);
+    aveLoad = currentInitiative.avenues.get(id); // get newly created avenue to display in ui
     } else { // Else load existing message from initiative object
       id = aveId
       aveLoad = currentInitiative.avenues.get(id);
@@ -467,7 +468,7 @@ function addAve (event='', aveId='', location='avenueIn', modalAdd='') { // If a
     opElem.innerHTML = `${opText}`;
     dropdown.appendChild(opElem);
     }
-  if(aveLoad != ''){// if creating an avenue that is being pulled from a file set it's value 
+  if(aveLoad != ''){// if creating an avenue that is being pulled from a file or was added by modal set it's value 
     dropdown.value = aveLoad.avenue_type;
     }
   ave.appendChild(dropdown); //add the dropdown menu to the avenue
@@ -500,7 +501,7 @@ function addAve (event='', aveId='', location='avenueIn', modalAdd='') { // If a
   sent_checkbox.setAttribute("class", "aveSent_checkbox");
   sent_checkbox.setAttribute("id", `aveSent_checkbox${id}`);
   sent_checkbox.setAttribute("type", "checkbox");
-  if(aveLoad != ''){// if creating an avenue that is being pulled from a file set it's value
+  if(aveLoad != ''){// if creating an avenue that is being pulled from a file or was added by modal set it's value
     sent_checkbox.checked = aveLoad.sent;
     }
   sent_box.appendChild(sent_checkbox);//add check box to the smaller area
@@ -518,7 +519,7 @@ function addAve (event='', aveId='', location='avenueIn', modalAdd='') { // If a
   let description = document.createElement("textarea");
   description.setAttribute("class", "aveDescription");
   description.setAttribute("id", `aveDescription${id}`);
-  if(aveLoad != '') {// if creating an avenue that is being pulled from a file set it's value 
+  if(aveLoad != '') {// if creating an avenue that is being pulled from a file or was added by modal set it's value 
     description.value = aveLoad.description;
     }
   ave.appendChild(description);
@@ -526,7 +527,7 @@ function addAve (event='', aveId='', location='avenueIn', modalAdd='') { // If a
   let persons = document.createElement("textarea");
   persons.setAttribute("class", "avePersons");
   persons.setAttribute("id", `avePersons${id}`);
-  if(aveLoad != ''){// if creating an avenue that is being pulled from a file set it's value 
+  if(aveLoad != ''){// if creating an avenue that is being pulled from a file or was added by modal set it's value 
     persons.value = aveLoad.person;
     }
   ave.appendChild(persons);
@@ -536,7 +537,7 @@ function addAve (event='', aveId='', location='avenueIn', modalAdd='') { // If a
   date.setAttribute("class", "aveDate");
   date.setAttribute("id", `aveDate${id}`);
   date.setAttribute("type", "date");
-  if(aveLoad != ''){// if creating an avenue that is being pulled from a file set it's value 
+  if(aveLoad != ''){// if creating an avenue that is being pulled from a file or was added by modal set it's value 
     let momDate = moment(aveLoad.date, 'ddd MMM DD YYYY HH:mm:ss'); // Adjust to current timezone from saved timezone
     date.value = momDate.format('YYYY-MM-DD'); // Format for display in date chooser 
     }
@@ -1225,35 +1226,91 @@ document.getElementById('next').addEventListener('click', function (event) {
 // Get the modal
 var modal = document.getElementById("aveModal");
 
-// Get the button that opens the modal
-var btn = document.getElementById("addAve");
-
-// Get the <span> element that closes the modal
-var span = document.getElementsByClassName("close")[0];
+// Get the button that opens the modal on the message manager tab 
+document.getElementById("addAve").addEventListener("click", modalLaunch);
 
 // When the user clicks on the button, open the modal
-btn.onclick = function() {
-   // Set dropdown options from list held in the initiative object 
-   let dropdown = document.getElementById('aveDropModal')
-   let options = currentInitiative.avenue_types;
-   for (i in options){
-     let opElem = document.createElement("option");
-     let opText = currentInitiative.avenue_types[i]
-     opElem.setAttribute("value", `${opText}`);
-     opElem.innerHTML = `${opText}`;
-     dropdown.appendChild(opElem);
-     }
-  modal.style.display = "block";
+function modalLaunch() {
+  // Set dropdown options from list held in the initiative object 
+  let dropdown = document.getElementById('aveDropModal')
+  let options = currentInitiative.avenue_types;
+  for (i in options){
+    let opElem = document.createElement("option");
+    let opText = currentInitiative.avenue_types[i]
+    opElem.setAttribute("value", `${opText}`);
+    opElem.innerHTML = `${opText}`;
+    dropdown.appendChild(opElem);
+    }
+  // Display modal 
+ modal.style.display = "block";
 }
 
-// When the user clicks on <span> (x), close the modal
-span.onclick = function() {
+// Get the save button from modal 
+document.getElementById('saveModal').addEventListener("click", aveModalSave );
+
+function aveModalSave (){
+  let type = document.getElementById('aveDropModal');
+  let date = document.getElementById('aveDateModal');
+  let description = document.getElementById('aveDescModal');
+  let person = document.getElementById('avePersModal');
+  console.log('type', type.value, '\ndate', date.value, '\ndescription', description.value, '\nperson', person.value);
+  // Make sure date and description are filled out 
+  if (date.value != '' && description.value != ''){
+    console.log('adding avenue')
+    // Add avenue to initative and message manager ui
+    addAve('modalAdd', '', 'avenueIn', type.value, description.value, person.value, date.value);
+    // Close modal
+    modal.style.display = "none";
+    // Reset modal
+    type.value = 'Email'
+    date.value = ''; 
+    description.value = '';
+    person.value = '';
+    // Reset backgroup of date and description incase they had been changed on unfilled attempt to save
+    date.style.backgroundColor = 'white';
+    description.style.backgroundColor = 'white';
+  } else { // Change backgroup of date or description if not filled out 
+      if (date.value == ''){
+        date.style.backgroundColor = 'rgb(225, 160, 140)';
+      };
+      if (description.value == ''){
+        description.style.backgroundColor = 'rgb(225, 160, 140)';
+      };
+    };
+};
+
+// Get the <span> element that closes the modal and attach listener
+document.getElementsByClassName("close")[0].addEventListener("click", function() {
   modal.style.display = "none";
-}
+  // Reset modal
+  let type = document.getElementById('aveDropModal');
+  let date = document.getElementById('aveDateModal');
+  let description = document.getElementById('aveDescModal');
+  let person = document.getElementById('avePersModal');
+  type.value = 'Email'
+  date.value = ''; 
+  description.value = '';
+  person.value = '';
+  // Reset backgroup of date and description incase they had been changed on unfilled attempt to save
+  date.style.backgroundColor = 'white';
+  description.style.backgroundColor = 'white';
+});
 
 // When the user clicks anywhere outside of the modal, close it
 window.onclick = function(event) {
   if (event.target == modal) {
     modal.style.display = "none";
-  }
-}
+    // Reset modal
+    let type = document.getElementById('aveDropModal');
+    let date = document.getElementById('aveDateModal');
+    let description = document.getElementById('aveDescModal');
+    let person = document.getElementById('avePersModal');
+    type.value = 'Email'
+    date.value = ''; 
+    description.value = '';
+    person.value = '';
+    // Reset backgroup of date and description incase they had been changed on unfilled attempt to save
+    date.style.backgroundColor = 'white';
+    description.style.backgroundColor = 'white';
+  };
+};
