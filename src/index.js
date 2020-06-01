@@ -114,7 +114,14 @@ function openPage(pageName, elmnt) { // linked to directly from html
   
     // Show the specific tab content
     document.getElementById(pageName).style.display = "block";
-  
+    
+    // Refresh calendar when switching to initiative tab
+    if (pageName == 'Initiative') {
+      if (calendar != undefined) {  
+        calendar.render();
+      };
+    };
+
     // Add the specific color to the button used to open the tab content
     elmnt.style.backgroundColor = 'rgb(139, 203, 224)';
     elmnt.style.borderBottomStyle = "none";
@@ -1260,7 +1267,6 @@ function aveModalSave (){
       //console.log('schedule', schedule);
       // Add to calendar and render 
       calendar.createSchedules([schedule]);
-      calendar.render();
     // Close modal
     modal.style.display = "none";
     // Reset modal
