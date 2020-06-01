@@ -654,11 +654,22 @@ textarea{
 .modal-content {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr 1fr 1.4rem;
+  grid-template-rows: 1fr 1fr 1fr;
   background-color: #fefefe;
   margin: 15% auto; /* 15% from the top and centered */
   padding: 15px;
   border: 1px solid #888;
   width: 80%; /* Could be more or less, depending on screen size */
+}
+
+#saveModal{
+  grid-row-start: 3;
+  grid-row-end: 4;
+  grid-column-start: 1;
+  grid-column-end: 5;
+  margin-right: 30%;
+  margin-left: 30%;
+  margin-top: auto;
 }
 
 /* The Close Button */

@@ -435,13 +435,13 @@ ipc.on('update-mess', function (event, messageId, messageObj) {
 
 // Adds an Avenue to do the DOM
 document.getElementById('addAve').addEventListener("click", addAve);
-function addAve (event='', aveId='', location='avenueIn') { // If avenue id is passed in it will load it from the initative object. Otherwise it is treated as a new avenue
+function addAve (event='', aveId='', location='avenueIn', modalAdd='') { // If avenue id is passed in it will load it from the initative object. Otherwise it is treated as a new avenue
   // Note: event is not used programatically but helps with debugging input form different sources
   // Update current initiative object if this is a new avenue 
   var id; 
   var aveLoad = '';
   if ( aveId == '') {// If message is being added for the first time 
-    id = currentInitiative.add_avenue();
+    id = currentInitiative.add_avenue(modalAdd.type, modalAdd.description, modalAdd.person, modalAdd.date);
     } else { // Else load existing message from initiative object
       id = aveId
       aveLoad = currentInitiative.avenues.get(id);
@@ -1223,7 +1223,7 @@ document.getElementById('next').addEventListener('click', function (event) {
 /* ---- Unified modal popup to add Avenues across tabs ---- */
 
 // Get the modal
-var modal = document.getElementById("myModal");
+var modal = document.getElementById("aveModal");
 
 // Get the button that opens the modal
 var btn = document.getElementById("addAve");
