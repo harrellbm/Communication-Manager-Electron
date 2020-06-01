@@ -8,6 +8,10 @@ const clipboard = require('electron').clipboard; // For accessing the clipboard
 const QuillDeltaToHtmlConverter = require('quill-delta-to-html').QuillDeltaToHtmlConverter; // Handle custom convertion of deltas to html
 const Calendar = require('tui-calendar');// used for calendar on initiaive tab
 
+//Note: there are three main date formats used between elements
+   // Moment's toString function generates date format 'ddd MMM DD YYYY HH:mm:ss' which is used to save dates in initative object
+   // Tui calendar's toUTCString function generates date format 'ddd DD MMM YYYY HH:mm:ss' which is used to display and return dates from calendar
+   // the date picker displays and returns dates in format 'YYYY-MM-DD'
 
 var currentInitiative;
 var currentInitiativeId;
@@ -187,6 +191,7 @@ function save () {
       let rawDate = guiAve.children[7].value;  
       if (moment(rawDate).isValid()){ // Only load date into initiative object if it is a valid date
         let date = moment(rawDate, 'YYYY-MM-DD', true).toString(); // Moment adds time zone stamp
+
         initAve.change_date(date); // String
       } 
     }
@@ -445,6 +450,7 @@ function addAve (event='', aveId='', location='avenueIn', modalAddType='', modal
   if ( aveId == '') {// If message is being added for the first time from the modal popup
     id = currentInitiative.add_avenue(modalAddType, modalAddDesc, modalAddPers, false, '', modalAddDate);
     aveLoad = currentInitiative.avenues.get(id); // get newly created avenue to display in ui
+    console.log('new avenue added from modal', aveLoad)
     } else { // Else load existing message from initiative object
       id = aveId
       aveLoad = currentInitiative.avenues.get(id);
@@ -1209,7 +1215,7 @@ function modalLaunch(calEvent='') {
     dropdown.appendChild(opElem);
     }
   // If created from clicking on calendar set the date of day clicked 
-  if (calEvent != ''){
+  if (calEvent.triggerEventName == 'mouseup'){
     let calDate = calEvent.start;
     //console.log('calendar event', calDate.toUTCString());
     let momDate = moment(calDate.toUTCString(), 'ddd DD MMM YYYY HH:mm:ss'); // Turn date into moment object to format for date picker display
@@ -1231,12 +1237,14 @@ function aveModalSave (){
   console.log('type', type.value, '\ndate', date.value, '\ndescription', description.value, '\nperson', person.value);
   // Make sure date and description are filled out 
   if (date.value != '' && description.value != ''){
+    // Turn date into moment object to format for adding avenue to initiative object and ui
+    let momDate = moment(date.value, 'YYYY-MM-DD'); 
     // Add avenue to initative and message manager ui.  Also capture new avenue id 
-    let id = addAve('modalAdd', '', 'avenueIn', type.value, description.value, person.value, date.value);
+    let id = addAve('modalAdd', '', 'avenueIn', type.value, description.value, person.value, momDate.format('ddd MMM DD YYYY HH:mm:ss')); // use Moment date format
     // Add avenue to calendar 
     let ave = currentInitiative.avenues.get(id);
       // Turn date into moment object to format for calendar display
-      let momDate = moment(ave.date, 'YYYY-MM-DD'); // Turn date into moment object to format for date picker display
+      
       // Fill calendar schedule object with avenue info
       let schedule = {
         id: id,
@@ -1247,7 +1255,7 @@ function aveModalSave (){
         state: ave.type,
         category: 'time',
         start: momDate.format('ddd DD MMM YYYY HH:mm:ss'),
-        end:  momDate.format('ddd DD MMM YYYY HH:mm:ss'),
+        end:  momDate.format('ddd DD MMM YYYY HH:mm:ss')
       };
       //console.log('schedule', schedule);
       // Add to calendar and render 
