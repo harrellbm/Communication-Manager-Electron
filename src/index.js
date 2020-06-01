@@ -38,6 +38,7 @@ ipc.on('load', function (event, ipcPack) {
       };
     // Load Calendar 
     // Load avenues into Calendar on creation
+    calendar.render();
       let aveKeys = currentInitiative.avenues.keys();
         for( id of aveKeys ){
           console.log('ave id for calender load', id);
@@ -53,9 +54,10 @@ ipc.on('load', function (event, ipcPack) {
             title: ave.description,
             location: '',
             category: 'time',
-            start: momDate.format('ddd MMM DD YYYY HH:mm:ss'), // Format for display in calendar 
-            end: momDate.format('ddd MMM DD YYYY HH:mm:ss'),
+            start: momDate.format('ddd DD MMM YYYY HH:mm:ss'), // Format for display in calendar 
+            end: momDate.format('ddd DD MMM YYYY HH:mm:ss'),
           };
+          console.log('schedule to add to calendar', schedule)
           calendar.createSchedules([schedule]);
           calendar.render();
         };
@@ -556,6 +558,7 @@ function addAve (event='', aveId='', location='avenueIn', modalAddType='', modal
     // Note: default location is the avenueIn container
   //console.log("avenue", ave);
   document.getElementById(location).appendChild(ave);
+  return id; // return the avenue id
 };
 
 // Deletes an avenue from the DOM
@@ -1044,7 +1047,7 @@ var calendar = new Calendar('#calendar', {
   defaultView: 'month',
   taskView: true,    // Can be also ['milestone', 'task']
   scheduleView: true,  // Can be also ['allday', 'time']
-  useCreationPopup: true,
+  useCreationPopup: false,
   useDetailPopup: true,
   template: {
     /*popupIsAllDay: function() {
@@ -1132,46 +1135,10 @@ calendar.on('clickDayname', function() {
 })
 
 calendar.on({
-  // Create schedule from popup
+  // Create schedule from add avenue popup
   'beforeCreateSchedule': function(event) {
-    let startTime = event.start;
-    let endTime = event.end;
-    let iisAllDay = event.isAllDay;
-    let guide = event.guide;
-    let triggerEventName = event.triggerEventName;
-    let title = event.title;
-    let location = event.location;
-    let state = event.state;
-    let schedule = {
-      id: '1',
-      calendarId: '1',
-      title: title,
-      location: location,
-      category: 'time',
-      dueDateClass: '',
-      start: startTime,
-      end: endTime,
-    };
-    console.log('event: ', event, 'guide: ', event.guide)
-    /*if (triggerEventName === 'click') {
-      // open writing simple schedule popup
-      schedule = {
-        calendarId: '1',
-        id: '1',
-        title: title,
-        location: location,
-        start: startTime,
-        end: endTime,
-        isAllDay: isAllDay,
-        state: state
-      };
-    } /*else if (triggerEventName === 'dblclick') {
-      // open writing detail schedule popup
-      schedule = {...};
-    }*/
-    console.log('schedule', schedule);
-    calendar.createSchedules([schedule]);
-    calendar.render();
+    // Launch the popup
+    modalLaunch(event);
   },
   // Update schedule on drag
   'beforeUpdateSchedule': function(event) {
@@ -1230,7 +1197,7 @@ var modal = document.getElementById("aveModal");
 document.getElementById("addAve").addEventListener("click", modalLaunch);
 
 // When the user clicks on the button, open the modal
-function modalLaunch() {
+function modalLaunch(calEvent='') {
   // Set dropdown options from list held in the initiative object 
   let dropdown = document.getElementById('aveDropModal')
   let options = currentInitiative.avenue_types;
@@ -1241,8 +1208,16 @@ function modalLaunch() {
     opElem.innerHTML = `${opText}`;
     dropdown.appendChild(opElem);
     }
+  // If created from clicking on calendar set the date of day clicked 
+  if (calEvent != ''){
+    let calDate = calEvent.start;
+    //console.log('calendar event', calDate.toUTCString());
+    let momDate = moment(calDate.toUTCString(), 'ddd DD MMM YYYY HH:mm:ss'); // Turn date into moment object to format for date picker display
+    //console.log('moment date', momDate)
+    document.getElementById('aveDateModal').value = momDate.format('YYYY-MM-DD');
+  }
   // Display modal 
- modal.style.display = "block";
+  modal.style.display = "block";
 }
 
 // Get the save button from modal 
@@ -1256,9 +1231,28 @@ function aveModalSave (){
   console.log('type', type.value, '\ndate', date.value, '\ndescription', description.value, '\nperson', person.value);
   // Make sure date and description are filled out 
   if (date.value != '' && description.value != ''){
-    console.log('adding avenue')
-    // Add avenue to initative and message manager ui
-    addAve('modalAdd', '', 'avenueIn', type.value, description.value, person.value, date.value);
+    // Add avenue to initative and message manager ui.  Also capture new avenue id 
+    let id = addAve('modalAdd', '', 'avenueIn', type.value, description.value, person.value, date.value);
+    // Add avenue to calendar 
+    let ave = currentInitiative.avenues.get(id);
+      // Turn date into moment object to format for calendar display
+      let momDate = moment(ave.date, 'YYYY-MM-DD'); // Turn date into moment object to format for date picker display
+      // Fill calendar schedule object with avenue info
+      let schedule = {
+        id: id,
+        calendarId: '1',
+        title: ave.description,
+        location: location,
+        attendees: ave.person,
+        state: ave.type,
+        category: 'time',
+        start: momDate.format('ddd DD MMM YYYY HH:mm:ss'),
+        end:  momDate.format('ddd DD MMM YYYY HH:mm:ss'),
+      };
+      //console.log('schedule', schedule);
+      // Add to calendar and render 
+      calendar.createSchedules([schedule]);
+      calendar.render();
     // Close modal
     modal.style.display = "none";
     // Reset modal
@@ -1282,6 +1276,8 @@ function aveModalSave (){
 // Get the <span> element that closes the modal and attach listener
 document.getElementsByClassName("close")[0].addEventListener("click", function() {
   modal.style.display = "none";
+  // Refresh calendar 
+  calendar.render();
   // Reset modal
   let type = document.getElementById('aveDropModal');
   let date = document.getElementById('aveDateModal');
@@ -1300,6 +1296,8 @@ document.getElementsByClassName("close")[0].addEventListener("click", function()
 window.onclick = function(event) {
   if (event.target == modal) {
     modal.style.display = "none";
+    // Refresh calendar 
+    calendar.render();
     // Reset modal
     let type = document.getElementById('aveDropModal');
     let date = document.getElementById('aveDateModal');
