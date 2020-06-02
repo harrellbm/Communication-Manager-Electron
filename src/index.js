@@ -9,8 +9,7 @@ const QuillDeltaToHtmlConverter = require('quill-delta-to-html').QuillDeltaToHtm
 const Calendar = require('tui-calendar');// used for calendar on initiaive tab
 
 //Note: there are three main date formats used between elements
-   // Moment's toString function generates date format 'ddd MMM DD YYYY HH:mm:ss' which is used to save dates in initative object
-   // Tui calendar's toUTCString function generates date format 'ddd DD MMM YYYY HH:mm:ss' which is used to display and return dates from calendar
+   // Moment's toString and Tui's TZDate function toDate generates dates formated 'ddd MMM DD YYYY HH:mm:ss' which is used to save dates in initative object and display on calendar
    // the date picker displays and returns dates in format 'YYYY-MM-DD'
 
 var currentInitiative;
@@ -1061,7 +1060,7 @@ var calendar = new Calendar('#calendar', {
   taskView: true,    // Can be also ['milestone', 'task']
   scheduleView: true,  // Can be also ['allday', 'time']
   useCreationPopup: false,
-  useDetailPopup: true,
+  useDetailPopup: false,
   template: {
     /*popupIsAllDay: function() {
       return 'All Day';
@@ -1135,10 +1134,6 @@ var calendar = new Calendar('#calendar', {
 });
   
 // Events from calendar object 
-calendar.on('clickSchedule', function() {
-  console.log('clickSchedule');
-})
-
 calendar.on('clickMore', function() {
   console.log('clickMore');
 })
@@ -1150,8 +1145,41 @@ calendar.on('clickDayname', function() {
 calendar.on({
   // Create schedule from add avenue popup
   'beforeCreateSchedule': function(event) {
+    console.log('event on cal click',event)
     // Launch the popup
     modalLaunch(event);
+  },
+  // Open popup on schedule click
+  'clickSchedule': function(event) {
+    // Launch avenue popup with saved values 
+    // Set dropdown options from list held in the initiative object 
+    let dropdown = document.getElementById('aveDropModal')
+    let options = currentInitiative.avenue_types;
+    for (i in options){
+      let opElem = document.createElement("option");
+      let opText = currentInitiative.avenue_types[i]
+      opElem.setAttribute("value", `${opText}`);
+      opElem.innerHTML = `${opText}`;
+      dropdown.appendChild(opElem);
+    };
+    // Get stored avenue by shared schedule and Avenue id 
+    let ave = currentInitiative.avenues.get(`${event.schedule.id}`);
+    //console.log('avenue to send to ui', ave);
+    // Send Avenue Type to ui
+    document.getElementById('aveDropModal').value = ave.avenue_type;
+    // Send Sent to ui
+    document.getElementById('aveSentModal').checked = ave.sent;
+    // Send Description to ui 
+    document.getElementById('aveDescModal').value = ave.description;
+    // Send Person to ui 
+    document.getElementById('avePersModal').value = ave.person;
+    // Send date to ui 
+    let momDate = moment(ave.date, 'ddd MMM DD YYYY HH:mm:ss'); // Turn date into moment object to format for date picker display
+    //console.log('moment date', momDate)
+    document.getElementById('aveDateModal').value = momDate.format('YYYY-MM-DD');
+    
+    // Display modal 
+    modal.style.display = "block";
   },
   // Update schedule on drag
   'beforeUpdateSchedule': function(event) {
@@ -1224,8 +1252,8 @@ function modalLaunch(calEvent='') {
   // If created from clicking on calendar set the date of day clicked 
   if (calEvent.triggerEventName == 'mouseup'){
     let calDate = calEvent.start;
-    //console.log('calendar event', calDate.toUTCString());
-    let momDate = moment(calDate.toUTCString(), 'ddd DD MMM YYYY HH:mm:ss'); // Turn date into moment object to format for date picker display
+    //console.log('calendar event', calDate.toDate());
+    let momDate = moment(calDate.toDate(), 'ddd MMM DD YYYY HH:mm:ss'); // Turn date into moment object to format for date picker display
     //console.log('moment date', momDate)
     document.getElementById('aveDateModal').value = momDate.format('YYYY-MM-DD');
   }
@@ -1258,8 +1286,6 @@ function aveModalSave (){
         id: id,
         calendarId: '1',
         title: ave.description,
-        location: location,
-        attendees: ave.person,
         state: ave.type,
         category: 'time',
         start: momDate.format('ddd DD MMM YYYY HH:mm:ss'),
