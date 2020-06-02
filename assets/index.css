@@ -664,21 +664,27 @@ textarea{
 }
 
 /* elements with rounded corners within main box */
-#modalPersTitle{
-  border-radius: 0px 4px;
-}
-
-#modalTypeTitle{
-  border-radius: 4px 0px;
-}
-
 #aveDropModal{
-  border-radius: 0px 0px 0px 4px;
+  border-radius: 4px 0px 0px 0px;
+}
+
+#modalPersTitle{
+  border-radius: 0px 4px 0px 0px;
 }
 
 #avePersModal{
   border-radius: 0px 0px 4px 0px;
 }
+
+#modalSentBox{
+  border-radius: 0px 0px 0px 4px;
+  grid-column-start: 1;
+  grid-column-end: 2;
+  grid-row-start: 2;
+  grid-row-end: 3;
+  padding: 0.5rem;
+}
+
 
 /* Change datechooser boarder to match other inputs */
 #aveDateModal {

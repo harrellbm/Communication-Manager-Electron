@@ -449,13 +449,13 @@ ipc.on('update-mess', function (event, messageId, messageObj) {
 
 // Adds an Avenue to do the DOM
    // Note: Avenue added through the unified modal popup called modalAve or loaded from file
-function addAve (event='', aveId='', location='avenueIn', modalAddType='', modalAddDesc='', modalAddPers='', modalAddDate='') { // If avenue id is passed in it will load it from the initative object. Otherwise it is treated as a new avenue
+function addAve (event='', aveId='', location='avenueIn', modalAddSent=false, modalAddType='', modalAddDesc='', modalAddPers='', modalAddDate='') { // If avenue id is passed in it will load it from the initative object. Otherwise it is treated as a new avenue
   // Note: event is not used programatically but helps with debugging input form different sources
   // Update current initiative object if this is a new avenue 
   var id; 
   var aveLoad = '';
   if ( aveId == '') {// If message is being added for the first time from the modal popup
-    id = currentInitiative.add_avenue(modalAddType, modalAddDesc, modalAddPers, false, '', modalAddDate);
+    id = currentInitiative.add_avenue(modalAddType, modalAddDesc, modalAddPers, modalAddSent, '', modalAddDate);
     aveLoad = currentInitiative.avenues.get(id); // get newly created avenue to display in ui
     console.log('new avenue added from modal', aveLoad)
     } else { // Else load existing message from initiative object
@@ -1237,17 +1237,18 @@ function modalLaunch(calEvent='') {
 document.getElementById('saveModal').addEventListener("click", aveModalSave );
 
 function aveModalSave (){
+  let sent = document.getElementById('aveSentModal');
   let type = document.getElementById('aveDropModal');
   let date = document.getElementById('aveDateModal');
   let description = document.getElementById('aveDescModal');
   let person = document.getElementById('avePersModal');
-  console.log('type', type.value, '\ndate', date.value, '\ndescription', description.value, '\nperson', person.value);
+  console.log('sent', sent.checked, '\ntype', type.value, '\ndate', date.value, '\ndescription', description.value, '\nperson', person.value);
   // Make sure date and description are filled out 
   if (date.value != '' && description.value != ''){
     // Turn date into moment object to format for adding avenue to initiative object and ui
     let momDate = moment(date.value, 'YYYY-MM-DD'); 
     // Add avenue to initative and message manager ui.  Also capture new avenue id 
-    let id = addAve('modalAdd', '', 'avenueIn', type.value, description.value, person.value, momDate.format('ddd MMM DD YYYY HH:mm:ss')); // use Moment date format
+    let id = addAve('modalAdd', '', 'avenueIn', sent.checked, type.value, description.value, person.value, momDate.format('ddd MMM DD YYYY HH:mm:ss')); // use Moment date format
     // Add avenue to calendar 
     let ave = currentInitiative.avenues.get(id);
       // Turn date into moment object to format for calendar display
@@ -1270,6 +1271,7 @@ function aveModalSave (){
     // Close modal
     modal.style.display = "none";
     // Reset modal
+    sent.checked = false;
     type.value = 'Email'
     date.value = ''; 
     description.value = '';
@@ -1293,10 +1295,12 @@ document.getElementsByClassName("close")[0].addEventListener("click", function()
   // Refresh calendar 
   calendar.render();
   // Reset modal
+  let sent = document.getElementById('aveSentModal');
   let type = document.getElementById('aveDropModal');
   let date = document.getElementById('aveDateModal');
   let description = document.getElementById('aveDescModal');
   let person = document.getElementById('avePersModal');
+  sent.checked = false;
   type.value = 'Email'
   date.value = ''; 
   description.value = '';
@@ -1313,10 +1317,12 @@ window.onclick = function(event) {
     // Refresh calendar 
     calendar.render();
     // Reset modal
+    let sent = document.getElementById('aveSentModal');
     let type = document.getElementById('aveDropModal');
     let date = document.getElementById('aveDateModal');
     let description = document.getElementById('aveDescModal');
     let person = document.getElementById('avePersModal');
+    sent.checked = false;
     type.value = 'Email'
     date.value = ''; 
     description.value = '';
