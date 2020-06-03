@@ -12,6 +12,8 @@ const Calendar = require('tui-calendar');// used for calendar on initiaive tab
    // Moment's toString and Tui's TZDate function toDate generates dates formated 'ddd MMM DD YYYY HH:mm:ss' which is used to save dates in initative object and display on calendar
    // the date picker displays and returns dates in format 'YYYY-MM-DD'
 
+
+/* ---- Common index functions ---- */ 
 var currentInitiative;
 var currentInitiativeId;
 // Initialize initiative object to be used currently
@@ -39,31 +41,7 @@ ipc.on('load', function (event, ipcPack) {
       for ( id of goalKeys ){
         addGoal('load', id ); // Note: Event is not used programatically but helps with debugging input to addMess
       };
-    // Load Calendar 
-    // Load avenues into Calendar on creation
-    calendar.render();
-      let aveKeys = currentInitiative.avenues.keys();
-        for( id of aveKeys ){
-          console.log('ave id for calender load', id);
-          let ave = currentInitiative.avenues.get(id);
-          console.log('avenue to load in calendar', ave);
-          // Convert saved date into moment object for easier formatting 
-          let momDate = moment(ave.date, 'ddd MMM DD YYYY HH:mm:ss'); // Adjust to current timezone from saved timezone
-          console.log('moment date object', momDate)
-          // Schedule object to display in calendar 
-          let schedule = {
-            id: id,
-            calendarId: '1',
-            title: ave.description,
-            location: '',
-            category: 'time',
-            start: momDate.format('ddd DD MMM YYYY HH:mm:ss'), // Format for display in calendar 
-            end: momDate.format('ddd DD MMM YYYY HH:mm:ss'),
-          };
-          console.log('schedule to add to calendar', schedule)
-          calendar.createSchedules([schedule]);
-          calendar.render();
-        };
+
     // Display date range on top of calendar on first render
       let start = calendar.getDateRangeStart();
       let end = calendar.getDateRangeEnd();
@@ -76,61 +54,20 @@ ipc.on('load', function (event, ipcPack) {
     for ( id of messKeys ){
      addMess('load', id ); // Note: Event is not used programatically but helps with debugging input to addMess
     };
-
-    aveKeys = currentInitiative.avenues.keys();
-    for ( id of aveKeys ){
-      console.log('ave id for mess tab load', id);
-      // Check to see if avenue is linked to a message
-      let aveObj = currentInitiative.avenues.get(id);
-      let messId = aveObj.message_id
-      if (messId != '') { // If so send to respective message drop box
-        addAve('load', id, `aveDrop${messId}`) // Note: event is not used programatically but helps with debugging input to addAve
-      }
-      else { // Else just add it to the default container
-        addAve('load', id ); 
-      }
+  // Load avenues to both message manager and initiative tab
+  aveKeys = currentInitiative.avenues.keys();
+  for ( id of aveKeys ){
+    console.log('ave id for mess tab load', id);
+    // Check to see if avenue is linked to a message
+    let aveObj = currentInitiative.avenues.get(id);
+    let messId = aveObj.message_id;
+    if (messId != '') { // If so send to respective message drop box
+      addAve('load', id, `aveDrop${messId}`) ;// Note: event is not used programatically but helps with debugging input to addAve
+    } else { // Else just add it to the default container
+      addAve('load', id ); 
+    };
   };
 });
-
-
-/* ---- Implement tabs ---- */
-function openPage(pageName, elmnt) { // linked to directly from html
-    // Hide all elements with class="tabcontent" by default 
-    var i, tabcontent, tablinks;
-    tabcontent = document.getElementsByClassName("tabcontent");
-    for (i = 0; i < tabcontent.length; i++) {
-      tabcontent[i].style.display = "none";
-    }
-  
-    // Remove the background color of all tablinks/buttons and set bottom border
-    tablinks = document.getElementsByClassName("tablink");
-    for (i = 0; i < tablinks.length; i++) {
-      tablinks[i].style.backgroundColor = "";
-      tablinks[i].style.borderBottom = "groove";
-      tablinks[i].style.borderWidth = "0.2vh";
-      tablinks[i].style.borderColor = "ghostwhite";
-    }
-  
-    // Show the specific tab content
-    document.getElementById(pageName).style.display = "block";
-    
-    // Refresh calendar when switching to initiative tab
-    if (pageName == 'Initiative') {
-      if (calendar != undefined) {  
-        calendar.render();
-      };
-    };
-
-    // Add the specific color to the button used to open the tab content
-    elmnt.style.backgroundColor = 'rgb(139, 203, 224)';
-    elmnt.style.borderBottomStyle = "none";
-  }
-  
-// Get the element with id="defaultOpen" and click on it to initialize window
-document.getElementById("defaultOpen").click();
-
-
-/* ---- Common index functions ---- */
 
 // Function to save and pack current initative for ipc
 function save () {
@@ -259,9 +196,361 @@ function openFile () {
   };
 };
 
-/* ---- Message Manager related functions ---- */
 
-// Adds a message to do the DOM
+/* ---- Implement tabs for whole window ---- */
+function openPage(pageName, elmnt) { // linked to directly from html
+  // Hide all elements with class="tabcontent" by default 
+  var i, tabcontent, tablinks;
+  tabcontent = document.getElementsByClassName("tabcontent");
+  for (i = 0; i < tabcontent.length; i++) {
+    tabcontent[i].style.display = "none";
+  }
+
+  // Remove the background color of all tablinks/buttons and set bottom border
+  tablinks = document.getElementsByClassName("tablink");
+  for (i = 0; i < tablinks.length; i++) {
+    tablinks[i].style.backgroundColor = "";
+    tablinks[i].style.borderBottom = "groove";
+    tablinks[i].style.borderWidth = "0.2vh";
+    tablinks[i].style.borderColor = "ghostwhite";
+  }
+
+  // Show the specific tab content
+  document.getElementById(pageName).style.display = "block";
+  
+  // Refresh calendar when switching to initiative tab
+  if (pageName == 'Initiative') {
+    if (calendar != undefined) {  
+      calendar.render();
+    };
+  };
+
+  // Add the specific color to the button used to open the tab content
+  elmnt.style.backgroundColor = 'rgb(139, 203, 224)';
+  elmnt.style.borderBottomStyle = "none";
+}
+
+// Get the element with id="defaultOpen" and click on it to initialize window
+document.getElementById("defaultOpen").click();
+
+
+/* ---- Avenue related functions ---- */
+// Adds an Avenue to do the DOM of the Initiative and Message Manager tab 
+   // Note: Avenue are added through the unified modal popup called modalAve, or loaded from file on reopen
+function addAve (event='', aveId='', location='avenueIn', modalAddSent=false, modalAddType='', modalAddDesc='', modalAddPers='', modalAddDate='') { // If avenue id is passed in it will load it from the initative object. Otherwise it is treated as a new avenue
+    // Note: event is not used programatically but helps with debugging input form different sources
+    // Update current initiative object if this is a new avenue 
+    var id; 
+    var aveLoad = '';
+    var momDate = '';
+    if ( aveId == '') {// If message is being added for the first time from the modal popup
+      id = currentInitiative.add_avenue(modalAddType, modalAddDesc, modalAddPers, modalAddSent, '', modalAddDate);
+      aveLoad = currentInitiative.avenues.get(id); // get newly created avenue to display in ui
+      momDate = moment(aveLoad.date, 'ddd MMM DD YYYY HH:mm:ss'); // Adjust to current timezone from saved timezone
+      console.log('new avenue added from modal', aveLoad)
+      } else { // Else load existing message from initiative object
+        id = aveId
+        aveLoad = currentInitiative.avenues.get(id);
+        momDate = moment(aveLoad.date, 'ddd MMM DD YYYY HH:mm:ss'); // Adjust to current timezone from saved timezone
+        //console.log(aveLoad);
+        }
+      
+    //creates main div to hold an individual avenue
+    let ave = document.createElement("div");
+    ave.setAttribute("class", "avenue");
+    ave.setAttribute("id", `avenue${id}`);
+  
+    // Creates drop down list 
+    let dropdown = document.createElement("select");
+    dropdown.setAttribute("class", "aveDropdown");
+    dropdown.setAttribute("id", `avenue_type${id}`);
+    
+    // Set dropdown options from list held in the initiative object 
+    let options = currentInitiative.avenue_types;
+    for (i in options){
+      let opElem = document.createElement("option");
+      let opText = currentInitiative.avenue_types[i]
+      opElem.setAttribute("value", `${opText}`);
+      opElem.innerHTML = `${opText}`;
+      dropdown.appendChild(opElem);
+      }
+    if(aveLoad != ''){// if creating an avenue that is being pulled from a file or was added by modal set it's value 
+      dropdown.value = aveLoad.avenue_type;
+      }
+    ave.appendChild(dropdown); //add the dropdown menu to the avenue
+    
+    // Creates title paragraphs 
+    let description_title = document.createElement("p");// Title for Description 
+    description_title.setAttribute("class", "aveDescription_title");
+    description_title.setAttribute("id", "aveDescription_title");
+    description_title.innerHTML = "Description:";
+    ave.appendChild(description_title);//add the title to the avenue
+  
+    let person_title = document.createElement("p");// Title for Persons responsible 
+    person_title.setAttribute("class", "avePersons_title");
+    person_title.setAttribute("id", "avePersons_title");
+    person_title.innerHTML = "Person:";
+    ave.appendChild(person_title);//add the title to the avenue
+  
+    let date_title = document.createElement("p");// Title for Date 
+    date_title.setAttribute("class", "aveDate_title");
+    date_title.setAttribute("id", "aveDate_title");
+    date_title.innerHTML = "Date:";
+    ave.appendChild(date_title);//add the title to the avenue
+  
+    // Creates sent box
+    let sent_box = document.createElement("p");
+    sent_box.setAttribute("class", "aveSent_box");
+    sent_box.setAttribute("id", `aveSent_box${id}`);
+  
+    let sent_checkbox = document.createElement("input");
+    sent_checkbox.setAttribute("class", "aveSent_checkbox");
+    sent_checkbox.setAttribute("id", `aveSent_checkbox${id}`);
+    sent_checkbox.setAttribute("type", "checkbox");
+    if(aveLoad != ''){// if creating an avenue that is being pulled from a file or was added by modal set it's value
+      sent_checkbox.checked = aveLoad.sent;
+      }
+    sent_box.appendChild(sent_checkbox);//add check box to the smaller area
+  
+    let sent_label = document.createElement("label");
+    sent_label.setAttribute("class", "aveSent_label");
+    sent_label.setAttribute("id", "aveSent_label");
+    sent_label.setAttribute("for", "aveSent_checkbox");
+    sent_label.innerHTML = "Sent";
+    sent_box.appendChild(sent_label);//add label to the smaller area
+  
+    ave.appendChild(sent_box);//add smaller area to the avenue
+  
+    // Creates textareas 
+    let description = document.createElement("textarea");
+    description.setAttribute("class", "aveDescription");
+    description.setAttribute("id", `aveDescription${id}`);
+    if(aveLoad != '') {// if creating an avenue that is being pulled from a file or was added by modal set it's value 
+      description.value = aveLoad.description;
+      }
+    ave.appendChild(description);
+  
+    let persons = document.createElement("textarea");
+    persons.setAttribute("class", "avePersons");
+    persons.setAttribute("id", `avePersons${id}`);
+    if(aveLoad != ''){// if creating an avenue that is being pulled from a file or was added by modal set it's value 
+      persons.value = aveLoad.person;
+      }
+    ave.appendChild(persons);
+  
+    // For now use Date chooser for date. Cannot handle time yet 
+    let date = document.createElement("input"); 
+    date.setAttribute("class", "aveDate");
+    date.setAttribute("id", `aveDate${id}`);
+    date.setAttribute("type", "date");
+    if(aveLoad != ''){// if creating an avenue that is being pulled from a file or was added by modal set it's value 
+      date.value = momDate.format('YYYY-MM-DD'); // Format for display in date chooser 
+      }
+    ave.appendChild(date);
+  
+    // Creates and adds dynamic event listener to delete button
+    let deleteBtn = document.createElement("input");
+    deleteBtn.setAttribute("class", "aveDelete");
+    deleteBtn.setAttribute("id", `aveDelete${id}`);
+    deleteBtn.setAttribute("type", "button");
+    deleteBtn.setAttribute("value", "x");
+    deleteBtn.addEventListener("click", function () {deleteAve(ave)}); 
+    ave.appendChild(deleteBtn);
+  
+    // Get the container to hold the avenue and append it 
+      // Note: default location is the avenueIn container
+    //console.log("avenue", ave);
+    document.getElementById(location).appendChild(ave);
+
+    // Add avenue to calendar 
+    // Fill calendar schedule object with avenue info
+    let schedule = {
+      id: id,
+      calendarId: '1',
+      title: aveLoad.description,
+      state: aveLoad.avenue_type,
+      category: 'time',
+      start: momDate.format('ddd DD MMM YYYY HH:mm:ss'),
+      end:  momDate.format('ddd DD MMM YYYY HH:mm:ss')
+    };
+    //console.log('schedule', schedule);
+    // Add to calendar and render 
+    calendar.createSchedules([schedule]);
+};
+  
+// Deletes an avenue from the DOM
+function deleteAve (ave) {
+    // Confirm that user wants to delete message if not return
+    swal({
+      title: 'Deleting Avenue',
+      text: 'Are you sure you want to delete your Avenue?', 
+      icon: 'warning',
+      buttons: ['Cancel', 'Yes'],
+      dangerMode: true
+    })
+    .then(function (value) {
+      if (value == null) { // Escape deletion 
+        return
+      } else { // Proceed with deletion 
+          // Remove message from UI
+          ave.parentElement.removeChild(ave);
+          // Remove message from Initiative object 
+          let id = ave.id[6];
+          currentInitiative.avenues.delete(id); // Take only the number off of the end of the ui id 
+          // Send updates to main
+          let ipcInit = currentInitiative.pack_for_ipc();
+          ipc.send('save', currentInitiativeId, ipcInit);
+          return
+          }; 
+      });
+};
+
+  /* -- Unified modal popup to add Avenues across tabs -- */
+  // Get the modal and button that opens it from message manager tab
+      // Note: on the initaitive tab the modal is opened via the beforeCreateSchedule event
+  var modal = document.getElementById("aveModal");
+  document.getElementById("addAve").addEventListener("click", modalLaunch);
+  
+  // Launch the modal with basic settings. Can take in a date from calendar event to display on creation
+  function modalLaunch(calEvent='') {
+    // Set dropdown options from list held in the initiative object 
+    let dropdown = document.getElementById('aveDropModal')
+    let options = currentInitiative.avenue_types;
+    for (i in options){
+      let opElem = document.createElement("option");
+      let opText = currentInitiative.avenue_types[i]
+      opElem.setAttribute("value", `${opText}`);
+      opElem.innerHTML = `${opText}`;
+      dropdown.appendChild(opElem);
+      }
+    // If created from clicking on calendar set the date of day clicked 
+    if (calEvent.triggerEventName == 'mouseup'){
+      let calDate = calEvent.start;
+      //console.log('calendar event', calDate.toDate());
+      let momDate = moment(calDate.toDate(), 'ddd MMM DD YYYY HH:mm:ss'); // Turn date into moment object to format for date picker display
+      //console.log('moment date', momDate)
+      document.getElementById('aveDateModal').value = momDate.format('YYYY-MM-DD');
+    }
+    // Display modal 
+    modal.style.display = "block";
+  };
+  
+  // Get the save button from modal 
+  document.getElementById('saveModal').addEventListener("click", aveModalSave );
+  
+  // Save contents from the modal. Then update Initiative object, Message Manager tab and Initiative tab
+  function aveModalSave (){
+    let sent = document.getElementById('aveSentModal');
+    let type = document.getElementById('aveDropModal');
+    let date = document.getElementById('aveDateModal');
+    let description = document.getElementById('aveDescModal');
+    let person = document.getElementById('avePersModal');
+    let aveId = document.getElementById('aveIdModal');
+    console.log('sent', sent.checked, '\ntype', type.value, '\ndate', date.value, '\ndescription', description.value, '\nperson', person.value, '\naveId', aveId.value);
+    // Make sure date and description are filled out 
+    if (date.value != '' && description.value != ''){
+      // Turn date into moment object to format for adding or updating avenue in initiative object and ui
+      let momDate = moment(date.value, 'YYYY-MM-DD', true); 
+      // If no id provided assume this is a new avenue
+      if (aveId.value == '' || aveId.value == undefined ){
+        // Add avenue to initiative object, initative tab and message manager tab. 
+        addAve('modalAdd', '', 'avenueIn', sent.checked, type.value, description.value, person.value, momDate.format('ddd MMM DD YYYY HH:mm:ss')); // use Moment date format
+      } else if ( parseInt(aveId.value) >= 0 ) {
+        // Update Initiative object 
+        let initAve = currentInitiative.avenues.get(aveId.value); // Avenue object from the initiative object
+        initAve.avenue_type = type.value;
+        initAve.sent = sent.checked;
+        initAve.description = description.value;
+        initAve.person = person.value;
+        initAve.change_date(momDate.toString());
+        // Update Message manager tab
+        let guiAve = document.getElementById(`avenue${aveId.value}`); // Avenue object from the ui
+      
+        guiAve.children[0].value = type.value; // Type
+        guiAve.children[4].children[0].checked = sent.checked; // Sent
+        guiAve.children[5].value = description.value; // Description
+        guiAve.children[6].value = person.value; // Person
+        guiAve.children[7].value = momDate.format('YYYY-MM-DD');
+        // Update Schedule object on calendar 
+        calendar.updateSchedule(aveId.value, '1', {
+          title: description.value,
+          start: momDate.format('ddd DD MMM YYYY HH:mm:ss'),
+          end:  momDate.format('ddd DD MMM YYYY HH:mm:ss')
+        });
+      };
+      // Close modal
+      modal.style.display = "none";
+      // Reset modal
+      sent.checked = false;
+      type.value = 'Email'
+      date.value = ''; 
+      description.value = '';
+      person.value = '';
+      aveId.value = '';
+      // Reset backgroup of date and description incase they had been changed on unfilled attempt to save
+      date.style.backgroundColor = 'white';
+      description.style.backgroundColor = 'white';
+    } else { // Change backgroup of date or description if not filled out 
+        if (date.value == ''){
+          date.style.backgroundColor = 'rgb(225, 160, 140)';
+        };
+        if (description.value == ''){
+          description.style.backgroundColor = 'rgb(225, 160, 140)';
+        };
+      };
+  };
+  
+  // Get the <span> element that closes the modal and attach listener
+  document.getElementsByClassName("close")[0].addEventListener("click", function() {
+    modal.style.display = "none";
+    // Refresh calendar 
+    calendar.render();
+    // Reset modal
+    let sent = document.getElementById('aveSentModal');
+    let type = document.getElementById('aveDropModal');
+    let date = document.getElementById('aveDateModal');
+    let description = document.getElementById('aveDescModal');
+    let person = document.getElementById('avePersModal');
+    let aveId = document.getElementById('aveIdModal');
+    sent.checked = false;
+    type.value = 'Email'
+    date.value = ''; 
+    description.value = '';
+    person.value = '';
+    aveId.value = '';
+    // Reset backgroup of date and description incase they had been changed on unfilled attempt to save
+    date.style.backgroundColor = 'white';
+    description.style.backgroundColor = 'white';
+  });
+  
+  // When the user clicks anywhere outside of the modal, close it
+  window.onclick = function(event) {
+    if (event.target == modal) {
+      modal.style.display = "none";
+      // Refresh calendar 
+      calendar.render();
+      // Reset modal
+      let sent = document.getElementById('aveSentModal');
+      let type = document.getElementById('aveDropModal');
+      let date = document.getElementById('aveDateModal');
+      let description = document.getElementById('aveDescModal');
+      let person = document.getElementById('avePersModal');
+      let aveId = document.getElementById('aveIdModal');
+      sent.checked = false;
+      type.value = 'Email'
+      date.value = ''; 
+      description.value = '';
+      person.value = '';
+      aveId.value = '';
+      // Reset backgroup of date and description incase they had been changed on unfilled attempt to save
+      date.style.backgroundColor = 'white';
+      description.style.backgroundColor = 'white';
+    };
+  };  
+
+
+  /* ---- Message related functions ---- */
+// Adds a message to do the DOM of Message Manager tab 
 document.getElementById('addMess').addEventListener("click", addMess);
 function addMess (event='', messId='') {// If message id is passed in it will load it from the initative object. Otherwise it is treated as a new message
   // Update the current initiative object if this is a new message 
@@ -346,7 +635,6 @@ function addMess (event='', messId='') {// If message id is passed in it will lo
   document.getElementById("messageIn").appendChild(mess);
 };
 
-/* may need to add handleing for open editors on deletion */
 // Deletes a message from the DOM
 function deleteMess (mess) {
   // Confirm that user wants to delete message if not return
@@ -446,201 +734,8 @@ ipc.on('update-mess', function (event, messageId, messageObj) {
   });
 
 
-// Adds an Avenue to do the DOM
-   // Note: Avenue added through the unified modal popup called modalAve or loaded from file
-function addAve (event='', aveId='', location='avenueIn', modalAddSent=false, modalAddType='', modalAddDesc='', modalAddPers='', modalAddDate='') { // If avenue id is passed in it will load it from the initative object. Otherwise it is treated as a new avenue
-  // Note: event is not used programatically but helps with debugging input form different sources
-  // Update current initiative object if this is a new avenue 
-  var id; 
-  var aveLoad = '';
-  if ( aveId == '') {// If message is being added for the first time from the modal popup
-    id = currentInitiative.add_avenue(modalAddType, modalAddDesc, modalAddPers, modalAddSent, '', modalAddDate);
-    aveLoad = currentInitiative.avenues.get(id); // get newly created avenue to display in ui
-    console.log('new avenue added from modal', aveLoad)
-    } else { // Else load existing message from initiative object
-      id = aveId
-      aveLoad = currentInitiative.avenues.get(id);
-      //console.log(aveLoad);
-      }
-    
-  //creates main div to hold an individual avenue
-  let ave = document.createElement("div");
-  ave.setAttribute("class", "avenue");
-  ave.setAttribute("id", `avenue${id}`);
-
-  // Creates drop down list 
-  let dropdown = document.createElement("select");
-  dropdown.setAttribute("class", "aveDropdown");
-  dropdown.setAttribute("id", `avenue_type${id}`);
-  
-  // Set dropdown options from list held in the initiative object 
-  let options = currentInitiative.avenue_types;
-  for (i in options){
-    let opElem = document.createElement("option");
-    let opText = currentInitiative.avenue_types[i]
-    opElem.setAttribute("value", `${opText}`);
-    opElem.innerHTML = `${opText}`;
-    dropdown.appendChild(opElem);
-    }
-  if(aveLoad != ''){// if creating an avenue that is being pulled from a file or was added by modal set it's value 
-    dropdown.value = aveLoad.avenue_type;
-    }
-  ave.appendChild(dropdown); //add the dropdown menu to the avenue
-  
-  // Creates title paragraphs 
-  let description_title = document.createElement("p");// Title for Description 
-  description_title.setAttribute("class", "aveDescription_title");
-  description_title.setAttribute("id", "aveDescription_title");
-  description_title.innerHTML = "Description:";
-  ave.appendChild(description_title);//add the title to the avenue
-
-  let person_title = document.createElement("p");// Title for Persons responsible 
-  person_title.setAttribute("class", "avePersons_title");
-  person_title.setAttribute("id", "avePersons_title");
-  person_title.innerHTML = "Person:";
-  ave.appendChild(person_title);//add the title to the avenue
-
-  let date_title = document.createElement("p");// Title for Date 
-  date_title.setAttribute("class", "aveDate_title");
-  date_title.setAttribute("id", "aveDate_title");
-  date_title.innerHTML = "Date:";
-  ave.appendChild(date_title);//add the title to the avenue
-
-  // Creates sent box
-  let sent_box = document.createElement("p");
-  sent_box.setAttribute("class", "aveSent_box");
-  sent_box.setAttribute("id", `aveSent_box${id}`);
-
-  let sent_checkbox = document.createElement("input");
-  sent_checkbox.setAttribute("class", "aveSent_checkbox");
-  sent_checkbox.setAttribute("id", `aveSent_checkbox${id}`);
-  sent_checkbox.setAttribute("type", "checkbox");
-  if(aveLoad != ''){// if creating an avenue that is being pulled from a file or was added by modal set it's value
-    sent_checkbox.checked = aveLoad.sent;
-    }
-  sent_box.appendChild(sent_checkbox);//add check box to the smaller area
-
-  let sent_label = document.createElement("label");
-  sent_label.setAttribute("class", "aveSent_label");
-  sent_label.setAttribute("id", "aveSent_label");
-  sent_label.setAttribute("for", "aveSent_checkbox");
-  sent_label.innerHTML = "Sent";
-  sent_box.appendChild(sent_label);//add label to the smaller area
-
-  ave.appendChild(sent_box);//add smaller area to the avenue
-
-  // Creates textareas 
-  let description = document.createElement("textarea");
-  description.setAttribute("class", "aveDescription");
-  description.setAttribute("id", `aveDescription${id}`);
-  if(aveLoad != '') {// if creating an avenue that is being pulled from a file or was added by modal set it's value 
-    description.value = aveLoad.description;
-    }
-  ave.appendChild(description);
-
-  let persons = document.createElement("textarea");
-  persons.setAttribute("class", "avePersons");
-  persons.setAttribute("id", `avePersons${id}`);
-  if(aveLoad != ''){// if creating an avenue that is being pulled from a file or was added by modal set it's value 
-    persons.value = aveLoad.person;
-    }
-  ave.appendChild(persons);
-
-  // For now use Date chooser for date. Cannot handle time yet 
-  let date = document.createElement("input"); 
-  date.setAttribute("class", "aveDate");
-  date.setAttribute("id", `aveDate${id}`);
-  date.setAttribute("type", "date");
-  if(aveLoad != ''){// if creating an avenue that is being pulled from a file or was added by modal set it's value 
-    let momDate = moment(aveLoad.date, 'ddd MMM DD YYYY HH:mm:ss'); // Adjust to current timezone from saved timezone
-    date.value = momDate.format('YYYY-MM-DD'); // Format for display in date chooser 
-    }
-  ave.appendChild(date);
-
-  // Creates and adds dynamic event listener to delete button
-  let deleteBtn = document.createElement("input");
-  deleteBtn.setAttribute("class", "aveDelete");
-  deleteBtn.setAttribute("id", `aveDelete${id}`);
-  deleteBtn.setAttribute("type", "button");
-  deleteBtn.setAttribute("value", "x");
-  deleteBtn.addEventListener("click", function () {deleteAve(ave)}); 
-  ave.appendChild(deleteBtn);
-
-  // Get the container to hold the avenue and append it 
-    // Note: default location is the avenueIn container
-  //console.log("avenue", ave);
-  document.getElementById(location).appendChild(ave);
-  return id; // return the avenue id
-};
-
-// Deletes an avenue from the DOM
-function deleteAve (ave) {
-  // Confirm that user wants to delete message if not return
-  swal({
-    title: 'Deleting Avenue',
-    text: 'Are you sure you want to delete your Avenue?', 
-    icon: 'warning',
-    buttons: ['Cancel', 'Yes'],
-    dangerMode: true
-  })
-  .then(function (value) {
-    if (value == null) { // Escape deletion 
-      return
-    } else { // Proceed with deletion 
-        // Remove message from UI
-        ave.parentElement.removeChild(ave);
-        // Remove message from Initiative object 
-        let id = ave.id[6];
-        currentInitiative.avenues.delete(id); // Take only the number off of the end of the ui id 
-        // Send updates to main
-        let ipcInit = currentInitiative.pack_for_ipc();
-        ipc.send('save', currentInitiativeId, ipcInit);
-        return
-        }; 
-    });
-};
-
-// Initalize dragula containers for drag and drop
-var dragDrop = dragula([document.getElementById('avenueIn')]);// aveDrops are added dynamically when message is generated 
-//console.log('drag and drop:', dragDrop);
-
-// Link message and avenue if avenue is dropped into aveDrop
-  // Else Unlink if avenue is dropped into avenueIn
-dragDrop.on('drop', function (ave, target, source) {
-  let type = target.getAttribute('class'); // determine where avenue was dropped by target class
-  if (type == 'aveDrop') {
-    let aveId = ave.id[6]; // Grab the id number off of each id
-    let messId = target.id[7];
-    let oldMessId = source.id[7];
-
-    // Check to see if avenue is being moved from another message 
-    let sourceClas = source.getAttribute('class'); 
-    if (sourceClas == 'aveDrop' ) { // If coming from another message unlink from old message
-      currentInitiative.unlink_ids(aveId, oldMessId);
-      //console.log('unlinked old mess from ave: ', currentInitiative.messages.get(oldMessId));
-      }
-
-    // Link to new message 
-    currentInitiative.link_ids(aveId, messId);
-    //console.log('linked ave: ', currentInitiative.avenues.get(aveId), 'linked mess: ', currentInitiative.messages.get(messId));
-    }
-    else if (type == 'messIn' ){ // If being droped back into avenueIn unlink from old message
-      // Check to see if avenue is being moved within avenueIn container 
-      let sourceClas = source.getAttribute('class'); 
-      if (sourceClas == 'messIn' ) { // If being moved within avenueIn return early to avoid unnecessary unlink
-        return
-        }
-      // If being moved from a message unlink before droping into avenueIn
-      let aveId = ave.id[6]; 
-      let messId = source.id[7];
-      currentInitiative.unlink_ids(aveId, messId);
-      //console.log('unlinked ave: ', currentInitiative.avenues.get(aveId), 'unlinked mess: ', currentInitiative.messages.get(messId));
-      }
-});
-
-/* ---- Initiative tab related functions ---- */
-
-// Adds a Goal to do the DOM
+/* ---- Goal related functions ---- */
+// Adds a Goal to do DOM of Initiative tab 
 document.getElementById('addGoal').addEventListener("click", addGoal);
 function addGoal (event='', goalId='') {// If Goal id is passed in it will load it from the initative object. Otherwise it is treated as a new Goal
   // Update the current initiative object if this is a new Goal 
@@ -757,7 +852,9 @@ function deleteGoal (goal) {
     });
 };
 
-// Adds a group to do the DOM
+
+/* ---- Group related functions ---- */
+// Adds a group to do DOM of Initiative tab 
 document.getElementById('addGroup').addEventListener("click", addGroup);
 function addGroup (event='', groupId='') {// If group id is passed in it will load it from the initative object. Otherwise it is treated as a new group
   // Update the current initiative object if this is a new group  
@@ -850,11 +947,37 @@ function addGroup (event='', groupId='') {// If group id is passed in it will lo
     }
   group.appendChild(contacts);
 
-  
-
   // Get the main div that holds all the groups and append the new one
   //console.log("group", group, "initative", currentInitiative);
   document.getElementById("groupIn").appendChild(group);
+};
+
+// Deletes a group from the DOM
+function deleteGroup (group) {
+  // Confirm that user wants to delete message if not return
+  swal({
+    title: 'Deleting Group',
+    text: 'Are you sure you want to delete your Group?', 
+    icon: 'warning',
+    buttons: ['Cancel', 'Yes'],
+    dangerMode: true
+  })
+  .then(function (value) {
+    if (value == null) { // Escape deletion 
+      return
+    } else { // Proceed with deletion 
+      
+      // Remove message from UI
+      group.parentElement.removeChild(group);
+      // Remove message from Initiative object 
+      let id = group.id[5]; // Take only the number off of the end of the ui id 
+      //console.log("group object in delete:", group.id[5])
+      currentInitiative.groups.delete(id); 
+      // Send updates to main
+      let ipcInit = currentInitiative.pack_for_ipc();
+      ipc.send('save', currentInitiativeId, ipcInit);  
+      };
+    });
 };
 
 // Copy all emails from group to clipboard
@@ -914,34 +1037,9 @@ function copyPhones (event='', groupId='') {// Takes in a group id and adds cont
   clipboard.writeText(phones);
 };
 
-// Deletes a group from the DOM
-function deleteGroup (group) {
-  // Confirm that user wants to delete message if not return
-  swal({
-    title: 'Deleting Group',
-    text: 'Are you sure you want to delete your Group?', 
-    icon: 'warning',
-    buttons: ['Cancel', 'Yes'],
-    dangerMode: true
-  })
-  .then(function (value) {
-    if (value == null) { // Escape deletion 
-      return
-    } else { // Proceed with deletion 
-      
-      // Remove message from UI
-      group.parentElement.removeChild(group);
-      // Remove message from Initiative object 
-      let id = group.id[5]; // Take only the number off of the end of the ui id 
-      //console.log("group object in delete:", group.id[5])
-      currentInitiative.groups.delete(id); 
-      // Send updates to main
-      let ipcInit = currentInitiative.pack_for_ipc();
-      ipc.send('save', currentInitiativeId, ipcInit);  
-      };
-    });
-};
 
+/* ---- Contact realted functions ---- */
+// Adds contact withing group on Initiative tab 
 function addContact (event='', groupId='', contactId='') {// Takes in a group id and adds contact to ui and group object 
   // If no group id provided throw error and return from function  
   if (groupId == '') { console.error('No group id provided'); return;}; 
@@ -1051,6 +1149,48 @@ function deleteContact (groupId, contactUi) {
     });
 };
 
+
+/* ---- Message Manager Tab specific functions ---- */
+// Initalize dragula containers for drag and drop of avenues 
+var dragDrop = dragula([document.getElementById('avenueIn')]);// aveDrops are added dynamically when message is generated 
+//console.log('drag and drop:', dragDrop);
+
+// Link message and avenue if avenue is dropped into aveDrop
+  // Else Unlink if avenue is dropped into avenueIn
+dragDrop.on('drop', function (ave, target, source) {
+  let type = target.getAttribute('class'); // determine where avenue was dropped by target class
+  if (type == 'aveDrop') {
+    let aveId = ave.id[6]; // Grab the id number off of each id
+    let messId = target.id[7];
+    let oldMessId = source.id[7];
+
+    // Check to see if avenue is being moved from another message 
+    let sourceClas = source.getAttribute('class'); 
+    if (sourceClas == 'aveDrop' ) { // If coming from another message unlink from old message
+      currentInitiative.unlink_ids(aveId, oldMessId);
+      //console.log('unlinked old mess from ave: ', currentInitiative.messages.get(oldMessId));
+      }
+
+    // Link to new message 
+    currentInitiative.link_ids(aveId, messId);
+    //console.log('linked ave: ', currentInitiative.avenues.get(aveId), 'linked mess: ', currentInitiative.messages.get(messId));
+    }
+    else if (type == 'messIn' ){ // If being droped back into avenueIn unlink from old message
+      // Check to see if avenue is being moved within avenueIn container 
+      let sourceClas = source.getAttribute('class'); 
+      if (sourceClas == 'messIn' ) { // If being moved within avenueIn return early to avoid unnecessary unlink
+        return
+        }
+      // If being moved from a message unlink before droping into avenueIn
+      let aveId = ave.id[6]; 
+      let messId = source.id[7];
+      currentInitiative.unlink_ids(aveId, messId);
+      //console.log('unlinked ave: ', currentInitiative.avenues.get(aveId), 'unlinked mess: ', currentInitiative.messages.get(messId));
+      }
+});
+
+
+/* ---- Initiative Tab specific functions ---- */
 const themeConfig = {
   };
 
@@ -1151,7 +1291,10 @@ calendar.on({
   },
   // Open popup on schedule click
   'clickSchedule': function(event) {
+    console.log('calendar event on click schedule', event);
     // Launch avenue popup with saved values 
+    // Send Id to be held until saved 
+    document.getElementById('aveIdModal').value = event.schedule.id;
     // Set dropdown options from list held in the initiative object 
     let dropdown = document.getElementById('aveDropModal')
     let options = currentInitiative.avenue_types;
@@ -1196,165 +1339,35 @@ calendar.on({
 });
 
 // Navigate Calendar 
-// Go back a month
-document.getElementById('prev').addEventListener('click', function (event) {
-  calendar.prev();
-  let start = calendar.getDateRangeStart();
-  let end = calendar.getDateRangeEnd();
-  console.log('prev', start, end);
-  // Display date range on top of calendar 
-  document.getElementById('year').value = `${end.getFullYear()}`;
-  document.getElementById('month').value = `${start.getMonth() + 1}` + '.' + `${start.getDate()}` + ' - ' + `${end.getMonth() + 1}` + '.' + `${end.getDate()}`;
-});
+  // Go back a month
+  document.getElementById('prev').addEventListener('click', function (event) {
+    calendar.prev();
+    let start = calendar.getDateRangeStart();
+    let end = calendar.getDateRangeEnd();
+    console.log('prev', start, end);
+    // Display date range on top of calendar 
+    document.getElementById('year').value = `${end.getFullYear()}`;
+    document.getElementById('month').value = `${start.getMonth() + 1}` + '.' + `${start.getDate()}` + ' - ' + `${end.getMonth() + 1}` + '.' + `${end.getDate()}`;
+  });
 
-// Go to today
-document.getElementById('today').addEventListener('click', function (event) {
-  calendar.today();
-  let start = calendar.getDateRangeStart();
-  let end = calendar.getDateRangeEnd();
-  console.log('today', start.getDate(), end);
-  // Display date range on top of calendar 
-  document.getElementById('year').value = `${end.getFullYear()}`;
-  document.getElementById('month').value = `${start.getMonth() + 1}` + '.' + `${start.getDate()}` + ' - ' + `${end.getMonth() + 1}` + '.' + `${end.getDate()}`;
-});
+  // Go to today
+  document.getElementById('today').addEventListener('click', function (event) {
+    calendar.today();
+    let start = calendar.getDateRangeStart();
+    let end = calendar.getDateRangeEnd();
+    console.log('today', start.getDate(), end);
+    // Display date range on top of calendar 
+    document.getElementById('year').value = `${end.getFullYear()}`;
+    document.getElementById('month').value = `${start.getMonth() + 1}` + '.' + `${start.getDate()}` + ' - ' + `${end.getMonth() + 1}` + '.' + `${end.getDate()}`;
+  });
 
-// Go to next month
-document.getElementById('next').addEventListener('click', function (event) {
-  calendar.next();
-  let start = calendar.getDateRangeStart();
-  let end = calendar.getDateRangeEnd();
-  console.log('next', start, end);
-  // Display date range on top of calendar 
-  document.getElementById('year').value = `${end.getFullYear()}`;
-  document.getElementById('month').value = `${start.getMonth() + 1}` + '.' + `${start.getDate()}` + ' - ' + `${end.getMonth() + 1}` + '.' + `${end.getDate()}`;
-});
-
-/* ---- Unified modal popup to add Avenues across tabs ---- */
-
-// Get the modal
-var modal = document.getElementById("aveModal");
-
-// Get the button that opens the modal on the message manager tab 
-document.getElementById("addAve").addEventListener("click", modalLaunch);
-
-// When the user clicks on the button, open the modal
-function modalLaunch(calEvent='') {
-  // Set dropdown options from list held in the initiative object 
-  let dropdown = document.getElementById('aveDropModal')
-  let options = currentInitiative.avenue_types;
-  for (i in options){
-    let opElem = document.createElement("option");
-    let opText = currentInitiative.avenue_types[i]
-    opElem.setAttribute("value", `${opText}`);
-    opElem.innerHTML = `${opText}`;
-    dropdown.appendChild(opElem);
-    }
-  // If created from clicking on calendar set the date of day clicked 
-  if (calEvent.triggerEventName == 'mouseup'){
-    let calDate = calEvent.start;
-    //console.log('calendar event', calDate.toDate());
-    let momDate = moment(calDate.toDate(), 'ddd MMM DD YYYY HH:mm:ss'); // Turn date into moment object to format for date picker display
-    //console.log('moment date', momDate)
-    document.getElementById('aveDateModal').value = momDate.format('YYYY-MM-DD');
-  }
-  // Display modal 
-  modal.style.display = "block";
-}
-
-// Get the save button from modal 
-document.getElementById('saveModal').addEventListener("click", aveModalSave );
-
-function aveModalSave (){
-  let sent = document.getElementById('aveSentModal');
-  let type = document.getElementById('aveDropModal');
-  let date = document.getElementById('aveDateModal');
-  let description = document.getElementById('aveDescModal');
-  let person = document.getElementById('avePersModal');
-  console.log('sent', sent.checked, '\ntype', type.value, '\ndate', date.value, '\ndescription', description.value, '\nperson', person.value);
-  // Make sure date and description are filled out 
-  if (date.value != '' && description.value != ''){
-    // Turn date into moment object to format for adding avenue to initiative object and ui
-    let momDate = moment(date.value, 'YYYY-MM-DD'); 
-    // Add avenue to initative and message manager ui.  Also capture new avenue id 
-    let id = addAve('modalAdd', '', 'avenueIn', sent.checked, type.value, description.value, person.value, momDate.format('ddd MMM DD YYYY HH:mm:ss')); // use Moment date format
-    // Add avenue to calendar 
-    let ave = currentInitiative.avenues.get(id);
-      // Turn date into moment object to format for calendar display
-      
-      // Fill calendar schedule object with avenue info
-      let schedule = {
-        id: id,
-        calendarId: '1',
-        title: ave.description,
-        state: ave.type,
-        category: 'time',
-        start: momDate.format('ddd DD MMM YYYY HH:mm:ss'),
-        end:  momDate.format('ddd DD MMM YYYY HH:mm:ss')
-      };
-      //console.log('schedule', schedule);
-      // Add to calendar and render 
-      calendar.createSchedules([schedule]);
-    // Close modal
-    modal.style.display = "none";
-    // Reset modal
-    sent.checked = false;
-    type.value = 'Email'
-    date.value = ''; 
-    description.value = '';
-    person.value = '';
-    // Reset backgroup of date and description incase they had been changed on unfilled attempt to save
-    date.style.backgroundColor = 'white';
-    description.style.backgroundColor = 'white';
-  } else { // Change backgroup of date or description if not filled out 
-      if (date.value == ''){
-        date.style.backgroundColor = 'rgb(225, 160, 140)';
-      };
-      if (description.value == ''){
-        description.style.backgroundColor = 'rgb(225, 160, 140)';
-      };
-    };
-};
-
-// Get the <span> element that closes the modal and attach listener
-document.getElementsByClassName("close")[0].addEventListener("click", function() {
-  modal.style.display = "none";
-  // Refresh calendar 
-  calendar.render();
-  // Reset modal
-  let sent = document.getElementById('aveSentModal');
-  let type = document.getElementById('aveDropModal');
-  let date = document.getElementById('aveDateModal');
-  let description = document.getElementById('aveDescModal');
-  let person = document.getElementById('avePersModal');
-  sent.checked = false;
-  type.value = 'Email'
-  date.value = ''; 
-  description.value = '';
-  person.value = '';
-  // Reset backgroup of date and description incase they had been changed on unfilled attempt to save
-  date.style.backgroundColor = 'white';
-  description.style.backgroundColor = 'white';
-});
-
-// When the user clicks anywhere outside of the modal, close it
-window.onclick = function(event) {
-  if (event.target == modal) {
-    modal.style.display = "none";
-    // Refresh calendar 
-    calendar.render();
-    // Reset modal
-    let sent = document.getElementById('aveSentModal');
-    let type = document.getElementById('aveDropModal');
-    let date = document.getElementById('aveDateModal');
-    let description = document.getElementById('aveDescModal');
-    let person = document.getElementById('avePersModal');
-    sent.checked = false;
-    type.value = 'Email'
-    date.value = ''; 
-    description.value = '';
-    person.value = '';
-    // Reset backgroup of date and description incase they had been changed on unfilled attempt to save
-    date.style.backgroundColor = 'white';
-    description.style.backgroundColor = 'white';
-  };
-};
+  // Go to next month
+  document.getElementById('next').addEventListener('click', function (event) {
+    calendar.next();
+    let start = calendar.getDateRangeStart();
+    let end = calendar.getDateRangeEnd();
+    console.log('next', start, end);
+    // Display date range on top of calendar 
+    document.getElementById('year').value = `${end.getFullYear()}`;
+    document.getElementById('month').value = `${start.getMonth() + 1}` + '.' + `${start.getDate()}` + ' - ' + `${end.getMonth() + 1}` + '.' + `${end.getDate()}`;
+  });
