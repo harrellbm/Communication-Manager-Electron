@@ -41,31 +41,7 @@ ipc.on('load', function (event, ipcPack) {
       for ( id of goalKeys ){
         addGoal('load', id ); // Note: Event is not used programatically but helps with debugging input to addMess
       };
-    // Load Calendar 
-    // Load avenues into Calendar on creation
-    calendar.render();
-      let aveKeys = currentInitiative.avenues.keys();
-        for( id of aveKeys ){
-          console.log('ave id for calender load', id);
-          let ave = currentInitiative.avenues.get(id);
-          console.log('avenue to load in calendar', ave);
-          // Convert saved date into moment object for easier formatting 
-          let momDate = moment(ave.date, 'ddd MMM DD YYYY HH:mm:ss'); // Adjust to current timezone from saved timezone
-          console.log('moment date object', momDate)
-          // Schedule object to display in calendar 
-          let schedule = {
-            id: id,
-            calendarId: '1',
-            title: ave.description,
-            location: '',
-            category: 'time',
-            start: momDate.format('ddd DD MMM YYYY HH:mm:ss'), // Format for display in calendar 
-            end: momDate.format('ddd DD MMM YYYY HH:mm:ss'),
-          };
-          console.log('schedule to add to calendar', schedule)
-          calendar.createSchedules([schedule]);
-          calendar.render();
-        };
+
     // Display date range on top of calendar on first render
       let start = calendar.getDateRangeStart();
       let end = calendar.getDateRangeEnd();
@@ -78,19 +54,18 @@ ipc.on('load', function (event, ipcPack) {
     for ( id of messKeys ){
      addMess('load', id ); // Note: Event is not used programatically but helps with debugging input to addMess
     };
-
-    aveKeys = currentInitiative.avenues.keys();
-    for ( id of aveKeys ){
-      console.log('ave id for mess tab load', id);
-      // Check to see if avenue is linked to a message
-      let aveObj = currentInitiative.avenues.get(id);
-      let messId = aveObj.message_id
-      if (messId != '') { // If so send to respective message drop box
-        addAve('load', id, `aveDrop${messId}`) // Note: event is not used programatically but helps with debugging input to addAve
-      }
-      else { // Else just add it to the default container
-        addAve('load', id ); 
-      }
+  // Load avenues to both message manager and initiative tab
+  aveKeys = currentInitiative.avenues.keys();
+  for ( id of aveKeys ){
+    console.log('ave id for mess tab load', id);
+    // Check to see if avenue is linked to a message
+    let aveObj = currentInitiative.avenues.get(id);
+    let messId = aveObj.message_id;
+    if (messId != '') { // If so send to respective message drop box
+      addAve('load', id, `aveDrop${messId}`) ;// Note: event is not used programatically but helps with debugging input to addAve
+    } else { // Else just add it to the default container
+      addAve('load', id ); 
+    };
   };
 });
 
@@ -260,20 +235,23 @@ document.getElementById("defaultOpen").click();
 
 
 /* ---- Avenue related functions ---- */
-// Adds an Avenue to do the DOM
+// Adds an Avenue to do the DOM of the Initiative and Message Manager tab 
    // Note: Avenue are added through the unified modal popup called modalAve, or loaded from file on reopen
 function addAve (event='', aveId='', location='avenueIn', modalAddSent=false, modalAddType='', modalAddDesc='', modalAddPers='', modalAddDate='') { // If avenue id is passed in it will load it from the initative object. Otherwise it is treated as a new avenue
     // Note: event is not used programatically but helps with debugging input form different sources
     // Update current initiative object if this is a new avenue 
     var id; 
     var aveLoad = '';
+    var momDate = '';
     if ( aveId == '') {// If message is being added for the first time from the modal popup
       id = currentInitiative.add_avenue(modalAddType, modalAddDesc, modalAddPers, modalAddSent, '', modalAddDate);
       aveLoad = currentInitiative.avenues.get(id); // get newly created avenue to display in ui
+      momDate = moment(aveLoad.date, 'ddd MMM DD YYYY HH:mm:ss'); // Adjust to current timezone from saved timezone
       console.log('new avenue added from modal', aveLoad)
       } else { // Else load existing message from initiative object
         id = aveId
         aveLoad = currentInitiative.avenues.get(id);
+        momDate = moment(aveLoad.date, 'ddd MMM DD YYYY HH:mm:ss'); // Adjust to current timezone from saved timezone
         //console.log(aveLoad);
         }
       
@@ -366,7 +344,6 @@ function addAve (event='', aveId='', location='avenueIn', modalAddSent=false, mo
     date.setAttribute("id", `aveDate${id}`);
     date.setAttribute("type", "date");
     if(aveLoad != ''){// if creating an avenue that is being pulled from a file or was added by modal set it's value 
-      let momDate = moment(aveLoad.date, 'ddd MMM DD YYYY HH:mm:ss'); // Adjust to current timezone from saved timezone
       date.value = momDate.format('YYYY-MM-DD'); // Format for display in date chooser 
       }
     ave.appendChild(date);
@@ -384,7 +361,21 @@ function addAve (event='', aveId='', location='avenueIn', modalAddSent=false, mo
       // Note: default location is the avenueIn container
     //console.log("avenue", ave);
     document.getElementById(location).appendChild(ave);
-    return id; // return the avenue id
+
+    // Add avenue to calendar 
+    // Fill calendar schedule object with avenue info
+    let schedule = {
+      id: id,
+      calendarId: '1',
+      title: aveLoad.description,
+      state: aveLoad.avenue_type,
+      category: 'time',
+      start: momDate.format('ddd DD MMM YYYY HH:mm:ss'),
+      end:  momDate.format('ddd DD MMM YYYY HH:mm:ss')
+    };
+    //console.log('schedule', schedule);
+    // Add to calendar and render 
+    calendar.createSchedules([schedule]);
 };
   
 // Deletes an avenue from the DOM
@@ -454,30 +445,39 @@ function deleteAve (ave) {
     let date = document.getElementById('aveDateModal');
     let description = document.getElementById('aveDescModal');
     let person = document.getElementById('avePersModal');
-    console.log('sent', sent.checked, '\ntype', type.value, '\ndate', date.value, '\ndescription', description.value, '\nperson', person.value);
+    let aveId = document.getElementById('aveIdModal');
+    console.log('sent', sent.checked, '\ntype', type.value, '\ndate', date.value, '\ndescription', description.value, '\nperson', person.value, '\naveId', aveId.value);
     // Make sure date and description are filled out 
     if (date.value != '' && description.value != ''){
-      // Turn date into moment object to format for adding avenue to initiative object and ui
-      let momDate = moment(date.value, 'YYYY-MM-DD'); 
-      // Add avenue to initative and message manager ui.  Also capture new avenue id 
-      let id = addAve('modalAdd', '', 'avenueIn', sent.checked, type.value, description.value, person.value, momDate.format('ddd MMM DD YYYY HH:mm:ss')); // use Moment date format
-      // Add avenue to calendar 
-      let ave = currentInitiative.avenues.get(id);
-        // Turn date into moment object to format for calendar display
-        
-        // Fill calendar schedule object with avenue info
-        let schedule = {
-          id: id,
-          calendarId: '1',
-          title: ave.description,
-          state: ave.type,
-          category: 'time',
+      // Turn date into moment object to format for adding or updating avenue in initiative object and ui
+      let momDate = moment(date.value, 'YYYY-MM-DD', true); 
+      // If no id provided assume this is a new avenue
+      if (aveId.value == '' || aveId.value == undefined ){
+        // Add avenue to initiative object, initative tab and message manager tab. 
+        addAve('modalAdd', '', 'avenueIn', sent.checked, type.value, description.value, person.value, momDate.format('ddd MMM DD YYYY HH:mm:ss')); // use Moment date format
+      } else if ( parseInt(aveId.value) >= 0 ) {
+        // Update Initiative object 
+        let initAve = currentInitiative.avenues.get(aveId.value); // Avenue object from the initiative object
+        initAve.avenue_type = type.value;
+        initAve.sent = sent.checked;
+        initAve.description = description.value;
+        initAve.person = person.value;
+        initAve.change_date(momDate.toString());
+        // Update Message manager tab
+        let guiAve = document.getElementById(`avenue${aveId.value}`); // Avenue object from the ui
+      
+        guiAve.children[0].value = type.value; // Type
+        guiAve.children[4].children[0].checked = sent.checked; // Sent
+        guiAve.children[5].value = description.value; // Description
+        guiAve.children[6].value = person.value; // Person
+        guiAve.children[7].value = momDate.format('YYYY-MM-DD');
+        // Update Schedule object on calendar 
+        calendar.updateSchedule(aveId.value, '1', {
+          title: description.value,
           start: momDate.format('ddd DD MMM YYYY HH:mm:ss'),
           end:  momDate.format('ddd DD MMM YYYY HH:mm:ss')
-        };
-        //console.log('schedule', schedule);
-        // Add to calendar and render 
-        calendar.createSchedules([schedule]);
+        });
+      };
       // Close modal
       modal.style.display = "none";
       // Reset modal
@@ -486,6 +486,7 @@ function deleteAve (ave) {
       date.value = ''; 
       description.value = '';
       person.value = '';
+      aveId.value = '';
       // Reset backgroup of date and description incase they had been changed on unfilled attempt to save
       date.style.backgroundColor = 'white';
       description.style.backgroundColor = 'white';
@@ -510,11 +511,13 @@ function deleteAve (ave) {
     let date = document.getElementById('aveDateModal');
     let description = document.getElementById('aveDescModal');
     let person = document.getElementById('avePersModal');
+    let aveId = document.getElementById('aveIdModal');
     sent.checked = false;
     type.value = 'Email'
     date.value = ''; 
     description.value = '';
     person.value = '';
+    aveId.value = '';
     // Reset backgroup of date and description incase they had been changed on unfilled attempt to save
     date.style.backgroundColor = 'white';
     description.style.backgroundColor = 'white';
@@ -532,11 +535,13 @@ function deleteAve (ave) {
       let date = document.getElementById('aveDateModal');
       let description = document.getElementById('aveDescModal');
       let person = document.getElementById('avePersModal');
+      let aveId = document.getElementById('aveIdModal');
       sent.checked = false;
       type.value = 'Email'
       date.value = ''; 
       description.value = '';
       person.value = '';
+      aveId.value = '';
       // Reset backgroup of date and description incase they had been changed on unfilled attempt to save
       date.style.backgroundColor = 'white';
       description.style.backgroundColor = 'white';
@@ -545,7 +550,7 @@ function deleteAve (ave) {
 
 
   /* ---- Message related functions ---- */
-// Adds a message to do the DOM
+// Adds a message to do the DOM of Message Manager tab 
 document.getElementById('addMess').addEventListener("click", addMess);
 function addMess (event='', messId='') {// If message id is passed in it will load it from the initative object. Otherwise it is treated as a new message
   // Update the current initiative object if this is a new message 
@@ -730,7 +735,7 @@ ipc.on('update-mess', function (event, messageId, messageObj) {
 
 
 /* ---- Goal related functions ---- */
-// Adds a Goal to do the DOM
+// Adds a Goal to do DOM of Initiative tab 
 document.getElementById('addGoal').addEventListener("click", addGoal);
 function addGoal (event='', goalId='') {// If Goal id is passed in it will load it from the initative object. Otherwise it is treated as a new Goal
   // Update the current initiative object if this is a new Goal 
@@ -849,7 +854,7 @@ function deleteGoal (goal) {
 
 
 /* ---- Group related functions ---- */
-// Adds a group to do the DOM
+// Adds a group to do DOM of Initiative tab 
 document.getElementById('addGroup').addEventListener("click", addGroup);
 function addGroup (event='', groupId='') {// If group id is passed in it will load it from the initative object. Otherwise it is treated as a new group
   // Update the current initiative object if this is a new group  
@@ -1034,6 +1039,7 @@ function copyPhones (event='', groupId='') {// Takes in a group id and adds cont
 
 
 /* ---- Contact realted functions ---- */
+// Adds contact withing group on Initiative tab 
 function addContact (event='', groupId='', contactId='') {// Takes in a group id and adds contact to ui and group object 
   // If no group id provided throw error and return from function  
   if (groupId == '') { console.error('No group id provided'); return;}; 
@@ -1285,7 +1291,10 @@ calendar.on({
   },
   // Open popup on schedule click
   'clickSchedule': function(event) {
+    console.log('calendar event on click schedule', event);
     // Launch avenue popup with saved values 
+    // Send Id to be held until saved 
+    document.getElementById('aveIdModal').value = event.schedule.id;
     // Set dropdown options from list held in the initiative object 
     let dropdown = document.getElementById('aveDropModal')
     let options = currentInitiative.avenue_types;

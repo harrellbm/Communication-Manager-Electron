@@ -570,7 +570,7 @@ class Message {
  
 class Avenue {
    constructor() {
-      // date is a built in dat object only one date is assigned per avenue
+      // date is a built in data object only one date is assigned per avenue
       // Sent is whether the message is sent or not
       // Message id holds the id of the message that is associated with this avenue 
          //Only one message is allowed for each avenue, but you can add multiple avenues to a message
