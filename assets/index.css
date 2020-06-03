@@ -698,9 +698,20 @@ textarea{
   grid-row-start: 3;
   grid-row-end: 4;
   grid-column-start: 1;
+  grid-column-end: 3;
+  margin-right: 3%;
+  margin-left: 45%;
+  margin-top: auto;
+}
+
+/* Save button for Modal */
+#deleteModal{
+  grid-row-start: 3;
+  grid-row-end: 4;
+  grid-column-start: 3;
   grid-column-end: 5;
-  margin-right: 30%;
-  margin-left: 30%;
+  margin-right: 45%;
+  margin-left: 3%;
   margin-top: auto;
 }
 
