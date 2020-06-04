@@ -342,10 +342,10 @@ describe('Test Index process', function () {
     await app.client.$('#avenue0').dragAndDrop('#aveDrop0');
     // Make sure avenue is in message dropbox
     let container = await app.client.$('#avenueIn').getHTML();
-    console.log(container);
+    //console.log(container);
     expect(container, 'Avenue still in avenueIn').to.equal('<div id="avenueIn" class="messIn"></div>');
     container = await app.client.$('#messageIn').getHTML()
-    console.log(container);
+    //console.log(container);
     expect(container, 'Avenue not in message dropbox').to.equal('<div id="messageIn" class="messIn"><div class="message" id="message0"><p class="messTitle_heading" id="messTitle_heading">Title:</p><textarea class="messTitle" id="messTitle0"></textarea><div class="aveDrop" id="aveDrop0"><div class="avenue" id="avenue0"><select class="aveDropdown" id="avenue_type0"><option value="Email">Email</option><option value="Text">Text</option><option value="Phone Call">Phone Call</option><option value="Facebook">Facebook</option><option value="Instagram">Instagram</option><option value="Card">Card</option><option value="Handout">Handout</option><option value="Poster">Poster</option><option value="Other">Other</option></select><p class="aveDescription_title" id="aveDescription_title">Description:</p><p class="avePersons_title" id="avePersons_title">Person:</p><p class="aveDate_title" id="aveDate_title">Date:</p><p class="aveSent_box" id="aveSent_box0"><input class="aveSent_checkbox" id="aveSent_checkbox0" type="checkbox"><label class="aveSent_label" id="aveSent_label" for="aveSent_checkbox">Sent</label></p><textarea class="aveDescription" id="aveDescription0"></textarea><textarea class="avePersons" id="avePersons0"></textarea><input class="aveDate" id="aveDate0" type="date"><input class="aveDelete" id="aveDelete0" type="button" value="x"></div></div><div class="aveBtnArray" id="aveBtnArray0"><input class="messEdit" id="messEdit0" type="button" value="Edit"><input class="messCopy" id="messCopy0" type="button" value="Copy"><input class="messDelete" id="messDelete0" type="button" value="x"></div></div></div>');
     // Drag back to avenueIn
     await app.client.$('#avenue0').dragAndDrop('#avenueIn');
