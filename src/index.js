@@ -97,7 +97,7 @@ function save () {
         //console.log('after update', initGroup.contacts);
       };
     };
-    console.log('updated group: ', currentInitiative.groups);
+    //console.log('updated group: ', currentInitiative.groups);
 
     // Sync ui and initiative goal objects before saving 
     let goalKeys = currentInitiative.goals.keys(); 
@@ -512,7 +512,7 @@ function deleteAveMess (ave) {
   function aveModalDelete (){
     // Get launch type 
     let launchType = document.getElementById('launchModalType').value;
-    console.log('delete event', launchType)
+    //console.log('Origin of Modal launch', launchType)
     // If launched from Calendar on Initiative tab verify delete 
     if (launchType == 'calUpdate') {
       // Confirm that user wants to delete avenue if not return
@@ -548,7 +548,6 @@ function deleteAveMess (ave) {
           document.getElementById('aveSentModal').checked = false; // Sent
           let types = document.getElementById('aveDropModal'); // Type
           let i, L= types.options.length - 1;
-          console.log('i', i, 'L', L)
           for(i = L; i >= 0; i--) {
             types.remove(i);
           };
@@ -1070,11 +1069,11 @@ function copyEmails (event='', groupId='') {// Takes in a group id and adds cont
     initGroup.contacts.set(contId, [name, phone, email]);
     if (email != '') { // If email field is not blank add to string
       emails += '\n' + email.trim(); // remove any whitespace and then add back one new line
-      console.log('emails: ', emails);
+      //console.log('emails: ', emails);
     };
   };
   
-  console.log('updated group: ', currentInitiative.groups);
+  //console.log('updated group: ', currentInitiative.groups);
   clipboard.writeText(emails);
 };
 
@@ -1098,12 +1097,11 @@ function copyPhones (event='', groupId='') {// Takes in a group id and adds cont
     initGroup.contacts.set(contId, [name, phone, email]);
     if (phone != '') { // If phone number field is not blank add to string
       phones += '\n' + phone.trim(); // remove any whitespace and then add back one new line
-      console.log('phones: ', phones);
+      //console.log('phones: ', phones);
     };
   };
   
-  console.log('updated group: ', currentInitiative.groups);
-  
+  //console.log('updated group: ', currentInitiative.groups);
   clipboard.writeText(phones);
 };
 
@@ -1355,14 +1353,13 @@ calendar.on('clickDayname', function() {
 calendar.on({
   // Create schedule from add avenue popup
   'beforeCreateSchedule': function(event) {
-    console.log('event on cal click',event);
-   
+    //console.log('event on cal click',event);
     // Launch the popup
     modalLaunch(event, 'calCreate');
   },
   // Open popup on schedule click
   'clickSchedule': function(event) {
-    console.log('calendar event on click schedule', event);
+    //console.log('calendar event on click schedule', event);
     // Launch avenue popup with saved values 
     // Store launch type
     document.getElementById('launchModalType').value = 'calUpdate';
@@ -1403,11 +1400,6 @@ calendar.on({
     let changes = event.changes;
     console.log('schedule', schedule, 'changes', changes)
     calendar.updateSchedule(schedule.id, schedule.calendarId, changes);
-  },
-  // Delete schedule from popup 
-  'beforeDeleteSchedule': function(e) {
-    console.log('beforeDeleteSchedule', e);
-    calendar.deleteSchedule(e.schedule.id, e.schedule.calendarId);
   }
 });
 
@@ -1417,7 +1409,7 @@ calendar.on({
     calendar.prev();
     let start = calendar.getDateRangeStart();
     let end = calendar.getDateRangeEnd();
-    console.log('prev', start, end);
+    //console.log('prev', start, end);
     // Display date range on top of calendar 
     document.getElementById('year').value = `${end.getFullYear()}`;
     document.getElementById('month').value = `${start.getMonth() + 1}` + '.' + `${start.getDate()}` + ' - ' + `${end.getMonth() + 1}` + '.' + `${end.getDate()}`;
@@ -1428,7 +1420,7 @@ calendar.on({
     calendar.today();
     let start = calendar.getDateRangeStart();
     let end = calendar.getDateRangeEnd();
-    console.log('today', start.getDate(), end);
+    //console.log('today', start.getDate(), end);
     // Display date range on top of calendar 
     document.getElementById('year').value = `${end.getFullYear()}`;
     document.getElementById('month').value = `${start.getMonth() + 1}` + '.' + `${start.getDate()}` + ' - ' + `${end.getMonth() + 1}` + '.' + `${end.getDate()}`;
@@ -1439,7 +1431,7 @@ calendar.on({
     calendar.next();
     let start = calendar.getDateRangeStart();
     let end = calendar.getDateRangeEnd();
-    console.log('next', start, end);
+    //console.log('next', start, end);
     // Display date range on top of calendar 
     document.getElementById('year').value = `${end.getFullYear()}`;
     document.getElementById('month').value = `${start.getMonth() + 1}` + '.' + `${start.getDate()}` + ' - ' + `${end.getMonth() + 1}` + '.' + `${end.getDate()}`;
