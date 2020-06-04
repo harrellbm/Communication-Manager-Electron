@@ -166,8 +166,9 @@ function saveToMain () {
 document.getElementById('messOpen').addEventListener("click", openFile);
 function openFile () {
   let ipcPack = ipc.sendSync('open-file'); // Uses synchronous call to avoid user actions before data is loaded 
+  console.log('returned from main', ipcPack);
   currentInitiativeId = ipcPack.initId;
-  currentInitiative.unpack_from_ipc(ipcPack.ipcInit);
+  currentInitiative.unpack_from_ipc(ipcPack.initObj);
   //console.log('init id on index load from file: ', currentInitiativeId, 'Unpacked initiative', currentInitiative);
 
   // Clear old message and avenue Ui elements 
