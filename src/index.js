@@ -409,12 +409,14 @@ function deleteAveMess (ave) {
   // Get the modal and button that opens it from message manager tab
       // Note: on the initaitive tab the modal is opened via the beforeCreateSchedule event
   var modal = document.getElementById("aveModal");
-  document.getElementById("addAve").addEventListener("click", modalLaunch);
+  document.getElementById("addAve").addEventListener("click", function () { modalLaunch('messAdd', 'mess') });
   
   // Launch the modal with basic settings. Can take in a date from calendar event to display on creation
-  function modalLaunch(calEvent='') {
+  function modalLaunch(calEvent='', launchType='') {
+    // Store launch type in DOM
+     document.getElementById('launchModalType').value = launchType;
     // Set dropdown options from list held in the initiative object 
-    let dropdown = document.getElementById('aveDropModal')
+    let dropdown = document.getElementById('aveDropModal');
     let options = currentInitiative.avenue_types;
     for (i in options){
       let opElem = document.createElement("option");
@@ -505,18 +507,23 @@ function deleteAveMess (ave) {
   
   // Save contents from the modal. Then update Initiative object, Message Manager tab and Initiative tab
   function aveModalDelete (){
-    // Confirm that user wants to delete avenue if not return
-    swal({
-      title: 'Deleting Avenue',
-      text: 'Are you sure you want to delete your Avenue?', 
-      icon: 'warning',
-      buttons: ['Cancel', 'Yes'],
-      dangerMode: true
-    })
-    .then(function (value) {
-      if (value == null) { // Escape deletion 
-        return
-      } else { // Proceed with deletion 
+    // Get launch type 
+    let launchType = document.getElementById('launchModalType').value;
+    console.log('delete event', launchType)
+    // If launched from Calendar on Initiative tab verify delete 
+    if (launchType == 'calUpdate') {
+      // Confirm that user wants to delete avenue if not return
+      swal({
+        title: 'Deleting Avenue',
+        text: 'Are you sure you want to delete your Avenue?', 
+        icon: 'warning',
+        buttons: ['Cancel', 'Yes'],
+        dangerMode: true
+      })
+      .then(function (value) {
+        if (value == null) { // Escape deletion 
+          return
+        } else { // Proceed with deletion 
           // Get id from DOM
           let aveId = document.getElementById('aveIdModal');
           // Remove avenue from message manager UI
@@ -538,16 +545,16 @@ function deleteAveMess (ave) {
           document.getElementById('aveSentModal').checked = false; // Sent
           document.getElementById('aveDropModal').value = 'Email'; // Type
           document.getElementById('avePersModal').value = ''; // Person
-          let date = document.getElementById('aveDateModal').value = ''; // Date
-          let description = document.getElementById('aveDescModal').value = ''; // Description
-          
+          document.getElementById('aveDateModal').value = ''; // Date Value
+          document.getElementById('aveDescModal').value = ''; // Description Value
           // Reset backgroup of date and description incase they had been changed on unfilled attempt to save
-          date.style.backgroundColor = 'white';
-          description.style.backgroundColor = 'white';
+          document.getElementById('aveDateModal').style.backgroundColor = 'white'; // Date Style
+          document.getElementById('aveDescModal').style.backgroundColor = 'white'; // Description Style
           return
-          }; 
+        }; 
       });
-    };
+    } else if (launchType == 'mess' || launchType == 'calCreate') { return }; // Else if launched from message manager tab disregard click on delete button
+  };
   
   // Get the <span> element that closes the modal and attach listener
   document.getElementsByClassName("close")[0].addEventListener("click", function() {
@@ -1334,14 +1341,17 @@ calendar.on('clickDayname', function() {
 calendar.on({
   // Create schedule from add avenue popup
   'beforeCreateSchedule': function(event) {
-    console.log('event on cal click',event)
+    console.log('event on cal click',event);
+   
     // Launch the popup
-    modalLaunch(event);
+    modalLaunch(event, 'calCreate');
   },
   // Open popup on schedule click
   'clickSchedule': function(event) {
     console.log('calendar event on click schedule', event);
     // Launch avenue popup with saved values 
+    // Store launch type
+    document.getElementById('launchModalType').value = 'calUpdate';
     // Send Id to be held until saved 
     document.getElementById('aveIdModal').value = event.schedule.id;
     // Set dropdown options from list held in the initiative object 
