@@ -484,7 +484,10 @@ function deleteAveMess (ave) {
       modal.style.display = "none";
       // Reset modal
       sent.checked = false;
-      type.value = 'Email'
+      let i, L= type.options.length - 1;
+      for(i = L; i >= 0; i--) {
+        type.remove(i);
+      };
       date.value = ''; 
       description.value = '';
       person.value = '';
@@ -543,7 +546,12 @@ function deleteAveMess (ave) {
           // Reset modal
           aveId.value = '';
           document.getElementById('aveSentModal').checked = false; // Sent
-          document.getElementById('aveDropModal').value = 'Email'; // Type
+          let types = document.getElementById('aveDropModal'); // Type
+          let i, L= types.options.length - 1;
+          console.log('i', i, 'L', L)
+          for(i = L; i >= 0; i--) {
+            types.remove(i);
+          };
           document.getElementById('avePersModal').value = ''; // Person
           document.getElementById('aveDateModal').value = ''; // Date Value
           document.getElementById('aveDescModal').value = ''; // Description Value
@@ -569,7 +577,10 @@ function deleteAveMess (ave) {
     let person = document.getElementById('avePersModal');
     let aveId = document.getElementById('aveIdModal');
     sent.checked = false;
-    type.value = 'Email'
+    let i, L= type.options.length - 1;
+    for(i = L; i >= 0; i--) {
+      type.remove(i);
+    };
     date.value = ''; 
     description.value = '';
     person.value = '';
@@ -593,7 +604,10 @@ function deleteAveMess (ave) {
       let person = document.getElementById('avePersModal');
       let aveId = document.getElementById('aveIdModal');
       sent.checked = false;
-      type.value = 'Email'
+      let i, L= type.options.length - 1;
+      for(i = L; i >= 0; i--) {
+        type.remove(i);
+      };
       date.value = ''; 
       description.value = '';
       person.value = '';
