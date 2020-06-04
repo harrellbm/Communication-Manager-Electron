@@ -34,8 +34,17 @@ describe('Test Index process', function () {
   // Add and remove message in ui  
   it('should add message, then delete it', async () => {
     await app.client.waitUntilWindowLoaded();
-    // Switch to message manager tab 
-    await app.client.click('#messageTab');
+    // Clean out Initiative for any old objects in file 
+      let testInit = new templates.Initiative();
+      // Pack for ipc
+      let ipcInit = await testInit.pack_for_ipc();
+      // Send
+      await app.electron.ipcRenderer.send('save', '0', ipcInit);
+      // Switch to message manager tab
+      await app.client.click('#messageTab');
+      // Open initiative from file 
+      await app.client.click('#messOpen');
+      await app.client.waitUntilWindowLoaded();
     // Add message 
     await app.client.click('#addMess');
     // Manually save
@@ -46,13 +55,8 @@ describe('Test Index process', function () {
       elem[0].click();
     });
     // Verify message was added in file
-    //await function () { new Promise(resolve => setTimeout(console.log(resolve), 5))};
-    
     let rawData = await fs.readFile('data.json');
     let fileData = await JSON.parse(rawData);
-    
-    //await function () { new Promise(resolve => setTimeout(console.log(resolve), 5))};
-  
     //console.log(fileData.initiatives['0']);
     let mess = fileData.initiatives['0'].messages['0'];
     expect(mess, 'Message does not exist').to.be.an('object').with.keys('title', 'greeting', 'content', 'signature', 'avenue_ids');
@@ -69,10 +73,8 @@ describe('Test Index process', function () {
     let container = await app.client.$('#messageIn').getHTML();
     //console.log(container);
     expect(container, 'Message exists').to.equal('<div id="messageIn" class="messIn"></div>');
-    // Read the file and verify deleted in file 
-    //await function () { new Promise(resolve => setTimeout(console.log(resolve), 5))}; 
+    // Read the file and verify deleted in file  
     rawData = await fs.readFile('data.json');
-    //await function () { new Promise(resolve => setTimeout(console.log(resolve), 5))};
     fileData = await JSON.parse(rawData);
     //console.log(fileData.initiatives['0']);
     messTitle = fileData.initiatives['0'].messages['0']
@@ -82,25 +84,38 @@ describe('Test Index process', function () {
     // Add and remove avenue in ui  
  it('should add avenue, then delete it', async () => {
     await app.client.waitUntilWindowLoaded();
-    // Switch to message manager tab 
-    await app.client.click('#messageTab');
+    // Clean out Initiative for any old objects in file 
+      let testInit = new templates.Initiative();
+      // Pack for ipc
+      let ipcInit = await testInit.pack_for_ipc();
+      // Send
+      await app.electron.ipcRenderer.send('save', '0', ipcInit);
+      // Switch to message manager tab
+      await app.client.click('#messageTab');
+      // Open initiative from file 
+      await app.client.click('#messOpen');
+      await app.client.waitUntilWindowLoaded();
     // Add avenue
     await app.client.click('#addAve');
-    // Manually save
-    await app.client.click('#messSave');
+    await app.client.$('#aveDateModal').setValue('11-30-2022');
+    await app.client.$('#aveDescModal').setValue('This is an new avenue');
+    // Save from Popup
+    await app.client.click('#saveModal');
+    // Manually Save to file
+    await app.client.click('#messSave')
     // Dismiss popup
     await app.client.execute(function () {
       let elem = document.getElementsByClassName('swal-overlay swal-overlay--show-modal');
       elem[0].click();
     });
-    // Verify message was added in file
-    //await function () { new Promise(resolve => setTimeout(console.log(resolve), 5))};
+    // Verify avenue was added in file
     let rawData = await fs.readFile('data.json');
-    //await function () { new Promise(resolve => setTimeout(console.log(resolve), 5))};
     let fileData = await JSON.parse(rawData);
-    //console.log(fileData.initiatives['0']);
+    //console.log(fileData.initiatives['0'].avenues['0']);
     let ave = fileData.initiatives['0'].avenues['0'];
     expect(ave, 'Avenue does not exist').to.be.an('object').with.keys('sent', 'avenue_type', 'description', 'person', 'message_id', 'date');
+    expect(ave.date, 'Incorrect Date').to.be.a('string').that.equals('Wed Nov 30 2022 00:00:00 GMT-0700');
+    expect(ave.description, 'Incorrect description').to.be.a('string').that.equals('This is an new avenue');
     // Verify message was added in ui 
     expect(app.client.$('#avenue0'), 'Avenue does not exist').to.eventually.exist;
     // Delete avenue 
@@ -115,61 +130,83 @@ describe('Test Index process', function () {
     //console.log(container);
     expect(container, 'Avenue exists').to.equal('<div id="avenueIn" class="messIn"></div>');
     // Read the file and verify deleted in file 
-    //await function () { new Promise(resolve => setTimeout(console.log(resolve), 5))};
     rawData = await fs.readFile('data.json');
-    //await function () { new Promise(resolve => setTimeout(console.log(resolve), 5))};
     fileData = await JSON.parse(rawData);
     //console.log(fileData.initiatives['0']);
-    // Verify message title
-    messTitle = fileData.initiatives['0'].avenues['0']
-    expect(messTitle, 'Message title incorrect').to.be.undefined;
+    // Verify avenue deleted in file message title
+    ave = fileData.initiatives['0'].avenues['0'];
+    expect(ave, 'Avenue not deleted').to.be.undefined;
   });
 
   // save on manual save 
  it('should save from index on manual save', async () => {
     await app.client.waitUntilWindowLoaded();
-    // Switch to message manager tab 
-    await app.client.click('#messageTab');
+    // Clean out Initiative of any old objects in file 
+      let testInit = new templates.Initiative();
+      // Pack for ipc
+      let ipcInit = await testInit.pack_for_ipc();
+      // Send
+      await app.electron.ipcRenderer.send('save', '0', ipcInit);
+      // Switch to message manager tab
+      await app.client.click('#messageTab');
+      // Open initiative from file 
+      await app.client.click('#messOpen');
+      await app.client.waitUntilWindowLoaded();
     // Add a message 
     await app.client.click('#addMess');
     await app.client.$('#messTitle0').setValue('This is a test Title');
     //Add an avenue
     await app.client.click('#addAve');
-    await app.client.$('#aveDescription0').setValue('Test Avenue Description');
-    // Manually save
-    await app.client.click('#messSave');
+    await app.client.$('#aveDateModal').setValue('11-30-2022');
+    await app.client.$('#aveDescModal').setValue('Test Avenue Description');
+    // Save from Popup
+    await app.client.click('#saveModal');
+    // Manually Save to file
+    await app.client.click('#messSave')
+    // Dismiss popup
+    await app.client.execute(function () {
+      let elem = document.getElementsByClassName('swal-overlay swal-overlay--show-modal');
+      elem[0].click();
+    });
     // Read the file and verify things saved 
-    //await function () { new Promise(resolve => setTimeout(console.log(resolve), 5))};
     let rawData = await fs.readFile('data.json');
-    //await function () { new Promise(resolve => setTimeout(console.log(resolve), 5))};
     let fileData = await JSON.parse(rawData);
     //console.log(fileData.initiatives['0']);
     // Verify message title
-    let messTitle = fileData.initiatives['0'].messages['0'].title
-    expect(messTitle, 'Message title incorrect').to.be.a('string').that.equals('This is a test Title')
+    let messTitle = fileData.initiatives['0'].messages['0'].title;
+    expect(messTitle, 'Message title incorrect').to.be.a('string').that.equals('This is a test Title');
     // Verify avenue description
-    let aveDescription = fileData.initiatives['0'].avenues['0'].description
-    expect(aveDescription, 'Avenue desctription incorrect').to.be.a('string').that.equals('Test Avenue Description')
-    });
+    let aveDescription = fileData.initiatives['0'].avenues['0'].description;
+    expect(aveDescription, 'Avenue desctription incorrect').to.be.a('string').that.equals('Test Avenue Description');
+  });
 
   // save from index on index close
   it('should save from index on app close', async () => {
-    
     await app.client.waitUntilWindowLoaded();
-    // Switch to message manager tab 
-    await app.client.click('#messageTab');
+    // Clean out Initiative for any old objects in file 
+      let testInit = new templates.Initiative();
+      // Pack for ipc
+      let ipcInit = await testInit.pack_for_ipc();
+      // Send
+      await app.electron.ipcRenderer.send('save', '0', ipcInit);
+      // Switch to message manager tab
+      await app.client.click('#messageTab');
+      // Open initiative from file 
+      await app.client.click('#messOpen');
+      await app.client.waitUntilWindowLoaded();
     // Add a message 
     await app.client.click('#addMess');
     await app.client.$('#messTitle0').setValue('This is a test Title');
     //Add an avenue
     await app.client.click('#addAve');
-    await app.client.$('#aveDescription0').setValue('Test Avenue Description');
+    await app.client.$('#aveDateModal').setValue('11-30-2022');
+    await app.client.$('#aveDescModal').setValue('Test Avenue Description');
+    // Save from Popup
+    await app.client.click('#saveModal');
     // Quit the app
     await app.stop();
     // Read the file and verify things saved 
-    //await function () { new Promise(resolve => setTimeout(console.log(resolve), 5))};
     let rawData = await fs.readFile('data.json');
-    //await function () { new Promise(resolve => setTimeout(console.log(resolve), 5))};
     let fileData = await JSON.parse(rawData);
     //console.log(fileData.initiatives['0']);
     // Verify message title
@@ -178,7 +215,7 @@ describe('Test Index process', function () {
     // Verify avenue description;
     let aveDescription = fileData.initiatives['0'].avenues['0'].description;
     expect(aveDescription, 'Avenue desctription incorrect').to.be.a('string').that.equals('Test Avenue Description');
-    });
+  });
 
   // Open/load correctly 
   it('should load correctly', async () => {
@@ -206,16 +243,26 @@ describe('Test Index process', function () {
     expect(description1, 'Avenue description incorrect').to.be.a('string').that.equals('Email Blast');
     // Check that things are loaded in proper container
     let container = await app.client.$('#messageIn').getHTML();
-    expect(container, 'Message and avenue did not load correctly').to.equal('<div id="messageIn" class="messIn"><div class="message" id="message0"><p class="messTitle_heading" id="messTitle_heading">Title:</p><textarea class="messTitle" id="messTitle0"></textarea><div class="aveDrop" id="aveDrop0"><div class="avenue" id="avenue0"><select class="aveDropdown" id="avenue_type0"><option value="Email">Email</option><option value="Text">Text</option><option value="Facebook">Facebook</option><option value="Instagram">Instagram</option><option value="Handout">Handout</option><option value="Poster">Poster</option><option value="Other">Other</option></select><p class="aveDescription_title" id="aveDescription_title">Description:</p><p class="avePersons_title" id="avePersons_title">Person:</p><p class="aveDate_title" id="aveDate_title">Date:</p><p class="aveSent_box" id="aveSent_box0"><input class="aveSent_checkbox" id="aveSent_checkbox0" type="checkbox"><label class="aveSent_label" id="aveSent_label" for="aveSent_checkbox">Sent</label></p><textarea class="aveDescription" id="aveDescription0"></textarea><textarea class="avePersons" id="avePersons0"></textarea><input class="aveDate" id="aveDate0" type="date"><input class="aveDelete" id="aveDelete0" type="button" value="x"></div></div><div class="btnArray" id="btnArray0"><input class="messEdit" id="messEdit0" type="button" value="Edit"><input class="messCopy" id="messCopy0" type="button" value="Copy"><input class="messDelete" id="messDelete0" type="button" value="x"></div></div></div>');
+    expect(container, 'Message and avenue did not load correctly').to.equal('<div id="messageIn" class="messIn"><div class="message" id="message0"><p class="messTitle_heading" id="messTitle_heading">Title:</p><textarea class="messTitle" id="messTitle0"></textarea><div class="aveDrop" id="aveDrop0"><div class="avenue" id="avenue0"><select class="aveDropdown" id="avenue_type0"><option value="Email">Email</option><option value="Text">Text</option><option value="Phone Call">Phone Call</option><option value="Facebook">Facebook</option><option value="Instagram">Instagram</option><option value="Card">Card</option><option value="Handout">Handout</option><option value="Poster">Poster</option><option value="Other">Other</option></select><p class="aveDescription_title" id="aveDescription_title">Description:</p><p class="avePersons_title" id="avePersons_title">Person:</p><p class="aveDate_title" id="aveDate_title">Date:</p><p class="aveSent_box" id="aveSent_box0"><input class="aveSent_checkbox" id="aveSent_checkbox0" type="checkbox"><label class="aveSent_label" id="aveSent_label" for="aveSent_checkbox">Sent</label></p><textarea class="aveDescription" id="aveDescription0"></textarea><textarea class="avePersons" id="avePersons0"></textarea><input class="aveDate" id="aveDate0" type="date"><input class="aveDelete" id="aveDelete0" type="button" value="x"></div></div><div class="aveBtnArray" id="aveBtnArray0"><input class="messEdit" id="messEdit0" type="button" value="Edit"><input class="messCopy" id="messCopy0" type="button" value="Copy"><input class="messDelete" id="messDelete0" type="button" value="x"></div></div></div>');
     container = await app.client.$('#avenueIn').getHTML();
-    expect(container, 'Avenue did not load correctly').to.equal('<div id="avenueIn" class="messIn"><div class="avenue" id="avenue1"><select class="aveDropdown" id="avenue_type1"><option value="Email">Email</option><option value="Text">Text</option><option value="Facebook">Facebook</option><option value="Instagram">Instagram</option><option value="Handout">Handout</option><option value="Poster">Poster</option><option value="Other">Other</option></select><p class="aveDescription_title" id="aveDescription_title">Description:</p><p class="avePersons_title" id="avePersons_title">Person:</p><p class="aveDate_title" id="aveDate_title">Date:</p><p class="aveSent_box" id="aveSent_box1"><input class="aveSent_checkbox" id="aveSent_checkbox1" type="checkbox"><label class="aveSent_label" id="aveSent_label" for="aveSent_checkbox">Sent</label></p><textarea class="aveDescription" id="aveDescription1"></textarea><textarea class="avePersons" id="avePersons1"></textarea><input class="aveDate" id="aveDate1" type="date"><input class="aveDelete" id="aveDelete1" type="button" value="x"></div></div>');
-    });
+    expect(container, 'Avenue did not load correctly').to.equal('<div id="avenueIn" class="messIn"><div class="avenue" id="avenue1"><select class="aveDropdown" id="avenue_type1"><option value="Email">Email</option><option value="Text">Text</option><option value="Phone Call">Phone Call</option><option value="Facebook">Facebook</option><option value="Instagram">Instagram</option><option value="Card">Card</option><option value="Handout">Handout</option><option value="Poster">Poster</option><option value="Other">Other</option></select><p class="aveDescription_title" id="aveDescription_title">Description:</p><p class="avePersons_title" id="avePersons_title">Person:</p><p class="aveDate_title" id="aveDate_title">Date:</p><p class="aveSent_box" id="aveSent_box1"><input class="aveSent_checkbox" id="aveSent_checkbox1" type="checkbox"><label class="aveSent_label" id="aveSent_label" for="aveSent_checkbox">Sent</label></p><textarea class="aveDescription" id="aveDescription1"></textarea><textarea class="avePersons" id="avePersons1"></textarea><input class="aveDate" id="aveDate1" type="date"><input class="aveDelete" id="aveDelete1" type="button" value="x"></div></div>');
+  });
 
   // Update index on save from editor
   it('should update index on editor save', async () => {
     await app.client.waitUntilWindowLoaded();
-    // Switch to message manager tab 
-    await app.client.click('#messageTab');
+    await app.client.waitUntilWindowLoaded();
+    // Clean out Initiative for any old objects in file 
+      let testInit = new templates.Initiative();
+      // Pack for ipc
+      let ipcInit = await testInit.pack_for_ipc();
+      // Send
+      await app.electron.ipcRenderer.send('save', '0', ipcInit);
+      // Switch to message manager tab
+      await app.client.click('#messageTab');
+      // Open initiative from file 
+      await app.client.click('#messOpen');
+      await app.client.waitUntilWindowLoaded();
     // Add a message 
     await app.client.click('#addMess');
     // Click to open editor
@@ -233,11 +280,20 @@ describe('Test Index process', function () {
     expect(title, 'Message title incorrect').to.be.a('string').that.equals('This is a test Title');
   });
   
-  // Verify toolbar copy button sents all contents to clipboard 
+  // Verify toolbar copy button sends all contents to clipboard 
   it('should copy to clipboard', async () => {
     await app.client.waitUntilWindowLoaded();
-    // Switch to message manager tab 
-    await app.client.click('#messageTab');
+    // Clean out Initiative for any old objects in file 
+      let testInit = new templates.Initiative();
+      // Pack for ipc
+      let ipcInit = await testInit.pack_for_ipc();
+      // Send
+      await app.electron.ipcRenderer.send('save', '0', ipcInit);
+      // Switch to message manager tab
+      await app.client.click('#messageTab');
+      // Open initiative from file 
+      await app.client.click('#messOpen');
+      await app.client.waitUntilWindowLoaded();
     // Add a message 
     await app.client.click('#addMess');
     // Click to open editor
@@ -264,28 +320,42 @@ describe('Test Index process', function () {
   // Should drag and drop avenue into message drop 
   it('should drag and drop avenue', async () => {
     await app.client.waitUntilWindowLoaded();
-    // Switch to message manager tab 
-    await app.client.click('#messageTab');
-    // Add a message and avenue
+    // Clean out Initiative of any old objects in file 
+      let testInit = new templates.Initiative();
+      // Pack for ipc
+      let ipcInit = await testInit.pack_for_ipc();
+      // Send
+      await app.electron.ipcRenderer.send('save', '0', ipcInit);
+      // Switch to message manager tab
+      await app.client.click('#messageTab');
+      // Open initiative from file 
+      await app.client.click('#messOpen');
+      await app.client.waitUntilWindowLoaded();
+    // Add a message
     await app.client.click('#addMess');
+    //Add an avenue
     await app.client.click('#addAve');
+    await app.client.$('#aveDateModal').setValue('11-30-2022');
+    await app.client.$('#aveDescModal').setValue('Test Avenue Description');
+    await app.client.click('#saveModal');
+    // Drag avenue to message 
     await app.client.$('#avenue0').dragAndDrop('#aveDrop0');
     // Make sure avenue is in message dropbox
     let container = await app.client.$('#avenueIn').getHTML();
-    //console.log(container);
+    console.log(container);
     expect(container, 'Avenue still in avenueIn').to.equal('<div id="avenueIn" class="messIn"></div>');
     container = await app.client.$('#messageIn').getHTML()
-    //console.log(container);
-    expect(container, 'Avenue not in message dropbox').to.equal('<div id="messageIn" class="messIn"><div class="message" id="message0"><p class="messTitle_heading" id="messTitle_heading">Title:</p><textarea class="messTitle" id="messTitle0"></textarea><div class="aveDrop" id="aveDrop0"><div class="avenue" id="avenue0"><select class="aveDropdown" id="avenue_type0"><option value="Email">Email</option><option value="Text">Text</option><option value="Facebook">Facebook</option><option value="Instagram">Instagram</option><option value="Handout">Handout</option><option value="Poster">Poster</option><option value="Other">Other</option></select><p class="aveDescription_title" id="aveDescription_title">Description:</p><p class="avePersons_title" id="avePersons_title">Person:</p><p class="aveDate_title" id="aveDate_title">Date:</p><p class="aveSent_box" id="aveSent_box0"><input class="aveSent_checkbox" id="aveSent_checkbox0" type="checkbox"><label class="aveSent_label" id="aveSent_label" for="aveSent_checkbox">Sent</label></p><textarea class="aveDescription" id="aveDescription0"></textarea><textarea class="avePersons" id="avePersons0"></textarea><input class="aveDate" id="aveDate0" type="date"><input class="aveDelete" id="aveDelete0" type="button" value="x"></div></div><div class="btnArray" id="btnArray0"><input class="messEdit" id="messEdit0" type="button" value="Edit"><input class="messCopy" id="messCopy0" type="button" value="Copy"><input class="messDelete" id="messDelete0" type="button" value="x"></div></div></div>');
+    console.log(container);
+    expect(container, 'Avenue not in message dropbox').to.equal('<div id="messageIn" class="messIn"><div class="message" id="message0"><p class="messTitle_heading" id="messTitle_heading">Title:</p><textarea class="messTitle" id="messTitle0"></textarea><div class="aveDrop" id="aveDrop0"><div class="avenue" id="avenue0"><select class="aveDropdown" id="avenue_type0"><option value="Email">Email</option><option value="Text">Text</option><option value="Phone Call">Phone Call</option><option value="Facebook">Facebook</option><option value="Instagram">Instagram</option><option value="Card">Card</option><option value="Handout">Handout</option><option value="Poster">Poster</option><option value="Other">Other</option></select><p class="aveDescription_title" id="aveDescription_title">Description:</p><p class="avePersons_title" id="avePersons_title">Person:</p><p class="aveDate_title" id="aveDate_title">Date:</p><p class="aveSent_box" id="aveSent_box0"><input class="aveSent_checkbox" id="aveSent_checkbox0" type="checkbox"><label class="aveSent_label" id="aveSent_label" for="aveSent_checkbox">Sent</label></p><textarea class="aveDescription" id="aveDescription0"></textarea><textarea class="avePersons" id="avePersons0"></textarea><input class="aveDate" id="aveDate0" type="date"><input class="aveDelete" id="aveDelete0" type="button" value="x"></div></div><div class="aveBtnArray" id="aveBtnArray0"><input class="messEdit" id="messEdit0" type="button" value="Edit"><input class="messCopy" id="messCopy0" type="button" value="Copy"><input class="messDelete" id="messDelete0" type="button" value="x"></div></div></div>');
     // Drag back to avenueIn
     await app.client.$('#avenue0').dragAndDrop('#avenueIn');
     // Make sure avenue is in message dropbox
     container = await app.client.$('#avenueIn').getHTML();
     //console.log(container);
-    expect(container, 'Avenue not in avenueIn').to.equal('<div id="avenueIn" class="messIn"><div class="avenue" id="avenue0"><select class="aveDropdown" id="avenue_type0"><option value="Email">Email</option><option value="Text">Text</option><option value="Facebook">Facebook</option><option value="Instagram">Instagram</option><option value="Handout">Handout</option><option value="Poster">Poster</option><option value="Other">Other</option></select><p class="aveDescription_title" id="aveDescription_title">Description:</p><p class="avePersons_title" id="avePersons_title">Person:</p><p class="aveDate_title" id="aveDate_title">Date:</p><p class="aveSent_box" id="aveSent_box0"><input class="aveSent_checkbox" id="aveSent_checkbox0" type="checkbox"><label class="aveSent_label" id="aveSent_label" for="aveSent_checkbox">Sent</label></p><textarea class="aveDescription" id="aveDescription0"></textarea><textarea class="avePersons" id="avePersons0"></textarea><input class="aveDate" id="aveDate0" type="date"><input class="aveDelete" id="aveDelete0" type="button" value="x"></div></div>');
+    expect(container, 'Avenue not in avenueIn').to.equal('<div id="avenueIn" class="messIn"><div class="avenue" id="avenue0"><select class="aveDropdown" id="avenue_type0"><option value="Email">Email</option><option value="Text">Text</option><option value="Phone Call">Phone Call</option><option value="Facebook">Facebook</option><option value="Instagram">Instagram</option><option value="Card">Card</option><option value="Handout">Handout</option><option value="Poster">Poster</option><option value="Other">Other</option></select><p class="aveDescription_title" id="aveDescription_title">Description:</p><p class="avePersons_title" id="avePersons_title">Person:</p><p class="aveDate_title" id="aveDate_title">Date:</p><p class="aveSent_box" id="aveSent_box0"><input class="aveSent_checkbox" id="aveSent_checkbox0" type="checkbox"><label class="aveSent_label" id="aveSent_label" for="aveSent_checkbox">Sent</label></p><textarea class="aveDescription" id="aveDescription0"></textarea><textarea class="avePersons" id="avePersons0"></textarea><input class="aveDate" id="aveDate0" type="date"><input class="aveDelete" id="aveDelete0" type="button" value="x"></div></div>');
     container = await app.client.$('#messageIn').getHTML()
     //console.log(container);
-    expect(container, 'Avenue still in message dropbox').to.equal('<div id="messageIn" class="messIn"><div class="message" id="message0"><p class="messTitle_heading" id="messTitle_heading">Title:</p><textarea class="messTitle" id="messTitle0"></textarea><div class="aveDrop" id="aveDrop0"></div><div class="btnArray" id="btnArray0"><input class="messEdit" id="messEdit0" type="button" value="Edit"><input class="messCopy" id="messCopy0" type="button" value="Copy"><input class="messDelete" id="messDelete0" type="button" value="x"></div></div></div>');
+    expect(container, 'Avenue still in message dropbox').to.equal('<div id="messageIn" class="messIn"><div class="message" id="message0"><p class="messTitle_heading" id="messTitle_heading">Title:</p><textarea class="messTitle" id="messTitle0"></textarea><div class="aveDrop" id="aveDrop0"></div><div class="aveBtnArray" id="aveBtnArray0"><input class="messEdit" id="messEdit0" type="button" value="Edit"><input class="messCopy" id="messCopy0" type="button" value="Copy"><input class="messDelete" id="messDelete0" type="button" value="x"></div></div></div>');
   }); 
 });
   
