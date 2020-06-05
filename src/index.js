@@ -169,32 +169,73 @@ function openFile () {
   console.log('returned from main', ipcPack);
   currentInitiativeId = ipcPack.initId;
   currentInitiative.unpack_from_ipc(ipcPack.initObj);
-  //console.log('init id on index load from file: ', currentInitiativeId, 'Unpacked initiative', currentInitiative);
+  console.log('init id on index load from file: ', currentInitiativeId, 'Unpacked initiative', currentInitiative);
 
-  // Clear old message and avenue Ui elements 
+  // Clear old Initative tab ui elements 
+  oldMessages = document.getElementById('initName');
+  oldMessages.innerHTML = ''; 
+  oldMessages = document.getElementById('initDescription');
+  oldMessages.innerHTML = ''; 
+  oldMessages = document.getElementById('groupIn');
+  oldMessages.innerHTML = ''; 
+  oldAvenues = document.getElementById('goalIn');
+  oldAvenues.innerHTML = '';
+  calendar.clear();
+
+  // Clear old Message manager tab ui elements
   oldMessages = document.getElementById('messageIn');
   oldMessages.innerHTML = ''; 
   oldAvenues = document.getElementById('avenueIn');
   oldAvenues.innerHTML = '';
 
-  // Send new initiative messages and avenues to ui
-  let messKeys = currentInitiative.messages.keys();
-  for ( id of messKeys ){
-    addMess('load', id ); // Note: Event is not used programatically but helps with debugging input to addMess
-  };
-  
-  let aveKeys = currentInitiative.avenues.keys();
+  // Send values to Initiative tab ui
+    document.getElementById('initName').value = currentInitiative.name; // Update title from ui
+    document.getElementById('initDescription').value = currentInitiative.description; // Update title from ui
+    // Load Groups
+      let groupKeys = currentInitiative.groups.keys();
+      for ( grpId of groupKeys ){
+        addGroup( 'load', grpId ); // Note: Event is not used programatically but helps with debugging input to addGroup
+        // Iterate through group's contacts and add to ui 
+        let group = currentInitiative.groups.get(grpId);
+        let contactKeys = group.contacts.keys();
+        for ( contId of contactKeys ){
+          addContact( 'load', grpId, contId );
+        };
+      };
+    // Load Goals
+      let goalKeys = currentInitiative.goals.keys();
+      for ( id of goalKeys ){
+        addGoal('load', id ); // Note: Event is not used programatically but helps with debugging input to addMess
+      };
+
+    // Display date range on top of calendar
+      let start = calendar.getDateRangeStart();
+      let end = calendar.getDateRangeEnd();
+      document.getElementById('year').value = `${end.getFullYear()}`;
+      document.getElementById('month').value = `${start.getMonth() + 1}` + '.' + `${start.getDate()}` + ' - ' + `${end.getMonth() + 1}` + '.' + `${end.getDate()}`;
+
+  // Send values to Message manager tab ui
+    // Load messages 
+    let messKeys = currentInitiative.messages.keys();
+    for ( id of messKeys ){
+     addMess('load', id ); // Note: Event is not used programatically but helps with debugging input to addMess
+    };
+
+  // Load avenues to both message manager and initiative tab
+  aveKeys = currentInitiative.avenues.keys();
   for ( id of aveKeys ){
+    console.log('ave id for mess tab load', id);
     // Check to see if avenue is linked to a message
     let aveObj = currentInitiative.avenues.get(id);
-    let messId = aveObj.message_id
+    let messId = aveObj.message_id;
     if (messId != '') { // If so send to respective message drop box
-      addAve('load', id, `aveDrop${messId}`) // Note: event is not used programatically but helps with debugging input to addAve
-      }
-      else { // Else just add it to the default container
-        addAve('load', id ); 
-        }
+      addAve('load', id, `aveDrop${messId}`) ;// Note: event is not used programatically but helps with debugging input to addAve
+    } else { // Else just add it to the default container
+      addAve('load', id ); 
+    };
   };
+  // Refresh Initative tab calendar when everthing is finished 
+  calendar.render();
 };
 
 
