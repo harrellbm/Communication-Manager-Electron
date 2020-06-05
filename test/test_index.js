@@ -34,17 +34,17 @@ describe('Test Index process', function () {
   // Add and remove message in ui  
   it('should add message, then delete it', async () => {
     await app.client.waitUntilWindowLoaded();
-    // Clean out Initiative for any old objects in file 
+    // Clean out Initiative of any old objects in file 
       let testInit = new templates.Initiative();
       // Pack for ipc
       let ipcInit = await testInit.pack_for_ipc();
       // Send
       await app.electron.ipcRenderer.send('save', '0', ipcInit);
-      // Switch to message manager tab
-      await app.client.click('#messageTab');
       // Open initiative from file 
-      await app.client.click('#messOpen');
-      await app.client.waitUntilWindowLoaded();
+      await app.client.click('#initOpen');
+    // Switch to message manager tab
+    await app.client.click('#messageTab');
+    await app.client.waitUntilWindowLoaded();
     // Add message 
     await app.client.click('#addMess');
     // Manually save
@@ -90,11 +90,11 @@ describe('Test Index process', function () {
       let ipcInit = await testInit.pack_for_ipc();
       // Send
       await app.electron.ipcRenderer.send('save', '0', ipcInit);
-      // Switch to message manager tab
-      await app.client.click('#messageTab');
       // Open initiative from file 
-      await app.client.click('#messOpen');
-      await app.client.waitUntilWindowLoaded();
+      await app.client.click('#initOpen');
+    // Switch to message manager tab
+    await app.client.click('#messageTab');
+    await app.client.waitUntilWindowLoaded();
     // Add avenue
     await app.client.click('#addAve');
     await app.client.$('#aveDateModal').setValue('11-30-2022');
@@ -147,11 +147,11 @@ describe('Test Index process', function () {
       let ipcInit = await testInit.pack_for_ipc();
       // Send
       await app.electron.ipcRenderer.send('save', '0', ipcInit);
-      // Switch to message manager tab
-      await app.client.click('#messageTab');
       // Open initiative from file 
-      await app.client.click('#messOpen');
-      await app.client.waitUntilWindowLoaded();
+      await app.client.click('#initOpen');
+    // Switch to message manager tab
+    await app.client.click('#messageTab');
+    await app.client.waitUntilWindowLoaded();
     // Add a message 
     await app.client.click('#addMess');
     await app.client.$('#messTitle0').setValue('This is a test Title');
@@ -189,11 +189,11 @@ describe('Test Index process', function () {
       let ipcInit = await testInit.pack_for_ipc();
       // Send
       await app.electron.ipcRenderer.send('save', '0', ipcInit);
-      // Switch to message manager tab
-      await app.client.click('#messageTab');
       // Open initiative from file 
-      await app.client.click('#messOpen');
-      await app.client.waitUntilWindowLoaded();
+      await app.client.click('#initOpen');
+    // Switch to message manager tab
+    await app.client.click('#messageTab');
+    await app.client.waitUntilWindowLoaded();
     // Add a message 
     await app.client.click('#addMess');
     await app.client.$('#messTitle0').setValue('This is a test Title');
@@ -229,10 +229,10 @@ describe('Test Index process', function () {
     let ipcInit = await testInit.pack_for_ipc();
     // Send
     await app.electron.ipcRenderer.send('save', '0', ipcInit);
-    // Switch to message manager tab 
-    await app.client.click('#messageTab');
     // Open initiative from file 
-    await app.client.click('#messOpen');
+    await app.client.click('#initOpen');
+    // Switch to message manager tab
+    await app.client.click('#messageTab');
     await app.client.waitUntilWindowLoaded();
     // Check that loaded values are correct 
     let title = await app.client.$('#messTitle0').getValue();
@@ -258,11 +258,11 @@ describe('Test Index process', function () {
       let ipcInit = await testInit.pack_for_ipc();
       // Send
       await app.electron.ipcRenderer.send('save', '0', ipcInit);
-      // Switch to message manager tab
-      await app.client.click('#messageTab');
       // Open initiative from file 
-      await app.client.click('#messOpen');
-      await app.client.waitUntilWindowLoaded();
+      await app.client.click('#initOpen');
+    // Switch to message manager tab
+    await app.client.click('#messageTab');
+    await app.client.waitUntilWindowLoaded();
     // Add a message 
     await app.client.click('#addMess');
     // Click to open editor
@@ -289,11 +289,11 @@ describe('Test Index process', function () {
       let ipcInit = await testInit.pack_for_ipc();
       // Send
       await app.electron.ipcRenderer.send('save', '0', ipcInit);
-      // Switch to message manager tab
-      await app.client.click('#messageTab');
       // Open initiative from file 
-      await app.client.click('#messOpen');
-      await app.client.waitUntilWindowLoaded();
+      await app.client.click('#initOpen');
+    // Switch to message manager tab
+    await app.client.click('#messageTab');
+    await app.client.waitUntilWindowLoaded();
     // Add a message 
     await app.client.click('#addMess');
     // Click to open editor
@@ -326,11 +326,11 @@ describe('Test Index process', function () {
       let ipcInit = await testInit.pack_for_ipc();
       // Send
       await app.electron.ipcRenderer.send('save', '0', ipcInit);
-      // Switch to message manager tab
-      await app.client.click('#messageTab');
       // Open initiative from file 
-      await app.client.click('#messOpen');
-      await app.client.waitUntilWindowLoaded();
+      await app.client.click('#initOpen');
+    // Switch to message manager tab
+    await app.client.click('#messageTab');
+    await app.client.waitUntilWindowLoaded();
     // Add a message
     await app.client.click('#addMess');
     //Add an avenue
