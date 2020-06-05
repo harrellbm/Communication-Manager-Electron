@@ -123,7 +123,7 @@ function save () {
     // Sync ui and initiative avenue objects before saving 
     let aveKeys = currentInitiative.avenues.keys(); 
     for (id of aveKeys) {// Each iteration goes through one avenue
-      console.log('avenue id to save', id)
+      //console.log('avenue id to save', id)
       let guiAve = document.getElementById(`avenue${id}`); // Avenue object from the ui
       let initAve = currentInitiative.avenues.get(id); // Avenue object from the initiative object 
     
@@ -503,6 +503,9 @@ function deleteAveMess (ave) {
       if (aveId.value == '' || aveId.value == undefined ){
         // Add avenue to initiative object, initative tab and message manager tab. 
         addAve('modalAdd', '', 'avenueIn', sent.checked, type.value, description.value, person.value, momDate.format('ddd MMM DD YYYY HH:mm:ss')); // use Moment date format
+         // Save everything to main
+         let ipcInit = currentInitiative.pack_for_ipc();
+         ipc.send('save', currentInitiativeId, ipcInit);
       } else if ( parseInt(aveId.value) >= 0 ) {
         // Update Initiative object 
         let initAve = currentInitiative.avenues.get(aveId.value); // Avenue object from the initiative object
@@ -525,6 +528,9 @@ function deleteAveMess (ave) {
           start: momDate.format('ddd DD MMM YYYY HH:mm:ss'),
           end:  momDate.format('ddd DD MMM YYYY HH:mm:ss')
         });
+        // Save everything to main
+        let ipcInit = currentInitiative.pack_for_ipc();
+        ipc.send('save', currentInitiativeId, ipcInit);
       };
       // Close modal
       modal.style.display = "none";
