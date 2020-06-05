@@ -123,6 +123,7 @@ function save () {
     // Sync ui and initiative avenue objects before saving 
     let aveKeys = currentInitiative.avenues.keys(); 
     for (id of aveKeys) {// Each iteration goes through one avenue
+      console.log('avenue id to save', id)
       let guiAve = document.getElementById(`avenue${id}`); // Avenue object from the ui
       let initAve = currentInitiative.avenues.get(id); // Avenue object from the initiative object 
     
@@ -224,7 +225,7 @@ function openFile () {
   // Load avenues to both message manager and initiative tab
   aveKeys = currentInitiative.avenues.keys();
   for ( id of aveKeys ){
-    console.log('ave id for mess tab load', id);
+    //console.log('ave id for mess tab load', id);
     // Check to see if avenue is linked to a message
     let aveObj = currentInitiative.avenues.get(id);
     let messId = aveObj.message_id;
@@ -437,8 +438,9 @@ function deleteAveMess (ave) {
           // Remove avenue from UI
           ave.parentElement.removeChild(ave);
           // Delete Schedule object on calendar 
-          let id = ave.id[6]; // Get number only off of 
+          let id = ave.id.replace('avenue', ''); // remove ui tag off of id
           calendar.deleteSchedule(id, '1');
+          console.log('avenue id after remove', id);
           // Remove avenue from Initiative object 
           currentInitiative.avenues.delete(id); // Take only the number off of the end of the ui id 
           // Send updates to main
@@ -579,7 +581,7 @@ function deleteAveMess (ave) {
           // Delete Schedule object on calendar 
           calendar.deleteSchedule(aveId.value, '1');
           // Remove avenue from Initiative object 
-          let id = messAve.id[6];
+          let id = aveId.value;
           currentInitiative.avenues.delete(id); // Take only the number off of the end of the ui id
           // Send updates to main
           let ipcInit = currentInitiative.pack_for_ipc();
@@ -767,8 +769,8 @@ function deleteMess (mess) {
       if (aves.length != 0 ) { 
         // Unlink avenues and place them back in avenueIn 
         while (0 < aves.length){// Collection empties as they are appended back to avenueIn
-          let aveId = aves[0].id[6]; // grab id number of avenue
-          let messId = mess.id[7];
+          let aveId = aves[0].id.replace('avenue', ''); // remove ui tag from id
+          let messId = mess.id.replace('message', '');
           currentInitiative.unlink_ids(aveId, messId);
           //console.log('unlinked avenue: ', currentInitiative.avenues.get(aveId), 'unlinked message: ', currentInitiative.messages.get(messId));
           document.getElementById("avenueIn").appendChild(aves[0]);
@@ -778,7 +780,7 @@ function deleteMess (mess) {
       // Remove message from UI
       mess.parentElement.removeChild(mess);
       // Remove message from Initiative object 
-      let id = mess.id[7]; // Take only the number off of the end of the ui id 
+      let id = mess.id.replace('message', ''); // remove ui tag from id 
       currentInitiative.messages.delete(id); 
       // Send updates to main
       let ipcInit = currentInitiative.pack_for_ipc();
@@ -787,9 +789,9 @@ function deleteMess (mess) {
     });
 };
 
-// Call back function for Edit button on message element 
+// Call back function from editor 
 function editMess (mess) {
-  let messId = mess.id[7]; // Take only the number off of the end of the ui id 
+  let messId = mess.id.replace('message', ''); // remove ui tag from id  
   // Update Initiative from ui 
   let uiTitle = document.getElementById(`messTitle${messId}`);
   let messContent = currentInitiative.messages.get(`${messId}`); // get message object content
@@ -800,9 +802,9 @@ function editMess (mess) {
   ipc.send('edit', currentInitiativeId, messId, messContent); 
 };
 
-// Call back function for Edit button on message element 
+// Copy contents of message from initiative object to clipboard 
 function copyMess (mess) {
-  let messId = mess.id[7]; // Take only the number off of the end of the ui id 
+  let messId = mess.id.replace('message', ''); // remove ui tag from id  
   // Gather message to copy from Initiative and ui 
   let uiTitle = document.getElementById(`messTitle${messId}`);
   let messContent = currentInitiative.messages.get(`${messId}`); // get message object content
@@ -955,8 +957,8 @@ function deleteGoal (goal) {
       // Remove goal from UI
       goal.parentElement.removeChild(goal);
       // Remove goal from Initiative object 
-      let id = goal.id[4]; // Take only the number off of the end of the ui id 
-      //console.log("goal object in delete:", goal.id[4])
+      let id = goal.id.replace('goal', ''); // remove ui tag from id 
+      //console.log("goal object in delete:", id)
       currentInitiative.goals.delete(id); 
       // Send updates to main
       let ipcInit = currentInitiative.pack_for_ipc();
@@ -1083,8 +1085,8 @@ function deleteGroup (group) {
       // Remove message from UI
       group.parentElement.removeChild(group);
       // Remove message from Initiative object 
-      let id = group.id[5]; // Take only the number off of the end of the ui id 
-      //console.log("group object in delete:", group.id[5])
+      let id = group.id.replace('group', ''); // remove ui tag from id 
+      //console.log("group object in delete:", id)
       currentInitiative.groups.delete(id); 
       // Send updates to main
       let ipcInit = currentInitiative.pack_for_ipc();
@@ -1249,7 +1251,7 @@ function deleteContact (groupId, contactUi) {
       // Remove Contact from UI
       contactUi.parentElement.removeChild(contactUi);
       // Remove Contact from group object 
-      let contId = contactUi.id[7] + contactUi.id[8]; 
+      let contId = contactUi.id.replace('contact', ''); // remove ui tag from id 
       //console.log("contact object in delete:", contId)
       let group = currentInitiative.groups.get(groupId); 
       //console.log("group object:", group)
@@ -1272,10 +1274,10 @@ var dragDrop = dragula([document.getElementById('avenueIn')]);// aveDrops are ad
 dragDrop.on('drop', function (ave, target, source) {
   let type = target.getAttribute('class'); // determine where avenue was dropped by target class
   if (type == 'aveDrop') {
-    let aveId = ave.id[6]; // Grab the id number off of each id
-    let messId = target.id[7];
-    let oldMessId = source.id[7];
-
+    let aveId = ave.id.replace('avenue', ''); // remove ui tag from id
+    let messId = target.id.replace('aveDrop', ''); 
+    let oldMessId = source.id.replace('aveDrop', '');
+    //console.log('aveid', aveId, 'messid', messId, 'oldMessid', oldMessId)
     // Check to see if avenue is being moved from another message 
     let sourceClas = source.getAttribute('class'); 
     if (sourceClas == 'aveDrop' ) { // If coming from another message unlink from old message
@@ -1294,8 +1296,8 @@ dragDrop.on('drop', function (ave, target, source) {
         return
         }
       // If being moved from a message unlink before droping into avenueIn
-      let aveId = ave.id[6]; 
-      let messId = source.id[7];
+      let aveId = ave.id.replace('avenue', ''); // remove ui tag from id 
+      let messId = source.id.replace('aveDrop', '');
       currentInitiative.unlink_ids(aveId, messId);
       //console.log('unlinked ave: ', currentInitiative.avenues.get(aveId), 'unlinked mess: ', currentInitiative.messages.get(messId));
       }
