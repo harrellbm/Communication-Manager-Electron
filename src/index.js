@@ -1322,16 +1322,7 @@ var calendar = new Calendar('#calendar', {
   useCreationPopup: false,
   useDetailPopup: false,
   template: {
-    /*popupIsAllDay: function() {
-      return 'All Day';
-    },
-    popupStateBusy: function() {
-      return 'Crazy';
-    },
-    popupStateFree: function() {
-      return 'Free';
-    },
-    titlePlaceholder: function() {
+    /*titlePlaceholder: function() {
       return 'Subject';
     },
     locationPlaceholder: function() {
@@ -1342,44 +1333,7 @@ var calendar = new Calendar('#calendar', {
     },
     endDatePlaceholder: function() {
       return 'End date';
-    },
-    popupSave: function() {
-      return 'Save';
-    },
-    popupUpdate: function() {
-      return 'Update';
-    },
-    popupDetailDate: function(isAllDay, start, end) {
-      var isSameDate = moment(start).isSame(end);
-      var endFormat = (isSameDate ? '' : 'YYYY.MM.DD ') + 'hh:mm a';
-  
-      if (isAllDay) {
-        return moment(start).format('YYYY.MM.DD') + (isSameDate ? '' : ' - ' + moment(end).format('YYYY.MM.DD'));
-      }
-  
-      return (moment(start).format('YYYY.MM.DD hh:mm a') + ' - ' + moment(end).format(endFormat));
-    },
-    popupDetailLocation: function(schedule) {
-      return 'Location : ' + schedule.location;
-    },
-    popupDetailUser: function(schedule) {
-      return 'User : ' + (schedule.attendees || []).join(', ');
-    },
-    popupDetailState: function(schedule) {
-      return 'State : ' + schedule.state || 'Busy';
-    },
-    popupDetailRepeat: function(schedule) {
-      return 'Repeat : ' + schedule.recurrenceRule;
-    },
-    popupDetailBody: function(schedule) {
-      return 'Body : ' + schedule.body;
-    },
-    popupEdit: function() {
-      return 'Edit';
-    },
-    popupDelete: function() {
-      return 'Delete';
-    }*/
+    },*/
   },
   month: {
     daynames: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
@@ -1446,12 +1400,30 @@ calendar.on({
     // Display modal 
     modal.style.display = "block";
   },
-  // Update schedule on drag
+  // Update Avenue on schedule drag in calendar
   'beforeUpdateSchedule': function(event) {
     let schedule = event.schedule;
     let changes = event.changes;
-    console.log('schedule', schedule, 'changes', changes)
-    calendar.updateSchedule(schedule.id, schedule.calendarId, changes);
+    console.log('drag schedule', schedule.id, 'changes', changes)
+    // Update Initiative object 
+    let initAve = currentInitiative.avenues.get(schedule.id); // Avenue object from the initiative object
+    let momDate = moment(changes.start.toDate(), 'ddd MMM DD YYYY HH:mm:ss'); // Adjust to current timezone from saved timezone
+    initAve.change_date(momDate.toString());
+    //console.log('ave from init', initAve);
+
+    // Update Message manager tab
+    let guiAve = document.getElementById(`avenue${schedule.id}`); // Avenue object from the ui
+    guiAve.children[7].value = momDate.format('YYYY-MM-DD');
+
+    // Update Schedule object on calendar 
+    calendar.updateSchedule(schedule.id, '1', {
+      start: momDate.format('ddd DD MMM YYYY HH:mm:ss'),
+      end:  momDate.format('ddd DD MMM YYYY HH:mm:ss')
+    });
+
+    // Save everything to main
+    let ipcInit = currentInitiative.pack_for_ipc();
+    ipc.send('save', currentInitiativeId, ipcInit);
   }
 });
 
