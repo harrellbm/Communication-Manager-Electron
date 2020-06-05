@@ -434,10 +434,12 @@ function deleteAveMess (ave) {
       if (value == null) { // Escape deletion 
         return
       } else { // Proceed with deletion 
-          // Remove message from UI
+          // Remove avenue from UI
           ave.parentElement.removeChild(ave);
-          // Remove message from Initiative object 
-          let id = ave.id[6];
+          // Delete Schedule object on calendar 
+          let id = ave.id[6]; // Get number only off of 
+          calendar.deleteSchedule(id, '1');
+          // Remove avenue from Initiative object 
           currentInitiative.avenues.delete(id); // Take only the number off of the end of the ui id 
           // Send updates to main
           let ipcInit = currentInitiative.pack_for_ipc();
@@ -576,7 +578,7 @@ function deleteAveMess (ave) {
           messAve.parentElement.removeChild(messAve);
           // Delete Schedule object on calendar 
           calendar.deleteSchedule(aveId.value, '1');
-          // Remove message from Initiative object 
+          // Remove avenue from Initiative object 
           let id = messAve.id[6];
           currentInitiative.avenues.delete(id); // Take only the number off of the end of the ui id
           // Send updates to main
