@@ -163,7 +163,7 @@ function saveToMain () {
 };
 
 // Handles the event from the open button // Needs transitioned 
-document.getElementById('messOpen').addEventListener("click", openFile);
+document.getElementById('initOpen').addEventListener("click", openFile);
 function openFile () {
   let ipcPack = ipc.sendSync('open-file'); // Uses synchronous call to avoid user actions before data is loaded 
   console.log('returned from main', ipcPack);
