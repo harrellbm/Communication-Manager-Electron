@@ -462,16 +462,14 @@ class Goal {
       // Frequency is going to eventually be some kind of date object to tell how often to schedule this communication
       // Type is the type of communication for this goal Sent is whether the message is sent or not
       // Reminder will be a way to hold the reminders that you set for this goal 
-      this.frequency= 0;
+      this.frequency= [];
       this.type = '';
       this.reminder = {};
       };
    
-   /* possibly implement date object for frequency */ 
-   
    // Changes the goal's frequency 
-   change_frequency(new_frequency){ 
-      this.frequency = new_frequency;
+   change_frequency(freq, type, until){ 
+      this.frequency = [ freq, type, until ];
       };
    
    // Gets the goal's frequency 
