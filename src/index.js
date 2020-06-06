@@ -263,7 +263,34 @@ function openPage(pageName, elmnt) { // linked to directly from html
   
   // Refresh calendar when switching to initiative tab
   if (pageName == 'Initiative') {
-    if (calendar != undefined) {  
+    if (calendar != undefined) {
+      // Sync ui and initiative avenue objects before switching tabs 
+      let aveKeys = currentInitiative.avenues.keys(); 
+      for (id of aveKeys) {// Each iteration goes through one avenue
+        console.log('avenue id to save', id)
+        let guiAve = document.getElementById(`avenue${id}`); // Avenue object from the ui
+        let initAve = currentInitiative.avenues.get(id); // Avenue object from the initiative object 
+    
+        initAve.avenue_type = guiAve.children[0].value;
+        initAve.sent = guiAve.children[4].children[0].checked;
+        initAve.description = guiAve.children[5].value;
+        initAve.person = guiAve.children[6].value;
+        // Add timezone stamp to date chooser date before storing 
+        let rawDate = guiAve.children[7].value;  
+        if (moment(rawDate).isValid()){ // Only load date into initiative object if it is a valid date
+          let date = moment(rawDate, 'YYYY-MM-DD', true).toString(); // Moment adds time zone stamp
+          initAve.change_date(date); // String
+          // Update Schedule object on calendar 
+          calendar.updateSchedule(id, '1', {
+            title: guiAve.children[5].value,
+            start: date,
+            end: date
+          });
+        }; 
+         
+      };
+      console.log('updated avenues: ', currentInitiative.avenues);
+       
       calendar.render();
     };
   };
