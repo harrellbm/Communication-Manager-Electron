@@ -2,6 +2,7 @@ const chai = require('chai');
 chai.use(require('chai-datetime'));
 const expect = require('chai').expect;
 const templates = require('../src/objectTemplate.js');
+const moment = require('moment'); // For date handling 
 
 describe("initiativeCollection object", function () {
     /*
@@ -926,26 +927,32 @@ describe("Goal object", function () {
 
    it('should have all initial Goal object keys', function () {
        //console.log(test_goal);
-       expect(test_goal, 'Missing a key').to.include.keys('frequency', 'type', 'reminder')
-       expect(test_goal.frequency, 'frequency is not a number').is.a('number');
+       expect(test_goal, 'Missing a key').to.include.keys('frequency', 'type', 'reminder');
+       expect(test_goal.frequency, 'frequency is not an array').is.a('array');
        expect(test_goal.type, 'type is not a string').is.a('string');
        expect(test_goal.reminder, 'reminder is not an object').is.an('object');
     });
 
     // test change frequency 
     it('should change goal frequency', () => {
-        test_goal.change_frequency(10);
+        let date =  moment('2020-08-12', 'YYYY-MM-DD', true);
+        test_goal.change_frequency(1, 'days', date.toString());
         //console.log('new goal frequency', test_goal);
-        expect(test_goal.frequency, 'Frequency was not changed').to.equal(10);
+        expect(test_goal.frequency[0], 'Frequency was not changed').to.equal(1);
+        expect(test_goal.frequency[1], 'Frequency type was not changed').to.be.a('string').that.equals('days');
+        expect(test_goal.frequency[2], 'Frequency until was not changed').to.be.a('string').that.equals('Wed Aug 12 2020 00:00:00 GMT-0700');
     });
   
     // test return frequency
     it('should return frequency', () => {
-        test_goal.change_frequency(12);
+        let date =  moment('2020-08-12', 'YYYY-MM-DD', true);
+        test_goal.change_frequency(1, 'days', date.toString());
         // get the new frequency
         let frequency =  test_goal.get_frequency();
         //console.log('returned frequency', frequency);
-        expect(frequency, 'Frequency was not returned').to.equal(12);
+        expect(frequency[0], 'Frequency was not changed').to.equal(1);
+        expect(frequency[1], 'Frequency type was not changed').to.be.a('string').that.equals('days');
+        expect(frequency[2], 'Frequency until was not changed').to.be.a('string').that.equals('Wed Aug 12 2020 00:00:00 GMT-0700');
     });
 
      // test change frequency 
