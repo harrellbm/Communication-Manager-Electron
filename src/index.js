@@ -123,6 +123,7 @@ function save () {
     // Sync ui and initiative avenue objects before saving 
     let aveKeys = currentInitiative.avenues.keys(); 
     for (id of aveKeys) {// Each iteration goes through one avenue
+      //console.log('avenue id to save', id)
       let guiAve = document.getElementById(`avenue${id}`); // Avenue object from the ui
       let initAve = currentInitiative.avenues.get(id); // Avenue object from the initiative object 
     
@@ -163,37 +164,79 @@ function saveToMain () {
 };
 
 // Handles the event from the open button // Needs transitioned 
-document.getElementById('messOpen').addEventListener("click", openFile);
+document.getElementById('initOpen').addEventListener("click", openFile);
 function openFile () {
   let ipcPack = ipc.sendSync('open-file'); // Uses synchronous call to avoid user actions before data is loaded 
+  console.log('returned from main', ipcPack);
   currentInitiativeId = ipcPack.initId;
-  currentInitiative.unpack_from_ipc(ipcPack.ipcInit);
-  //console.log('init id on index load from file: ', currentInitiativeId, 'Unpacked initiative', currentInitiative);
+  currentInitiative.unpack_from_ipc(ipcPack.initObj);
+  console.log('init id on index load from file: ', currentInitiativeId, 'Unpacked initiative', currentInitiative);
 
-  // Clear old message and avenue Ui elements 
+  // Clear old Initative tab ui elements 
+  oldMessages = document.getElementById('initName');
+  oldMessages.innerHTML = ''; 
+  oldMessages = document.getElementById('initDescription');
+  oldMessages.innerHTML = ''; 
+  oldMessages = document.getElementById('groupIn');
+  oldMessages.innerHTML = ''; 
+  oldAvenues = document.getElementById('goalIn');
+  oldAvenues.innerHTML = '';
+  calendar.clear();
+
+  // Clear old Message manager tab ui elements
   oldMessages = document.getElementById('messageIn');
   oldMessages.innerHTML = ''; 
   oldAvenues = document.getElementById('avenueIn');
   oldAvenues.innerHTML = '';
 
-  // Send new initiative messages and avenues to ui
-  let messKeys = currentInitiative.messages.keys();
-  for ( id of messKeys ){
-    addMess('load', id ); // Note: Event is not used programatically but helps with debugging input to addMess
-  };
-  
-  let aveKeys = currentInitiative.avenues.keys();
+  // Send values to Initiative tab ui
+    document.getElementById('initName').value = currentInitiative.name; // Update title from ui
+    document.getElementById('initDescription').value = currentInitiative.description; // Update title from ui
+    // Load Groups
+      let groupKeys = currentInitiative.groups.keys();
+      for ( grpId of groupKeys ){
+        addGroup( 'load', grpId ); // Note: Event is not used programatically but helps with debugging input to addGroup
+        // Iterate through group's contacts and add to ui 
+        let group = currentInitiative.groups.get(grpId);
+        let contactKeys = group.contacts.keys();
+        for ( contId of contactKeys ){
+          addContact( 'load', grpId, contId );
+        };
+      };
+    // Load Goals
+      let goalKeys = currentInitiative.goals.keys();
+      for ( id of goalKeys ){
+        addGoal('load', id ); // Note: Event is not used programatically but helps with debugging input to addMess
+      };
+
+    // Display date range on top of calendar
+      let start = calendar.getDateRangeStart();
+      let end = calendar.getDateRangeEnd();
+      document.getElementById('year').value = `${end.getFullYear()}`;
+      document.getElementById('month').value = `${start.getMonth() + 1}` + '.' + `${start.getDate()}` + ' - ' + `${end.getMonth() + 1}` + '.' + `${end.getDate()}`;
+
+  // Send values to Message manager tab ui
+    // Load messages 
+    let messKeys = currentInitiative.messages.keys();
+    for ( id of messKeys ){
+     addMess('load', id ); // Note: Event is not used programatically but helps with debugging input to addMess
+    };
+
+  // Load avenues to both message manager and initiative tab
+  aveKeys = currentInitiative.avenues.keys();
   for ( id of aveKeys ){
+    //console.log('ave id for mess tab load', id);
     // Check to see if avenue is linked to a message
     let aveObj = currentInitiative.avenues.get(id);
-    let messId = aveObj.message_id
+    let messId = aveObj.message_id;
     if (messId != '') { // If so send to respective message drop box
-      addAve('load', id, `aveDrop${messId}`) // Note: event is not used programatically but helps with debugging input to addAve
-      }
-      else { // Else just add it to the default container
-        addAve('load', id ); 
-        }
+      addAve('load', id, `aveDrop${messId}`) ;// Note: event is not used programatically but helps with debugging input to addAve
+    } else { // Else just add it to the default container
+      addAve('load', id ); 
+    };
   };
+  // Refresh Initative tab calendar when everthing is finished 
+  calendar.render();
 };
 
 
@@ -392,10 +435,13 @@ function deleteAveMess (ave) {
       if (value == null) { // Escape deletion 
         return
       } else { // Proceed with deletion 
-          // Remove message from UI
+          // Remove avenue from UI
           ave.parentElement.removeChild(ave);
-          // Remove message from Initiative object 
-          let id = ave.id[6];
+          // Delete Schedule object on calendar 
+          let id = ave.id.replace('avenue', ''); // remove ui tag off of id
+          calendar.deleteSchedule(id, '1');
+          console.log('avenue id after remove', id);
+          // Remove avenue from Initiative object 
           currentInitiative.avenues.delete(id); // Take only the number off of the end of the ui id 
           // Send updates to main
           let ipcInit = currentInitiative.pack_for_ipc();
@@ -457,6 +503,9 @@ function deleteAveMess (ave) {
       if (aveId.value == '' || aveId.value == undefined ){
         // Add avenue to initiative object, initative tab and message manager tab. 
         addAve('modalAdd', '', 'avenueIn', sent.checked, type.value, description.value, person.value, momDate.format('ddd MMM DD YYYY HH:mm:ss')); // use Moment date format
+         // Save everything to main
+         let ipcInit = currentInitiative.pack_for_ipc();
+         ipc.send('save', currentInitiativeId, ipcInit);
       } else if ( parseInt(aveId.value) >= 0 ) {
         // Update Initiative object 
         let initAve = currentInitiative.avenues.get(aveId.value); // Avenue object from the initiative object
@@ -479,6 +528,9 @@ function deleteAveMess (ave) {
           start: momDate.format('ddd DD MMM YYYY HH:mm:ss'),
           end:  momDate.format('ddd DD MMM YYYY HH:mm:ss')
         });
+        // Save everything to main
+        let ipcInit = currentInitiative.pack_for_ipc();
+        ipc.send('save', currentInitiativeId, ipcInit);
       };
       // Close modal
       modal.style.display = "none";
@@ -534,8 +586,8 @@ function deleteAveMess (ave) {
           messAve.parentElement.removeChild(messAve);
           // Delete Schedule object on calendar 
           calendar.deleteSchedule(aveId.value, '1');
-          // Remove message from Initiative object 
-          let id = messAve.id[6];
+          // Remove avenue from Initiative object 
+          let id = aveId.value;
           currentInitiative.avenues.delete(id); // Take only the number off of the end of the ui id
           // Send updates to main
           let ipcInit = currentInitiative.pack_for_ipc();
@@ -723,8 +775,8 @@ function deleteMess (mess) {
       if (aves.length != 0 ) { 
         // Unlink avenues and place them back in avenueIn 
         while (0 < aves.length){// Collection empties as they are appended back to avenueIn
-          let aveId = aves[0].id[6]; // grab id number of avenue
-          let messId = mess.id[7];
+          let aveId = aves[0].id.replace('avenue', ''); // remove ui tag from id
+          let messId = mess.id.replace('message', '');
           currentInitiative.unlink_ids(aveId, messId);
           //console.log('unlinked avenue: ', currentInitiative.avenues.get(aveId), 'unlinked message: ', currentInitiative.messages.get(messId));
           document.getElementById("avenueIn").appendChild(aves[0]);
@@ -734,7 +786,7 @@ function deleteMess (mess) {
       // Remove message from UI
       mess.parentElement.removeChild(mess);
       // Remove message from Initiative object 
-      let id = mess.id[7]; // Take only the number off of the end of the ui id 
+      let id = mess.id.replace('message', ''); // remove ui tag from id 
       currentInitiative.messages.delete(id); 
       // Send updates to main
       let ipcInit = currentInitiative.pack_for_ipc();
@@ -743,9 +795,9 @@ function deleteMess (mess) {
     });
 };
 
-// Call back function for Edit button on message element 
+// Call back function from editor 
 function editMess (mess) {
-  let messId = mess.id[7]; // Take only the number off of the end of the ui id 
+  let messId = mess.id.replace('message', ''); // remove ui tag from id  
   // Update Initiative from ui 
   let uiTitle = document.getElementById(`messTitle${messId}`);
   let messContent = currentInitiative.messages.get(`${messId}`); // get message object content
@@ -756,9 +808,9 @@ function editMess (mess) {
   ipc.send('edit', currentInitiativeId, messId, messContent); 
 };
 
-// Call back function for Edit button on message element 
+// Copy contents of message from initiative object to clipboard 
 function copyMess (mess) {
-  let messId = mess.id[7]; // Take only the number off of the end of the ui id 
+  let messId = mess.id.replace('message', ''); // remove ui tag from id  
   // Gather message to copy from Initiative and ui 
   let uiTitle = document.getElementById(`messTitle${messId}`);
   let messContent = currentInitiative.messages.get(`${messId}`); // get message object content
@@ -911,8 +963,8 @@ function deleteGoal (goal) {
       // Remove goal from UI
       goal.parentElement.removeChild(goal);
       // Remove goal from Initiative object 
-      let id = goal.id[4]; // Take only the number off of the end of the ui id 
-      //console.log("goal object in delete:", goal.id[4])
+      let id = goal.id.replace('goal', ''); // remove ui tag from id 
+      //console.log("goal object in delete:", id)
       currentInitiative.goals.delete(id); 
       // Send updates to main
       let ipcInit = currentInitiative.pack_for_ipc();
@@ -1039,8 +1091,8 @@ function deleteGroup (group) {
       // Remove message from UI
       group.parentElement.removeChild(group);
       // Remove message from Initiative object 
-      let id = group.id[5]; // Take only the number off of the end of the ui id 
-      //console.log("group object in delete:", group.id[5])
+      let id = group.id.replace('group', ''); // remove ui tag from id 
+      //console.log("group object in delete:", id)
       currentInitiative.groups.delete(id); 
       // Send updates to main
       let ipcInit = currentInitiative.pack_for_ipc();
@@ -1205,7 +1257,7 @@ function deleteContact (groupId, contactUi) {
       // Remove Contact from UI
       contactUi.parentElement.removeChild(contactUi);
       // Remove Contact from group object 
-      let contId = contactUi.id[7] + contactUi.id[8]; 
+      let contId = contactUi.id.replace('contact', ''); // remove ui tag from id 
       //console.log("contact object in delete:", contId)
       let group = currentInitiative.groups.get(groupId); 
       //console.log("group object:", group)
@@ -1228,10 +1280,10 @@ var dragDrop = dragula([document.getElementById('avenueIn')]);// aveDrops are ad
 dragDrop.on('drop', function (ave, target, source) {
   let type = target.getAttribute('class'); // determine where avenue was dropped by target class
   if (type == 'aveDrop') {
-    let aveId = ave.id[6]; // Grab the id number off of each id
-    let messId = target.id[7];
-    let oldMessId = source.id[7];
-
+    let aveId = ave.id.replace('avenue', ''); // remove ui tag from id
+    let messId = target.id.replace('aveDrop', ''); 
+    let oldMessId = source.id.replace('aveDrop', '');
+    //console.log('aveid', aveId, 'messid', messId, 'oldMessid', oldMessId)
     // Check to see if avenue is being moved from another message 
     let sourceClas = source.getAttribute('class'); 
     if (sourceClas == 'aveDrop' ) { // If coming from another message unlink from old message
@@ -1250,8 +1302,8 @@ dragDrop.on('drop', function (ave, target, source) {
         return
         }
       // If being moved from a message unlink before droping into avenueIn
-      let aveId = ave.id[6]; 
-      let messId = source.id[7];
+      let aveId = ave.id.replace('avenue', ''); // remove ui tag from id 
+      let messId = source.id.replace('aveDrop', '');
       currentInitiative.unlink_ids(aveId, messId);
       //console.log('unlinked ave: ', currentInitiative.avenues.get(aveId), 'unlinked mess: ', currentInitiative.messages.get(messId));
       }
@@ -1270,16 +1322,7 @@ var calendar = new Calendar('#calendar', {
   useCreationPopup: false,
   useDetailPopup: false,
   template: {
-    /*popupIsAllDay: function() {
-      return 'All Day';
-    },
-    popupStateBusy: function() {
-      return 'Crazy';
-    },
-    popupStateFree: function() {
-      return 'Free';
-    },
-    titlePlaceholder: function() {
+    /*titlePlaceholder: function() {
       return 'Subject';
     },
     locationPlaceholder: function() {
@@ -1290,44 +1333,7 @@ var calendar = new Calendar('#calendar', {
     },
     endDatePlaceholder: function() {
       return 'End date';
-    },
-    popupSave: function() {
-      return 'Save';
-    },
-    popupUpdate: function() {
-      return 'Update';
-    },
-    popupDetailDate: function(isAllDay, start, end) {
-      var isSameDate = moment(start).isSame(end);
-      var endFormat = (isSameDate ? '' : 'YYYY.MM.DD ') + 'hh:mm a';
-  
-      if (isAllDay) {
-        return moment(start).format('YYYY.MM.DD') + (isSameDate ? '' : ' - ' + moment(end).format('YYYY.MM.DD'));
-      }
-  
-      return (moment(start).format('YYYY.MM.DD hh:mm a') + ' - ' + moment(end).format(endFormat));
-    },
-    popupDetailLocation: function(schedule) {
-      return 'Location : ' + schedule.location;
-    },
-    popupDetailUser: function(schedule) {
-      return 'User : ' + (schedule.attendees || []).join(', ');
-    },
-    popupDetailState: function(schedule) {
-      return 'State : ' + schedule.state || 'Busy';
-    },
-    popupDetailRepeat: function(schedule) {
-      return 'Repeat : ' + schedule.recurrenceRule;
-    },
-    popupDetailBody: function(schedule) {
-      return 'Body : ' + schedule.body;
-    },
-    popupEdit: function() {
-      return 'Edit';
-    },
-    popupDelete: function() {
-      return 'Delete';
-    }*/
+    },*/
   },
   month: {
     daynames: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
@@ -1394,12 +1400,30 @@ calendar.on({
     // Display modal 
     modal.style.display = "block";
   },
-  // Update schedule on drag
+  // Update Avenue on schedule drag in calendar
   'beforeUpdateSchedule': function(event) {
     let schedule = event.schedule;
     let changes = event.changes;
-    console.log('schedule', schedule, 'changes', changes)
-    calendar.updateSchedule(schedule.id, schedule.calendarId, changes);
+    console.log('drag schedule', schedule.id, 'changes', changes)
+    // Update Initiative object 
+    let initAve = currentInitiative.avenues.get(schedule.id); // Avenue object from the initiative object
+    let momDate = moment(changes.start.toDate(), 'ddd MMM DD YYYY HH:mm:ss'); // Adjust to current timezone from saved timezone
+    initAve.change_date(momDate.toString());
+    //console.log('ave from init', initAve);
+
+    // Update Message manager tab
+    let guiAve = document.getElementById(`avenue${schedule.id}`); // Avenue object from the ui
+    guiAve.children[7].value = momDate.format('YYYY-MM-DD');
+
+    // Update Schedule object on calendar 
+    calendar.updateSchedule(schedule.id, '1', {
+      start: momDate.format('ddd DD MMM YYYY HH:mm:ss'),
+      end:  momDate.format('ddd DD MMM YYYY HH:mm:ss')
+    });
+
+    // Save everything to main
+    let ipcInit = currentInitiative.pack_for_ipc();
+    ipc.send('save', currentInitiativeId, ipcInit);
   }
 });
 
