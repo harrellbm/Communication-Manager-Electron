@@ -921,7 +921,7 @@ function addGoal (event='', goalId='') {// If Goal id is passed in it will load 
   goal.appendChild(reminder_title);// Add the title to the goal
 
   
-  // Creates drop down list 
+  // Create goal type drop down list 
   let dropdown = document.createElement("select");
   dropdown.setAttribute("class", "typeDropdown");
   dropdown.setAttribute("id", `goal_type${id}`);
@@ -940,21 +940,62 @@ function addGoal (event='', goalId='') {// If Goal id is passed in it will load 
   };
   goal.appendChild(dropdown); //add the dropdown menu to the goal
 
-  // Textareas 
-  let freq = document.createElement("textarea");
-  freq.setAttribute("class", "frequency");
-  freq.setAttribute("id", `frequency${id}`);
-  if(goalId != ''){// if creating a goal that is being pulled from a file set it's value 
-  freq.value = goalLoad.frequency;
-    }
-  goal.appendChild(freq);
+  // Div to hold goal frequncy options 
+  let freqDiv = document.createElement("div");
+  freqDiv.setAttribute("class", "frequency");
+  freqDiv.setAttribute("id", `frequency${id}`);
 
+    // Create number input for frequency 
+    let freqNum = document.createElement("input");
+    freqNum.setAttribute("class", "freqNum")
+    freqNum.setAttribute("id", `freqNum${id}`)
+    freqNum.setAttribute("type", "number");
+    freqNum.setAttribute("value", "1");
+    freqNum.setAttribute("min", "1");
+    freqNum.setAttribute("max", "20");
+    freqDiv.appendChild(freqNum); //add the num input to the div
+
+    // Create frequency type drop down list 
+    let freqDropdown = document.createElement("select");
+    freqDropdown.setAttribute("class", "freqDropdown");
+    freqDropdown.setAttribute("id", `freq_type${id}`);
+
+    // Set frequency type dropdown options  
+    let freqOptions = ['days', 'weeks', 'months', 'years'];
+    for (i in freqOptions){
+      let freqOpElem = document.createElement("option");
+      let freqOpText = freqOptions[i]
+      freqOpElem.setAttribute("value", `${freqOpText}`);
+      freqOpElem.innerHTML = `${freqOpText}`;
+      freqDropdown.appendChild(freqOpElem);
+    };
+    if(goalLoad != ''){// if creating a goal that is being pulled from a file set it's value   
+      dropdown.value = goalLoad.frequency[0];
+    };
+    freqDiv.appendChild(freqDropdown); //add the dropdown to the div
+
+     // Create number input for frequency 
+     let freqLabel = document.createElement("p");
+     freqLabel.setAttribute("class", "freqDateTitle");
+     freqLabel.innerHTML = "Until: ";
+     freqDiv.appendChild(freqLabel); //add the label to the div
+
+    // Create number input for frequency 
+    let freqDate = document.createElement("input");
+    freqDate.setAttribute("class", "freqDate")
+    freqDate.setAttribute("id", `freqDate${id}`)
+    freqDate.setAttribute("type", "date");
+    freqDiv.appendChild(freqDate); //add the date input to the div
+
+  goal.appendChild(freqDiv); //add the freqDiv to the goal
+
+  // Textarea for reminder /* place holder for now */
   let remd = document.createElement("textarea");
   remd.setAttribute("class", "reminder");
   remd.setAttribute("id", `reminder${id}`);
   if(goalId != ''){// if creating an goal that is being pulled from a file set it's value 
-  remd.value = goalLoad.reminder;
-    }
+    remd.value = goalLoad.reminder;
+  };
   goal.appendChild(remd);
 
   // Creates and adds dynamic event listener to delete button

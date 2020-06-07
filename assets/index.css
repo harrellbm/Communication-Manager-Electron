@@ -38,7 +38,7 @@ textarea{
   
 /* Style tab links */
 .tablink {
-    background-color: #555;
+    background-color: rgb(118, 118, 118);
     color: white;
     float: left;
     border-bottom: none;
@@ -109,7 +109,7 @@ textarea{
     background-color: rgb(255, 255, 255);
     border-width: 1px;
     border-style: solid;
-    border-color: rgb(169, 169, 169);
+    border-color: rgb(118, 118, 118);
     margin-left: 1vh;
     margin-right: 1vh;
   }
@@ -146,8 +146,8 @@ textarea{
     width: 44.5rem;
     grid-template-columns: 8rem 36.5rem;
     grid-template-rows: 1.55rem 5.4rem 1.4rem;
-    background-color: #999;
-    border: rgb(169, 169, 169);
+    background-color: rgb(118, 118, 118);
+    border: rgb(118, 118, 118);
     border-width: 1px;
     border-style: solid;
     }
@@ -156,7 +156,7 @@ textarea{
     .messTitle_heading{
       border-width: 1px;
       border-style: solid;
-      border-color: rgb(169, 169, 169);
+      border-color: rgb(118, 118, 118);
       padding: 0.1rem;
       grid-column-start: 1;
       grid-column-end: 2;
@@ -177,7 +177,7 @@ textarea{
     .aveDrop{
       border-width: 1px;
       border-style: solid;
-      border-color: rgb(169, 169, 169);
+      border-color: rgb(118, 118, 118);
       background-color: rgb(255, 255, 255);
       overflow-y: scroll;
       grid-column-start: 2;
@@ -219,8 +219,8 @@ textarea{
     display: grid;
     grid-template-columns: 6.5rem 9.15rem 9.15rem 9rem 1.4rem;
     grid-template-rows: 1.5rem 2.5rem;
-    background-color: #999;
-    border: rgb(169, 169, 169);
+    background-color: rgb(118, 118, 118);
+    border: rgb(118, 118, 118);
     border-width: 1px;
     border-style: solid;
     }
@@ -371,7 +371,7 @@ textarea{
     background-color: rgb(255, 255, 255);
     border-width: 1px;
     border-style: solid;
-    border-color: rgb(169, 169, 169);
+    border-color: rgb(118, 118, 118);
     margin-left: 1vh;
     margin-right: 1vh;
   }
@@ -381,8 +381,8 @@ textarea{
     display: grid;
     grid-template-columns: 1fr 2fr 9.9rem 1.4rem;
     grid-template-rows: 1.4rem 4.8rem;
-    background-color: #999;
-    border: rgb(169, 169, 169);
+    background-color: rgb(118, 118, 118);
+    border: rgb(118, 118, 118);
     border-width: 1px;
     border-style: solid;
     }
@@ -432,7 +432,7 @@ textarea{
     overflow-y: scroll;
     border-width: 1px;
     border-style: solid;
-    border-color: rgb(169, 169, 169);
+    border-color: rgb(118, 118, 118);
     background-color: rgb(255, 255, 255);
     }
 
@@ -443,7 +443,7 @@ textarea{
       grid-template-rows: 1.4rem 2.5rem;
       border-width: 1px;
       border-style: solid;
-      border-color: rgb(169, 169, 169);
+      border-color: rgb(170, 180, 190);
       background-color: rgb(170, 180, 190);
       }
 
@@ -484,7 +484,7 @@ textarea{
     background-color: rgb(255, 255, 255);
     border-width: 1px;
     border-style: solid;
-    border-color: rgb(169, 169, 169);
+    border-color: rgb(118, 118, 118);
     margin-left: 1vh;
     margin-right: 1vh;
   }
@@ -492,10 +492,10 @@ textarea{
   /* Goal rules */
     .goal{
       display: grid;
-      grid-template-columns: 1fr 1fr 1fr 1.4rem;
+      grid-template-columns: 1fr 1.5fr 1fr 1.4rem;
       grid-template-rows: 1.4rem 2rem;
-      background-color: #999;
-      border: rgb(169, 169, 169);
+      background-color: rgb(118, 118, 118);
+      border: rgb(118, 118, 118);
       border-width: 1px;
       border-style: solid;
       }
@@ -540,7 +540,16 @@ textarea{
       grid-column-end: 3;
       grid-row-start: 2;
       grid-row-end: 3;
-      }
+      display: grid;
+      grid-template-columns: 2.5rem 1fr 3.5rem 2fr;
+    }
+
+    .freqDateTitle{
+      padding: 0.2rem;
+      border-width: 1px 0px 1px 1px;
+      border-style: solid;
+      border-color: rgb(118, 118, 118);
+    }
   
     .reminder{
       grid-column-start: 3;
@@ -568,7 +577,7 @@ textarea{
     grid-column-end: 4;
     border-width: 1px;
     border-style: solid;
-    border-color: rgb(169, 169, 169);
+    border-color: rgb(118, 118, 118);
     border-top: none;
     border-bottom: none;
     margin-left: 1vh;
@@ -596,7 +605,7 @@ textarea{
     text-align: center;
     border-width: 1px;
     border-style: solid;
-    border-color: rgb(169, 169, 169);
+    border-color: rgb(118, 118, 118);
   }
 
   #year{
@@ -616,6 +625,9 @@ textarea{
     margin-left: 1vh;
     margin-right: 1vh;
     overflow-y: scroll;
+    border-width: 0px 1px 1px 1px;
+    border-style: solid;
+    border-color: rgb(118, 118, 118);
   }
   #calendar{
     height: 800px
@@ -658,7 +670,7 @@ textarea{
   background-color: #fefefe;
   margin: 15% auto; /* 15% from the top and centered */
   padding: 15px;
-  border: 1px solid #888;
+  border: 1px solid rgb(118, 118, 118);
   width: 80%; /* Could be more or less, depending on screen size */
   border-radius: 5px; /* Round corners */
 }
@@ -670,6 +682,21 @@ textarea{
 
 #modalPersTitle{
   border-radius: 0px 4px 0px 0px;
+  border-width: 1px 1px 0px 0px;
+  border-style: solid;
+  border-color: rgb(118, 118, 118);
+}
+
+#modalDateTitle{
+  border-width: 1px 0px 0px 0px;
+  border-style: solid;
+  border-color: rgb(118, 118, 118);
+}
+ 
+#modalDescTitle{
+  border-width: 1px 0px 0px 0px;
+  border-style: solid;
+  border-color: rgb(118, 118, 118);
 }
 
 #avePersModal{
@@ -683,6 +710,9 @@ textarea{
   grid-row-start: 2;
   grid-row-end: 3;
   padding: 0.5rem;
+  border-width: 0px 0px 1px 1px;
+  border-style: solid;
+  border-color: rgb(118, 118, 118);
 }
 
 
@@ -690,7 +720,7 @@ textarea{
 #aveDateModal {
   border-width: 1px;
   border-style: solid;
-  border-color: rgb(169, 169, 169);
+  border-color: rgb(118, 118, 118);
 }
 
 /* Save button for Modal */
@@ -759,7 +789,7 @@ textarea{
     background-color: rgb(255, 255, 255);
     border-width: 1px;
     border-style: solid;
-    border-color: rgb(169, 169, 169);
+    border-color: rgb(118, 118, 118);
     margin-left: 1vh;
     margin-right: 1vh;
   }
