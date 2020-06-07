@@ -529,7 +529,7 @@ function deleteAveMess (ave) {
       // If no id provided assume this is a new avenue
       if (aveId.value == '' || aveId.value == undefined ){
         // Add avenue to initiative object, initative tab and message manager tab. 
-        addAve('modalAdd', '', 'avenueIn', sent.checked, type.value, description.value, person.value, momDate.format('ddd MMM DD YYYY HH:mm:ss')); // use Moment date format
+        addAve('modalAdd', '', 'avenueIn', sent.checked, type.value, description.value, person.value, momDate.toString()); // use Moment date format
          // Save everything to main
          let ipcInit = currentInitiative.pack_for_ipc();
          ipc.send('save', currentInitiativeId, ipcInit);
@@ -1431,7 +1431,7 @@ calendar.on({
   'beforeUpdateSchedule': function(event) {
     let schedule = event.schedule;
     let changes = event.changes;
-    console.log('drag schedule', schedule.id, 'changes', changes)
+    //console.log('drag schedule', schedule.id, 'changes', changes)
     // Update Initiative object 
     let initAve = currentInitiative.avenues.get(schedule.id); // Avenue object from the initiative object
     let momDate = moment(changes.start.toDate(), 'ddd MMM DD YYYY HH:mm:ss'); // Adjust to current timezone from saved timezone
