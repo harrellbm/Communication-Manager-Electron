@@ -507,7 +507,10 @@ textarea{
       grid-column-end: 2;
       grid-row-start: 1;
       grid-row-end: 2;
-      }
+      border-width: 0px 1px 0px 1px;
+      border-style: solid;
+      border-color: rgb(118, 118, 118);
+    }
 
     #goalFreq_title{
       padding: 0.1rem;
@@ -515,7 +518,10 @@ textarea{
       grid-column-end: 3;
       grid-row-start: 1;
       grid-row-end: 2;
-      }
+      border-width: 0px 1px 0px 1px;
+      border-style: solid;
+      border-color: rgb(118, 118, 118);
+    }
   
     #goalReminder_title{
       padding: 0.1rem;
@@ -523,7 +529,10 @@ textarea{
       grid-column-end:4;
       grid-row-start: 1;
       grid-row-end: 2;
-      }
+      border-width: 0px 1px 0px 1px;
+      border-style: solid;
+      border-color: rgb(118, 118, 118);
+    }
   
     /* Dropdown for goal type */
     .typeDropdown{
@@ -546,7 +555,7 @@ textarea{
 
     .freqDateTitle{
       padding: 0.2rem;
-      border-width: 1px 0px 1px 1px;
+      border-width: 1px 0px 1px 0px;
       border-style: solid;
       border-color: rgb(118, 118, 118);
     }
