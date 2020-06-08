@@ -2,7 +2,12 @@
   "name": "message-manager",
   "productName": "message manager",
   "description": "A lightweight way to keep track of and send communications",
-  "keywords": [],
+  "keywords": [
+    "communication",
+    "organization",
+    "efficiency",
+    "todoapp"
+  ],
   "main": "./main.js",
   "version": "0.1.5",
   "author": "Brenden Harrell",
