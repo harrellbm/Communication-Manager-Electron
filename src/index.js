@@ -78,15 +78,15 @@ function save () {
     currentInitiative.description = document.getElementById('initDescription').value; // Update description from ui
     // Sync ui and initiative group objects before saving 
     let groupKeys = currentInitiative.groups.keys();
-    for (id of groupKeys) {// Each iteration goes through one goal
-      let guiGroup = document.getElementById(`group${id}`); // Goal object from the ui
-      let initGroup = currentInitiative.groups.get(id); // Goal object from the initiative object 
+    for (id of groupKeys) {// Each iteration goes through one group
+      let guiGroup = document.getElementById(`group${id}`); // Group object from the ui
+      let initGroup = currentInitiative.groups.get(id); // Group object from the initiative object 
       //console.log('init group', initGroup)
       initGroup.group_name = guiGroup.children[3].value;
 
       let contactsKeys = initGroup.contacts.keys(); 
       //console.log(contactsKeys)
-      for (contId of contactsKeys) {// Each iteration goes through one goal
+      for (contId of contactsKeys) {// Each iteration goes through one contact
         let guiContact = document.getElementById(`contact${contId}`); // Contact object from the ui
         //console.log('gui', guiContact, 'object', initGroup.contacts);
         let name = guiContact.children[3].value;
@@ -106,10 +106,14 @@ function save () {
       let initGoal = currentInitiative.goals.get(id); // Goal object from the initiative object 
       //console.log(guiGoal)
       initGoal.type = guiGoal.children[3].value;
-      initGoal.frequency = guiGoal.children[4].value;
+      initGoal.frequency = [ // Get frequency specifics and save in array as format: [ frequency, denomination, unitl ]
+          guiGoal.children[4].children[0].value, 
+          guiGoal.children[4].children[1].value, 
+          moment(guiGoal.children[4].children[3].value, 'YYYY-MM-DD', true).toString()
+        ]; 
       initGoal.reminder = guiGoal.children[5].value;
     };
-    //console.log('updated goal: ', currentInitiative.goals);
+    console.log('updated goal: ', currentInitiative.goals);
 
     // Message Manager ui
     // Sync ui and initiative message objects before saving 
@@ -936,6 +940,7 @@ function addGoal (event='', goalId='') {// If Goal id is passed in it will load 
     dropdown.appendChild(opElem);
     }
   if(goalLoad != ''){// if creating an goal that is being pulled from a file set it's value   
+    console.log(goalLoad.type)
     dropdown.value = goalLoad.type;
   };
   goal.appendChild(dropdown); //add the dropdown menu to the goal
@@ -953,14 +958,17 @@ function addGoal (event='', goalId='') {// If Goal id is passed in it will load 
     freqNum.setAttribute("value", "1");
     freqNum.setAttribute("min", "1");
     freqNum.setAttribute("max", "20");
+    if(goalLoad != ''){// if creating a goal that is being pulled from a file set it's value   
+      freqNum.value = goalLoad.frequency[0];
+    };
     freqDiv.appendChild(freqNum); //add the num input to the div
 
-    // Create frequency type drop down list 
+    // Create frequency denomination drop down list 
     let freqDropdown = document.createElement("select");
     freqDropdown.setAttribute("class", "freqDropdown");
     freqDropdown.setAttribute("id", `freq_type${id}`);
 
-    // Set frequency type dropdown options  
+    // Set frequency denomination dropdown options  
     let freqOptions = ['days', 'weeks', 'months', 'years'];
     for (i in freqOptions){
       let freqOpElem = document.createElement("option");
@@ -970,7 +978,7 @@ function addGoal (event='', goalId='') {// If Goal id is passed in it will load 
       freqDropdown.appendChild(freqOpElem);
     };
     if(goalLoad != ''){// if creating a goal that is being pulled from a file set it's value   
-      dropdown.value = goalLoad.frequency[0];
+      freqDropdown.value = goalLoad.frequency[1];
     };
     freqDiv.appendChild(freqDropdown); //add the dropdown to the div
 
@@ -980,12 +988,16 @@ function addGoal (event='', goalId='') {// If Goal id is passed in it will load 
      freqLabel.innerHTML = "Until: ";
      freqDiv.appendChild(freqLabel); //add the label to the div
 
-    // Create number input for frequency 
+    // Create date until input for frequency 
     let freqDate = document.createElement("input");
     freqDate.setAttribute("class", "freqDate")
     freqDate.setAttribute("id", `freqDate${id}`)
     freqDate.setAttribute("type", "date");
-    freqDiv.appendChild(freqDate); //add the date input to the div
+    if(goalLoad != ''){// if creating a goal that is being pulled from a file set it's value   
+      let momDate = moment(goalLoad.frequency[2], 'ddd MMM DD YYYY HH:mm:ss'); // Adjust to current timezone from saved timezone
+      freqDate.value = momDate.format('YYYY-MM-DD');
+    };
+    freqDiv.appendChild(freqDate); //add the date until input to the div
 
   goal.appendChild(freqDiv); //add the freqDiv to the goal
 
@@ -1179,7 +1191,7 @@ function copyEmails (event='', groupId='') {// Takes in a group id and adds cont
   //console.log('init group', initGroup)
   let contactsKeys = initGroup.contacts.keys(); // Get contact keys from group object 
   //console.log('contact keys: ', contactsKeys)
-  for (contId of contactsKeys) {// Each iteration goes through one goal
+  for (contId of contactsKeys) {// Each iteration goes through one contact
     let guiContact = document.getElementById(`contact${contId}`); // Contact object from the ui
     //console.log('gui contact: ', guiContact, 'object', initGroup.contacts);
     let name = guiContact.children[3].value;
@@ -1207,7 +1219,7 @@ function copyPhones (event='', groupId='') {// Takes in a group id and adds cont
   //console.log('init group', initGroup)
   let contactsKeys = initGroup.contacts.keys(); // Get contact keys from group object 
   //console.log('contact keys: ', contactsKeys)
-  for (contId of contactsKeys) {// Each iteration goes through one goal
+  for (contId of contactsKeys) {// Each iteration goes through one contact
     let guiContact = document.getElementById(`contact${contId}`); // Contact object from the ui
     //console.log('gui contact: ', guiContact, 'object', initGroup.contacts);
     let name = guiContact.children[3].value;
