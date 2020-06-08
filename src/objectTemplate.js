@@ -17,7 +17,7 @@ class initiativeCollection {
       }
    };
 
-   // Add a goal to the goals map in the initiative 
+   // Add an Initative to the initatives map in the initiativeCollection 
    add_initiative(name='', description='') {
       let new_initiative = new Initiative();
       new_initiative.name = name
@@ -144,7 +144,7 @@ class Initiative {
       }
    };
 
-   // Add a goal to the goals map in the initiative 
+   // Add a group to the groups map in the initiative 
    add_group(name, contacts){ // Note: Contact are accepted in the following structure [ [name, phone, email], etc. ]
       let groupId = this.id_fill(this.groups);// fill in the lowest available id
       let new_group = new Group(groupId, name, contacts); // Pass in group Id so that contacts can be tagged 
@@ -154,7 +154,7 @@ class Initiative {
    };
 
    // Add a goal to the goals map in the initiative 
-   add_goal(frequency = 0, type = '', reminder = {}){
+   add_goal(frequency = [], type = '', reminder = {}){
       
       let new_goal = new Goal();
       new_goal.frequency = frequency;
@@ -468,8 +468,8 @@ class Goal {
       };
    
    // Changes the goal's frequency 
-   change_frequency(freq, type, until){ 
-      this.frequency = [ freq, type, until ];
+   change_frequency(freq, denomination, until){ 
+      this.frequency = [ freq, denomination, until ];
       };
    
    // Gets the goal's frequency 
