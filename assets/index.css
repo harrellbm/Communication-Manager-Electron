@@ -587,13 +587,13 @@ textarea{
 
   /* Calendar control buttons */
   .initMidBtn{
-    padding-top: 0.3rem;
-    padding-bottom: 0.3rem;
+    padding-top: 0.1rem;
+    padding-bottom: 0.2rem;
     padding-left: 0.5rem;
     padding-right: 0.5rem;
     flex-grow: 0.1;
     flex-shrink: 1;
-    vertical-align: top;
+    vertical-align: text-bottom;
   }
 
   /* Displays current date range of Calendar */
@@ -606,6 +606,7 @@ textarea{
     border-width: 1px;
     border-style: solid;
     border-color: rgb(118, 118, 118);
+    border-radius: 4px;
   }
 
   #year{
