@@ -43,6 +43,7 @@ flex-shrink: 1;
   margin-left: 0.5rem;
   font-size: 14pt;
   font-family: Helvetica, Arial, sans-serif;
+  width: 35rem;
 }
 
 /* tool bar formatting */
