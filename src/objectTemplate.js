@@ -10,9 +10,9 @@ class initiativeCollection {
       while(has == true){
          strId = Id.toString(); // turn id to string so that it can be evaluated and possibly returned
          if (objects.has(strId) == true){ // check to see if map has id or not
-            Id += 1
+            Id += 1;
             } else { // when avenueId does not equal ave we know that the spot is empty
-               return strId
+               return strId;
                }
       }
    };
@@ -20,14 +20,14 @@ class initiativeCollection {
    // Add an Initative to the initatives map in the initiativeCollection 
    add_initiative(name='', description='') {
       let new_initiative = new Initiative();
-      new_initiative.name = name
-      new_initiative.description = description
+      new_initiative.name = name;
+      new_initiative.description = description;
       
       // groups, goals, messages, and avenues will be added after initialization 
       
       let initiativeId = this.id_fill(this.initiatives)// fill in the lowest available id
       this.initiatives.set(initiativeId, new_initiative);
-      return initiativeId
+      return initiativeId;
       }
 
    update_init(initId, ipc) {
@@ -44,7 +44,7 @@ class initiativeCollection {
       let newMess;
       if (message == undefined) {
          newMess = new Message();
-         initiative.messages.set(messId, newMess)
+         initiative.messages.set(messId, newMess);
          message = initiative.messages.get(messId);
       }
       
@@ -52,7 +52,7 @@ class initiativeCollection {
       message.change_greeting(ipc.greeting);
       message.change_content(ipc.content);
       message.change_signature(ipc.signature);
-      //console.log('message in update method: ', message)
+      //console.log('message in update method: ', message);
    }
    // Prepare initiative to be stringified for Json or sent over ipc by converting nonstandard objects
    // Note: pack returns a new object that is packed and does not change the current collection
@@ -61,14 +61,14 @@ class initiativeCollection {
       var container = new initiativeCollection();
       // Pack each initiative and put in the temporary collection
       this.initiatives.forEach(function (initiative, key) {
-         let packed = initiative.pack_for_ipc()
-         container.initiatives.set(key, packed)
-      })
+         let packed = initiative.pack_for_ipc();
+         container.initiatives.set(key, packed);
+      });
       // Pack collection itself into a vanilla object  
       let collection_for_ipc = new Object;
       collection_for_ipc.initiatives = Object.fromEntries(container.initiatives); 
       
-      return collection_for_ipc // Returns the packaged collection  
+      return collection_for_ipc; // Returns the packaged collection  
    }
 
    // Unpack values passed in by Json format from saved file or ipc
@@ -104,7 +104,7 @@ class Initiative {
       this.goals = new Map();  
       this.messages = new Map();
       this.avenues = new Map();
-      this.avenue_types = ['Email', 'Text', 'Phone Call', 'Facebook', 'Instagram', 'Card', 'Handout', 'Poster','Other']
+      this.avenue_types = ['Email', 'Text', 'Phone Call', 'Facebook', 'Instagram', 'Card', 'Handout', 'Poster','Other'];
       }
    // Note: useful built in methods for maps: set(key, value), delete(key), get(key), has(key), clear()
       // keys(), values(), entries(), forEach(), size
@@ -137,9 +137,9 @@ class Initiative {
       while(has == true){
          strId = Id.toString(); // turn id to string so that it can be evaluated and possibly returned
          if (objects.has(strId) == true){ // check to see if map has id or not
-            Id += 1
+            Id += 1;
             } else { // when avenueId does not equal ave we know that the spot is empty
-               return strId
+               return strId;
                }
       }
    };
@@ -175,22 +175,22 @@ class Initiative {
       new_message.signature = signature;
 
       // Set any initial avenue ids.  Can take a single string or array of strings
-      let array = [avenue_ids]
+      let array = [avenue_ids];
       let value;
       let id;
       for(value of array){
          if(typeof value === "string"){
-            new_message.avenue_ids.push(value)
+            new_message.avenue_ids.push(value);
          } else if (value.constructor === Array){
             for(id of value){
-               new_message.avenue_ids.push(id)
-            }
-         }
-      }
+               new_message.avenue_ids.push(id);
+            };
+         };
+      };
 
-      let messageId = this.id_fill(this.messages)// fill in the lowest available id
+      let messageId = this.id_fill(this.messages);// fill in the lowest available id
       this.messages.set(messageId, new_message);
-      return messageId
+      return messageId;
    };
    
    // Add an avenue to the avenues map in the initiative 
@@ -201,17 +201,17 @@ class Initiative {
 
       // able to take single string argument or array of strings for person, and message_id fields
       // could refractor to function that would be used three times for persons, dates, and gui_ids
-      let array = [person]
+      let array = [person];
       let value;
       let name;
       for(value of array){ 
          // if it is a single string argument then push to the avenue's array
          if(typeof value === "string"){
-            new_avenue.person.push(value)
+            new_avenue.person.push(value);
             // if it is an array of values then loop through them and push to avenue's array
          } else if (value.constructor === Array){
             for(name of value){
-               new_avenue.person.push(name)
+               new_avenue.person.push(name);
             }
          }
       }
@@ -220,14 +220,14 @@ class Initiative {
       new_avenue.sent = sent;
 
       // Set message id associated with avenue
-      new_avenue.message_id = message_id
+      new_avenue.message_id = message_id;
       
       // Set date object
       new_avenue.date = dateString;
 
-      let avenueId = this.id_fill(this.avenues)// fill in the lowest available id
+      let avenueId = this.id_fill(this.avenues);// fill in the lowest available id
       this.avenues.set(avenueId, new_avenue);
-      return avenueId
+      return avenueId;
    };
    
    // Add new type of avenue on the fly
@@ -237,7 +237,7 @@ class Initiative {
    
    // Returns avenue types as an array
    get_types(){
-      return this.avenue_types
+      return this.avenue_types;
    };
    
    // Link an avenue and message 
@@ -288,7 +288,7 @@ class Initiative {
       initiative_for_ipc.groups = new Object;
       this.groups.forEach(function (value, key){
          let packed = value.pack_grp_for_ipc();
-         //console.log('packed: ', packed)
+         //console.log('packed: ', packed);
          initiative_for_ipc.groups[key] = packed;
       })
 
@@ -429,7 +429,7 @@ class Group {
       let has = true; // holds boolean for if object has key or not 
       while(has == true){
          strId = Id.toString(); // turn id to string so that it can be evaluated and possibly returned
-         let fullId = this.group_id + strId // add the group id on front for full contact id
+         let fullId = this.group_id + strId; // add the group id on front for full contact id
          if (objects.has(fullId) == true){ // check to see if map has id or not
             Id += 1;
             } else { // when avenueId does not equal ave we know that the spot is empty
@@ -547,22 +547,22 @@ class Message {
    
    // Completely writes over current values in avenue ids 
    change_avenue_id(new_id){   // TODO: need data validation
-      this.avenue_ids = [new_id]
+      this.avenue_ids = [new_id];
       }
 
    // Adds an avenue id to the list of ids for this message
    add_avenue_id(new_id){  // TODO: need data validation
-      this.avenue_ids.push(new_id)
+      this.avenue_ids.push(new_id);
       }
    
    // Returns the list of avenue ids as an array
    get_avenue_ids(){  
-         return this.avenue_ids
+         return this.avenue_ids;
       }
 
    // Clears all avenue ids for this message 
    clear_avenue_ids(){
-      this.avenue_ids = []
+      this.avenue_ids = [];
       }
 };
  
@@ -575,39 +575,39 @@ class Avenue {
       this.avenue_type = '';
       this.description = '';
       this.person = [];
-      this.date = new Date(); // Only one date 
+      this.date = ''; // Only one date 
       this.sent = false;
       this.message_id = '' // Only one message id
       }
    
    // Completely writes over current avenue type 
    change_avenue_type(new_type){ // TODO: need data validation
-      this.avenue_type = new_type
+      this.avenue_type = new_type;
       }
    
    // Returns the avenue type of this avenue as a simple string
    get_avenue_type(){
-      return this.avenue_type
+      return this.avenue_type;
       }
 
    // Completely writes over current description
    change_description(new_description){ // TODO: need data validation
-      this.description = new_description
+      this.description = new_description;
       }
 
    // Returns the description of this avenue as a simple string
    get_description(){
-      return this.description
+      return this.description;
       }
 
    // Completely writes over current values in person values
    change_person(new_person){   // TODO: need data validation
-      this.person = [new_person]
+      this.person = [new_person];
       }
 
    // Adds a person to the person list for that specific avenue
    add_person(new_person){  // TODO: need data validation
-      this.person.push(new_person)
+      this.person.push(new_person);
       }
    
    // Returns the list of people for the given avenue as a simple string
@@ -617,14 +617,14 @@ class Avenue {
          for (person of this.person) {
             if (person != '') {
                people += person + '\n'
-            }
-         }
-         return people
+            };
+         };
+         return people;
       }
 
    // Clears all people for this avenue  
    clear_people(){
-      this.person = []
+      this.person = [];
       }
 
    // Change the date object 
@@ -634,32 +634,32 @@ class Avenue {
  
    // Returns the date for the given avenue as a date object
    get_dates(){
-      return this.date
+      return this.date;
       }
 
    // Change the sent status 
    change_sent(new_sent){  // TODO: need data validation
-      this.sent = new_sent
+      this.sent = new_sent;
       }
    
    // Returns the sent value for the given avenue as a boolean
    get_sent(){
-      return this.sent
+      return this.sent;
       }
 
    // Completely writes over current value of message id
    change_message_id(new_id){ // TODO: need data validation
-      this.message_id = new_id
+      this.message_id = new_id;
       }
    
    // Returns the message id associated with this avenue
    get_message_id(){
-      return this.message_id
+      return this.message_id;
       }
    
    // Clears the message id 
    clear_message_id(){
-      this.message_id = ''
+      this.message_id = '';
       }
 };
 
