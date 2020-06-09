@@ -492,7 +492,7 @@ textarea{
   /* Goal rules */
     .goal{
       display: grid;
-      grid-template-columns: 1fr 1.5fr 1fr 1.4rem;
+      grid-template-columns: 1fr 2.5fr 1fr 1.4rem;
       grid-template-rows: 1.4rem 2rem;
       background-color: rgb(118, 118, 118);
       border: rgb(118, 118, 118);
@@ -542,8 +542,8 @@ textarea{
       grid-row-end: 3;
       }
     
-    /* need to develop frequency and reminder */
-    /* Textareas*/
+    /* need to develop reminder */
+    /* Container for Frequency */
     .frequency{
       grid-column-start: 2;
       grid-column-end: 3;
@@ -658,104 +658,218 @@ textarea{
   }
 
 /* ---- Modal for adding avenues ---- */
-/* The Modal (background) */
-.modal {
-  display: none; /* Hidden by default */
-  position: fixed; /* Stay in place */
-  z-index: 1; /* Sit on top */
-  left: 0;
-  top: 0;
-  width: 100%; /* Full width */
-  height: 100%; /* Full height */
-  overflow: auto; /* Enable scroll if needed */
-  background-color: rgb(0,0,0); /* Fallback color */
-  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
-}
+  /* The Modal (background) */
+  .aveModal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+  }
 
-/* Modal Content/Box */
-.modal-content {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr 1.4rem;
-  grid-template-rows: 1fr 1fr 1fr;
-  background-color: #fefefe;
-  margin: 15% auto; /* 15% from the top and centered */
-  padding: 15px;
-  border: 1px solid rgb(118, 118, 118);
-  width: 80%; /* Could be more or less, depending on screen size */
-  border-radius: 5px; /* Round corners */
-}
+  /* Modal Content/Box */
+  .aveModal-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1.4rem;
+    grid-template-rows: 1fr 1fr 1fr;
+    background-color: #fefefe;
+    margin: 15% auto; /* 15% from the top and centered */
+    padding: 15px;
+    border: 1px solid rgb(118, 118, 118);
+    width: 80%; /* Could be more or less, depending on screen size */
+    border-radius: 5px; /* Round corners */
+  }
 
-/* elements with rounded corners within main box */
-#aveDropModal{
-  border-radius: 4px 0px 0px 0px;
-}
+  /* elements with rounded corners within main box */
+  #aveDropModal{
+    border-radius: 4px 0px 0px 0px;
+  }
 
-#modalPersTitle{
-  border-radius: 0px 4px 0px 0px;
-  border-width: 1px 1px 0px 0px;
-  border-style: solid;
-  border-color: rgb(118, 118, 118);
-}
+  #modalPersTitle{
+    border-radius: 0px 4px 0px 0px;
+    border-width: 1px 1px 0px 0px;
+    border-style: solid;
+    border-color: rgb(118, 118, 118);
+  }
 
-#modalDateTitle{
-  border-width: 1px 0px 0px 0px;
-  border-style: solid;
-  border-color: rgb(118, 118, 118);
-}
+  #modalDateTitle{
+    border-width: 1px 0px 0px 0px;
+    border-style: solid;
+    border-color: rgb(118, 118, 118);
+  }
  
-#modalDescTitle{
-  border-width: 1px 0px 0px 0px;
-  border-style: solid;
-  border-color: rgb(118, 118, 118);
-}
+  #modalDescTitle{
+    border-width: 1px 0px 0px 0px;
+    border-style: solid;
+    border-color: rgb(118, 118, 118);
+  }
 
-#avePersModal{
-  border-radius: 0px 0px 4px 0px;
-}
+  #avePersModal{
+    border-radius: 0px 0px 4px 0px;
+  }
 
-#modalSentBox{
-  border-radius: 0px 0px 0px 4px;
-  grid-column-start: 1;
-  grid-column-end: 2;
-  grid-row-start: 2;
-  grid-row-end: 3;
-  padding: 0.5rem;
-  border-width: 0px 0px 1px 1px;
-  border-style: solid;
-  border-color: rgb(118, 118, 118);
-}
+  #modalSentBox{
+    border-radius: 0px 0px 0px 4px;
+    grid-column-start: 1;
+    grid-column-end: 2;
+    grid-row-start: 2;
+    grid-row-end: 3;
+    padding: 0.5rem;
+    border-width: 0px 0px 1px 1px;
+    border-style: solid;
+    border-color: rgb(118, 118, 118);
+  }
 
 
-/* Change datechooser boarder to match other inputs */
-#aveDateModal {
-  border-width: 1px;
-  border-style: solid;
-  border-color: rgb(118, 118, 118);
-}
+  /* Change datechooser boarder to match other inputs */
+  #aveDateModal {
+    border-width: 1px;
+    border-style: solid;
+    border-color: rgb(118, 118, 118);
+  }
 
-/* Save button for Modal */
-#saveModal{
-  grid-row-start: 3;
-  grid-row-end: 4;
-  grid-column-start: 1;
-  grid-column-end: 3;
-  margin-right: 3%;
-  margin-left: 45%;
-  margin-top: auto;
-}
+  /* Save button for Modal */
+  #aveSaveModal{
+    grid-row-start: 3;
+    grid-row-end: 4;
+    grid-column-start: 1;
+    grid-column-end: 3;
+    margin-right: 3%;
+    margin-left: 45%;
+    margin-top: auto;
+  }
 
-/* Save button for Modal */
-#deleteModal{
-  grid-row-start: 3;
-  grid-row-end: 4;
-  grid-column-start: 3;
-  grid-column-end: 5;
-  margin-right: 45%;
-  margin-left: 3%;
-  margin-top: auto;
-}
+  /* Save button for Modal */
+  #aveDeleteModal{
+    grid-row-start: 3;
+    grid-row-end: 4;
+    grid-column-start: 3;
+    grid-column-end: 5;
+    margin-right: 45%;
+    margin-left: 3%;
+    margin-top: auto;
+  }
 
-/* The Close Button */
+
+/* ---- Modal for adding goals ---- */
+  /* The Modal (background) */
+  .goalModal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+  }
+
+  /* Modal Content/Box */
+  .goalModal-content {
+    display: grid;
+    grid-template-columns: 1fr 2.5fr 1fr 1.4rem;
+    grid-template-rows: 1fr 1fr 1fr;
+    background-color: #fefefe;
+    margin: 15% auto; /* 15% from the top and centered */
+    padding: 15px;
+    border: 1px solid rgb(118, 118, 118);
+    width: 80%; /* Could be more or less, depending on screen size */
+    border-radius: 5px; /* Round corners */
+  }
+
+  #freqModal{
+    grid-column-start: 2;
+    grid-column-end: 3;
+    grid-row-start: 2;
+    grid-row-end: 3;
+    display: grid;
+    grid-template-columns: 2.5rem 1fr 3.5rem 2fr;
+  }
+
+  /* Styles to make elements look like one rounded box inside modal */
+  #modalTypeTitle{
+    border-radius: 4px 0px 0px 0px;
+    border-width: 1px 1px 0px 1px;
+    border-style: solid;
+    border-color: rgb(118, 118, 118);
+  }
+
+  #modalFreqTitle{
+    border-width: 1px 1px 0px 1px;
+    border-style: solid;
+    border-color: rgb(118, 118, 118);
+  }
+
+  #modalRemiTitle{
+    border-radius: 0px 4px 0px 0px;
+    border-width: 1px 1px 0px 1px;
+    border-style: solid;
+    border-color: rgb(118, 118, 118);
+  }
+ 
+  #goalTypeModal{
+    border-radius: 0px 0px 0px 4px;
+    border-style: solid;
+  }
+
+  #goalRemiModal{
+    border-width: 1px;
+    border-style: solid;
+    border-color: rgb(118, 118, 118);
+    border-radius: 0px 0px 4px 0px;
+  }
+
+  #modalUntilTitle {
+    padding-top: 0.5rem;
+    border-width: 1px 0px 1px 0px;
+    border-style: solid;
+    border-color: rgb(118, 118, 118);
+  }
+  #goalDenoModal {
+    border-style: solid;
+  }
+
+  #goalFreqModal {
+    border-style: solid;
+    border-width: 1px 0px 1px 1px;
+  }
+  
+  #goalUntilModal {
+    border-style: solid;
+    border-width: 1px;
+  }
+
+  /* Save button for Modal */
+  #goalSaveModal{
+    grid-row-start: 3;
+    grid-row-end: 4;
+    grid-column-start: 1;
+    grid-column-end: 3;
+    margin-right: 37%;
+    margin-left: 31%;
+    margin-top: auto;
+  }
+
+  /* Save button for Modal */
+  #goalDeleteModal{
+    grid-row-start: 3;
+    grid-row-end: 4;
+    grid-column-start: 2;
+    grid-column-end: 4;
+    margin-right: 31%;
+    margin-left: 37%;
+    margin-top: auto;
+  }
+
+
+/* - Common rules for Close Buttons - */
 .close {
   margin: auto;
   color: #aaa;

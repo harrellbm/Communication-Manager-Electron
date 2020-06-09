@@ -83,11 +83,30 @@
                 </p>
             </div>
         </div>
-
+        <!-- Modal for adding goals -->
+        <div id="goalModal" class="goalModal">
+          <!-- Modal content -->
+          <div class="goalModal-content">
+            <p id="modalTypeTitle">Type:</p>
+            <p id="modalFreqTitle">Frequency:</p>
+            <p id="modalRemiTitle">Reminder:</p>
+            <span class="close">&times;</span>
+            <select id="goalTypeModal"></select>
+            <div id="freqModal">
+              <input id="goalFreqModal" type="number"></input>
+              <select id="goalDenoModal"></select>
+              <p id="modalUntilTitle">Until:</p>
+              <input id="goalUntilModal" type="date"></input>
+            </div>
+            <textarea id="goalRemiModal"></textarea>
+            <input class="button" type="button" id="goalSaveModal" value="Save"> 
+            <input class="button" type="button" id="goalDeleteModal" value="Delete"> 
+          </div>
+        </div>
         <!-- Modal for adding avenues -->
-        <div id="aveModal" class="modal">
+        <div id="aveModal" class="aveModal">
             <!-- Modal content -->
-            <div class="modal-content">
+            <div class="aveModal-content">
               <select id="aveDropModal"></select>
               <p id="modalDateTitle">Date:</p>
               <p id="modalDescTitle">Description:</p>
@@ -100,8 +119,8 @@
               <input id="aveDateModal" type="date"></input>
               <textarea id="aveDescModal"></textarea>  
               <textarea id="avePersModal"></textarea>
-              <input class="button" type="button" id="saveModal" value="Save"> 
-              <input class="button" type="button" id="deleteModal" value="Delete"> 
+              <input class="button" type="button" id="aveSaveModal" value="Save"> 
+              <input class="button" type="button" id="aveDeleteModal" value="Delete"> 
             </div>
         </div>
         <div id="aveIdModal" style="position: absolute; display: none;"></div>
