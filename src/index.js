@@ -591,7 +591,7 @@ function deleteAveMess (ave) {
   // Get the save button from modal 
   document.getElementById('aveDeleteModal').addEventListener("click", aveModalDelete );
   
-  // Save contents from the modal. Then update Initiative object, Message Manager tab and Initiative tab
+  // Delete contents from the modal. Then update Initiative object, Message Manager tab and Initiative tab
   function aveModalDelete (){
     // Get launch type 
     let launchType = document.getElementById('launchModalType').value;
@@ -949,6 +949,12 @@ function addGoal (event='', goalId='') {// If Goal id is passed in it will load 
   freqDiv.setAttribute("class", "frequency");
   freqDiv.setAttribute("id", `frequency${id}`);
 
+    // Create filler title for readablity  
+    let everyTitle = document.createElement("p");
+    everyTitle.setAttribute("class", "everyTitle");
+    everyTitle.innerHTML = "Every";
+    freqDiv.appendChild(everyTitle); //add the paragraph to the div
+
     // Create number input for frequency 
     let freqNum = document.createElement("input");
     freqNum.setAttribute("class", "freqNum")
@@ -956,7 +962,7 @@ function addGoal (event='', goalId='') {// If Goal id is passed in it will load 
     freqNum.setAttribute("type", "number");
     freqNum.setAttribute("value", "1");
     freqNum.setAttribute("min", "1");
-    freqNum.setAttribute("max", "20");
+    freqNum.setAttribute("max", "30");
     if(goalLoad != ''){// if creating a goal that is being pulled from a file set it's value   
       freqNum.value = goalLoad.frequency[0];
     };
@@ -981,11 +987,11 @@ function addGoal (event='', goalId='') {// If Goal id is passed in it will load 
     };
     freqDiv.appendChild(freqDropdown); //add the dropdown to the div
 
-     // Create number input for frequency 
-     let freqLabel = document.createElement("p");
-     freqLabel.setAttribute("class", "freqDateTitle");
-     freqLabel.innerHTML = "Until: ";
-     freqDiv.appendChild(freqLabel); //add the label to the div
+     // Create filler title for readablity  
+     let untilTitle = document.createElement("p");
+     untilTitle.setAttribute("class", "untilTitle");
+     untilTitle.innerHTML = "Until";
+     freqDiv.appendChild(untilTitle); //add the paragraph to the div
 
     // Create date until input for frequency 
     let freqDate = document.createElement("input");
@@ -1157,64 +1163,6 @@ function deleteGoal (goal) {
               description.style.backgroundColor = 'rgb(225, 160, 140)';
             };
           };
-      };
-    
-      // Get the save button from modal 
-      document.getElementById('goalDeleteModal').addEventListener("click", goalModalDelete );
-      
-      // Save contents from the modal. Then update Initiative object, Message Manager tab and Initiative tab
-      function goalModalDelete (){
-        // Get launch type 
-        let launchType = document.getElementById('launchModalType').value;
-        //console.log('Origin of Modal launch', launchType)
-        // If launched from Calendar on Initiative tab verify delete 
-        if (launchType == 'calUpdate') {
-          // Confirm that user wants to delete avenue if not return
-          swal({
-            title: 'Deleting Avenue',
-            text: 'Are you sure you want to delete your Avenue?', 
-            icon: 'warning',
-            buttons: ['Cancel', 'Yes'],
-            dangerMode: true
-          })
-          .then(function (value) {
-            if (value == null) { // Escape deletion 
-              return
-            } else { // Proceed with deletion 
-              // Get id from DOM
-              let aveId = document.getElementById('aveIdModal');
-              // Remove avenue from message manager UI
-              let messAve = document.getElementById(`avenue${aveId.value}`);
-              messAve.parentElement.removeChild(messAve);
-              // Delete Schedule object on calendar 
-              calendar.deleteSchedule(aveId.value, '1');
-              // Remove avenue from Initiative object 
-              let id = aveId.value;
-              currentInitiative.avenues.delete(id); // Take only the number off of the end of the ui id
-              // Send updates to main
-              let ipcInit = currentInitiative.pack_for_ipc();
-              ipc.send('save', currentInitiativeId, ipcInit);
-              
-              // Close modal
-              goalModal.style.display = "none";
-              // Reset modal
-              aveId.value = '';
-              document.getElementById('aveSentModal').checked = false; // Sent
-              let types = document.getElementById('aveDropModal'); // Type
-              let i, L= types.options.length - 1;
-              for(i = L; i >= 0; i--) {
-                types.remove(i);
-              };
-              document.getElementById('avePersModal').value = ''; // Person
-              document.getElementById('aveDateModal').value = ''; // Date Value
-              document.getElementById('aveDescModal').value = ''; // Description Value
-              // Reset backgroup of date and description incase they had been changed on unfilled attempt to save
-              document.getElementById('aveDateModal').style.backgroundColor = 'white'; // Date Style
-              document.getElementById('aveDescModal').style.backgroundColor = 'white'; // Description Style
-              return
-            }; 
-          });
-        } else if (launchType == 'mess' || launchType == 'calCreate') { return }; // Else if launched from message manager tab disregard click on delete button
       };
       
       // Get the <span> element that closes the modal and attach listener

@@ -550,12 +550,19 @@ textarea{
       grid-row-start: 2;
       grid-row-end: 3;
       display: grid;
-      grid-template-columns: 2.5rem 1fr 3.5rem 2fr;
+      grid-template-columns: 3.5rem 2.5rem 1fr 3.5rem 2fr;
     }
 
-    .freqDateTitle{
+    .untilTitle{
       padding: 0.2rem;
       border-width: 1px 0px 1px 0px;
+      border-style: solid;
+      border-color: rgb(118, 118, 118);
+    }
+
+    .everyTitle{
+      padding: 0.2rem;
+      border-width: 1px 0px 1px 1px;
       border-style: solid;
       border-color: rgb(118, 118, 118);
     }
@@ -774,7 +781,7 @@ textarea{
   /* Modal Content/Box */
   .goalModal-content {
     display: grid;
-    grid-template-columns: 1fr 2.5fr 1fr 1.4rem;
+    grid-template-columns: 1fr 3fr 1fr 1.4rem;
     grid-template-rows: 1fr 1fr 1fr;
     background-color: #fefefe;
     margin: 15% auto; /* 15% from the top and centered */
@@ -790,7 +797,7 @@ textarea{
     grid-row-start: 2;
     grid-row-end: 3;
     display: grid;
-    grid-template-columns: 2.5rem 1fr 3.5rem 2fr;
+    grid-template-columns: 3.2rem 2.5rem 1fr 3rem 2fr;
   }
 
   /* Styles to make elements look like one rounded box inside modal */
@@ -827,11 +834,21 @@ textarea{
   }
 
   #modalUntilTitle {
-    padding-top: 0.5rem;
+    padding-top: 0.6rem;
     border-width: 1px 0px 1px 0px;
     border-style: solid;
     border-color: rgb(118, 118, 118);
+    font-size: 1rem;
   }
+
+  #modalEveryTitle {
+    padding-top: 0.6rem;
+    border-width: 1px 0px 1px 1px;
+    border-style: solid;
+    border-color: rgb(118, 118, 118);
+    font-size: 1rem;
+  }
+
   #goalDenoModal {
     border-style: solid;
   }
@@ -851,20 +868,9 @@ textarea{
     grid-row-start: 3;
     grid-row-end: 4;
     grid-column-start: 1;
-    grid-column-end: 3;
-    margin-right: 37%;
-    margin-left: 31%;
-    margin-top: auto;
-  }
-
-  /* Save button for Modal */
-  #goalDeleteModal{
-    grid-row-start: 3;
-    grid-row-end: 4;
-    grid-column-start: 2;
     grid-column-end: 4;
-    margin-right: 31%;
-    margin-left: 37%;
+    margin-right: 40%;
+    margin-left: 40%;
     margin-top: auto;
   }
 
