@@ -107,9 +107,9 @@ function save () {
       //console.log(guiGoal)
       initGoal.type = guiGoal.children[3].value;
       initGoal.frequency = [ // Get frequency specifics and save in array as format: [ frequency, denomination, unitl ]
-          guiGoal.children[4].children[0].value, 
           guiGoal.children[4].children[1].value, 
-          moment(guiGoal.children[4].children[3].value, 'YYYY-MM-DD', true).toString()
+          guiGoal.children[4].children[2].value, 
+          moment(guiGoal.children[4].children[4].value, 'YYYY-MM-DD', true).toString()
         ]; 
       initGoal.reminder = guiGoal.children[5].value;
     };
@@ -888,13 +888,15 @@ ipc.on('update-mess', function (event, messageId, messageObj) {
 
 /* ---- Goal related functions ---- */
 // Adds a Goal to do DOM of Initiative tab 
-document.getElementById("addGoal").addEventListener("click", addGoal);
-function addGoal (event='', goalId='') {// If Goal id is passed in it will load it from the initative object. Otherwise it is treated as a new Goal
+
+function addGoal (event='', goalId='',  freq='', denomination='', until='', type='', reminder='') {
+  // If Goal id is passed in it will load it from the initative object. Otherwise it is treated as a new Goal
   // Update the current initiative object if this is a new Goal 
   var id; 
   var goalLoad = '';
   if ( goalId == '') { // If goal is being added for the first time 
-    id = currentInitiative.add_goal();
+    id = currentInitiative.add_goal([ freq, denomination, until ], type, reminder);
+    goalLoad = currentInitiative.goals.get(id);
     } else { // Else load existing goal from initiative object 
       id = goalId
       goalLoad = currentInitiative.goals.get(id);
@@ -939,7 +941,6 @@ function addGoal (event='', goalId='') {// If Goal id is passed in it will load 
     dropdown.appendChild(opElem);
     }
   if(goalLoad != ''){// if creating an goal that is being pulled from a file set it's value   
-    console.log(goalLoad.type)
     dropdown.value = goalLoad.type;
   };
   goal.appendChild(dropdown); //add the dropdown menu to the goal
@@ -964,6 +965,7 @@ function addGoal (event='', goalId='') {// If Goal id is passed in it will load 
     freqNum.setAttribute("min", "1");
     freqNum.setAttribute("max", "30");
     if(goalLoad != ''){// if creating a goal that is being pulled from a file set it's value   
+      console.log(goalLoad.frequency)
       freqNum.value = goalLoad.frequency[0];
     };
     freqDiv.appendChild(freqNum); //add the num input to the div
@@ -1010,7 +1012,7 @@ function addGoal (event='', goalId='') {// If Goal id is passed in it will load 
   let remd = document.createElement("textarea");
   remd.setAttribute("class", "reminder");
   remd.setAttribute("id", `reminder${id}`);
-  if(goalId != ''){// if creating an goal that is being pulled from a file set it's value 
+  if(goalLoad != ''){// if creating an goal that is being pulled from a file set it's value 
     remd.value = goalLoad.reminder;
   };
   goal.appendChild(remd);
@@ -1026,7 +1028,7 @@ function addGoal (event='', goalId='') {// If Goal id is passed in it will load 
   goal.appendChild(deleteBtn);
 
   // Get the main div that holds all the goals and append the new one
-  //console.log("goal", goal);
+  console.log("goal", goal);
   document.getElementById("goalIn").appendChild(goal);
 };
 
@@ -1060,9 +1062,7 @@ function deleteGoal (goal) {
 
 /* -- Unified modal popup to add Goals -- */
   // Get the modal and button that opens it from initiative tab
-    var goalModal = document.getElementById("goalModal");
     document.getElementById("addGoal").addEventListener("click", goalPopLaunch);
-      
       // Launch the modal with basic settings. Can take in a date from calendar event to display on creation
       function goalPopLaunch() {
         // Set dropdown options from type of goal  // Note: list held in the initiative object 
@@ -1096,71 +1096,43 @@ function deleteGoal (goal) {
       
       // Save contents from the modal. Then update Initiative object, Message Manager tab and Initiative tab
       function goalModalSave (){
-        let sent = document.getElementById('goalFreqModal');
-        let type = document.getElementById('goalDenoModal');
-        let date = document.getElementById('goalUntilModal');
-        let description = document.getElementById('aveDescModal');
-        let person = document.getElementById('avePersModal');
-        let aveId = document.getElementById('aveIdModal');
-        console.log('sent', sent.checked, '\ntype', type.value, '\ndate', date.value, '\ndescription', description.value, '\nperson', person.value, '\naveId', aveId.value);
-        // Make sure date and description are filled out 
-        if (date.value != '' && description.value != ''){
-          // Turn date into moment object to format for adding or updating avenue in initiative object and ui
-          let momDate = moment(date.value, 'YYYY-MM-DD', true); 
-          // If no id provided assume this is a new avenue
-          if (aveId.value == '' || aveId.value == undefined ){
-            // Add avenue to initiative object, initative tab and message manager tab. 
-            addAve('modalAdd', '', 'avenueIn', sent.checked, type.value, description.value, person.value, momDate.toString()); // use Moment date format
-             // Save everything to main
-             let ipcInit = currentInitiative.pack_for_ipc();
-             ipc.send('save', currentInitiativeId, ipcInit);
-          } else if ( parseInt(aveId.value) >= 0 ) {
-            // Update Initiative object 
-            let initAve = currentInitiative.avenues.get(aveId.value); // Avenue object from the initiative object
-            initAve.avenue_type = type.value;
-            initAve.sent = sent.checked;
-            initAve.description = description.value;
-            initAve.person = person.value;
-            initAve.change_date(momDate.toString());
-            // Update Message manager tab
-            let guiAve = document.getElementById(`avenue${aveId.value}`); // Avenue object from the ui
-          
-            guiAve.children[0].value = type.value; // Type
-            guiAve.children[4].children[0].checked = sent.checked; // Sent
-            guiAve.children[5].value = description.value; // Description
-            guiAve.children[6].value = person.value; // Person
-            guiAve.children[7].value = momDate.format('YYYY-MM-DD');
-            // Update Schedule object on calendar 
-            calendar.updateSchedule(aveId.value, '1', {
-              title: description.value,
-              start: momDate.format('ddd DD MMM YYYY HH:mm:ss'),
-              end:  momDate.format('ddd DD MMM YYYY HH:mm:ss')
-            });
-            // Save everything to main
-            let ipcInit = currentInitiative.pack_for_ipc();
-            ipc.send('save', currentInitiativeId, ipcInit);
-          };
+        let freqNum = document.getElementById('goalFreqModal');
+        let denomination = document.getElementById('goalDenoModal');
+        let until = document.getElementById('goalUntilModal'); 
+        let type = document.getElementById('goalTypeModal');
+        let reminder = document.getElementById('goalRemiModal');
+        
+        console.log('type', type.value, '\nfreqNum', freqNum.value, '\ndenomination', denomination.value, '\nuntil', until.value, '\nreminder', reminder.value);
+        // Make sure date until is filled out  
+        if (until.value != ''){
+          // Turn date until into moment object to format for adding or updating avenue in initiative object and ui
+          let momDate = moment(until.value, 'YYYY-MM-DD', true); 
+          // Add goal to initiative object and initative tab. 
+          addGoal('modalAdd', '',  freqNum.value, denomination.value, momDate.toString(), type.value, reminder.value); // use Moment date format
+          /* -- generate cal based on goal --*/
+          // Save everything to main
+          let ipcInit = currentInitiative.pack_for_ipc();
+          ipc.send('save', currentInitiativeId, ipcInit);
           // Close modal
           goalModal.style.display = "none";
           // Reset modal
-          sent.checked = false;
-          let i, L= type.options.length - 1;
+          freqNum.value = 1;
+          let i, L= denomination.options.length - 1;
+          for(i = L; i >= 0; i--) {
+            denomination.remove(i);
+          };
+          until.value = '';
+          i = 0;
+          L= type.options.length - 1;
           for(i = L; i >= 0; i--) {
             type.remove(i);
           };
-          date.value = ''; 
-          description.value = '';
-          person.value = '';
-          aveId.value = '';
-          // Reset backgroup of date and description incase they had been changed on unfilled attempt to save
-          date.style.backgroundColor = 'white';
-          description.style.backgroundColor = 'white';
+          reminder.value = '';
+          // Reset backgroup of date until incase they had been changed on unfilled attempt to save
+          until.style.backgroundColor = 'white';
         } else { // Change backgroup of date or description if not filled out 
-            if (date.value == ''){
-              date.style.backgroundColor = 'rgb(225, 160, 140)';
-            };
-            if (description.value == ''){
-              description.style.backgroundColor = 'rgb(225, 160, 140)';
+            if (until.value == ''){
+              until.style.backgroundColor = 'rgb(225, 160, 140)';
             };
           };
       };
@@ -1171,24 +1143,25 @@ function deleteGoal (goal) {
         // Refresh calendar 
         calendar.render();
         // Reset modal
-        let sent = document.getElementById('aveSentModal');
-        let type = document.getElementById('aveDropModal');
-        let date = document.getElementById('aveDateModal');
-        let description = document.getElementById('aveDescModal');
-        let person = document.getElementById('avePersModal');
-        let aveId = document.getElementById('aveIdModal');
-        sent.checked = false;
-        let i, L= type.options.length - 1;
+        let freqNum = document.getElementById('goalFreqModal');
+        let denomination = document.getElementById('goalDenoModal');
+        let until = document.getElementById('goalUntilModal'); 
+        let type = document.getElementById('goalTypeModal');
+        let reminder = document.getElementById('goalRemiModal');
+        freqNum.value = 1;
+        let i, L= denomination.options.length - 1;
+        for(i = L; i >= 0; i--) {
+          denomination.remove(i);
+        };
+        until.value = '';
+        i = 0;
+        L= type.options.length - 1;
         for(i = L; i >= 0; i--) {
           type.remove(i);
         };
-        date.value = ''; 
-        description.value = '';
-        person.value = '';
-        aveId.value = '';
-        // Reset backgroup of date and description incase they had been changed on unfilled attempt to save
-        date.style.backgroundColor = 'white';
-        description.style.backgroundColor = 'white';
+        reminder.value = '';
+        // Reset backgroup of date until incase they had been changed on unfilled attempt to save
+        until.style.backgroundColor = 'white';
       });
       
       // When the user clicks anywhere outside of the modal, close it
@@ -1198,24 +1171,25 @@ function deleteGoal (goal) {
           // Refresh calendar 
           calendar.render();
           // Reset modal
-          let sent = document.getElementById('aveSentModal');
-          let type = document.getElementById('aveDropModal');
-          let date = document.getElementById('aveDateModal');
-          let description = document.getElementById('aveDescModal');
-          let person = document.getElementById('avePersModal');
-          let aveId = document.getElementById('aveIdModal');
-          sent.checked = false;
-          let i, L= type.options.length - 1;
-          for(i = L; i >= 0; i--) {
-            type.remove(i);
-          };
-          date.value = ''; 
-          description.value = '';
-          person.value = '';
-          aveId.value = '';
-          // Reset backgroup of date and description incase they had been changed on unfilled attempt to save
-          date.style.backgroundColor = 'white';
-          description.style.backgroundColor = 'white';
+        let freqNum = document.getElementById('goalFreqModal');
+        let denomination = document.getElementById('goalDenoModal');
+        let until = document.getElementById('goalUntilModal'); 
+        let type = document.getElementById('goalTypeModal');
+        let reminder = document.getElementById('goalRemiModal');
+        freqNum.value = 1;
+        let i, L= denomination.options.length - 1;
+        for(i = L; i >= 0; i--) {
+          denomination.remove(i);
+        };
+        until.value = '';
+        i = 0;
+        L= type.options.length - 1;
+        for(i = L; i >= 0; i--) {
+          type.remove(i);
+        };
+        reminder.value = '';
+        // Reset backgroup of date until incase they had been changed on unfilled attempt to save
+        until.style.backgroundColor = 'white';
         };
       });  
     
