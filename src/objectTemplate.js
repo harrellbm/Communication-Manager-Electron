@@ -465,34 +465,49 @@ class Goal {
       this.frequency= [];
       this.type = '';
       this.reminder = {};
-      };
+      this.linked_aves = [];
+   };
    
    // Changes the goal's frequency 
    change_frequency(freq, denomination, until){ 
       this.frequency = [ freq, denomination, until ];
-      };
+   };
    
    // Gets the goal's frequency 
    get_frequency(){
       return this.frequency;
-      };
+   };
    
    // Changes the goal's avenue type 
    change_type(new_type){ 
       this.type = new_type;
-      };
+   };
    
    // Gets the goal's avenue type 
    get_type(){
       return this.type;
-      };
-      
-      /* need add reminder */
-      /* need get reminder */
-      /* need remove reminder */
-      /* need clear reminders */
-      /* implement date object in reminder */
-  };
+   };
+
+   // Completely writes over current values in avenue ids 
+   change_avenue_id(new_id){   // TODO: need data validation
+      this.linked_aves = [new_id];
+   };
+
+   // Adds an avenue id to the list of ids linked to goal
+   add_avenue_id(new_id){  // TODO: need data validation
+      this.linked_aves.push(new_id);
+   };
+   
+   // Returns the list of avenue ids as an array
+   get_avenue_ids(){  
+         return this.linked_aves;
+   };
+
+   // Clears all avenue ids linked to this goal 
+   clear_avenue_ids(){
+      this.linked_aves = [];
+   }; 
+};
 
 class Message {
    constructor () {
@@ -577,38 +592,39 @@ class Avenue {
       this.person = [];
       this.date = ''; // Only one date 
       this.sent = false;
-      this.message_id = '' // Only one message id
-      }
+      this.message_id = ''; // Only one message id
+      this.goal_id = ''; // Only one goal id
+   };
    
    // Completely writes over current avenue type 
    change_avenue_type(new_type){ // TODO: need data validation
       this.avenue_type = new_type;
-      }
+   };
    
    // Returns the avenue type of this avenue as a simple string
    get_avenue_type(){
       return this.avenue_type;
-      }
+   };
 
    // Completely writes over current description
    change_description(new_description){ // TODO: need data validation
       this.description = new_description;
-      }
+   };
 
    // Returns the description of this avenue as a simple string
    get_description(){
       return this.description;
-      }
+   };
 
    // Completely writes over current values in person values
    change_person(new_person){   // TODO: need data validation
       this.person = [new_person];
-      }
+   };
 
    // Adds a person to the person list for that specific avenue
    add_person(new_person){  // TODO: need data validation
       this.person.push(new_person);
-      }
+   };
    
    // Returns the list of people for the given avenue as a simple string
    get_people(){  
@@ -616,51 +632,66 @@ class Avenue {
          let person;
          for (person of this.person) {
             if (person != '') {
-               people += person + '\n'
+               people += person + '\n';
             };
          };
          return people;
-      }
+   };
 
    // Clears all people for this avenue  
    clear_people(){
       this.person = [];
-      }
+   };
 
    // Change the date object 
    change_date(dateString){  // TODO: need data validation
       this.date = dateString;
-      }
+   };
  
    // Returns the date for the given avenue as a date object
    get_dates(){
       return this.date;
-      }
+   };
 
    // Change the sent status 
    change_sent(new_sent){  // TODO: need data validation
       this.sent = new_sent;
-      }
+   };
    
    // Returns the sent value for the given avenue as a boolean
    get_sent(){
       return this.sent;
-      }
+   };
 
    // Completely writes over current value of message id
    change_message_id(new_id){ // TODO: need data validation
       this.message_id = new_id;
-      }
+   };
    
    // Returns the message id associated with this avenue
    get_message_id(){
       return this.message_id;
-      }
+   };
    
    // Clears the message id 
    clear_message_id(){
       this.message_id = '';
-      }
+   };
+
+   // Completely writes over current value of goal id
+   change_goal_id(new_id){ // TODO: need data validation
+      this.goal_id = new_id;
+   };
+   
+   // Returns the goal id associated with this avenue
+   get_goal_id(){
+      return this.goal_id;
+   };
+   
+   // Clears the goal id 
+   clear_goal_id(){
+      this.goal_id = '';
+   };
 };
 
 module.exports = {

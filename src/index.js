@@ -8,10 +8,11 @@ const clipboard = require('electron').clipboard; // For accessing the clipboard
 const QuillDeltaToHtmlConverter = require('quill-delta-to-html').QuillDeltaToHtmlConverter; // Handle custom convertion of deltas to html
 const Calendar = require('tui-calendar');// used for calendar on initiaive tab
 
-//Note: there are three main date formats used between elements
+// Note: there are three main date formats used between elements
    // Moment's toString and Tui's TZDate function toDate generates dates formated 'ddd MMM DD YYYY HH:mm:ss' which is used to save dates in initative object and display on calendar
    // the date picker displays and returns dates in format 'YYYY-MM-DD'
-
+// Note: Element ids hold a tag on the front in the from 'elementTypeNumber' i.e 'avenue0' or 'group0' this makes for easy access using getElementById
+   // In objects the tag is removed so that only the number is saved this makes for easier manipulation under the hood
 
 /* ---- Common index functions ---- */ 
 var currentInitiative;
