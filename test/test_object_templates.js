@@ -16,7 +16,7 @@ describe("initiativeCollection object", function () {
 
     it('should have all initial initiativeCollection object keys', function () {
        //console.log(test_collection);
-       expect(test_collection, 'Missing a key').to.include.keys('initiatives');
+       expect(test_collection, 'Missing a key').to.have.keys('initiatives');
        expect(test_collection.initiatives, 'Initiatives is not a Map').is.instanceOf(Map);
     });
     
@@ -217,7 +217,7 @@ describe("Initiative object", function () {
 
     it('should have all initial Initiative object keys', function () {
        //console.log(test_initiative);
-       expect(test_initiative, 'Missing a key').to.include.keys('name','description', 'groups', 'goals', 'messages', 'avenues')
+       expect(test_initiative, 'Missing a key').to.have.keys('name','description', 'groups', 'goals', 'messages', 'avenues', 'avenue_types')
        expect(test_initiative.name, 'Name is not a string').is.a('string');
        expect(test_initiative.description, 'Description is not a string').is.a('string');
        expect(test_initiative.groups, 'Groups is not a Map').is.instanceof(Map);
@@ -726,7 +726,7 @@ describe("Initiative object", function () {
         expect(returned_initiative.goals, 'Goals is not a map').to.be.instanceOf(Object);
         let goal0 = returned_initiative.goals['0'];
         //console.log(goal0)
-        expect(goal0, 'Goal does not have proper keys').to.be.an('object').that.has.keys('frequency', 'type', 'reminder');
+        expect(goal0, 'Goal does not have proper keys').to.be.an('object').that.has.keys('frequency', 'type', 'reminder', 'linked_aves');
         expect(goal0.frequency[0], 'Goal does not have correct frequency').to.equal(1);
         expect(goal0.frequency[1], 'Goal does not have correct frequency denomination').to.be.a('string').that.equals('days');
         expect(goal0.frequency[2], 'Goal does not have correct frequency date until').to.be.a('string').that.includes('Sat Jul 25 2020 00:00:00');
@@ -748,7 +748,7 @@ describe("Initiative object", function () {
         expect(returned_initiative.avenues, 'Avenues is not a map').to.be.instanceOf(Object);
         let avenue0 = returned_initiative.avenues['0'];
         //console.log(avenue0)
-        expect(avenue0, 'Avenue does not have proper keys').to.be.an('object').that.has.keys('avenue_type', 'description', 'person', 'date', 'sent', 'message_id');
+        expect(avenue0, 'Avenue does not have proper keys').to.be.an('object').that.has.keys('avenue_type', 'description', 'person', 'date', 'sent', 'message_id', 'goal_id');
         expect(avenue0.avenue_type, 'Avenue_type is not correct').to.be.a('string').that.equals('email');
         expect(avenue0.description, 'Description is not correct').to.be.a('string').that.equals('for all my peeps');
         expect(avenue0.person, 'Person is not correct').to.be.an('array').that.includes('Bob');
@@ -793,7 +793,7 @@ describe("Initiative object", function () {
         let goal1 = test_initiative.goals.get('0');
         //console.log(goal1)
         expect(goal1, 'Not a goal object').to.be.instanceOf(templates.Goal);
-        expect(goal1, 'Goal does not have proper keys').to.have.keys('frequency', 'type', 'reminder');
+        expect(goal1, 'Goal does not have proper keys').to.have.keys('frequency', 'type', 'reminder', 'linked_aves');
         expect(goal1.frequency[0], 'Goal does not have correct frequency').to.equal(1);
         expect(goal1.frequency[1], 'Goal does not have correct frequency denomination').to.be.a('string').that.equals('days');
         expect(goal1.frequency[2], 'Goal does not have correct frequency date until').to.be.a('string').that.includes('Sat Jul 25 2020 00:00:00');
@@ -817,7 +817,7 @@ describe("Initiative object", function () {
         let avenue1 = test_initiative.avenues.get('0');
         //console.log(avenue1)
         expect(avenue1, 'Not an avenue object').to.be.instanceOf(templates.Avenue);
-        expect(avenue1, 'Avenue does not have proper keys').to.be.an('object').that.has.keys('avenue_type', 'description', 'person', 'date', 'sent', 'message_id');
+        expect(avenue1, 'Avenue does not have proper keys').to.be.an('object').that.has.keys('avenue_type', 'description', 'person', 'date', 'sent', 'message_id', 'goal_id');
         expect(avenue1.avenue_type, 'Avenue_type is not correct').to.be.a('string').that.equals('email');
         expect(avenue1.description, 'Description is not correct').to.be.a('string').that.equals('for all my peeps');
         expect(avenue1.person, 'Person is not correct').to.be.an('array').that.includes('Bob');
@@ -842,7 +842,7 @@ describe("Group object", function () {
 
    it('should have all initial Group object keys', function () {
        //console.log(test_group);
-       expect(test_group, 'Missing a key').to.include.keys('group_id','group_name', 'contacts');
+       expect(test_group, 'Missing a key').to.have.keys('group_id','group_name', 'contacts');
        expect(test_group.group_id, 'Id is not a string').is.a('string');
        expect(test_group.group_name, 'Name is not a string').is.a('string');
        expect(test_group.contacts, 'Contacts is not a map').is.instanceOf(Map);
@@ -964,7 +964,7 @@ describe("Goal object", function () {
 
    it('should have all initial Goal object keys', function () {
        //console.log(test_goal);
-       expect(test_goal, 'Missing a key').to.include.keys('frequency', 'type', 'reminder');
+       expect(test_goal, 'Missing a key').to.have.keys('frequency', 'type', 'reminder', 'linked_aves');
        expect(test_goal.frequency, 'frequency is not an array').is.a('array');
        expect(test_goal.type, 'type is not a string').is.a('string');
        expect(test_goal.reminder, 'reminder is not an object').is.an('object');
@@ -1008,6 +1008,45 @@ describe("Goal object", function () {
         expect(type, 'Type was not returned').to.be.a('string').that.equals('text');
     });
 
+     // test change linked avenue ids
+     it('should change linked avenue ids', () => {
+        test_goal.change_avenue_id('1');
+        //console.log('new avenue id', test_goal);
+        expect(test_goal.linked_aves, 'Avenue id was not changed').to.be.an('array').that.includes('1');
+    });
+    
+    // test add avenue id 
+    it('should add an avenue id', () => {
+        test_goal.add_avenue_id('0');
+        test_goal.add_avenue_id('1');
+        test_goal.add_avenue_id('2');
+        test_goal.add_avenue_id('3');
+        //console.log('new avenue ids:', test_goal);
+        expect(test_goal.linked_aves, 'New avenue ids were not added').to.be.an('array').that.includes('0').and.includes('1').and.includes('2').and.includes('3');
+    });
+    
+    // test return avenue ids 
+    it('should return avenue ids', () => {
+        test_goal.add_avenue_id('0');
+        test_goal.add_avenue_id('1');
+        test_goal.add_avenue_id('2');
+        test_goal.add_avenue_id('3');
+        let avenue_ids = test_goal.get_avenue_ids();
+        //console.log('new avenue ids:', test_goal);;
+        expect(avenue_ids, 'Avenue ids were not returned').to.be.an('array').that.includes('0').and.includes('1').and.includes('2').and.includes('3');
+    });
+
+    // test clear avenue ids 
+    it('should clear avenue ids', () => {
+        test_goal.add_avenue_id('0');
+        test_goal.add_avenue_id('1');
+        test_goal.add_avenue_id('2');
+        test_goal.add_avenue_id('3');
+        //console.log('new avenue ids:', test_goal);;
+        test_goal.clear_avenue_ids();
+        //console.log('cleared avenue ids:', test_goal);;
+        expect(test_goal.linked_aves, 'Avenue ids were not cleared').to.be.an('array').and.to.have.length(0);
+    });
 });
 
 describe("Message object", function() {
@@ -1022,7 +1061,7 @@ describe("Message object", function() {
     // Initiate Message - need to finish 
     it('should have all initial message object keys', () => {
         //console.log(test_message)
-        expect(test_message).to.include.keys('title', 'greeting', 'content', 'signature', 'avenue_ids')
+        expect(test_message).to.have.keys('title', 'greeting', 'content', 'signature', 'avenue_ids')
         expect(test_message.title, 'title is not a string').is.a('string');
         expect(test_message.greeting, 'greeting is not a string').is.a('string');
         expect(test_message.content, 'content is not a string').is.a('string');
@@ -1096,38 +1135,38 @@ describe("Message object", function() {
 
      // test change avenue ids
      it('should change avenue ids', () => {
-        test_message.change_avenue_id('avenue1');
+        test_message.change_avenue_id('1');
         //console.log('new avenue id', test_message);
-        expect(test_message.avenue_ids, 'Avenue id was not changed').to.be.an('array').that.includes('avenue1');
+        expect(test_message.avenue_ids, 'Avenue id was not changed').to.be.an('array').that.includes('1');
     });
     
     // test add avenue id 
     it('should add an avenue id', () => {
-        test_message.add_avenue_id('avenue0');
-        test_message.add_avenue_id('avenue1');
-        test_message.add_avenue_id('avenue2');
-        test_message.add_avenue_id('avenue3');
+        test_message.add_avenue_id('0');
+        test_message.add_avenue_id('1');
+        test_message.add_avenue_id('2');
+        test_message.add_avenue_id('3');
         //console.log('new avenue ids:', test_message);
-        expect(test_message.avenue_ids, 'New avenue ids were not added').to.be.an('array').that.includes('avenue0').and.includes('avenue1').and.includes('avenue2').and.includes('avenue3');
+        expect(test_message.avenue_ids, 'New avenue ids were not added').to.be.an('array').that.includes('0').and.includes('1').and.includes('2').and.includes('3');
     });
     
     // test return avenue ids 
     it('should return avenue ids', () => {
-        test_message.add_avenue_id('avenue0');
-        test_message.add_avenue_id('avenue1');
-        test_message.add_avenue_id('avenue2');
-        test_message.add_avenue_id('avenue3');
+        test_message.add_avenue_id('0');
+        test_message.add_avenue_id('1');
+        test_message.add_avenue_id('2');
+        test_message.add_avenue_id('3');
         let avenue_ids = test_message.get_avenue_ids();
         //console.log('new avenue ids:', test_message);;
-        expect(avenue_ids, 'Avenue ids were not returned').to.be.an('array').that.includes('avenue0').and.includes('avenue1').and.includes('avenue2').and.includes('avenue3');
+        expect(avenue_ids, 'Avenue ids were not returned').to.be.an('array').that.includes('0').and.includes('1').and.includes('2').and.includes('3');
     });
 
     // test clear avenue ids 
     it('should clear avenue ids', () => {
-        test_message.add_avenue_id('avenue0');
-        test_message.add_avenue_id('avenue1');
-        test_message.add_avenue_id('avenue2');
-        test_message.add_avenue_id('avenue3');
+        test_message.add_avenue_id('0');
+        test_message.add_avenue_id('1');
+        test_message.add_avenue_id('2');
+        test_message.add_avenue_id('3');
         //console.log('new avenue ids:', test_message);;
         test_message.clear_avenue_ids();
         //console.log('cleared avenue ids:', test_message);;
@@ -1147,7 +1186,7 @@ describe("Avenue object", function () {
 
    it('should have all initial Avenue object keys', function () {
        //console.log(test_avenue);
-       expect(test_avenue, 'Missing a key').to.include.keys('avenue_type', 'description', 'person', 'date', 'sent', 'message_id')
+       expect(test_avenue, 'Missing a key').to.have.keys('avenue_type', 'description', 'person', 'date', 'sent', 'message_id', 'goal_id');
        expect(test_avenue.avenue_type, 'avenue_type is not a string').is.a('string');
        expect(test_avenue.description, 'descrition is not a string').is.a('string');
        expect(test_avenue.person, 'person is not an array').is.an('array');
@@ -1264,27 +1303,53 @@ describe("Avenue object", function () {
 
     // test change message id
     it('should change message id', () => {
-        test_avenue.change_message_id('message1');
+        test_avenue.change_message_id('1');
        //console.log('new message id', test_avenue);
-        expect(test_avenue.message_id, 'Message_id was not changed').to.be.an('string').that.equals('message1');
+        expect(test_avenue.message_id, 'Message_id was not changed').to.be.an('string').that.equals('1');
     });
   
     // test return message id 
     it('should return message id', () => {
-        test_avenue.change_message_id('message1');
-        // get the new type
+        test_avenue.change_message_id('1');
+        // get the new id
         let message_id = test_avenue.get_message_id();
         //console.log('returned message id:', message_id);
-        expect(message_id, 'Message_id was not returned').to.be.an('string').that.equals('message1');
+        expect(message_id, 'Message_id was not returned').to.be.an('string').that.equals('1');
     });
 
     // test clear message id 
     it('should clear message id', () => {
-        test_avenue.change_message_id('message1');
+        test_avenue.change_message_id('1');
         //console.log('message id added:', test_avenue);
-        // get the new type
+        // Clear the id
         test_avenue.clear_message_id();
         //console.log('cleared message id:', test_avenue);
         expect(test_avenue.message_id, 'Message ids were not cleared').to.be.an('string').that.equals('');
+    });
+
+    // test change goal id
+    it('should change goal id', () => {
+        test_avenue.change_goal_id('1');
+       //console.log('new goal id', test_avenue);
+        expect(test_avenue.goal_id, 'Goal_id was not changed').to.be.an('string').that.equals('1');
+    });
+  
+    // test return goal id 
+    it('should return goal id', () => {
+        test_avenue.change_goal_id('1');
+        // get the new id
+        let goal_id = test_avenue.get_goal_id();
+        //console.log('returned goal id:', goal_id);
+        expect(goal_id, 'Goal_id was not returned').to.be.an('string').that.equals('1');
+    });
+
+    // test clear goal id 
+    it('should clear goal id', () => {
+        test_avenue.change_goal_id('1');
+        //console.log('goal id added:', test_avenue);
+        // clear the id
+        test_avenue.clear_goal_id();
+        //console.log('cleared goal id:', test_avenue);
+        expect(test_avenue.goal_id, 'Goal ids were not cleared').to.be.an('string').that.equals('');
     });
 });
