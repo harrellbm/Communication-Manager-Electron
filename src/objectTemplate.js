@@ -1,7 +1,7 @@
 class initiativeCollection {
    constructor() {
       this.initiatives = new Map();
-      };
+   };
    // Makes sure that the lowest possible id is assigned to a new avenue 
    id_fill(objects){
       let Id = 0;
@@ -105,7 +105,7 @@ class Initiative {
       this.messages = new Map();
       this.avenues = new Map();
       this.avenue_types = ['Email', 'Text', 'Phone Call', 'Facebook', 'Instagram', 'Card', 'Handout', 'Poster','Other'];
-      }
+   };
    // Note: useful built in methods for maps: set(key, value), delete(key), get(key), has(key), clear()
       // keys(), values(), entries(), forEach(), size
 
@@ -154,12 +154,14 @@ class Initiative {
    };
 
    // Add a goal to the goals map in the initiative 
-   add_goal(frequency = [], type = '', reminder = {}){
+   add_goal(frequency=[], type='', reminder={}, linked_aves=[], description=''){
       
       let new_goal = new Goal();
       new_goal.frequency = frequency;
       new_goal.type = type;
       new_goal.reminder = reminder;
+      new_goal.linked_aves = linked_aves;
+      new_goal.description = description;
 
       let goalId = this.id_fill(this.goals);// fill in the lowest available id
       this.goals.set(goalId, new_goal);
@@ -194,7 +196,7 @@ class Initiative {
    };
    
    // Add an avenue to the avenues map in the initiative 
-   add_avenue(avenue_type='', description='', person='', sent=false, message_id='', dateString=''){
+   add_avenue(avenue_type='', description='', person='', sent=false, message_id='', dateString='', goal_id=''){
       let new_avenue = new Avenue();
       new_avenue.avenue_type = avenue_type;
       new_avenue.description = description;
@@ -224,6 +226,9 @@ class Initiative {
       
       // Set date object
       new_avenue.date = dateString;
+
+      // Set goal id associated with avenue 
+      new_avenue.goal_id = goal_id;
 
       let avenueId = this.id_fill(this.avenues);// fill in the lowest available id
       this.avenues.set(avenueId, new_avenue);
@@ -323,9 +328,9 @@ class Initiative {
          for (contact of Object.entries(content.contacts)) {  
             let id = contact[0];
             let content = contact[1];
-            unpacked.contacts.set(id, content);
+            unpacked.contacts.set(id, content); // Array [ name, phone, email ]
          };
-         // Add the new group object back to the Initiative.ggroups map
+         // Add the new group object back to the Initiative.groups map
          this.groups.set(id, unpacked); 
       };
       //console.log('new unpacked group: ', this.groups);
@@ -339,10 +344,12 @@ class Initiative {
          let content = goal[1];
          let unpacked = new Goal(); // Create new Goal object 
          // Load all contents into new Goal object
-         unpacked.frequency= content.frequency;
-         unpacked.type = content.type;
-         unpacked.reminder = content.reminder;
-         
+         unpacked.frequency= content.frequency; // Array [ start, frequency, denomination, until ]
+         unpacked.type = content.type; // String
+         unpacked.reminder = content.reminder; // Object
+         unpacked.linked_aves = content.linked_aves; // Array
+         unpacked.description = content.description; // String
+
          // Add the new goal object back to the Initiative.goals map
          this.goals.set(id, unpacked); 
          }
@@ -358,11 +365,11 @@ class Initiative {
          let content = mess[1];
          let unpacked = new Message(); // Create new message object 
          // Load all contents into new Message object
-         unpacked.title = content.title;
-         unpacked.greeting = content.greeting;
-         unpacked.content = content.content;
-         unpacked.signature = content.signature;
-         unpacked.avenue_ids = content.avenue_ids;
+         unpacked.title = content.title; // String
+         unpacked.greeting = content.greeting; // String
+         unpacked.content = content.content; // String
+         unpacked.signature = content.signature; // String
+         unpacked.avenue_ids = content.avenue_ids; // Array 
       
          // Add the new message object back to the Initiative.messages map
          this.messages.set(id, unpacked); 
@@ -384,13 +391,14 @@ class Initiative {
          unpacked.date = content.date; // String 
          unpacked.sent = content.sent; // Boolean
          unpacked.message_id = content.message_id; // String
+         unpacked.goal_id = content.goal_id; // String
       
          // Add the new avenue object back to the Initiative.avenues map
          this.avenues.set(id, unpacked); 
          }
       //console.log('new unpacked avenues: ', this.avenues);
 
-      this.avenue_types = ipc.avenue_types; // array
+      this.avenue_types = ipc.avenue_types; // Array
    };
 };
 
@@ -466,11 +474,12 @@ class Goal {
       this.type = '';
       this.reminder = {};
       this.linked_aves = [];
+      this.description = '';
    };
    
    // Changes the goal's frequency 
-   change_frequency(freq, denomination, until){ 
-      this.frequency = [ freq, denomination, until ];
+   change_frequency(start, freq, denomination, until){ 
+      this.frequency = [ start, freq, denomination, until ];
    };
    
    // Gets the goal's frequency 
@@ -507,6 +516,16 @@ class Goal {
    clear_avenue_ids(){
       this.linked_aves = [];
    }; 
+
+   // Completely writes over current description
+   change_description(new_description){ // TODO: need data validation
+      this.description = new_description;
+   };
+
+   // Returns the description of this avenue as a simple string
+   get_description(){
+      return this.description;
+   };
 };
 
 class Message {
