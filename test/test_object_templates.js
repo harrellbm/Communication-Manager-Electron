@@ -57,7 +57,6 @@ describe("initiativeCollection object", function () {
 
     // test adding initiative method 
     it('should add a new initiative', () => {
-        // test giving array of avenue ids
         test_collection.add_initiative('my init', 'this is a new initiative');
         //console.log('new initiative', test_collection.initiatives);
 
@@ -359,36 +358,31 @@ describe("Initiative object", function () {
 
     // test adding goal method 
     it('should add a new goal', () => {
-        // test giving array of avenue ids
-        test_initiative.add_goal([1, 'days', 'Thu Jun 25 2020 00:00:00 GMT-0600'], 'email', {'0': 'tomorrow', '1':'next week'});
-        // test single string values for avenue ids  
-        test_initiative.add_goal([3, 'weeks', 'Wed Jun 24 2020 00:00:00 GMT-0600'], 'text', {'0': 'tonight'});
+        let start =  moment('2020-06-08', 'YYYY-MM-DD', true);
+        let until =  moment('2020-08-12', 'YYYY-MM-DD', true);
+        test_initiative.add_goal([ start.toString(), 1, 'days', until.toString() ], 'email', {'0': 'tomorrow', '1':'next week'}, [ '0', '1' ],  'this is a new description');
         //console.log('new goals', test_initiative.goals);
 
         let goal0 = test_initiative.goals.get('0')
         //console.log('goal0:', test_initiative.goals.get('0'))
-        expect(goal0.frequency[0], 'Goal does not have correct frequency').to.equal(1);
-        expect(goal0.frequency[1], 'Goal does not have correct frequency denomination').to.be.a('string').that.equals('days');
-        expect(goal0.frequency[2], 'Goal does not have correct frequency date until').to.be.a('string').that.includes('Thu Jun 25 2020 00:00:00');
+        expect(goal0.frequency[0], 'Goal does not have correct frequency start').to.be.a('string').that.includes('Mon Jun 08 2020 00:00:00');
+        expect(goal0.frequency[1], 'Goal does not have correct frequency').to.equal(1);
+        expect(goal0.frequency[2], 'Goal does not have correct frequency denomination').to.be.a('string').that.equals('days');
+        expect(goal0.frequency[3], 'Goal does not have correct frequency date until').to.be.a('string').that.includes('Wed Aug 12 2020 00:00:00');
         expect(goal0.type, 'Goal does not have correct type').to.be.a('string').that.includes('email');
         expect(goal0.reminder, 'Goal does not have correct reminder').to.be.an('object').that.includes({'0': 'tomorrow'}).and.to.includes({'1': 'next week'});
-
-        let goal1 = test_initiative.goals.get('1')
-        //console.log('goal1:', test_initiative.goals.get('1'))
-        expect(goal1.frequency[0], 'Goal does not have correct frequency').to.equal(3);
-        expect(goal1.frequency[1], 'Goal does not have correct frequency denomination').to.be.a('string').that.equals('weeks');
-        expect(goal1.frequency[2], 'Goal does not have correct frequency date until').to.be.a('string').that.equals('Wed Jun 24 2020 00:00:00 GMT-0600');
-        expect(goal1.type, 'Goal does not have correct type').to.be.a('string').that.includes('text');
-        expect(goal1.reminder, 'Goal does not have correct reminder').to.be.an('object').that.includes({'0': 'tonight'});
-
+        expect(goal0.linked_aves, 'Goal does not have correct ave ids linked').to.be.an('array').that.includes('0').and.includes('1');
+        expect(goal0.description, 'Goal does not have correct description').to.be.an('string').that.equals('this is a new description');
     });
 
     // test the return of the add goal method 
     it('should return the id of the goal from add goal method return', () => {
-        let date =  moment('2020-07-25', 'YYYY-MM-DD', true);
-        let id = test_initiative.add_goal([1, 'days', date.toString()], 'email', {'0': 'tomorrow', '1':'next week'}); 
-        date = moment('2014-11-02', 'YYYY-MM-DD', true);
-        let id1 = test_initiative.add_goal([3, 'weeks', date.toString()], 'text', {'0': 'tonight'});
+        let start =  moment('2020-06-08', 'YYYY-MM-DD', true);
+        let until =  moment('2020-07-25', 'YYYY-MM-DD', true);
+        let id = test_initiative.add_goal([ start.toString(), 1, 'days', until.toString() ], 'email', {'0': 'tomorrow', '1':'next week'}, [ '0', '1' ], 'Blog posts'); 
+        start =  moment('2020-06-08', 'YYYY-MM-DD', true);
+        until = moment('2014-11-02', 'YYYY-MM-DD', true);
+        let id1 = test_initiative.add_goal([start.toString(), 3, 'weeks', until.toString()], 'text', {'0': 'tonight'}, [ '1', '2' ], 'Weekly update');
         //console.log('new goals', test_initiative.goals);
         //console.log('goal 1 id: ', id, '\ngoal 2 id: ', id1);
         expect(id, "Does not return correct id").to.equal('0');
@@ -397,47 +391,60 @@ describe("Initiative object", function () {
 
     // test dynamic preformace of goals map 
     it('should remove a goal then re-add', () => {
-        let date =  moment('2020-07-25', 'YYYY-MM-DD', true);
-        test_initiative.add_goal([1, 'days', date.toString()], 'email', {'0': 'tomorrow', '1':'next week'}); 
-        date = moment('2014-11-02', 'YYYY-MM-DD', true);
-        test_initiative.add_goal([3, 'weeks', date.toString()], 'text', {'0': 'tonight'});
+        let start =  moment('2020-06-08', 'YYYY-MM-DD', true);
+        let until =  moment('2020-07-25', 'YYYY-MM-DD', true);
+        test_initiative.add_goal([ start.toString(), 1, 'days', until.toString()], 'email', {'0': 'tomorrow', '1':'next week'}, [ '0', '1' ], 'Daily Update'); 
+        start =  moment('2014-06-08', 'YYYY-MM-DD', true);
+        until = moment('2014-11-02', 'YYYY-MM-DD', true);
+        test_initiative.add_goal([ start.toString(), 3, 'weeks', until.toString()], 'text', {'0': 'tonight'}, [ '1', '3' ], 'Weekly newsletter');
         //console.log('new goals', test_initiative.goals);
-        // remove avenue and test
+        // remove goal and test
         test_initiative.goals.delete('0');
         //console.log('removed messages', test_initiative.goals);
         let goal0 = test_initiative.goals.has('0')
         expect(goal0).to.be.false;
         let goal1 = test_initiative.goals.get('1')
         //console.log('goal1:', test_initiative.goals.get('1'))
-        expect(goal1.frequency[0], 'Goal does not have correct frequency').to.equal(3);
-        expect(goal1.frequency[1], 'Goal does not have correct frequency denomination').to.be.a('string').that.equals('weeks');
-        expect(goal1.frequency[2], 'Goal does not have correct frequency date until').to.be.a('string').that.includes('Sun Nov 02 2014 00:00:00');
+        expect(goal1.frequency[0], 'Goal does not have correct frequency start').to.be.a('string').that.includes('Sun Jun 08 2014 00:00:00');
+        expect(goal1.frequency[1], 'Goal does not have correct frequency').to.equal(3);
+        expect(goal1.frequency[2], 'Goal does not have correct frequency denomination').to.be.a('string').that.equals('weeks');
+        expect(goal1.frequency[3], 'Goal does not have correct frequency date until').to.be.a('string').that.includes('Sun Nov 02 2014 00:00:00');
         expect(goal1.type, 'Goal does not have correct type').to.be.a('string').that.includes('text');
         expect(goal1.reminder, 'Goal does not have correct reminder').to.be.an('object').that.includes({'0': 'tonight'});
-        
-        // Test re-add avenue
-        date =  moment('2020-07-25', 'YYYY-MM-DD', true);
-        test_initiative.add_goal([1, 'days', date.toString()], 'email', {'0': 'tomorrow', '1':'next week'}); 
+        expect(goal1.linked_aves, 'Goal does not have correct ave ids linked').to.be.an('array').that.includes('1').and.includes('3');
+        expect(goal1.description, 'Goal does not have correct description').to.be.an('string').that.equals('Weekly newsletter');
+
+        // Test re-add goal
+        start =  moment('2020-06-08', 'YYYY-MM-DD', true);
+        until =  moment('2020-07-25', 'YYYY-MM-DD', true);
+        test_initiative.add_goal([ start.toString(), 1, 'days', until.toString()], 'email', {'0': 'tomorrow', '1':'next week'}, [ '0', '1' ], 'Daily Update'); 
         //console.log('re-added message:', test_initiative.goals)
         goal0 = test_initiative.goals.get('0')
-        //console.log('goal0:', test_initiative.goals.get('0'))
-        expect(goal0.frequency[0], 'Goal does not have correct frequency').to.equal(1);
-        expect(goal0.frequency[1], 'Goal does not have correct frequency denomination').to.be.a('string').that.equals('days');
-        expect(goal0.frequency[2], 'Goal does not have correct frequency date until').to.be.a('string').that.includes('Sat Jul 25 2020 00:00:00');
+        //console.log('goal0:', test_initiative.goals.get('0'));
+        expect(goal0.frequency[0], 'Goal does not have correct frequency start').to.be.a('string').that.includes('Mon Jun 08 2020 00:00:00');
+        expect(goal0.frequency[1], 'Goal does not have correct frequency').to.equal(1);
+        expect(goal0.frequency[2], 'Goal does not have correct frequency denomination').to.be.a('string').that.equals('days');
+        expect(goal0.frequency[3], 'Goal does not have correct frequency date until').to.be.a('string').that.includes('Sat Jul 25 2020 00:00:00');
         expect(goal0.type, 'Goal does not have correct type').to.be.a('string').that.includes('email');
         expect(goal0.reminder, 'Goal does not have correct reminder').to.be.an('object').that.includes({'0': 'tomorrow'}).and.to.includes({'1': 'next week'});
+        expect(goal0.linked_aves, 'Goal does not have correct ave ids linked').to.be.an('array').that.includes('0').and.includes('1');
+        expect(goal0.description, 'Goal does not have correct description').to.be.an('string').that.equals('Daily Update');
 
-        // Test adding additional avenue after that
-        date = moment('2019-03-10', 'YYYY-MM-DD', true);
-        test_initiative.add_goal([9, 'years', date.toString()], 'facebook', {'0': 'in a month', '1':'when I need to'}); 
+        // Test adding additional goal after that
+        start =  moment('2019-01-11', 'YYYY-MM-DD', true);
+        until = moment('2019-03-10', 'YYYY-MM-DD', true);
+        test_initiative.add_goal([ start.toString(), 9, 'years', until.toString()], 'facebook', {'0': 'in a month', '1':'when I need to'}, [ '1', '2' ], 'Blog posts'); 
         //console.log('added additional goal:', test_initiative.goals) 
         goal2 = test_initiative.goals.get('2')
         //console.log('goal2:', test_initiative.goals.get('2'))
-        expect(goal2.frequency[0], 'Goal does not have correct frequency').to.equal(9);
-        expect(goal2.frequency[1], 'Goal does not have correct frequency denomination').to.be.a('string').that.equals('years');
-        expect(goal2.frequency[2], 'Goal does not have correct frequency date until').to.be.a('string').that.includes('Sun Mar 10 2019 00:00:00');
+        expect(goal2.frequency[0], 'Goal does not have correct frequency start').to.be.a('string').that.includes('Fri Jan 11 2019 00:00:00');
+        expect(goal2.frequency[1], 'Goal does not have correct frequency').to.equal(9);
+        expect(goal2.frequency[2], 'Goal does not have correct frequency denomination').to.be.a('string').that.equals('years');
+        expect(goal2.frequency[3], 'Goal does not have correct frequency date until').to.be.a('string').that.includes('Sun Mar 10 2019 00:00:00');
         expect(goal2.type, 'Goal does not have correct type').to.be.a('string').that.includes('facebook');
         expect(goal2.reminder, 'Goal does not have correct reminder').to.be.an('object').that.includes({'0': 'in a month'}).and.to.includes({'1': 'when I need to'});
+        expect(goal2.linked_aves, 'Goal does not have correct ave ids linked').to.be.an('array').that.includes('1').and.includes('2');
+        expect(goal2.description, 'Goal does not have correct description').to.be.an('string').that.equals('Blog posts');
     });
 
     // test adding message method 
@@ -520,10 +527,10 @@ describe("Initiative object", function () {
     it('should add a new avenue', () => {
         // test giving array of people, and message ids, as well as date object values
         let date =  moment('2020-07-25', 'YYYY-MM-DD', true);
-        test_initiative.add_avenue('email', 'this is an email', ['Bob', 'Jill'], true, 'message2', date.toString());
+        test_initiative.add_avenue('email', 'this is an email', ['Bob', 'Jill'], true, '2', date.toString(), '2');
         // test single string values for people, and message ids  
         date = moment('2019-03-10', 'YYYY-MM-DD', true);
-        test_initiative.add_avenue('text', 'this is a text', 'Bill', true, 'message1', date.toString());
+        test_initiative.add_avenue('text', 'this is a text', 'Bill', true, 'message1', date.toString(), '1');
         //console.log('new avenues', test_initiative.avenues);
 
         let avenue0 = test_initiative.avenues.get('0')
@@ -532,8 +539,9 @@ describe("Initiative object", function () {
         expect(avenue0.description, 'Does not have proper description').to.be.an('string').that.includes('this is an email');
         expect(avenue0.person, 'Does not have proper people').to.be.an('array').that.includes('Bob').and.includes('Jill');
         expect(avenue0.sent, 'Does not have proper sent value').to.be.true;
-        expect(avenue0.message_id, 'Does not have proper message id').to.be.an('string').that.equals('message2');
+        expect(avenue0.message_id, 'Does not have proper message id').to.be.a('string').that.equals('2');
         expect(avenue0.date, 'Does not have proper date').to.be.a('string').that.includes('Sat Jul 25 2020 00:00:00');
+        expect(avenue0.goal_id, 'Does not have proper goal id').to.be.a('string').that.equals('2');
 
         let avenue1 = test_initiative.avenues.get('1')
         //console.log('avenue1:', test_initiative.avenues.get('1'))
@@ -543,14 +551,15 @@ describe("Initiative object", function () {
         expect(avenue1.sent, 'Does not have proper sent value').to.be.true;
         expect(avenue1.message_id, 'Does not have proper message id').to.be.an('string').that.equals('message1');
         expect(avenue1.date, 'Does not have proper date').to.be.a('string').that.includes('Sun Mar 10 2019 00:00:00');
+        expect(avenue1.goal_id, 'Does not have proper goal id').to.be.a('string').that.equals('1');
     });
 
     // test the return of the add avenue method 
     it('should return the id of the avenue from add avenue method return', () => {
         let date =  moment('2020-07-25', 'YYYY-MM-DD', true);
-        let id = test_initiative.add_avenue('email', 'this is an email', ['Bob', 'Jill'], true, 'message2', date.toString());
+        let id = test_initiative.add_avenue('email', 'this is an email', ['Bob', 'Jill'], true, 'message2', date.toString(), '2');
         date = moment('2019-03-10', 'YYYY-MM-DD', true);
-        let id1 = test_initiative.add_avenue('text', 'this is a text', 'Bill', true, 'message4', date.toString());
+        let id1 = test_initiative.add_avenue('text', 'this is a text', 'Bill', true, 'message4', date.toString(), '1');
         //console.log('new avenues', test_initiative.avenues);
         //console.log('avenue 1 id: ', id, '\navenue 2 id: ', id1);
         expect(id,"Does not return correct id").to.equal('0');
@@ -560,9 +569,9 @@ describe("Initiative object", function () {
     // test dynamic preformace of avenues map  
     it('should remove an avenue then re-add', () => {
         let date =  moment('2020-07-25', 'YYYY-MM-DD', true);
-        test_initiative.add_avenue('email', 'this is an email', ['Bob', 'Jill'], true, 'message1', date.toString());
+        test_initiative.add_avenue('email', 'this is an email', ['Bob', 'Jill'], true, 'message1', date.toString(), '1');
         date = moment('2019-03-10', 'YYYY-MM-DD', true);
-        test_initiative.add_avenue('text', 'this is a text', 'Bill', true, 'message4', date.toString());
+        test_initiative.add_avenue('text', 'this is a text', 'Bill', true, 'message4', date.toString(), '2');
         //console.log('new avenues', test_initiative.avenues);
         // remove avenue and test
         test_initiative.avenues.delete('0');
@@ -577,10 +586,11 @@ describe("Initiative object", function () {
         expect(avenue1.sent, 'Does not have proper sent value').to.be.true;
         expect(avenue1.message_id, 'Does not have proper message id').to.be.an('string').that.equals('message4');
         expect(avenue1.date, 'Does not have proper date').to.be.a('string').that.includes('Sun Mar 10 2019 00:00:00');
+        expect(avenue1.goal_id, 'Does not have proper goal id').to.be.a('string').that.equals('2');
 
         // Test re-add avenue
         date =  moment('2020-07-25', 'YYYY-MM-DD', true);
-        test_initiative.add_avenue('email', 'this is an email', ['Bob', 'Jill'], true, 'message3', date.toString());
+        test_initiative.add_avenue('email', 'this is an email', ['Bob', 'Jill'], true, 'message3', date.toString(), '1');
         avenue0 = test_initiative.avenues.get('0')
         //console.log('re-added avenue:', test_initiative.avenues)
         expect(avenue0).to.exist
@@ -590,10 +600,11 @@ describe("Initiative object", function () {
         expect(avenue0.sent, 'Does not have proper sent value').to.be.true;
         expect(avenue0.message_id, 'Does not have proper message id').to.be.an('string').that.equals('message3');
         expect(avenue0.date, 'Does not have proper date').to.be.a('string').that.includes('Sat Jul 25 2020 00:00:00');
+        expect(avenue0.goal_id, 'Does not have proper goal id').to.be.a('string').that.equals('1');
 
         // Test adding additional avenue after that
         date =  moment('2000-02-20', 'YYYY-MM-DD', true);
-        test_initiative.add_avenue('facebook', 'this is a facebook post', ['Tim', 'Bently'], true, 'message1', date.toString());
+        test_initiative.add_avenue('facebook', 'this is a facebook post', ['Tim', 'Bently'], true, 'message1', date.toString(), '0');
         //console.log('added asditional avenue:', test_initiative.avenues)
         let avenue2 = test_initiative.avenues.get('2')
         //console.log('avenue2:', test_initiative.avenues.get('2'))
@@ -604,6 +615,7 @@ describe("Initiative object", function () {
         expect(avenue2.sent, 'Does not have proper sent value').to.be.true;
         expect(avenue2.message_id, 'Does not have proper message ids').to.be.an('string').that.equals('message1');
         expect(avenue2.date, 'Does not have proper date').to.be.a('string').that.includes('Sun Feb 20 2000 00:00:00');
+        expect(avenue2.goal_id, 'Does not have proper goal id').to.be.a('string').that.equals('0');
     });
 
     // test adding add_type method 
@@ -701,11 +713,12 @@ describe("Initiative object", function () {
         test_initiative.change_name('My Initiative');
         test_initiative.change_description('This is an initiavtive to communicate with people');
         test_initiative.add_group('my peeps', [ ['Phil', '703-123-4565', 'philsemail@email.com'] ]);
-        let date =  moment('2020-07-25', 'YYYY-MM-DD', true);
-        test_initiative.add_goal([1, 'days', date.toString()], 'text', 'tomorrow');
+        let start =  moment('2020-05-11', 'YYYY-MM-DD', true);
+        let until =  moment('2020-07-25', 'YYYY-MM-DD', true);
+        test_initiative.add_goal([ start.toString(), 1, 'days', until.toString() ], 'text', 'tomorrow', [ '0', '1' ], 'Blog posts');
         test_initiative.add_message('This is the title of the first message', 'this is its greeting', 'this is the content.', 'this is the signature', ['avenue1', 'avenue2']);
-        date =  moment('2020-10-05', 'YYYY-MM-DD', true);
-        test_initiative.add_avenue('email', 'for all my peeps', 'Bob', true, 'message23', date.toString());
+        let date =  moment('2020-10-05', 'YYYY-MM-DD', true);
+        test_initiative.add_avenue('email', 'for all my peeps', 'Bob', true, '23', date.toString(), '0');
         //console.log('Initiative before packing:', test_initiative);
         let returned_initiative = test_initiative.pack_for_ipc();
         //console.log('Packed initiative:', returned_initiative);
@@ -726,13 +739,16 @@ describe("Initiative object", function () {
         expect(returned_initiative.goals, 'Goals is not a map').to.be.instanceOf(Object);
         let goal0 = returned_initiative.goals['0'];
         //console.log(goal0)
-        expect(goal0, 'Goal does not have proper keys').to.be.an('object').that.has.keys('frequency', 'type', 'reminder', 'linked_aves');
-        expect(goal0.frequency[0], 'Goal does not have correct frequency').to.equal(1);
-        expect(goal0.frequency[1], 'Goal does not have correct frequency denomination').to.be.a('string').that.equals('days');
-        expect(goal0.frequency[2], 'Goal does not have correct frequency date until').to.be.a('string').that.includes('Sat Jul 25 2020 00:00:00');
+        expect(goal0, 'Goal does not have proper keys').to.be.an('object').that.has.keys('frequency', 'type', 'reminder', 'linked_aves', 'description');
+        expect(goal0.frequency[0], 'Goal does not have correct frequency date start').to.be.a('string').that.includes('Mon May 11 2020 00:00:00');
+        expect(goal0.frequency[1], 'Goal does not have correct frequency').to.equal(1);
+        expect(goal0.frequency[2], 'Goal does not have correct frequency denomination').to.be.a('string').that.equals('days');
+        expect(goal0.frequency[3], 'Goal does not have correct frequency date until').to.be.a('string').that.includes('Sat Jul 25 2020 00:00:00');
         expect(goal0.type, 'Type is not correct').to.be.a('string').that.equals('text');
         expect(goal0.reminder, 'Reminder is not correct').to.be.a('string').that.equals('tomorrow');
-        
+        expect(goal0.linked_aves, 'Goal does not have correct ave ids linked').to.be.an('array').that.includes('0').and.includes('1');
+        expect(goal0.description, 'Goal does not have correct description').to.be.an('string').that.equals('Blog posts');
+
         // Nested Message object
         expect(returned_initiative.messages, 'Messages is not a map').to.be.instanceOf(Object);
         let message0 = returned_initiative.messages['0'];
@@ -747,15 +763,16 @@ describe("Initiative object", function () {
         // Nested Avenues object
         expect(returned_initiative.avenues, 'Avenues is not a map').to.be.instanceOf(Object);
         let avenue0 = returned_initiative.avenues['0'];
-        //console.log(avenue0)
+        //console.log(avenue0);
         expect(avenue0, 'Avenue does not have proper keys').to.be.an('object').that.has.keys('avenue_type', 'description', 'person', 'date', 'sent', 'message_id', 'goal_id');
         expect(avenue0.avenue_type, 'Avenue_type is not correct').to.be.a('string').that.equals('email');
         expect(avenue0.description, 'Description is not correct').to.be.a('string').that.equals('for all my peeps');
         expect(avenue0.person, 'Person is not correct').to.be.an('array').that.includes('Bob');
         expect(avenue0.date, 'Date is not correct').to.be.a('string').that.includes('Mon Oct 05 2020 00:00:00');
         expect(avenue0.sent, 'Sent is not correct').to.be.true; 
-        expect(avenue0.message_id, 'Message_id is not correct').to.be.a('string').that.includes('message23'); 
-    
+        expect(avenue0.message_id, 'Message_id is not correct').to.be.a('string').that.equals('23'); 
+        expect(avenue0.goal_id, 'Goal_id is not correct').to.be.a('string').that.equals('0');
+        
         // Avenue types
         expect(returned_initiative.avenue_types, 'avenue types are not correct').to.be.a('array').that.includes('Email').and.includes('Text').and.includes('Facebook').and.includes('Instagram').and.includes('Handout').and.includes('Poster').and.includes('Other');
     });
@@ -765,11 +782,12 @@ describe("Initiative object", function () {
         test_initiative.change_name('My Initiative');
         test_initiative.change_description('This is an initiavtive to communicate with people');
         test_initiative.add_group('my peeps', [ ['Phil', '342-235-7653', 'myEmail@email.com'] ]);
-        let date =  moment('2020-07-25', 'YYYY-MM-DD', true);
-        test_initiative.add_goal([1, 'days', date.toString()], 'text', 'tomorrow');
+        let start =  moment('2020-05-11', 'YYYY-MM-DD', true);
+        let until =  moment('2020-07-25', 'YYYY-MM-DD', true);
+        test_initiative.add_goal([ start.toString(), 1, 'days', until.toString() ], 'text', 'tomorrow', [ '0', '1' ], 'Blog posts');
         test_initiative.add_message('This is the title of the first message', 'this is its greeting', 'this is the content.', 'this is the signature', ['avenue1', 'avenue2']);
-        date =  moment('2016-01-08', 'YYYY-MM-DD', true);
-        test_initiative.add_avenue('email', 'for all my peeps', 'Bob', true, 'message23', date.toString());
+        let date =  moment('2016-01-08', 'YYYY-MM-DD', true);
+        test_initiative.add_avenue('email', 'for all my peeps', 'Bob', true, '23', date.toString(), '0');
         //console.log('Initiative before packing:', test_initiative);
         returned_initiative = test_initiative.pack_for_ipc();
         test_initiative.unpack_from_ipc(returned_initiative);
@@ -785,46 +803,51 @@ describe("Initiative object", function () {
         expect(group0.group_name, 'name incorrect').to.be.a('string').that.equals('my peeps');
         expect(group0.contacts, 'Groups contacts not unpacked').to.be.instanceOf(Map);
         let contact0 = group0.contacts.get('00');
+        //console.log('contact: ', contact0)
         expect(contact0).to.be.an('array').that.includes('Phil').that.includes('342-235-7653').and.includes('myEmail@email.com');
 
         
         // Nested Goals object
         expect(test_initiative.goals, 'Goals is not a map').to.be.instanceOf(Map);
-        let goal1 = test_initiative.goals.get('0');
-        //console.log(goal1)
-        expect(goal1, 'Not a goal object').to.be.instanceOf(templates.Goal);
-        expect(goal1, 'Goal does not have proper keys').to.have.keys('frequency', 'type', 'reminder', 'linked_aves');
-        expect(goal1.frequency[0], 'Goal does not have correct frequency').to.equal(1);
-        expect(goal1.frequency[1], 'Goal does not have correct frequency denomination').to.be.a('string').that.equals('days');
-        expect(goal1.frequency[2], 'Goal does not have correct frequency date until').to.be.a('string').that.includes('Sat Jul 25 2020 00:00:00');
-        expect(goal1.type, 'Type is not correct').to.be.a('string').that.equals('text');
-        expect(goal1.reminder, 'Reminder is not correct').to.be.a('string').that.equals('tomorrow');
-        
+        let goal0 = test_initiative.goals.get('0');
+        //console.log(goal0);
+        expect(goal0, 'Not a goal object').to.be.instanceOf(templates.Goal);
+        expect(goal0, 'Goal does not have proper keys').to.have.keys('frequency', 'type', 'reminder', 'linked_aves', 'description');
+        expect(goal0.frequency[0], 'Goal does not have correct frequency date start').to.be.a('string').that.includes('Mon May 11 2020 00:00:00');
+        expect(goal0.frequency[1], 'Goal does not have correct frequency').to.equal(1);
+        expect(goal0.frequency[2], 'Goal does not have correct frequency denomination').to.be.a('string').that.equals('days');
+        expect(goal0.frequency[3], 'Goal does not have correct frequency date until').to.be.a('string').that.includes('Sat Jul 25 2020 00:00:00');
+        expect(goal0.type, 'Type is not correct').to.be.a('string').that.equals('text');
+        expect(goal0.reminder, 'Reminder is not correct').to.be.a('string').that.equals('tomorrow');
+        expect(goal0.linked_aves, 'Goal does not have correct ave ids linked').to.be.an('array').that.includes('0').and.includes('1');
+        expect(goal0.description, 'Goal does not have correct description').to.be.a('string').that.equals('Blog posts');
+
         // Nested Message object
         expect(test_initiative.messages, 'Messages is not a map').to.be.instanceOf(Map);
-        let message1 = test_initiative.messages.get('0');
-        //console.log(message1)
-        expect(message1, 'Not a message object').to.be.instanceOf(templates.Message);
-        expect(message1, 'Message does not have proper keys').to.have.keys('title', 'greeting', 'content', 'signature', 'avenue_ids');
-        expect(message1.title, 'Title is not correct').to.be.a('string').that.equals('This is the title of the first message');
-        expect(message1.greeting, 'Greeting is not correct').to.be.a('string').that.equals('this is its greeting');
-        expect(message1.content, 'Content is not correct').to.be.a('string').that.equals('this is the content.');
-        expect(message1.signature, 'Signature is not correct').to.be.a('string').that.equals('this is the signature');
-        expect(message1.avenue_ids, 'Avenue_ids is not correct').to.be.a('array').that.includes('avenue1').and.includes('avenue2');
+        let message0 = test_initiative.messages.get('0');
+        //console.log(message0)
+        expect(message0, 'Not a message object').to.be.instanceOf(templates.Message);
+        expect(message0, 'Message does not have proper keys').to.have.keys('title', 'greeting', 'content', 'signature', 'avenue_ids');
+        expect(message0.title, 'Title is not correct').to.be.a('string').that.equals('This is the title of the first message');
+        expect(message0.greeting, 'Greeting is not correct').to.be.a('string').that.equals('this is its greeting');
+        expect(message0.content, 'Content is not correct').to.be.a('string').that.equals('this is the content.');
+        expect(message0.signature, 'Signature is not correct').to.be.a('string').that.equals('this is the signature');
+        expect(message0.avenue_ids, 'Avenue_ids is not correct').to.be.a('array').that.includes('avenue1').and.includes('avenue2');
         
         // Nested Avenues object
         expect(test_initiative.avenues, 'Avenues is not a map').to.be.instanceOf(Map);
-        let avenue1 = test_initiative.avenues.get('0');
-        //console.log(avenue1)
-        expect(avenue1, 'Not an avenue object').to.be.instanceOf(templates.Avenue);
-        expect(avenue1, 'Avenue does not have proper keys').to.be.an('object').that.has.keys('avenue_type', 'description', 'person', 'date', 'sent', 'message_id', 'goal_id');
-        expect(avenue1.avenue_type, 'Avenue_type is not correct').to.be.a('string').that.equals('email');
-        expect(avenue1.description, 'Description is not correct').to.be.a('string').that.equals('for all my peeps');
-        expect(avenue1.person, 'Person is not correct').to.be.an('array').that.includes('Bob');
-        expect(avenue1.date, 'Date is not correct').to.be.a('string').that.includes('Fri Jan 08 2016 00:00:00');
-        expect(avenue1.sent, 'Sent is not correct').to.be.true; 
-        expect(avenue1.message_id, 'Message_id is not correct').to.be.a('string').that.includes('message23'); 
-    
+        let avenue0 = test_initiative.avenues.get('0');
+        //console.log(avenue0)
+        expect(avenue0, 'Not an avenue object').to.be.instanceOf(templates.Avenue);
+        expect(avenue0, 'Avenue does not have proper keys').to.be.an('object').that.has.keys('avenue_type', 'description', 'person', 'date', 'sent', 'message_id', 'goal_id');
+        expect(avenue0.avenue_type, 'Avenue_type is not correct').to.be.a('string').that.equals('email');
+        expect(avenue0.description, 'Description is not correct').to.be.a('string').that.equals('for all my peeps');
+        expect(avenue0.person, 'Person is not correct').to.be.an('array').that.includes('Bob');
+        expect(avenue0.date, 'Date is not correct').to.be.a('string').that.includes('Fri Jan 08 2016 00:00:00');
+        expect(avenue0.sent, 'Sent is not correct').to.be.true; 
+        expect(avenue0.message_id, 'Message_id is not correct').to.be.a('string').that.includes('23'); 
+        expect(avenue0.goal_id, 'Goal_id is not correct').to.be.a('string').that.equals('0');
+
         // Avenue types
         expect(test_initiative.avenue_types, 'avenue types are not correct').to.be.a('array').that.includes('Email').and.includes('Text').and.includes('Facebook').and.includes('Instagram').and.includes('Handout').and.includes('Poster').and.includes('Other');
     });
@@ -964,32 +987,38 @@ describe("Goal object", function () {
 
    it('should have all initial Goal object keys', function () {
        //console.log(test_goal);
-       expect(test_goal, 'Missing a key').to.have.keys('frequency', 'type', 'reminder', 'linked_aves');
+       expect(test_goal, 'Missing a key').to.have.keys('frequency', 'type', 'reminder', 'linked_aves', 'description');
        expect(test_goal.frequency, 'frequency is not an array').is.a('array');
        expect(test_goal.type, 'type is not a string').is.a('string');
        expect(test_goal.reminder, 'reminder is not an object').is.an('object');
+       expect(test_goal.linked_aves, 'linked avenue ids is not array').is.an('array');
+       expect(test_goal.description, 'description is not a string').is.a('string');
     });
 
     // test change frequency 
     it('should change goal frequency', () => {
-        let date =  moment('2020-08-12', 'YYYY-MM-DD', true);
-        test_goal.change_frequency(1, 'days', date.toString());
+        let start =  moment('2020-06-08', 'YYYY-MM-DD', true);
+        let until =  moment('2020-08-12', 'YYYY-MM-DD', true);
+        test_goal.change_frequency(start.toString(), 1, 'days', until.toString());
         //console.log('new goal frequency', test_goal);
-        expect(test_goal.frequency[0], 'Frequency was not changed').to.equal(1);
-        expect(test_goal.frequency[1], 'Frequency type was not changed').to.be.a('string').that.equals('days');
-        expect(test_goal.frequency[2], 'Frequency until was not changed').to.be.a('string').that.includes('Wed Aug 12 2020 00:00:00');
+        expect(test_goal.frequency[0], 'Frequency start was not changed').to.be.a('string').that.includes('Mon Jun 08 2020 00:00:00');
+        expect(test_goal.frequency[1], 'Frequency was not changed').to.equal(1);
+        expect(test_goal.frequency[2], 'Frequency type was not changed').to.be.a('string').that.equals('days');
+        expect(test_goal.frequency[3], 'Frequency until was not changed').to.be.a('string').that.includes('Wed Aug 12 2020 00:00:00');
     });
   
     // test return frequency
     it('should return frequency', () => {
-        let date =  moment('2020-08-12', 'YYYY-MM-DD', true);
-        test_goal.change_frequency(1, 'days', date.toString());
+        let start =  moment('2020-06-08', 'YYYY-MM-DD', true);
+        let until =  moment('2020-08-12', 'YYYY-MM-DD', true);
+        test_goal.change_frequency( start.toString(), 1, 'days', until.toString());
         // get the new frequency
         let frequency =  test_goal.get_frequency();
         //console.log('returned frequency', frequency);
-        expect(frequency[0], 'Frequency was not changed').to.equal(1);
-        expect(frequency[1], 'Frequency type was not changed').to.be.a('string').that.equals('days');
-        expect(frequency[2], 'Frequency until was not changed').to.be.a('string').that.includes('Wed Aug 12 2020 00:00:00');
+        expect(frequency[0], 'Frequency start was not changed').to.be.a('string').that.includes('Mon Jun 08 2020 00:00:00');
+        expect(frequency[1], 'Frequency was not changed').to.equal(1);
+        expect(frequency[2], 'Frequency type was not changed').to.be.a('string').that.equals('days');
+        expect(frequency[3], 'Frequency until was not changed').to.be.a('string').that.includes('Wed Aug 12 2020 00:00:00');
     });
 
      // test change type 
@@ -1046,6 +1075,21 @@ describe("Goal object", function () {
         test_goal.clear_avenue_ids();
         //console.log('cleared avenue ids:', test_goal);;
         expect(test_goal.linked_aves, 'Avenue ids were not cleared').to.be.an('array').and.to.have.length(0);
+    });
+
+    // test change description
+    it('should change description', () => {
+        test_goal.change_description('This is a new description');
+        //console.log('new description:', test_goal);
+        expect(test_goal.description, 'Description was not changed').to.be.an('string').that.equals('This is a new description');
+    });
+    
+    // test return description
+    it('should return description', () => {
+        test_goal.change_description('This is a new description');
+        let goal_description = test_goal.get_description();
+        //console.log('returned description:', avenue_goal);
+        expect(goal_description, 'Goal description was not returned').to.be.an('string').that.equals('This is a new description');
     });
 });
 
