@@ -493,7 +493,7 @@ textarea{
     .goal{
       display: grid;
       grid-template-columns: 1fr 2.5fr 1fr 1.4rem;
-      grid-template-rows: 1.4rem 2rem;
+      grid-template-rows: 1.5rem 1.5rem 1.5rem;
       background-color: rgb(118, 118, 118);
       border: rgb(118, 118, 118);
       border-width: 1px;
@@ -501,7 +501,7 @@ textarea{
       }
   
     /* Titles */
-    #goalType_title{
+    #goalDesc_title{
       padding: 0.1rem;
       grid-column-start: 1;
       grid-column-end: 2;
@@ -527,19 +527,28 @@ textarea{
       padding: 0.1rem;
       grid-column-start: 3;
       grid-column-end:4;
-      grid-row-start: 1;
-      grid-row-end: 2;
+      grid-row-start: 2;
+      grid-row-end: 3;
       border-width: 0px 1px 0px 1px;
       border-style: solid;
       border-color: rgb(118, 118, 118);
     }
-  
-    /* Dropdown for goal type */
-    .typeDropdown{
+
+    /* Textarea for goal description */
+    .goalDescription{
       grid-column-start: 1;
       grid-column-end: 2;
       grid-row-start: 2;
-      grid-row-end: 3;
+      grid-row-end: 4;
+      }
+  
+  
+    /* Dropdown for goal type */
+    .typeDropdown{
+      grid-column-start: 3;
+      grid-column-end: 4;
+      grid-row-start: 1;
+      grid-row-end: 2;
       }
     
     /* need to develop reminder */
@@ -548,9 +557,9 @@ textarea{
       grid-column-start: 2;
       grid-column-end: 3;
       grid-row-start: 2;
-      grid-row-end: 3;
+      grid-row-end: 4;
       display: grid;
-      grid-template-columns: 3.5rem 2.5rem 1fr 3.5rem 2fr;
+      grid-template-columns: 2fr 3.5rem 2.5rem 1fr 3.5rem 2fr;
     }
 
     .untilTitle{
@@ -562,7 +571,7 @@ textarea{
 
     .everyTitle{
       padding: 0.2rem;
-      border-width: 1px 0px 1px 1px;
+      border-width: 1px 0px 1px 0px;
       border-style: solid;
       border-color: rgb(118, 118, 118);
     }
@@ -570,8 +579,8 @@ textarea{
     .reminder{
       grid-column-start: 3;
       grid-column-end: 4;
-      grid-row-start: 2;
-      grid-row-end: 3;
+      grid-row-start: 3;
+      grid-row-end: 4;
       }
   
     /* Outside rows */
@@ -782,7 +791,7 @@ textarea{
   .goalModal-content {
     display: grid;
     grid-template-columns: 1fr 3fr 1fr 1.4rem;
-    grid-template-rows: 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr 1fr;
     background-color: #fefefe;
     margin: 15% auto; /* 15% from the top and centered */
     padding: 15px;
@@ -795,9 +804,9 @@ textarea{
     grid-column-start: 2;
     grid-column-end: 3;
     grid-row-start: 2;
-    grid-row-end: 3;
+    grid-row-end: 4;
     display: grid;
-    grid-template-columns: 3.2rem 2.5rem 1fr 3rem 2fr;
+    grid-template-columns: 2fr 3.2rem 2.5rem 1fr 3rem 2fr;
   }
 
   /* Styles to make elements look like one rounded box inside modal */
@@ -815,6 +824,10 @@ textarea{
   }
 
   #modalRemiTitle{
+    grid-row-start: 2;
+    grid-row-end: 3;
+    grid-column-start: 3;
+    grid-column-end: 4;
     border-radius: 0px 4px 0px 0px;
     border-width: 1px 1px 0px 1px;
     border-style: solid;
@@ -822,6 +835,10 @@ textarea{
   }
  
   #goalTypeModal{
+    grid-row-start: 1;
+    grid-row-end: 2;
+    grid-column-start: 3;
+    grid-column-end: 4;
     border-radius: 0px 0px 0px 4px;
     border-style: solid;
   }
@@ -865,8 +882,8 @@ textarea{
 
   /* Save button for Modal */
   #goalSaveModal{
-    grid-row-start: 3;
-    grid-row-end: 4;
+    grid-row-start: 4;
+    grid-row-end: 5;
     grid-column-start: 1;
     grid-column-end: 4;
     margin-right: 40%;

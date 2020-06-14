@@ -915,11 +915,11 @@ function addGoal (event='', goalId='',  freq='', denomination='', until='', type
   freq_heading.innerHTML = "Frequency:";
   goal.appendChild(freq_heading);// Add the title to the goal
  
-  let type_title = document.createElement("p");// Title for Goal Type 
-  type_title.setAttribute("class", "goal_title");
-  type_title.setAttribute("id", "goalType_title");
-  type_title.innerHTML = "Type:";
-  goal.appendChild(type_title);// Add the title to the goal
+  let Desc_title = document.createElement("p");// Title for Goal Type 
+  Desc_title.setAttribute("class", "goal_title");
+  Desc_title.setAttribute("id", "goalDesc_title");
+  Desc_title.innerHTML = "Description:";
+  goal.appendChild(Desc_title);// Add the title to the goal
 
   let reminder_title = document.createElement("p");// Title for Goal Reminder 
   reminder_title.setAttribute("class", "goal_title");
@@ -927,6 +927,15 @@ function addGoal (event='', goalId='',  freq='', denomination='', until='', type
   reminder_title.innerHTML = "Reminder:";
   goal.appendChild(reminder_title);// Add the title to the goal
   
+  // Textarea for Goal Description
+  let goalDesc = document.createElement("textarea");
+  goalDesc.setAttribute("class", "goalDescription");
+  goalDesc.setAttribute("id", `goalDesc${id}`);
+  if(goalLoad != ''){// if creating an goal that is being pulled from a file set it's value 
+    goalDesc.value = goalLoad.description;
+  };
+  goal.appendChild(goalDesc);
+
   // Create goal type drop down list 
   let dropdown = document.createElement("select");
   dropdown.setAttribute("class", "typeDropdown");
@@ -951,6 +960,17 @@ function addGoal (event='', goalId='',  freq='', denomination='', until='', type
   freqDiv.setAttribute("class", "frequency");
   freqDiv.setAttribute("id", `frequency${id}`);
 
+    // Create date start input for frequency 
+    let startDate = document.createElement("input");
+    startDate.setAttribute("class", "startDate")
+    startDate.setAttribute("id", `startDate${id}`)
+    startDate.setAttribute("type", "date");
+    if(goalLoad != ''){// if creating a goal that is being pulled from a file set it's value   
+      let momDate = moment(goalLoad.frequency[0], 'ddd MMM DD YYYY HH:mm:ss'); // Adjust to current timezone from saved timezone
+      startDate.value = momDate.format('YYYY-MM-DD');
+    };
+    freqDiv.appendChild(startDate); //add the date until input to the div
+
     // Create filler title for readablity  
     let everyTitle = document.createElement("p");
     everyTitle.setAttribute("class", "everyTitle");
@@ -967,7 +987,7 @@ function addGoal (event='', goalId='',  freq='', denomination='', until='', type
     freqNum.setAttribute("max", "30");
     if(goalLoad != ''){// if creating a goal that is being pulled from a file set it's value   
       console.log(goalLoad.frequency)
-      freqNum.value = goalLoad.frequency[0];
+      freqNum.value = goalLoad.frequency[1];
     };
     freqDiv.appendChild(freqNum); //add the num input to the div
 
@@ -986,7 +1006,7 @@ function addGoal (event='', goalId='',  freq='', denomination='', until='', type
       freqDropdown.appendChild(freqOpElem);
     };
     if(goalLoad != ''){// if creating a goal that is being pulled from a file set it's value   
-      freqDropdown.value = goalLoad.frequency[1];
+      freqDropdown.value = goalLoad.frequency[2];
     };
     freqDiv.appendChild(freqDropdown); //add the dropdown to the div
 
@@ -997,26 +1017,26 @@ function addGoal (event='', goalId='',  freq='', denomination='', until='', type
      freqDiv.appendChild(untilTitle); //add the paragraph to the div
 
     // Create date until input for frequency 
-    let freqDate = document.createElement("input");
-    freqDate.setAttribute("class", "freqDate")
-    freqDate.setAttribute("id", `freqDate${id}`)
-    freqDate.setAttribute("type", "date");
+    let untilDate = document.createElement("input");
+    untilDate.setAttribute("class", "freqDate")
+    untilDate.setAttribute("id", `freqDate${id}`)
+    untilDate.setAttribute("type", "date");
     if(goalLoad != ''){// if creating a goal that is being pulled from a file set it's value   
-      let momDate = moment(goalLoad.frequency[2], 'ddd MMM DD YYYY HH:mm:ss'); // Adjust to current timezone from saved timezone
-      freqDate.value = momDate.format('YYYY-MM-DD');
+      let momDate = moment(goalLoad.frequency[3], 'ddd MMM DD YYYY HH:mm:ss'); // Adjust to current timezone from saved timezone
+      untilDate.value = momDate.format('YYYY-MM-DD');
     };
-    freqDiv.appendChild(freqDate); //add the date until input to the div
+    freqDiv.appendChild(untilDate); //add the date until input to the div
 
-  goal.appendChild(freqDiv); //add the freqDiv to the goal
+    goal.appendChild(freqDiv); //add the freqDiv to the goal
 
   // Textarea for reminder /* place holder for now */
-  let remd = document.createElement("textarea");
-  remd.setAttribute("class", "reminder");
-  remd.setAttribute("id", `reminder${id}`);
+  let remi = document.createElement("textarea");
+  remi.setAttribute("class", "reminder");
+  remi.setAttribute("id", `reminder${id}`);
   if(goalLoad != ''){// if creating an goal that is being pulled from a file set it's value 
-    remd.value = goalLoad.reminder;
+    remi.value = goalLoad.reminder;
   };
-  goal.appendChild(remd);
+  goal.appendChild(remi);
 
   // Creates and adds dynamic event listener to delete button
   let deleteBtn = document.createElement("input");
@@ -1097,6 +1117,7 @@ function deleteGoal (goal) {
       
       // Save contents from the modal. Then update Initiative object, Message Manager tab and Initiative tab
       function goalModalSave (){
+        let start = document.getElementById('goalStartModal'); 
         let freqNum = document.getElementById('goalFreqModal');
         let denomination = document.getElementById('goalDenoModal');
         let until = document.getElementById('goalUntilModal'); 

@@ -87,12 +87,14 @@
         <div id="goalModal" class="goalModal">
           <!-- Modal content -->
           <div class="goalModal-content">
+            <select id="goalTypeModal"></select>
             <p id="modalTypeTitle">Type:</p>
             <p id="modalFreqTitle">Frequency:</p>
             <p id="modalRemiTitle">Reminder:</p>
             <span class="close">&times;</span>
-            <select id="goalTypeModal"></select>
+            <textarea id="goalRemiModal"></textarea>
             <div id="freqModal">
+              <input id="goalStartModal" type="date"></input>
               <p id="modalEveryTitle">Every</p>
               <input id="goalFreqModal" type="number" min="1" max="30"></input>
               <select id="goalDenoModal"></select>
