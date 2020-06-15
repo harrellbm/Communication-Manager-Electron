@@ -389,7 +389,7 @@ describe("Initiative object", function () {
         expect(id1, "Does not return correct id").to.equal('1');
     });
 
-    // test dynamic preformace of goals map 
+    // Test dynamic preformace of goals map 
     it('should remove a goal then re-add', () => {
         let start =  moment('2020-06-08', 'YYYY-MM-DD', true);
         let until =  moment('2020-07-25', 'YYYY-MM-DD', true);
@@ -445,6 +445,63 @@ describe("Initiative object", function () {
         expect(goal2.reminder, 'Goal does not have correct reminder').to.be.an('object').that.includes({'0': 'in a month'}).and.to.includes({'1': 'when I need to'});
         expect(goal2.linked_aves, 'Goal does not have correct ave ids linked').to.be.an('array').that.includes('1').and.includes('2');
         expect(goal2.description, 'Goal does not have correct description').to.be.an('string').that.equals('Blog posts');
+    });
+
+     // Test generating set of avenues from goal frequency
+     it('should generate set of avenues from goal frequency', () => {
+        let start =  moment('2020-06-08', 'YYYY-MM-DD', true);
+        let until =  moment('2020-07-25', 'YYYY-MM-DD', true);
+        test_initiative.add_goal([ start.toString(), 2, 'weeks', until.toString()], 'email', {'0': 'tomorrow', '1':'next week'}, [], 'Daily Update'); 
+        //console.log('new goal', test_initiative.goals);
+        // Generate avenues 
+        let aveIds = test_initiative.goal_generate_aves('0');
+        //console.log('new avenue ids', aveIds, '\nnew avenues', test_initiative.avenues);
+        
+        // Verify array of avenue ids 
+        expect(aveIds, 'Avenue ids incorrect').to.be.an('array').that.includes('0').and.include('1').and.include('2').and.include('3');
+        
+        // Verify goal has all linked aves 
+        let goal0 = test_initiative.goals.get('0');
+        //console.log( 'goal with linked aves', goal0 )
+        expect(goal0.linked_aves, 'Incorrect linked avenues').to.be.an('array').that.includes('0').and.include('1').and.include('2').and.include('3');
+        
+        // Verify avenue values 
+        let avenue0 = test_initiative.avenues.get('0');
+        //console.log('avenue0:', test_initiative.avenues.get('0'))
+        expect(avenue0.avenue_type, 'Does not have proper avenue_type').to.be.an('string').that.includes('email');
+        expect(avenue0.description, 'Does not have proper description').to.be.an('string').that.includes('Daily Update');
+        expect(avenue0.person, 'Does not have proper people').to.be.an('array').that.includes('');
+        expect(avenue0.sent, 'Does not have proper sent value').to.be.false;
+        expect(avenue0.message_id, 'Does not have proper message id').to.be.a('string').that.equals('');
+        expect(avenue0.date, 'Does not have proper date').to.be.a('string').that.includes('Mon Jun 08 2020 00:00:00');
+        expect(avenue0.goal_id, 'Does not have proper goal id').to.be.a('string').that.equals('0');
+        let avenue1 = test_initiative.avenues.get('1');
+        //console.log('avenue1:', test_initiative.avenues.get('1'))
+        expect(avenue1.avenue_type, 'Does not have proper avenue_type').to.be.an('string').that.includes('email');
+        expect(avenue1.description, 'Does not have proper description').to.be.an('string').that.includes('Daily Update');
+        expect(avenue1.person, 'Does not have proper people').to.be.an('array').that.includes('');
+        expect(avenue1.sent, 'Does not have proper sent value').to.be.false;
+        expect(avenue1.message_id, 'Does not have proper message id').to.be.a('string').that.equals('');
+        expect(avenue1.date, 'Does not have proper date').to.be.a('string').that.includes('Mon Jun 22 2020 00:00:00');
+        expect(avenue1.goal_id, 'Does not have proper goal id').to.be.a('string').that.equals('0');
+        let avenue2 = test_initiative.avenues.get('2');
+        //console.log('avenue2:', test_initiative.avenues.get('2'))
+        expect(avenue2.avenue_type, 'Does not have proper avenue_type').to.be.an('string').that.includes('email');
+        expect(avenue2.description, 'Does not have proper description').to.be.an('string').that.includes('Daily Update');
+        expect(avenue2.person, 'Does not have proper people').to.be.an('array').that.includes('');
+        expect(avenue2.sent, 'Does not have proper sent value').to.be.false;
+        expect(avenue2.message_id, 'Does not have proper message id').to.be.a('string').that.equals('');
+        expect(avenue2.date, 'Does not have proper date').to.be.a('string').that.includes('Mon Jul 06 2020 00:00:00');
+        expect(avenue2.goal_id, 'Does not have proper goal id').to.be.a('string').that.equals('0');
+        let avenue3 = test_initiative.avenues.get('3');
+        //console.log('avenue3:', test_initiative.avenues.get('3'))
+        expect(avenue3.avenue_type, 'Does not have proper avenue_type').to.be.an('string').that.includes('email');
+        expect(avenue3.description, 'Does not have proper description').to.be.an('string').that.includes('Daily Update');
+        expect(avenue3.person, 'Does not have proper people').to.be.an('array').that.includes('');
+        expect(avenue3.sent, 'Does not have proper sent value').to.be.false;
+        expect(avenue3.message_id, 'Does not have proper message id').to.be.a('string').that.equals('');
+        expect(avenue3.date, 'Does not have proper date').to.be.a('string').that.includes('Mon Jul 20 2020 00:00:00');
+        expect(avenue3.goal_id, 'Does not have proper goal id').to.be.a('string').that.equals('0');
     });
 
     // test adding message method 
