@@ -170,6 +170,7 @@ class Initiative {
       return goalId;
    };
    
+   // Use goal frequency to generate dates and add avenues to initiative object
    goal_generate_aves(goalId=''){
       let goal = this.goals.get(goalId);
       let start = moment(goal.frequency[0], 'ddd MMM DD YYYY HH:mm:ss'); // Adjust to current timezone from saved timezone
@@ -187,6 +188,25 @@ class Initiative {
       };
       goal.linked_aves = aveIds;
       return aveIds;
+   };
+
+   // Use goal frequency to generate dates only 
+   goal_generate_dates(goalId=''){
+      let goal = this.goals.get(goalId);
+      let start = moment(goal.frequency[0], 'ddd MMM DD YYYY HH:mm:ss'); // Adjust to current timezone from saved timezone
+      let freq = goal.frequency[1];
+      let denomination = goal.frequency[2];
+      let until = moment(goal.frequency[3], 'ddd MMM DD YYYY HH:mm:ss');
+      let startManipulate = start.clone();
+      let dates = [];
+      while ( startManipulate.isBefore(until) || startManipulate.isSame(until)) {
+         //console.log('start', start, '\nmanipulated start', startManipulate, '\nuntil', until);
+         // Generate dates from the goal's frequency
+         dates.push(startManipulate.toString());
+         startManipulate.add(freq, denomination);
+         //console.log('dates', dates);
+      };
+      return dates;
    };
 
    // Add a message to the messages map in the initiative 
