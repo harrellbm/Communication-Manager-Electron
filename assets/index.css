@@ -276,6 +276,12 @@ textarea{
       top: 0.3rem;
       }
 
+    .aveSent_checkbox:hover,
+    .aveSent_checkbox:focus {
+      text-decoration: none;
+      cursor: pointer;
+    }
+
     .aveSent_label{
       position: relative;
       top: 0.2rem;
@@ -529,7 +535,7 @@ textarea{
       grid-column-end:4;
       grid-row-start: 2;
       grid-row-end: 3;
-      border-width: 0px 1px 0px 1px;
+      border-width: 1px 1px 0px 1px;
       border-style: solid;
       border-color: rgb(118, 118, 118);
     }
@@ -545,10 +551,12 @@ textarea{
   
     /* Dropdown for goal type */
     .typeDropdown{
+      border-width: 0px 1px 0px 1px;
       grid-column-start: 3;
       grid-column-end: 4;
       grid-row-start: 1;
       grid-row-end: 2;
+      font-size: 1rem;
       }
     
     /* need to develop reminder */
@@ -563,14 +571,14 @@ textarea{
     }
 
     .untilTitle{
-      padding: 0.2rem;
+      padding-top: 0.7rem;
       border-width: 1px 0px 1px 0px;
       border-style: solid;
       border-color: rgb(118, 118, 118);
     }
 
     .everyTitle{
-      padding: 0.2rem;
+      padding-top: 0.7rem;
       border-width: 1px 0px 1px 0px;
       border-style: solid;
       border-color: rgb(118, 118, 118);
@@ -703,29 +711,39 @@ textarea{
 
   /* elements with rounded corners within main box */
   #aveDropModal{
+    border-style: solid;
+    border-color: rgb(118, 118, 118);
     border-radius: 4px 0px 0px 0px;
+    border-width: 1px 1px 0px 1px;
   }
 
-  #modalPersTitle{
+  #avePersTitle{
     border-radius: 0px 4px 0px 0px;
     border-width: 1px 1px 0px 0px;
     border-style: solid;
     border-color: rgb(118, 118, 118);
   }
 
-  #modalDateTitle{
-    border-width: 1px 0px 0px 0px;
+  #aveDateTitle{
+    border-width: 1px 0px 0px 1px;
     border-style: solid;
     border-color: rgb(118, 118, 118);
   }
  
-  #modalDescTitle{
+  #aveDescTitle{
     border-width: 1px 0px 0px 0px;
     border-style: solid;
     border-color: rgb(118, 118, 118);
   }
 
+  #aveDescModal{
+    border-style: solid;
+    border-color: rgb(118, 118, 118);
+  }
+   
   #avePersModal{
+    border-style: solid;
+    border-color: rgb(118, 118, 118);
     border-radius: 0px 0px 4px 0px;
   }
 
@@ -736,7 +754,7 @@ textarea{
     grid-row-start: 2;
     grid-row-end: 3;
     padding: 0.5rem;
-    border-width: 0px 0px 1px 1px;
+    border-width: 1px;
     border-style: solid;
     border-color: rgb(118, 118, 118);
   }
@@ -810,7 +828,7 @@ textarea{
   }
 
   /* Styles to make elements look like one rounded box inside modal */
-  #modalTypeTitle{
+  #modalDescTitle{
     border-radius: 4px 0px 0px 0px;
     border-width: 1px 1px 0px 1px;
     border-style: solid;
@@ -828,7 +846,6 @@ textarea{
     grid-row-end: 3;
     grid-column-start: 3;
     grid-column-end: 4;
-    border-radius: 0px 4px 0px 0px;
     border-width: 1px 1px 0px 1px;
     border-style: solid;
     border-color: rgb(118, 118, 118);
@@ -839,11 +856,28 @@ textarea{
     grid-row-end: 2;
     grid-column-start: 3;
     grid-column-end: 4;
-    border-radius: 0px 0px 0px 4px;
+    border-width: 1px 1px 0px 1px;
+    border-radius: 0px 4px 0px 0px;
     border-style: solid;
+    font-size: 1rem;
+  }
+
+  #goalDescModal{
+    grid-row-start: 2;
+    grid-row-end: 4;
+    grid-column-start: 1;
+    grid-column-end: 2;
+    border-width: 1px;
+    border-style: solid;
+    border-color: rgb(118, 118, 118);
+    border-radius: 0px 0px 0px 4px;
   }
 
   #goalRemiModal{
+    grid-row-start: 3;
+    grid-row-end: 4;
+    grid-column-start: 3;
+    grid-column-end: 4;
     border-width: 1px;
     border-style: solid;
     border-color: rgb(118, 118, 118);
@@ -851,7 +885,7 @@ textarea{
   }
 
   #modalUntilTitle {
-    padding-top: 0.6rem;
+    padding-top: 1.8rem;
     border-width: 1px 0px 1px 0px;
     border-style: solid;
     border-color: rgb(118, 118, 118);
@@ -859,7 +893,7 @@ textarea{
   }
 
   #modalEveryTitle {
-    padding-top: 0.6rem;
+    padding-top: 1.8rem;
     border-width: 1px 0px 1px 1px;
     border-style: solid;
     border-color: rgb(118, 118, 118);
@@ -878,6 +912,12 @@ textarea{
   #goalUntilModal {
     border-style: solid;
     border-width: 1px;
+  }
+
+  #goalStartModal {
+    border-style: solid;
+    border-width: 1px;
+    border-width: 1px 0px 1px 1px;
   }
 
   /* Save button for Modal */
