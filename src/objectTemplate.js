@@ -1,3 +1,5 @@
+const moment = require('moment'); // For date handling 
+
 class initiativeCollection {
    constructor() {
       this.initiatives = new Map();
@@ -168,6 +170,25 @@ class Initiative {
       return goalId;
    };
    
+   goal_generate_aves(goalId=''){
+      let goal = this.goals.get(goalId);
+      let start = moment(goal.frequency[0], 'ddd MMM DD YYYY HH:mm:ss'); // Adjust to current timezone from saved timezone
+      let freq = goal.frequency[1];
+      let denomination = goal.frequency[2];
+      let until = moment(goal.frequency[3], 'ddd MMM DD YYYY HH:mm:ss');
+      let startManipulate = start.clone();
+      let aveIds = [];
+      while ( startManipulate.isBefore(until) || startManipulate.isSame(until)) {
+         //console.log('start', start, '\nmanipulated start', startManipulate, '\nuntil', until);
+         // Add an avenue with all passed in values from goal and capture new avenue id in aveIds
+         aveIds.push(this.add_avenue(goal.type, goal.description, '', false, '', startManipulate.toString(), goalId));
+         startManipulate.add(freq, denomination);
+         //console.log('avenues', this.avenues, '\naveIds', aveIds);
+      };
+      goal.linked_aves = aveIds;
+      return aveIds;
+   };
+
    // Add a message to the messages map in the initiative 
    add_message(title = '', greeting = '', content = '', signature ='', avenue_ids=''){
       let new_message = new Message();
