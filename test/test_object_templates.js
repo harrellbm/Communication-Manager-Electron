@@ -504,6 +504,23 @@ describe("Initiative object", function () {
         expect(avenue3.goal_id, 'Does not have proper goal id').to.be.a('string').that.equals('0');
     });
 
+    // Test generating dates from goal frequency
+    it('should generate set of dates from goal frequency', () => {
+        let start =  moment('2020-06-08', 'YYYY-MM-DD', true);
+        let until =  moment('2020-07-25', 'YYYY-MM-DD', true);
+        test_initiative.add_goal([ start.toString(), 2, 'weeks', until.toString()], 'Email', {'0': 'tomorrow', '1':'next week'}, [], 'Daily Update'); 
+        //console.log('new goal', test_initiative.goals);
+        // Generate dates 
+        let dates = test_initiative.goal_generate_dates('0');
+        
+        // Verify generated dates 
+        //console.log('new dates', dates);
+        expect(dates[0], 'Does not have proper date').to.be.a('string').that.includes('Mon Jun 08 2020 00:00:00');
+        expect(dates[1], 'Does not have proper date').to.be.a('string').that.includes('Mon Jun 22 2020 00:00:00');
+        expect(dates[2], 'Does not have proper date').to.be.a('string').that.includes('Mon Jul 06 2020 00:00:00');
+        expect(dates[3], 'Does not have proper date').to.be.a('string').that.includes('Mon Jul 20 2020 00:00:00');
+    });
+
     // test adding message method 
     it('should add a new message', () => {
         // test giving array of avenue ids
