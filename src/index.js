@@ -117,68 +117,58 @@ function save () {
       initGoal.reminder = guiGoal.children[6].value;
       // Updated dates from goal frequency 
       let newDates = currentInitiative.goal_generate_dates(goalId);
-      let initialAves = initGoal.linked_aves;
-      // Set up max iterations for updating current avenues to eliminate extras  
-      let maxCurrentAves;
-      if (initGoal.linked_aves.length < newDates.length) {
-        maxCurrentAves = initGoal.linked_aves.length;
-      } else if (initGoal.linked_aves.length > newDates.length) {
-        maxCurrentAves = newDates.length;
-      } else {
-        maxCurrentAves = initGoal.linked_aves.length;
-      }; 
-
-      // Update linked avenues
-      for ( let i = 0; i < maxCurrentAves; i++) {
-        let aveId = initGoal.linked_aves[i]; 
-        console.log('ave id for aves updated off of goal on save', aveId);
-        let guiAve = document.getElementById(`avenue${aveId}`); // Avenue object from the message manager ui
-        let initAve = currentInitiative.avenues.get(aveId); // Avenue object from the initiative object 
-        
-        // Update avenue in initiative object
-        initAve.avenue_type = guiGoal.children[4].value;  // Update type from goal 
-        initAve.sent = guiAve.children[4].children[0].checked; // Update sent from message manager tab
-        initAve.description = guiGoal.children[3].value; // Update description from goal
-        initAve.person = guiAve.children[6].value; // Update person from message manager tab /* need to shift to goal 
-        initAve.change_date(newDates[i]); // Update from newly generated goal dates
-        console.log('updated ave from goal', initAve);
-
-        // Update Message manager tab
-        guiAve.children[0].value = guiGoal.children[4].value; // Type
-        guiAve.children[5].value = guiGoal.children[3].value; // Description
-        guiAve.children[6].value = guiAve.children[6].value; // Person
-        let momDate = moment(newDates[i], 'ddd MMM DD YYYY HH:mm:ss')
-        guiAve.children[7].value = momDate.format('YYYY-MM-DD'); // Date
-
-        // Update Schedule object on calendar 
-        calendar.updateSchedule(aveId, '1', {
-          title: guiGoal.children[3].value,
-          start: momDate.format('ddd DD MMM YYYY HH:mm:ss'),
-          end:  momDate.format('ddd DD MMM YYYY HH:mm:ss')
-        });
-      }; 
-      
-      // If date range changes making it necessary to have more or less avenues 
-      if (initialAves.length < newDates.length) {
+       
+      if (initGoal.linked_aves.length < newDates.length) { // If there are more dates than avenues add new ones 
         // Add additional avenues 
-        let dif = newDates.length - initialAves.length; // Get the difference between number of current Avenues and new generated dates
+        let oldAveIds = [...initGoal.linked_aves]; // hold reference to initial avenues linked to goal
+        let dif = newDates.length - initGoal.linked_aves.length; // Get the difference between number of current Avenues and new generated dates
         console.log('difference of aves and dates', dif);
         // Add extra avenues 
         for (dif; dif >0; dif--) {
           let date = newDates.pop();
-          // Generate linked avenues in initiative object
+          // Generate new linked avenues in initiative object
           let aveId = currentInitiative.add_avenue(initGoal.type, initGoal.description, '', false, '', date, goalId);
-          // Load avenues to both message manager and initiative tab
-          console.log('ave id for ave ui load on goal update', aveId);
-          addAve('goalUp', aveId ); // Note: event is not used programatically but helps with debugging input to addAve
+          // Link new avenue to goal
+          initGoal.linked_aves.push(aveId);
+          console.log('goal linked aves', currentInitiative.goals.get('0') );
+          // Load new avenue to both message manager and initiative tab
+          addAve('goalUp', aveId );  // Event is used to change ui options depending on type of add
         };
-      } else if (initialAves.length > newDates.length) {
+        
+        // Update old linked avenues
+        for ( aveId of oldAveIds ) {
+          let guiAve = document.getElementById(`avenue${aveId}`); // Avenue object from the message manager ui
+          let initAve = currentInitiative.avenues.get(aveId); // Avenue object from the initiative object 
+        
+          // Update avenue in initiative object
+          initAve.avenue_type = guiGoal.children[4].value;  // Update type from goal 
+          initAve.sent = guiAve.children[4].children[0].checked; // Update sent from message manager tab
+          initAve.description = guiGoal.children[3].value; // Update description from goal
+          initAve.person = guiAve.children[6].value; // Update person from message manager tab /* need to shift to goal */
+          initAve.change_date(newDates[aveId]); // Update from newly generated goal dates
+          console.log('updated ave from goal', initAve);
+
+          // Update Message manager tab
+          guiAve.children[0].value = guiGoal.children[4].value; // Type
+          guiAve.children[5].value = guiGoal.children[3].value; // Description
+          guiAve.children[6].value = guiAve.children[6].value; // Person /* need to shift to goal */
+          let newDate = moment(newDates[aveId], 'ddd MMM DD YYYY HH:mm:ss')
+          guiAve.children[7].value = newDate.format('YYYY-MM-DD'); // Date
+
+          // Update Schedule object on calendar 
+          calendar.updateSchedule(aveId, '1', {
+            title: guiGoal.children[3].value,
+            start: newDate.format('ddd DD MMM YYYY HH:mm:ss'),
+            end:  newDate.format('ddd DD MMM YYYY HH:mm:ss')
+          });
+        }; 
+      } else if (initGoal.linked_aves.length > newDates.length) { // If there are more avenues than new dates remove the extras 
         // Remove extra Avenues 
-        let dif = initialAves.length - newDates.length; // Get the difference between number of current Avenues and new generated dates 
+        let dif = initGoal.linked_aves.length - newDates.length; // Get the difference between number of current Avenues and new generated dates 
         console.log('difference of aves and dates', dif);
         // Remove extra linked avenues from ui and initiative object 
         for (dif; dif > 0; dif--) {
-          let aveId = initialAves.pop();
+          let aveId = initGoal.linked_aves.pop();
           // Remove avenue from message manager tab UI
           let ave = document.getElementById(`avenue${aveId}`);
           ave.parentElement.removeChild(ave);
@@ -188,9 +178,66 @@ function save () {
           // Remove avenue from Initiative object 
           currentInitiative.avenues.delete(aveId);
         };
-      };
+
+        // Update linked avenues
+        for ( aveId of initGoal.linked_aves ) {
+          let guiAve = document.getElementById(`avenue${aveId}`); // Avenue object from the message manager ui
+          let initAve = currentInitiative.avenues.get(aveId); // Avenue object from the initiative object 
+        
+          // Update avenue in initiative object
+          initAve.avenue_type = guiGoal.children[4].value;  // Update type from goal 
+          initAve.sent = guiAve.children[4].children[0].checked; // Update sent from message manager tab
+          initAve.description = guiGoal.children[3].value; // Update description from goal
+          initAve.person = guiAve.children[6].value; // Update person from message manager tab /* need to shift to goal */
+          initAve.change_date(newDates[aveId]); // Update from newly generated goal dates
+          console.log('updated ave from goal', initAve);
+
+          // Update Message manager tab
+          guiAve.children[0].value = guiGoal.children[4].value; // Type
+          guiAve.children[5].value = guiGoal.children[3].value; // Description
+          guiAve.children[6].value = guiAve.children[6].value; // Person /* need to shift to goal */
+          let newDate = moment(newDates[aveId], 'ddd MMM DD YYYY HH:mm:ss')
+          guiAve.children[7].value = newDate.format('YYYY-MM-DD'); // Date
+
+          // Update Schedule object on calendar 
+          calendar.updateSchedule(aveId, '1', {
+            title: guiGoal.children[3].value,
+            start: newDate.format('ddd DD MMM YYYY HH:mm:ss'),
+            end:  newDate.format('ddd DD MMM YYYY HH:mm:ss')
+          });
+        }; 
+      } else { // Else if they are equal just update all avenues with new input from ui 
+        // Update linked avenues
+        for ( aveId of  initGoal.linked_aves ) {
+          console.log('same amount of aves and new dates');
+          let guiAve = document.getElementById(`avenue${aveId}`); // Avenue object from the message manager ui
+          let initAve = currentInitiative.avenues.get(aveId); // Avenue object from the initiative object 
+        
+          // Update avenue in initiative object
+          initAve.avenue_type = guiGoal.children[4].value;  // Update type from goal 
+          initAve.sent = guiAve.children[4].children[0].checked; // Update sent from message manager tab
+          initAve.description = guiGoal.children[3].value; // Update description from goal
+          initAve.person = guiAve.children[6].value; // Update person from message manager tab /* need to shift to goal */
+          initAve.change_date(newDates[aveId]); // Update from newly generated goal dates
+          console.log('updated ave from goal', initAve);
+
+          // Update Message manager tab
+          guiAve.children[0].value = guiGoal.children[4].value; // Type
+          guiAve.children[5].value = guiGoal.children[3].value; // Description
+          guiAve.children[6].value = guiAve.children[6].value; // Person /* need to shift to goal */
+          let newDate = moment(newDates[aveId], 'ddd MMM DD YYYY HH:mm:ss')
+          guiAve.children[7].value = newDate.format('YYYY-MM-DD'); // Date
+
+          // Update Schedule object on calendar 
+          calendar.updateSchedule(aveId, '1', {
+            title: guiGoal.children[3].value,
+            start: newDate.format('ddd DD MMM YYYY HH:mm:ss'),
+            end:  newDate.format('ddd DD MMM YYYY HH:mm:ss')
+          });
+        }; 
+      }; 
     };
-    console.log('updated goal: ', currentInitiative.goals);
+    console.log('updated goal: ', currentInitiative.goals, 'updated linked aves: ', currentInitiative.avenues);
 
     // Message Manager ui
     // Sync ui and initiative message objects before saving 
@@ -392,7 +439,7 @@ document.getElementById("defaultOpen").click();
 // Adds an Avenue to do the DOM of the Initiative and Message Manager tab 
    // Note: Avenue are added through the unified modal popup called modalAve, or loaded from file on reopen
 function addAve (event='', aveId='', location='avenueIn', modalAddSent=false, modalAddType='', modalAddDesc='', modalAddPers='', modalAddDate='') { // If avenue id is passed in it will load it from the initative object. Otherwise it is treated as a new avenue
-    // Note: event is not used programatically but helps with debugging input form different sources
+    // Event is used to change ui options depending on type of add
     // Update current initiative object if this is a new avenue 
     var id; 
     var aveLoad = '';
@@ -516,18 +563,26 @@ function addAve (event='', aveId='', location='avenueIn', modalAddSent=false, mo
     //console.log("avenue", ave);
     document.getElementById(location).appendChild(ave);
 
+    // Set calendar display based on type of add
+    let type;
+    if (event == 'goalGen' || event == 'goalUp') {
+      type = 'goalAve';
+    } else {
+      type = 'singAve';
+    };
+
     // Add avenue to calendar 
     // Fill calendar schedule object with avenue info
     let schedule = {
       id: id,
       calendarId: '1',
       title: aveLoad.description,
-      state: aveLoad.avenue_type,
+      state: type,
       category: 'time',
       start: momDate.format('ddd DD MMM YYYY HH:mm:ss'),
       end:  momDate.format('ddd DD MMM YYYY HH:mm:ss')
     };
-    //console.log('schedule', schedule);
+    console.log('schedule', schedule);
     // Add to calendar and render 
     calendar.createSchedules([schedule]);
 };
@@ -1235,7 +1290,7 @@ function deleteGoal (goal) {
           let goal = currentInitiative.goals.get(goalId);
           for ( id of goal.linked_aves ){
             console.log('ave id for ave ui load on goal generation', id);
-            addAve('goalGen', id ); // Note: event is not used programatically but helps with debugging input to addAve
+            addAve('goalGen', id ); // Event is used to change ui options depending on type of add
           };
 
           // Save everything to main
@@ -1704,6 +1759,14 @@ var calendar = new Calendar('#calendar', {
     endDatePlaceholder: function() {
       return 'End date';
     },*/
+    time: function(schedule) { // Note if an avenue is connected to a goal based on style
+      if (schedule.state == 'goalAve') {
+        // Note: can add note on type or other customazation here later
+        return '<span class="goalAve">' + schedule.title + '</span> ';
+      } else {
+        return schedule.title;
+      };
+    },
   },
   month: {
     daynames: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
