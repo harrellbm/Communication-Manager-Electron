@@ -130,12 +130,13 @@ function save () {
           let aveId = currentInitiative.add_avenue(initGoal.type, initGoal.description, '', false, '', date, goalId);
           // Link new avenue to goal
           initGoal.linked_aves.push(aveId);
-          console.log('goal linked aves', currentInitiative.goals.get('0') );
+          console.log('goal linked aves', currentInitiative.goals.get(goalId) );
           // Load new avenue to both message manager and initiative tab
           addAve('goalUp', aveId );  // Event is used to change ui options depending on type of add
         };
         
         // Update old linked avenues
+        let i = 0; // To access new dates in proper order from newDates array
         for ( aveId of oldAveIds ) {
           let guiAve = document.getElementById(`avenue${aveId}`); // Avenue object from the message manager ui
           let initAve = currentInitiative.avenues.get(aveId); // Avenue object from the initiative object 
@@ -145,14 +146,14 @@ function save () {
           initAve.sent = guiAve.children[4].children[0].checked; // Update sent from message manager tab
           initAve.description = guiGoal.children[3].value; // Update description from goal
           initAve.person = guiAve.children[6].value; // Update person from message manager tab /* need to shift to goal */
-          initAve.change_date(newDates[aveId]); // Update from newly generated goal dates
+          initAve.change_date(newDates[i]); // Update from newly generated goal dates
           console.log('updated ave from goal', initAve);
 
           // Update Message manager tab
           guiAve.children[0].value = guiGoal.children[4].value; // Type
           guiAve.children[5].value = guiGoal.children[3].value; // Description
           guiAve.children[6].value = guiAve.children[6].value; // Person /* need to shift to goal */
-          let newDate = moment(newDates[aveId], 'ddd MMM DD YYYY HH:mm:ss')
+          let newDate = moment(newDates[i], 'ddd MMM DD YYYY HH:mm:ss')
           guiAve.children[7].value = newDate.format('YYYY-MM-DD'); // Date
 
           // Update Schedule object on calendar 
@@ -161,6 +162,7 @@ function save () {
             start: newDate.format('ddd DD MMM YYYY HH:mm:ss'),
             end:  newDate.format('ddd DD MMM YYYY HH:mm:ss')
           });
+          ++i;
         }; 
       } else if (initGoal.linked_aves.length > newDates.length) { // If there are more avenues than new dates remove the extras 
         // Remove extra Avenues 
@@ -180,6 +182,7 @@ function save () {
         };
 
         // Update linked avenues
+        let i = 0; // To access new dates in proper order from newDates array
         for ( aveId of initGoal.linked_aves ) {
           let guiAve = document.getElementById(`avenue${aveId}`); // Avenue object from the message manager ui
           let initAve = currentInitiative.avenues.get(aveId); // Avenue object from the initiative object 
@@ -189,14 +192,14 @@ function save () {
           initAve.sent = guiAve.children[4].children[0].checked; // Update sent from message manager tab
           initAve.description = guiGoal.children[3].value; // Update description from goal
           initAve.person = guiAve.children[6].value; // Update person from message manager tab /* need to shift to goal */
-          initAve.change_date(newDates[aveId]); // Update from newly generated goal dates
+          initAve.change_date(newDates[i]); // Update from newly generated goal dates
           console.log('updated ave from goal', initAve);
 
           // Update Message manager tab
           guiAve.children[0].value = guiGoal.children[4].value; // Type
           guiAve.children[5].value = guiGoal.children[3].value; // Description
           guiAve.children[6].value = guiAve.children[6].value; // Person /* need to shift to goal */
-          let newDate = moment(newDates[aveId], 'ddd MMM DD YYYY HH:mm:ss')
+          let newDate = moment(newDates[i], 'ddd MMM DD YYYY HH:mm:ss')
           guiAve.children[7].value = newDate.format('YYYY-MM-DD'); // Date
 
           // Update Schedule object on calendar 
@@ -205,9 +208,11 @@ function save () {
             start: newDate.format('ddd DD MMM YYYY HH:mm:ss'),
             end:  newDate.format('ddd DD MMM YYYY HH:mm:ss')
           });
+          ++i;
         }; 
       } else { // Else if they are equal just update all avenues with new input from ui 
         // Update linked avenues
+        let i = 0; // To access new dates in proper order from newDates array
         for ( aveId of  initGoal.linked_aves ) {
           console.log('same amount of aves and new dates');
           let guiAve = document.getElementById(`avenue${aveId}`); // Avenue object from the message manager ui
@@ -218,14 +223,14 @@ function save () {
           initAve.sent = guiAve.children[4].children[0].checked; // Update sent from message manager tab
           initAve.description = guiGoal.children[3].value; // Update description from goal
           initAve.person = guiAve.children[6].value; // Update person from message manager tab /* need to shift to goal */
-          initAve.change_date(newDates[aveId]); // Update from newly generated goal dates
+          initAve.change_date(newDates[i]); // Update from newly generated goal dates
           console.log('updated ave from goal', initAve);
 
           // Update Message manager tab
           guiAve.children[0].value = guiGoal.children[4].value; // Type
           guiAve.children[5].value = guiGoal.children[3].value; // Description
           guiAve.children[6].value = guiAve.children[6].value; // Person /* need to shift to goal */
-          let newDate = moment(newDates[aveId], 'ddd MMM DD YYYY HH:mm:ss')
+          let newDate = moment(newDates[i], 'ddd MMM DD YYYY HH:mm:ss')
           guiAve.children[7].value = newDate.format('YYYY-MM-DD'); // Date
 
           // Update Schedule object on calendar 
@@ -234,6 +239,7 @@ function save () {
             start: newDate.format('ddd DD MMM YYYY HH:mm:ss'),
             end:  newDate.format('ddd DD MMM YYYY HH:mm:ss')
           });
+          ++i;
         }; 
       }; 
     };
