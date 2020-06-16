@@ -269,12 +269,12 @@ textarea{
       grid-row-start: 2;
       grid-row-end: 3;
       padding: 0.3rem;
-      }
+    }
 
     .aveSent_checkbox{
       position: relative;
       top: 0.3rem;
-      }
+    }
 
     .aveSent_checkbox:hover,
     .aveSent_checkbox:focus {
@@ -663,8 +663,18 @@ textarea{
     border-style: solid;
     border-color: rgb(118, 118, 118);
   }
+
   #calendar{
     height: 800px
+  }
+
+  /* Style to denote avenues that are connected with a goal */
+  .goalAve{
+    color: #fff;
+    background: #12afdf;
+    border-radius: 4px;
+    padding: 2px;
+    font-size: 13px;
   }
 
   /* Default popups from tui calendar */
