@@ -583,11 +583,15 @@ function addAve (event='', aveId='', location='avenueIn', modalAddSent=false, mo
     ave.appendChild(date);
   
     // Creates and adds dynamic event listener to delete button
-    let deleteBtn = document.createElement("input");
+    let deleteBtn = document.createElement("span");
     deleteBtn.setAttribute("class", "aveDelete");
     deleteBtn.setAttribute("id", `aveDelete${id}`);
-    deleteBtn.setAttribute("type", "button");
-    deleteBtn.setAttribute("value", "x");
+    //deleteBtn.setAttribute("type", "button");
+    //deleteBtn.setAttribute("value", "&times");
+    deleteBtn.innerHTML = '&times;'; 
+    if (aveLoad.goal_id != '') {
+      deleteBtn.setAttribute("style", "display: none;")
+    }
     deleteBtn.addEventListener("click", function () {deleteAveMess(ave)}); 
     ave.appendChild(deleteBtn);
   
