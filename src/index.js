@@ -507,10 +507,15 @@ function addAve (event='', aveId='', location='avenueIn', modalAddSent=false, mo
       opElem.setAttribute("value", `${opText}`);
       opElem.innerHTML = `${opText}`;
       dropdown.appendChild(opElem);
-      }
-    if(aveLoad != ''){// if creating an avenue that is being pulled from a file or was added by modal set it's value 
+    };
+    // If creating an avenue that is being pulled from a file or was added by modal set it's value 
+    if(aveLoad != ''){
       dropdown.value = aveLoad.avenue_type;
-      }
+    };
+    // If avenue is connected to a goal disable the type dropdown 
+    if (aveLoad.goal_id != '') {
+      dropdown.setAttribute("disabled", "true")
+    };
     ave.appendChild(dropdown); //add the dropdown menu to the avenue
     
     // Creates title paragraphs 
@@ -559,9 +564,14 @@ function addAve (event='', aveId='', location='avenueIn', modalAddSent=false, mo
     let description = document.createElement("textarea");
     description.setAttribute("class", "aveDescription");
     description.setAttribute("id", `aveDescription${id}`);
-    if(aveLoad != '') {// if creating an avenue that is being pulled from a file or was added by modal set it's value 
+    // If creating an avenue that is being pulled from a file or was added by modal set it's value 
+    if(aveLoad != '') {
       description.value = aveLoad.description;
       }
+    // If avenue is connected to a goal disable the textarea 
+    if (aveLoad.goal_id != '') {
+      description.setAttribute("readonly", "true")
+    }
     ave.appendChild(description);
   
     let persons = document.createElement("textarea");
@@ -577,18 +587,22 @@ function addAve (event='', aveId='', location='avenueIn', modalAddSent=false, mo
     date.setAttribute("class", "aveDate");
     date.setAttribute("id", `aveDate${id}`);
     date.setAttribute("type", "date");
-    if(aveLoad != ''){// if creating an avenue that is being pulled from a file or was added by modal set it's value 
+    // If creating an avenue that is being pulled from a file or was added by modal set it's value 
+    if(aveLoad != ''){
       date.value = momDate.format('YYYY-MM-DD'); // Format for display in date chooser 
       }
+    // If avenue is connected to a goal disable the date input 
+    if (aveLoad.goal_id != '') {
+      date.setAttribute("readonly", "true")
+    }
     ave.appendChild(date);
   
     // Creates and adds dynamic event listener to delete button
     let deleteBtn = document.createElement("span");
     deleteBtn.setAttribute("class", "aveDelete");
     deleteBtn.setAttribute("id", `aveDelete${id}`);
-    //deleteBtn.setAttribute("type", "button");
-    //deleteBtn.setAttribute("value", "&times");
     deleteBtn.innerHTML = '&times;'; 
+    // If avenue is connected to a goal disable the delete button 
     if (aveLoad.goal_id != '') {
       deleteBtn.setAttribute("style", "display: none;")
     }
