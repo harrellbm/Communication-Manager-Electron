@@ -13,7 +13,7 @@ const Calendar = require('tui-calendar');// used for calendar on initiaive tab
    // the date picker displays and returns dates in format 'YYYY-MM-DD'
 // Note: Element ids hold a tag on the front in the from 'elementTypeNumber' i.e 'avenue0' or 'group0' this makes for easy access using getElementById
    // In objects the tag is removed so that only the number is saved this makes for easier manipulation under the hood
-
+// Note: Avenues that are linked to a Goal are associated with calendar id 2 all other avenues are associated with calendar id 1
 /* ---- Common index functions ---- */ 
 var currentInitiative;
 var currentInitiativeId;
@@ -59,13 +59,22 @@ ipc.on('load', function (event, ipcPack) {
   aveKeys = currentInitiative.avenues.keys();
   for ( id of aveKeys ){
     console.log('ave id for mess tab load', id);
-    // Check to see if avenue is linked to a message
+    // Check to see if avenue is linked to a message or goal
     let aveObj = currentInitiative.avenues.get(id);
     let messId = aveObj.message_id;
-    if (messId != '') { // If so send to respective message drop box
-      addAve('load', id, `aveDrop${messId}`) ;// Note: event is not used programatically but helps with debugging input to addAve
-    } else { // Else just add it to the default container
-      addAve('load', id ); 
+    let goalId = aveObj.goal_id;
+    if (goalId != '') { // If linked to goal send special event to addAve function 
+      if (messId != '') { // If also linked to message send avenue element on the message manager tab to the linked message dropbox
+        addAve('goalUp', id, `aveDrop${messId}`) ;
+      } else { // Else just add it to the default container on the message manager tab
+        addAve('goalUp', id );
+      };
+    } else { // If not connected to goal load nomally an check for connected message
+      if (messId != '') { // If so send to respective message drop box
+        addAve('load', id, `aveDrop${messId}`) ;// Note: event is not used programatically but helps with debugging input to addAve
+      } else { // Else just add it to the default container
+        addAve('load', id ); 
+      };
     };
   };
 });
@@ -157,7 +166,7 @@ function save () {
           guiAve.children[7].value = newDate.format('YYYY-MM-DD'); // Date
 
           // Update Schedule object on calendar 
-          calendar.updateSchedule(aveId, '1', {
+          calendar.updateSchedule(aveId, '2', {
             title: guiGoal.children[3].value,
             start: newDate.format('ddd DD MMM YYYY HH:mm:ss'),
             end:  newDate.format('ddd DD MMM YYYY HH:mm:ss')
@@ -175,7 +184,7 @@ function save () {
           let ave = document.getElementById(`avenue${aveId}`);
           ave.parentElement.removeChild(ave);
           // Remove Schedule object on calendar 
-          calendar.deleteSchedule(aveId, '1');
+          calendar.deleteSchedule(aveId, '2'); // Note: may need to store various calendars that are associated with different goals later
           console.log('avenue id after ui remove', aveId);
           // Remove avenue from Initiative object 
           currentInitiative.avenues.delete(aveId);
@@ -203,7 +212,7 @@ function save () {
           guiAve.children[7].value = newDate.format('YYYY-MM-DD'); // Date
 
           // Update Schedule object on calendar 
-          calendar.updateSchedule(aveId, '1', {
+          calendar.updateSchedule(aveId, '2', {
             title: guiGoal.children[3].value,
             start: newDate.format('ddd DD MMM YYYY HH:mm:ss'),
             end:  newDate.format('ddd DD MMM YYYY HH:mm:ss')
@@ -234,7 +243,7 @@ function save () {
           guiAve.children[7].value = newDate.format('YYYY-MM-DD'); // Date
 
           // Update Schedule object on calendar 
-          calendar.updateSchedule(aveId, '1', {
+          calendar.updateSchedule(aveId, '2', {
             title: guiGoal.children[3].value,
             start: newDate.format('ddd DD MMM YYYY HH:mm:ss'),
             end:  newDate.format('ddd DD MMM YYYY HH:mm:ss')
@@ -363,13 +372,22 @@ function openFile () {
   aveKeys = currentInitiative.avenues.keys();
   for ( id of aveKeys ){
     //console.log('ave id for mess tab load', id);
-    // Check to see if avenue is linked to a message
+    // Check to see if avenue is linked to a message or goal
     let aveObj = currentInitiative.avenues.get(id);
     let messId = aveObj.message_id;
-    if (messId != '') { // If so send to respective message drop box
-      addAve('load', id, `aveDrop${messId}`) ;// Note: event is not used programatically but helps with debugging input to addAve
-    } else { // Else just add it to the default container
-      addAve('load', id ); 
+    let goalId = aveObj.goal_id;
+    if (goalId != '') { // If linked to goal send special event to addAve function 
+      if (messId != '') { // If also linked to message send avenue element on the message manager tab to the linked message dropbox
+        addAve('goalUp', id, `aveDrop${messId}`) ;
+      } else { // Else just add it to the default container on the message manager tab
+        addAve('goalUp', id );
+      };
+    } else { // If not connected to goal load nomally an check for connected message
+      if (messId != '') { // If so send to respective message drop box
+        addAve('load', id, `aveDrop${messId}`) ;// Note: event is not used programatically but helps with debugging input to addAve
+      } else { // Else just add it to the default container
+        addAve('load', id ); 
+      };
     };
   };
   // Refresh Initative tab calendar when everthing is finished 
@@ -417,12 +435,21 @@ function openPage(pageName, elmnt) { // linked to directly from html
         if (moment(rawDate).isValid()){ // Only load date into initiative object if it is a valid date
           let date = moment(rawDate, 'YYYY-MM-DD', true).toString(); // Moment adds time zone stamp
           initAve.change_date(date); // String
-          // Update Schedule object on calendar 
-          calendar.updateSchedule(id, '1', {
-            title: guiAve.children[5].value,
-            start: date,
-            end: date
-          });
+          if (initAve.goal_id != '') { // If attached to goal 
+            // Update Schedule object on calendar 
+            calendar.updateSchedule(id, '2', {
+              title: guiAve.children[5].value,
+              start: date,
+              end: date
+            });
+          } else { // Else if it is a single avenue update it 
+            // Update Schedule object on calendar 
+            calendar.updateSchedule(id, '1', {
+              title: guiAve.children[5].value,
+              start: date,
+              end: date
+            });
+          };
         }; 
          
       };
@@ -571,19 +598,19 @@ function addAve (event='', aveId='', location='avenueIn', modalAddSent=false, mo
 
     // Set calendar display based on type of add
     let type;
-    if (event == 'goalGen' || event == 'goalUp') {
-      type = 'goalAve';
-    } else {
-      type = 'singAve';
+    let calId;
+    if (event == 'goalGen' || event == 'goalUp') { // Set linked to goal
+      calId = '2';
+    } else { // Set as Single avenue 
+      calId = '1';
     };
 
     // Add avenue to calendar 
     // Fill calendar schedule object with avenue info
     let schedule = {
       id: id,
-      calendarId: '1',
+      calendarId: calId,
       title: aveLoad.description,
-      state: type,
       category: 'time',
       start: momDate.format('ddd DD MMM YYYY HH:mm:ss'),
       end:  momDate.format('ddd DD MMM YYYY HH:mm:ss')
@@ -1223,7 +1250,7 @@ function deleteGoal (goal) {
         let ave = document.getElementById(`avenue${aveId}`);
         ave.parentElement.removeChild(ave);
         // Remove Schedule object on calendar 
-        calendar.deleteSchedule(aveId, '1');
+        calendar.deleteSchedule(aveId, '2');
         console.log('avenue id after ui remove', aveId);
         // Remove avenue from Initiative object 
         currentInitiative.avenues.delete(aveId);
@@ -1766,9 +1793,12 @@ var calendar = new Calendar('#calendar', {
       return 'End date';
     },*/
     time: function(schedule) { // Note if an avenue is connected to a goal based on style
-      if (schedule.state == 'goalAve') {
+      if (schedule.calendarId == '2') {
         // Note: can add note on type or other customazation here later
-        return '<span class="goalAve">' + schedule.title + '</span> ';
+        let html = [];
+        html.push('<img src="../assets/sm-lock-closed.svg" class="goalAve"></img>')
+        html.push(' ' + schedule.title);
+        return html.join('');
       } else {
         return schedule.title;
       };
@@ -1843,26 +1873,31 @@ calendar.on({
   'beforeUpdateSchedule': function(event) {
     let schedule = event.schedule;
     let changes = event.changes;
-    //console.log('drag schedule', schedule.id, 'changes', changes)
-    // Update Initiative object 
-    let initAve = currentInitiative.avenues.get(schedule.id); // Avenue object from the initiative object
-    let momDate = moment(changes.start.toDate(), 'ddd MMM DD YYYY HH:mm:ss'); // Adjust to current timezone from saved timezone
-    initAve.change_date(momDate.toString());
-    //console.log('ave from init', initAve);
+    console.log('drag schedule', schedule, 'changes', changes);
+    // Check to see if ave is linked to goal
+    if (schedule.calendarId == '1') { // If not connected update on drag
+      // Update Initiative object 
+      let initAve = currentInitiative.avenues.get(schedule.id); // Avenue object from the initiative object
+      let momDate = moment(changes.start.toDate(), 'ddd MMM DD YYYY HH:mm:ss'); // Adjust to current timezone from saved timezone
+      initAve.change_date(momDate.toString());
+      //console.log('ave from init', initAve);
 
-    // Update Message manager tab
-    let guiAve = document.getElementById(`avenue${schedule.id}`); // Avenue object from the ui
-    guiAve.children[7].value = momDate.format('YYYY-MM-DD');
+      // Update Message manager tab
+      let guiAve = document.getElementById(`avenue${schedule.id}`); // Avenue object from the ui
+      guiAve.children[7].value = momDate.format('YYYY-MM-DD');
 
-    // Update Schedule object on calendar 
-    calendar.updateSchedule(schedule.id, '1', {
-      start: momDate.format('ddd DD MMM YYYY HH:mm:ss'),
-      end:  momDate.format('ddd DD MMM YYYY HH:mm:ss')
-    });
+      // Update Schedule object on calendar 
+      calendar.updateSchedule(schedule.id, '1', {
+        start: momDate.format('ddd DD MMM YYYY HH:mm:ss'),
+        end:  momDate.format('ddd DD MMM YYYY HH:mm:ss')
+      });
 
-    // Save everything to main
-    let ipcInit = currentInitiative.pack_for_ipc();
-    ipc.send('save', currentInitiativeId, ipcInit);
+      // Save everything to main
+      let ipcInit = currentInitiative.pack_for_ipc();
+      ipc.send('save', currentInitiativeId, ipcInit);
+    } else if (schedule.calendarId == '2') { // If it is connected to a goal reject drag
+      return
+    };
   }
 });
 
@@ -1898,4 +1933,19 @@ calendar.on({
     // Display date range on top of calendar 
     document.getElementById('year').value = `${end.getFullYear()}`;
     document.getElementById('month').value = `${start.getMonth() + 1}` + '.' + `${start.getDate()}` + ' - ' + `${end.getMonth() + 1}` + '.' + `${end.getDate()}`;
+  });
+
+  // Syles for calendar Schedule objects that are not linked to a goal 
+  calendar.setCalendarColor('1', {
+    color: '#111',
+    bgColor: '#585858',
+    borderColor: '#111',
+    dragBgColor: '#585858',
+  });
+  // Syles for calendar Schedule objects that are linked to a goal 
+  calendar.setCalendarColor('2', {
+    color: '#000',
+    bgColor: '#12afdf',
+    borderColor: '#12afdf',
+    dragBgColor: '#12afdf',
   });

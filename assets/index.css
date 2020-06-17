@@ -667,21 +667,12 @@ textarea{
   #calendar{
     height: 800px
   }
-
-  /* Style to denote avenues that are connected with a goal */
+  /* icon for avenues that are connected to a goal */
   .goalAve{
-    color: #fff;
-    background: #12afdf;
-    border-radius: 4px;
-    padding: 2px;
-    font-size: 13px;
+    height: 12px;
+    width: 12px;
+    vertical-align: middle;
   }
-
-  /* Default popups from tui calendar */
-  .tui-full-calendar-popup{
-    color:black;
-  }
-
   /* container on the bottom */
   #initBottom{
     grid-column-start: 1;
