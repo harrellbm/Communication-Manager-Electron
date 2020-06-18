@@ -40,21 +40,21 @@ textarea{
 .tablink {
     color: white;
     float: left;
-    border-bottom: none;
-    border-left: none;
-    border-top: none;
-    border-right-style: solid;
-    border-width: 1px;
-    border-color: rgb(95, 95, 95);
+    border: none;
     outline: none;
     cursor: pointer;
     padding: 1.9vh 1vh;
     font-size: 3vh;
     width: 33.3333%;
+
+    /* used to set up for hover animation */
+    transition: 0.5s;
+    background-size: 200% auto;
+    text-shadow: 0px 0px 10px rgba(255, 255, 255, 0.2);
   }
   
   .tablink:hover {
-    background-color: #777;
+    background-position: right center;
   }
   
   /* Default style for tab content */

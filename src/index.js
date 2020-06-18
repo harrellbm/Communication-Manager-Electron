@@ -407,8 +407,8 @@ function openPage(pageName, elmnt) { // linked to directly from html
   // Remove the background color of all tablinks/buttons and set bottom border
   tablinks = document.getElementsByClassName("tablink");
   for (i = 0; i < tablinks.length; i++) {
-    tablinks[i].style.backgroundColor = "";
-    tablinks[i].style.backgroundImage =  'linear-gradient(-50deg, rgb(118,118,118), rgb(95, 95, 95))';
+    //tablinks[i].style.backgroundImage =  'linear-gradient(-50deg, rgb(118,118,118), rgb(95, 95, 95))';
+    tablinks[i].style.backgroundImage =  'linear-gradient(to right, rgb(108, 108, 108) 0%, rgb(118, 118, 118) 51%, rgb(139, 203, 224) 100%)';
   };
 
   // Show the specific tab content
@@ -458,10 +458,9 @@ function openPage(pageName, elmnt) { // linked to directly from html
   };
 
   // Add the specific color to the button used to open the tab content
-  elmnt.style.backgroundColor = 'rgb(139, 203, 224)';
-  elmnt.style.backgroundImage =  'linear-gradient(184deg, rgb(118, 118, 118) 4%, rgb(139, 203, 224) 64%)';
-  elmnt.style.borderBottomStyle = "none";
-}
+  //elmnt.style.backgroundColor = 'rgb(139, 203, 224)';
+  elmnt.style.backgroundImage =  'linear-gradient(to right, rgb(139, 203, 224) 0%, rgb(118, 118, 118) 51%, rgb(139, 203, 224) 100%)';
+};
 
 // Get the element with id="defaultOpen" and click on it to initialize window
 document.getElementById("defaultOpen").click();
