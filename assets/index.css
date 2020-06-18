@@ -127,7 +127,42 @@ textarea{
     grid-row-end: 3;
     grid-column-start: 2;
     grid-column-end: 3;
-    }
+  }
+
+  .messInTitle{
+    font-size: 1.9rem;
+  }
+
+  /* Button to add a new Message or Avenue on the message manager tab */
+  #addMess {
+    color: rgb(118, 118, 118);
+    font-size: 2.7rem;
+    font-weight: bold;
+    vertical-align: middle;
+    text-shadow: 2px 2px rgb( 100, 100, 100, 0.2)
+  }
+    
+  #addMess:hover,
+  #addMess:focus {
+    color:  rgb(255, 255, 255);
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  #addAve {
+    color: rgb(118, 118, 118);
+    font-size: 2.7rem;
+    font-weight: bold;
+    vertical-align: middle;
+    text-shadow: 2px 2px rgb( 100, 100, 100, 0.2)
+  }
+    
+  #addAve:hover,
+  #addAve:focus {
+    color:  rgb(255, 255, 255);
+    text-decoration: none;
+    cursor: pointer;
+  }
   
   /* Bottom Container */
   #messBottom{
@@ -366,7 +401,6 @@ textarea{
     /* Icon to note that avenue is linked with a goal */
     .goalIcn {
       fill: rgb(139, 203, 224);
-      /*filter: invert(75%) sepia(60%) saturate(259%) hue-rotate(159deg) brightness(118%) contrast(88%);*/
     }
 
     /* Delete button */
@@ -455,10 +489,10 @@ textarea{
     display: grid;
     grid-template-columns: 1fr 2fr 9.9rem 1.4rem;
     grid-template-rows: 1.4rem 4.8rem;
-    background-color: rgb(118, 118, 118);
     border: rgb(118, 118, 118);
     border-width: 1px;
     border-style: solid;
+    background-image: linear-gradient( rgb( 118, 118, 118), rgb( 95, 95, 95));
     }
   
   /* Textarea for Group name*/
@@ -519,7 +553,7 @@ textarea{
     border-style: solid;
     border-color: rgb(118, 118, 118);
     background-color: rgb(255, 255, 255);
-    }
+  }
 
     /* Individual contact div */
     .contact{
@@ -530,7 +564,8 @@ textarea{
       border-style: solid;
       border-color: rgb(170, 180, 190);
       background-color: rgb(170, 180, 190);
-      }
+      background-image: linear-gradient( rgb(170, 180, 190), rgb(118, 118, 118));
+    }
 
     /* Common class for contact textareas */
     .contactIn{
@@ -557,7 +592,7 @@ textarea{
     }
 
     .cont_title{
-      background-color: rgb(170, 180, 190);
+      background-color: transparent;
     }
 
   /* Title to hold header and add button for goalIn */
@@ -589,11 +624,11 @@ textarea{
       display: grid;
       grid-template-columns: 1fr 2.5fr 1fr 1.4rem;
       grid-template-rows: 1.5rem 1.5rem 1.5rem;
-      background-color: rgb(118, 118, 118);
       border: rgb(118, 118, 118);
       border-width: 1px;
       border-style: solid;
-      }
+      background-image: linear-gradient( rgb( 118, 118, 118), rgb( 95, 95, 95));
+    }
   
     /* Titles */
     #goalDesc_title{
@@ -635,7 +670,7 @@ textarea{
       grid-column-end: 2;
       grid-row-start: 2;
       grid-row-end: 4;
-      }
+    }
   
   
     /* Dropdown for goal type */
@@ -646,7 +681,7 @@ textarea{
       grid-row-start: 1;
       grid-row-end: 2;
       font-size: 1rem;
-      }
+    }
     
     /* need to develop reminder */
     /* Container for Frequency */
@@ -678,7 +713,7 @@ textarea{
       grid-column-end: 4;
       grid-row-start: 3;
       grid-row-end: 4;
-      }
+    }
   
     /* Outside rows */
     /* Delete button */
@@ -1053,14 +1088,14 @@ textarea{
 /* Note: use top div to toggle visibility on and off nested div holds the actual grid
 /* Container for full grid */
 .wrapper{
-    display: grid;
-    grid-template-columns: 1fr;
-    grid-template-rows: 11.5vh 69vh 11.5vh;
-    background-color: rgb(139, 203, 224);
-  }
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 11.5vh 69vh 11.5vh;
+  background-color: rgb(139, 203, 224);
+}
   
   /* input for title */
- #title{
+  #title{
     margin-left: 0.5rem;
   }
   
