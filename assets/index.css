@@ -471,6 +471,23 @@ textarea{
     grid-column-end: 4;
   }
 
+  /* Button to add new group */
+  #addGroup {
+    color: rgb(118, 118, 118);
+    font-size: 1.8rem;
+    font-weight: bold;
+    vertical-align: middle;
+    text-shadow: 2px 2px rgb( 100, 100, 100, 0.2);
+    margin-left: 0.1rem;
+  }
+    
+  #addGroup:hover,
+  #addGgroup:focus {
+    color:  rgb(255, 255, 255);
+    text-decoration: none;
+    cursor: pointer;
+  }
+
   /* Container for adding groups */
   #groupIn{
     height:76%;
@@ -602,6 +619,23 @@ textarea{
     grid-column-start: 1;
     grid-column-end: 4;
   }
+
+  #addGoal {
+    color: rgb(118, 118, 118);
+    font-size: 1.8rem;
+    font-weight: bold;
+    vertical-align: middle;
+    text-shadow: 2px 2px rgb( 100, 100, 100, 0.2);
+    margin-left: 0.1rem;
+  }
+    
+  #addGoal:hover,
+  #addGoal:focus {
+    color:  rgb(255, 255, 255);
+    text-decoration: none;
+    cursor: pointer;
+  }
+
   /* Container for adding goals */
   #goalIn{
     max-height: 85vh;
