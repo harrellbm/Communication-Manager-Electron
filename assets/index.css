@@ -207,10 +207,23 @@ textarea{
     }
 
     /* Delete button */
-    .messDelete{
-      width: 1.4rem;
-      height: 1.4rem;
+    .messDelete {
+      margin: auto;
+      color: #fff;
+      font-size: 27px;
+      font-weight: bold;
+      margin-left: 3px;
+      line-height: 0.9rem;
+      vertical-align: middle;
     }
+    
+    .messDelete:hover,
+    .messDelete:focus {
+      color:  rgb(139, 203, 224);
+      text-decoration: none;
+      cursor: pointer;
+    }
+    
 
   /* Rules for dynamically added Avenues */
   .avenue{
@@ -366,6 +379,7 @@ textarea{
       color: #fff;
       font-size: 27px;
       font-weight: bold;
+      line-height: 0.9rem;
     }
 
     .aveDelete:hover,
@@ -478,9 +492,20 @@ textarea{
   }
 
   /* Delete button for group elements */
-  .groupDelete{
-    width: 1.4rem;
-    height: 1.4rem;
+  .groupDelete {
+    color: #fff;
+    font-size: 27px;
+    font-weight: bold;
+    margin-left: 3px;
+    line-height: 0.9rem;
+    vertical-align: middle;
+  }
+  
+  .groupDelete:hover,
+  .groupDelete:focus {
+    color:  rgb(139, 203, 224);
+    text-decoration: none;
+    cursor: pointer;
   }
 
   /* Container div for all contact elements */
@@ -512,13 +537,23 @@ textarea{
       white-space: nowrap;
     }
     /*  Delete button for contact */
-    .contactDelete{
-    width: 1.4rem;
-    height: 1.4rem;
-    grid-column-start: 4;
-    grid-column-end: 5;
-    grid-row-start: 1;
-    grid-row-end: 2;
+    .contactDelete {
+      grid-column-start: 4;
+      grid-column-end: 5;
+      grid-row-start: 1;
+      grid-row-end: 2;
+      margin: auto;
+      color: #fff;
+      font-size: 27px;
+      font-weight: bold;
+      line-height: 0.9rem;
+    }
+    
+    .contactDelete:hover,
+    .contactDelete:focus {
+      color:  rgb(139, 203, 224);
+      text-decoration: none;
+      cursor: pointer;
     }
 
     .cont_title{
@@ -647,14 +682,24 @@ textarea{
   
     /* Outside rows */
     /* Delete button */
-    .goalDelete{
-      width: 1.4rem;
-      height: 1.4rem;
+    .goalDelete {
       grid-column-start: 4;
       grid-column-end: 5;
       grid-row-start: 1;
       grid-row-end: 2;
-      }
+      color: #fff;
+      font-size: 27px;
+      font-weight: bold;
+      margin: auto;
+      line-height: 0.9rem;
+    }
+      
+    .goalDelete:hover,
+    .goalDelete:focus {
+      color:  rgb(139, 203, 224);
+      text-decoration: none;
+      cursor: pointer;
+    }
   
   /* Holds all Controls for Calendar */
   #initMid{

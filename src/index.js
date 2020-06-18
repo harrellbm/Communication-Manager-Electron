@@ -408,7 +408,7 @@ function openPage(pageName, elmnt) { // linked to directly from html
   tablinks = document.getElementsByClassName("tablink");
   for (i = 0; i < tablinks.length; i++) {
     //tablinks[i].style.backgroundImage =  'linear-gradient(-50deg, rgb(118,118,118), rgb(95, 95, 95))';
-    tablinks[i].style.backgroundImage =  'linear-gradient(to right, rgb(108, 108, 108) 0%, rgb(118, 118, 118) 51%, rgb(139, 203, 224) 100%)';
+    tablinks[i].style.backgroundImage =  'linear-gradient(to right, rgb(108, 108, 108) 0%, rgb(118, 118, 118) 60%, rgb(139, 203, 224) 100%)';
   };
 
   // Show the specific tab content
@@ -459,7 +459,7 @@ function openPage(pageName, elmnt) { // linked to directly from html
 
   // Add the specific color to the button used to open the tab content
   //elmnt.style.backgroundColor = 'rgb(139, 203, 224)';
-  elmnt.style.backgroundImage =  'linear-gradient(to right, rgb(139, 203, 224) 0%, rgb(118, 118, 118) 51%, rgb(139, 203, 224) 100%)';
+  elmnt.style.backgroundImage =  'linear-gradient(to right, rgb(139, 203, 224) 0%, rgb(118, 118, 118) 60%, rgb(139, 203, 224) 100%)';
 };
 
 // Get the element with id="defaultOpen" and click on it to initialize window
@@ -605,7 +605,6 @@ function addAve (event='', aveId='', location='avenueIn', modalAddSent=false, mo
       ave.appendChild(goalIcn);
     };
     
-
     // Creates and adds dynamic event listener to delete button
     let deleteBtn = document.createElement("span");
     deleteBtn.setAttribute("class", "aveDelete");
@@ -965,13 +964,12 @@ function addMess (event='', messId='') {// If message id is passed in it will lo
     copyBtn.setAttribute("value", "Copy");
     copyBtn.addEventListener("click", function () {copyMess(mess)}) ;
     btnArray.appendChild(copyBtn);
-
+     
     // Creates and adds dynamic event listener to delete button
-    let deleteBtn = document.createElement("input");
+    let deleteBtn = document.createElement("span");
     deleteBtn.setAttribute("class", "messDelete");
     deleteBtn.setAttribute("id", `messDelete${id}`);
-    deleteBtn.setAttribute("type", "button");
-    deleteBtn.setAttribute("value", "x");
+    deleteBtn.innerHTML = '&times;';
     deleteBtn.addEventListener("click", function () {deleteMess(mess)}) ;
     btnArray.appendChild(deleteBtn);
 
@@ -1233,12 +1231,12 @@ function addGoal (event='', goalId='', start='', freq='', denomination='', until
   };
   goal.appendChild(remi);
 
+  
   // Creates and adds dynamic event listener to delete button
-  let deleteBtn = document.createElement("input");
+  let deleteBtn = document.createElement("span");
   deleteBtn.setAttribute("class", "goalDelete");
   deleteBtn.setAttribute("id", `goalDelete${id}`);
-  deleteBtn.setAttribute("type", "button");
-  deleteBtn.setAttribute("value", "x");
+  deleteBtn.innerHTML = '&times;';
   deleteBtn.addEventListener("click", function () {deleteGoal(goal)}) ;
 
   goal.appendChild(deleteBtn);
@@ -1525,11 +1523,10 @@ function addGroup (event='', groupId='') {// If group id is passed in it will lo
   btnArray.appendChild(phoneBtn);// Add the button to the array
 
   // Creates and adds dynamic event listener to delete button
-  let deleteBtn = document.createElement("input");
+  let deleteBtn = document.createElement("span");
   deleteBtn.setAttribute("class", "groupDelete");
   deleteBtn.setAttribute("id", `groupDelete${id}`);
-  deleteBtn.setAttribute("type", "button");
-  deleteBtn.setAttribute("value", "x");
+  deleteBtn.innerHTML = '&times;';
   deleteBtn.addEventListener("click", function () {deleteGroup(group)});
   btnArray.appendChild(deleteBtn); // Add the button to the array
 
@@ -1711,11 +1708,10 @@ let phone_title = document.createElement("p");// Title for Group
   contactUi.appendChild(phone);
 
   // Creates and adds dynamic event listener to delete button
-  let deleteBtn = document.createElement("input");
+  let deleteBtn = document.createElement("span");
   deleteBtn.setAttribute("class", "contactDelete");
   deleteBtn.setAttribute("id", `contactDelete${id}`);
-  deleteBtn.setAttribute("type", "button");
-  deleteBtn.setAttribute("value", "x");
+  deleteBtn.innerHTML = '&times;';
   deleteBtn.addEventListener("click", function () {deleteContact(groupId, contactUi)}) ;
   contactUi.appendChild(deleteBtn);
 
