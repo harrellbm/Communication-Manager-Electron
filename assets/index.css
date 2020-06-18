@@ -38,15 +38,14 @@ textarea{
   
 /* Style tab links */
 .tablink {
-    background-color: rgb(118, 118, 118);
     color: white;
     float: left;
     border-bottom: none;
     border-left: none;
     border-top: none;
-    border-right-style: groove;
-    border-width: 0.2vh;
-    border-color: ghostwhite;
+    border-right-style: solid;
+    border-width: 1px;
+    border-color: rgb(95, 95, 95);
     outline: none;
     cursor: pointer;
     padding: 1.9vh 1vh;

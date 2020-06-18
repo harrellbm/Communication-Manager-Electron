@@ -408,10 +408,8 @@ function openPage(pageName, elmnt) { // linked to directly from html
   tablinks = document.getElementsByClassName("tablink");
   for (i = 0; i < tablinks.length; i++) {
     tablinks[i].style.backgroundColor = "";
-    tablinks[i].style.borderBottom = "groove";
-    tablinks[i].style.borderWidth = "0.2vh";
-    tablinks[i].style.borderColor = "ghostwhite";
-  }
+    tablinks[i].style.backgroundImage =  'linear-gradient(-50deg, rgb(118,118,118), rgb(95, 95, 95))';
+  };
 
   // Show the specific tab content
   document.getElementById(pageName).style.display = "block";
@@ -461,6 +459,7 @@ function openPage(pageName, elmnt) { // linked to directly from html
 
   // Add the specific color to the button used to open the tab content
   elmnt.style.backgroundColor = 'rgb(139, 203, 224)';
+  elmnt.style.backgroundImage =  'linear-gradient(184deg, rgb(118, 118, 118) 4%, rgb(139, 203, 224) 64%)';
   elmnt.style.borderBottomStyle = "none";
 }
 
