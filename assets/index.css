@@ -211,7 +211,7 @@ textarea{
     .messDelete{
       width: 1.4rem;
       height: 1.4rem;
-      }
+    }
 
   /* Rules for dynamically added Avenues */
   .avenue{
@@ -219,11 +219,11 @@ textarea{
     display: grid;
     grid-template-columns: 6.5rem 9.15rem 9.15rem 9rem 1.4rem;
     grid-template-rows: 1.7rem 2.5rem;
-    background-color: rgb(118, 118, 118);
-    border: rgb(100, 100, 100);
+    border-color: rgb(118, 118, 118);
     border-width: 1px;
     border-style: solid;
-    }
+    background-image: linear-gradient( rgb( 118, 118, 118), rgb( 95, 95, 95));
+  }
 
     /* First Row */
     /* Drop down box rules*/
@@ -233,7 +233,20 @@ textarea{
       grid-row-start: 1;
       grid-row-end: 2;
       font-size: 1rem;
-      border-width: 0px;
+      opacity: 1;
+      border-width: 0px 1px 1px 0px;
+      color: black;
+      border-color: rgb(118,118,118);
+      cursor: pointer;
+    }
+
+      /* Extra rules for aves that are linked to goals */
+      .aveDropdown:disabled{
+        opacity: 1;
+        border-width: 0px 1px 1px 0px;
+        color: black;
+        border-color: rgb(118,118,118);
+        cursor: not-allowed;
       }
 
     /* Titles */
@@ -243,7 +256,10 @@ textarea{
       grid-column-end:3;
       grid-row-start: 1;
       grid-row-end: 2;
-      }
+      border-width: 0px 0px 0px 1px;
+      border-style: solid;
+      border-color: rgb( 118, 118, 118);
+    }
       
     .aveDescription_title{
       padding: 0.1rem;
@@ -251,7 +267,7 @@ textarea{
       grid-column-end: 4;
       grid-row-start: 1;
       grid-row-end: 2;
-      }
+    }
 
     .avePersons_title{
       padding: 0.1rem;
@@ -259,7 +275,7 @@ textarea{
       grid-column-end: 5;
       grid-row-start: 1;
       grid-row-end: 2;
-      }
+    }
 
     /* Seccond row */
     /* Sent box rules */
@@ -269,6 +285,9 @@ textarea{
       grid-row-start: 2;
       grid-row-end: 3;
       padding: 0.3rem;
+      border-width: 0px 1px 0px 0px;
+      border-style: solid;
+      border-color: rgb( 118, 118, 118);
     }
 
     .aveSent_checkbox{
@@ -296,12 +315,31 @@ textarea{
       font-size: 1rem;
       font-family: Helvetica, Arial, sans-serif;
     } 
-    
+
+      /* Extra rules for aves that are linked to goals */
+      .avedate:read-only {
+        cursor: not-allowed;
+      }
+
+      .avedate:read-only:focus {
+        outline: none;
+      }
+
+
     .aveDescription{
       grid-column-start: 3;
       grid-column-end: 4;
       grid-row-start: 2;
       grid-row-end: 3;
+    }
+
+      /* Extra rules for aves that are linked to goals */
+      .aveDescription:read-only {
+        cursor: not-allowed;
+      }
+
+      .aveDescription:read-only:focus {
+        outline: none;
       }
 
     .avePersons{
@@ -310,9 +348,15 @@ textarea{
       grid-row-start: 2;
       grid-row-end: 3;
       border-right: 0px;
-      }
+    }
 
     /* Outside rows */
+    /* Icon to note that avenue is linked with a goal */
+    .goalIcn {
+      fill: rgb(139, 203, 224);
+      /*filter: invert(75%) sepia(60%) saturate(259%) hue-rotate(159deg) brightness(118%) contrast(88%);*/
+    }
+
     /* Delete button */
     .aveDelete{
       grid-column-start: 5;
