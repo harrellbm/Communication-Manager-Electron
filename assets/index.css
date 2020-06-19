@@ -884,7 +884,15 @@ textarea{
     border-color: rgb(118, 118, 118);
     border-radius: 4px 0px 0px 0px;
     border-width: 1px 1px 0px 1px;
+    cursor: pointer;
   }
+
+    /* Extra rules for aves that are linked to goals */
+    #aveDropModal:disabled{
+      opacity: 1;
+      color: black;
+      cursor: not-allowed;
+    }
 
   #avePersTitle{
     border-radius: 0px 4px 0px 0px;
@@ -909,6 +917,15 @@ textarea{
     border-style: solid;
     border-color: rgb(118, 118, 118);
   }
+
+    /* Extra rules for aves that are linked to goals */
+    #aveDescModal:read-only {
+      cursor: not-allowed;
+    }
+
+    #aveDescModal:read-only:focus {
+      outline: none;
+    }
    
   #avePersModal{
     border-style: solid;
@@ -926,6 +943,13 @@ textarea{
     border-width: 1px;
     border-style: solid;
     border-color: rgb(118, 118, 118);
+    cursor: default;
+  }
+
+  #aveSentModal:hover,
+  #aveSentModal:focus {
+    text-decoration: none;
+    cursor: pointer;
   }
 
 
@@ -936,28 +960,29 @@ textarea{
     border-color: rgb(118, 118, 118);
   }
 
-  /* Save button for Modal */
-  #aveSaveModal{
+   /* Extra rules for aves that are linked to goals */
+   #aveDateModal:read-only {
+      cursor: not-allowed;
+    }
+
+    #aveDateModal:read-only:focus {
+      outline: none;
+    }
+
+  /* Holds save and delete button for popup */ 
+  #aveBtns{
     grid-row-start: 3;
     grid-row-end: 4;
     grid-column-start: 1;
-    grid-column-end: 3;
-    margin-right: 3%;
-    margin-left: 45%;
-    margin-top: auto;
-  }
-
-  /* Save button for Modal */
-  #aveDeleteModal{
-    grid-row-start: 3;
-    grid-row-end: 4;
-    grid-column-start: 3;
     grid-column-end: 5;
-    margin-right: 45%;
-    margin-left: 3%;
-    margin-top: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
+  #aveSaveModal{
+    flex-grow: 0.4;
+  }
 
 /* ---- Modal for adding goals ---- */
   /* The Modal (background) */

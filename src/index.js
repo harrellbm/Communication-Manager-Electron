@@ -433,7 +433,7 @@ function openPage(pageName, elmnt) { // linked to directly from html
         if (moment(rawDate).isValid()){ // Only load date into initiative object if it is a valid date
           let date = moment(rawDate, 'YYYY-MM-DD', true).toString(); // Moment adds time zone stamp
           initAve.change_date(date); // String
-          if (initAve.goal_id != '') { // If attached to goal 
+          if (initAve.goal_id != '') { // If attached to goal /* this could get taken out at some point */
             // Update Schedule object on calendar 
             calendar.updateSchedule(id, '2', {
               title: guiAve.children[5].value,
@@ -684,8 +684,6 @@ function deleteAveMess (ave) {
   
   // Launch the modal with basic settings. Can take in a date from calendar event to display on creation
   function avePopLaunch(calEvent='', launchType='') {
-    // Store launch type in DOM
-     document.getElementById('launchModalType').value = launchType;
     // Set dropdown options from list held in the initiative object 
     let dropdown = document.getElementById('aveDropModal');
     let options = currentInitiative.avenue_types;
@@ -703,7 +701,12 @@ function deleteAveMess (ave) {
       let momDate = moment(calDate.toDate(), 'ddd MMM DD YYYY HH:mm:ss'); // Turn date into moment object to format for date picker display
       //console.log('moment date', momDate)
       document.getElementById('aveDateModal').value = momDate.format('YYYY-MM-DD');
-    }
+    };
+    // If creating from click on message manager tab hide the delete button
+    if ( launchType == 'aven' || launchType == 'calCreate' ){
+      document.getElementById('aveDeleteModal').style.display = "none";
+      document.getElementById('aveDeleteModal').style.position = "fixed";
+    }; 
     // Display modal 
     aveModal.style.display = "block";
   };
@@ -772,6 +775,12 @@ function deleteAveMess (ave) {
       // Reset backgroup of date and description incase they had been changed on unfilled attempt to save
       date.style.backgroundColor = 'white';
       description.style.backgroundColor = 'white';
+      // Reset modal if it was opened from an avenue connected with a goal 
+      type.disabled = false;
+      description.readOnly = false;
+      date.readOnly = false;
+      document.getElementById('aveDeleteModal').style.display = "block";
+      document.getElementById('aveDeleteModal').style.position = "initial";
     } else { // Change backgroup of date or description if not filled out 
         if (date.value == ''){
           date.style.backgroundColor = 'rgb(225, 160, 140)';
@@ -787,57 +796,50 @@ function deleteAveMess (ave) {
   
   // Delete contents from the modal. Then update Initiative object, Message Manager tab and Initiative tab
   function aveModalDelete (){
-    // Get launch type 
-    let launchType = document.getElementById('launchModalType').value;
-    //console.log('Origin of Modal launch', launchType)
-    // If launched from Calendar on Initiative tab verify delete 
-    if (launchType == 'calUpdate') {
-      // Confirm that user wants to delete avenue if not return
-      swal({
-        title: 'Deleting Avenue',
-        text: 'Are you sure you want to delete your Avenue?', 
-        icon: 'warning',
-        buttons: ['Cancel', 'Yes'],
-        dangerMode: true
-      })
-      .then(function (value) {
-        if (value == null) { // Escape deletion 
-          return
-        } else { // Proceed with deletion 
-          // Get id from DOM
-          let aveId = document.getElementById('aveIdModal');
-          // Remove avenue from message manager UI
-          let messAve = document.getElementById(`avenue${aveId.value}`);
-          messAve.parentElement.removeChild(messAve);
-          // Delete Schedule object on calendar 
-          calendar.deleteSchedule(aveId.value, '1');
-          // Remove avenue from Initiative object 
-          let id = aveId.value;
-          currentInitiative.avenues.delete(id); // Take only the number off of the end of the ui id
-          // Send updates to main
-          let ipcInit = currentInitiative.pack_for_ipc();
-          ipc.send('save', currentInitiativeId, ipcInit);
+    swal({
+      title: 'Deleting Avenue',
+      text: 'Are you sure you want to delete your Avenue?', 
+      icon: 'warning',
+      buttons: ['Cancel', 'Yes'],
+      dangerMode: true
+    })
+    .then(function (value) {
+      if (value == null) { // Escape deletion 
+        return
+      } else { // Proceed with deletion 
+        // Get id from DOM
+        let aveId = document.getElementById('aveIdModal');
+        // Remove avenue from message manager UI
+        let messAve = document.getElementById(`avenue${aveId.value}`);
+        messAve.parentElement.removeChild(messAve);
+        // Delete Schedule object on calendar 
+        calendar.deleteSchedule(aveId.value, '1');
+        // Remove avenue from Initiative object 
+        let id = aveId.value;
+        currentInitiative.avenues.delete(id); // Take only the number off of the end of the ui id
+        // Send updates to main
+        let ipcInit = currentInitiative.pack_for_ipc();
+        ipc.send('save', currentInitiativeId, ipcInit);
           
-          // Close modal
-          aveModal.style.display = "none";
-          // Reset modal
-          aveId.value = '';
-          document.getElementById('aveSentModal').checked = false; // Sent
-          let types = document.getElementById('aveDropModal'); // Type
-          let i, L= types.options.length - 1;
-          for(i = L; i >= 0; i--) {
-            types.remove(i);
-          };
-          document.getElementById('avePersModal').value = ''; // Person
-          document.getElementById('aveDateModal').value = ''; // Date Value
-          document.getElementById('aveDescModal').value = ''; // Description Value
-          // Reset backgroup of date and description incase they had been changed on unfilled attempt to save
-          document.getElementById('aveDateModal').style.backgroundColor = 'white'; // Date Style
-          document.getElementById('aveDescModal').style.backgroundColor = 'white'; // Description Style
-          return
-        }; 
-      });
-    } else if (launchType == 'aven' || launchType == 'calCreate') { return }; // Else if launched from message manager tab disregard click on delete button
+        // Close modal
+        aveModal.style.display = "none";
+        // Reset modal
+        aveId.value = '';
+        document.getElementById('aveSentModal').checked = false; // Sent
+        let types = document.getElementById('aveDropModal'); // Type
+        let i, L= types.options.length - 1;
+        for(i = L; i >= 0; i--) {
+          types.remove(i);
+        };
+        document.getElementById('avePersModal').value = ''; // Person
+        document.getElementById('aveDateModal').value = ''; // Date Value
+        document.getElementById('aveDescModal').value = ''; // Description Value
+        // Reset backgroup of date and description incase they had been changed on unfilled attempt to save
+        document.getElementById('aveDateModal').style.backgroundColor = 'white'; // Date Style
+        document.getElementById('aveDescModal').style.backgroundColor = 'white'; // Description Style
+        return
+      }; 
+    });
   };
   
   // Get the <span> element that closes the modal and attach listener
@@ -864,6 +866,12 @@ function deleteAveMess (ave) {
     // Reset backgroup of date and description incase they had been changed on unfilled attempt to save
     date.style.backgroundColor = 'white';
     description.style.backgroundColor = 'white';
+    // Reset modal if it was opened from an avenue connected with a goal 
+    type.disabled = false;
+    description.readOnly = false;
+    date.readOnly = false;
+    document.getElementById('aveDeleteModal').style.display = "block";
+    document.getElementById('aveDeleteModal').style.position = "initial";
   });
   
   // When the user clicks anywhere outside of the modal, close it
@@ -891,6 +899,12 @@ function deleteAveMess (ave) {
       // Reset backgroup of date and description incase they had been changed on unfilled attempt to save
       date.style.backgroundColor = 'white';
       description.style.backgroundColor = 'white';
+      // Reset modal if it was opened from an avenue connected with a goal 
+      type.disabled = false;
+      description.readOnly = false;
+      date.readOnly = false;
+      document.getElementById('aveDeleteModal').style.display = "block";
+      document.getElementById('aveDeleteModal').style.position = "initial";
     };
   });  
 
@@ -1858,9 +1872,7 @@ calendar.on({
   // Open popup on schedule click
   'clickSchedule': function(event) {
     //console.log('calendar event on click schedule', event);
-    // Launch avenue popup with saved values 
-    // Store launch type
-    document.getElementById('launchModalType').value = 'calUpdate';
+    // Launch avenue popup with saved values
     // Send Id to be held until saved 
     document.getElementById('aveIdModal').value = event.schedule.id;
     // Set dropdown options from list held in the initiative object 
@@ -1888,6 +1900,14 @@ calendar.on({
     let momDate = moment(ave.date, 'ddd MMM DD YYYY HH:mm:ss'); // Turn date into moment object to format for date picker display
     //console.log('moment date', momDate)
     document.getElementById('aveDateModal').value = momDate.format('YYYY-MM-DD');
+
+    if (ave.goal_id != '') {
+      document.getElementById('aveDropModal').setAttribute('disabled', 'true');
+      document.getElementById('aveDescModal').setAttribute('readonly', 'true');
+      document.getElementById('aveDateModal').setAttribute('readonly', 'true');
+      document.getElementById('aveDeleteModal').style.display = "none";
+      document.getElementById('aveDeleteModal').style.position = "fixed";
+    };
     
     // Display modal 
     aveModal.style.display = "block";
