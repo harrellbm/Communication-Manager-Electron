@@ -5,7 +5,8 @@
 ## Communication-Manager
 Lightweight way to keep track of and send your communications
 
-### Goal:  To increase the capacity and organization of each individual and team's communication.
+### Goal
+**To increase the capacity and organization of each individual and team's communication.**
 
 Nonprofit organizations often have to settle for the tools that are made for big for profit corporations.  This puts smaller nonprofit organizations at a disadvantage when having to pay for these kinds of software.  In my experience, the solution for these organizations is to do things by hand or the old fashion way because there is no affordable alternative. 
 
