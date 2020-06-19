@@ -21,4 +21,4 @@ The Communication Manager is built using the Electron shell.  As such it's graph
 
 - **Main Process**:  This process is the hub of the application.  It is responsible for coordinating all of the other processes and handling backend tasks (saving files, etc.).
 - **Index Process**: This process is the main window of the application.  It holds three tabs: Home, Initiative, and Message Manager.  Each of these tabs will be explained in more depth later.
-- **Editor Process**: This process is a seperate popup window that handles message editing, saving and copying.
+- **Message Editor Process**: This process is a seperate popup window that handles message editing, saving and copying.
