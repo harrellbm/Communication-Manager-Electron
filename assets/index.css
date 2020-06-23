@@ -728,19 +728,32 @@ textarea{
       grid-template-columns: 2fr 3.5rem 2.5rem 1fr 3.5rem 2fr;
     }
 
-    .untilTitle{
-      padding-top: 0.7rem;
-      border-width: 1px 0px 1px 0px;
-      border-style: solid;
-      border-color: rgb(118, 118, 118);
-    }
+      /* Individual elements within the main frequency div */
+      .startDate{
+        border-width: 1px;
+        border-style: solid;
+        border-color: rgb(118, 118, 118);
+      }
 
-    .everyTitle{
-      padding-top: 0.7rem;
-      border-width: 1px 0px 1px 0px;
-      border-style: solid;
-      border-color: rgb(118, 118, 118);
-    }
+      .everyTitle{
+        padding-top: 0.7rem;
+        border-width: 1px 0px 1px 0px;
+        border-style: solid;
+        border-color: rgb(118, 118, 118);
+      }
+      
+      .untilTitle{
+        padding-top: 0.7rem;
+        border-width: 1px 0px 1px 0px;
+        border-style: solid;
+        border-color: rgb(118, 118, 118);
+      }
+
+      .freqdate{
+        border-width: 1px;
+        border-style: solid;
+        border-color: rgb(118, 118, 118);
+      }
   
     .reminder{
       grid-column-start: 3;
