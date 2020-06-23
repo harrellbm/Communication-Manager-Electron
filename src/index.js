@@ -1353,42 +1353,48 @@ function deleteGoal (goal) {
           // Turn date until into moment object to format for adding or updating avenue in initiative object and ui
           let startDate = moment(start.value, 'YYYY-MM-DD', true); 
           let untilDate = moment(until.value, 'YYYY-MM-DD', true); 
-          // Add goal to initiative object and initative tab. 
-          let goalId = addGoal('modalAdd', '', startDate.toString(), freqNum.value, denomination.value, untilDate.toString(), type.value, reminder.value, description.value); // use Moment date format
+          // Make sure that until date is not before start date
+          if ( startDate.isSameOrBefore(untilDate) ) {
+            // Add goal to initiative object and initative tab. 
+            let goalId = addGoal('modalAdd', '', startDate.toString(), freqNum.value, denomination.value, untilDate.toString(), type.value, reminder.value, description.value); // use Moment date format
           
-          // Generate linked avenues in initiative object
-          currentInitiative.goal_generate_aves(goalId);
-          // Load avenues to both message manager and initiative tab
-          let goal = currentInitiative.goals.get(goalId);
-          for ( id of goal.linked_aves ){
-            console.log('ave id for ave ui load on goal generation', id);
-            addAve('goalGen', id ); // Event is used to change ui options depending on type of add
-          };
+            // Generate linked avenues in initiative object
+            currentInitiative.goal_generate_aves(goalId);
+            // Load avenues to both message manager and initiative tab
+            let goal = currentInitiative.goals.get(goalId);
+            for ( id of goal.linked_aves ){
+              console.log('ave id for ave ui load on goal generation', id);
+              addAve('goalGen', id ); // Event is used to change ui options depending on type of add
+            };
 
-          // Save everything to main
-          let ipcInit = currentInitiative.pack_for_ipc();
-          ipc.send('save', currentInitiativeId, ipcInit);
-          // Close modal
-          goalModal.style.display = "none";
-          // Reset modal
-          description.value = '';
-          freqNum.value = 1;
-          let i, L= denomination.options.length - 1;
-          for(i = L; i >= 0; i--) {
-            denomination.remove(i);
+            // Save everything to main
+            let ipcInit = currentInitiative.pack_for_ipc();
+            ipc.send('save', currentInitiativeId, ipcInit);
+            // Close modal
+            goalModal.style.display = "none";
+            // Reset modal
+            description.value = '';
+            freqNum.value = 1;
+            let i, L= denomination.options.length - 1;
+            for(i = L; i >= 0; i--) {
+              denomination.remove(i);
+            };
+            start.value = '';
+            until.value = '';
+            i = 0;
+            L = type.options.length - 1;
+            for(i = L; i >= 0; i--) {
+              type.remove(i);
+            };
+            reminder.value = '';
+            // Reset backgroup of date until incase they had been changed on unfilled attempt to save
+            description.style.backgroundColor = 'white';
+            start.style.backgroundColor = 'white';
+            until.style.backgroundColor = 'white';
+          } else { // If date until is before start date change backgrounds
+            until.style.backgroundColor = 'rgb(225, 160, 140)';
+            start.style.backgroundColor = 'rgb(225, 160, 140)';
           };
-          start.value = '';
-          until.value = '';
-          i = 0;
-          L= type.options.length - 1;
-          for(i = L; i >= 0; i--) {
-            type.remove(i);
-          };
-          reminder.value = '';
-          // Reset backgroup of date until incase they had been changed on unfilled attempt to save
-          description.style.backgroundColor = 'white';
-          start.style.backgroundColor = 'white';
-          until.style.backgroundColor = 'white';
         } else { // Change backgroup of date or description if not filled out 
             if (description.value == ''){
               description.style.backgroundColor = 'rgb(225, 160, 140)';
