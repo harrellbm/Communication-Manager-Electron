@@ -6,6 +6,7 @@ body, html {
   }
 
 p{
+    color: white;
     text-align: center;
     background-color: rgb(139, 203, 224);
     margin: 0px;
@@ -114,7 +115,13 @@ textarea{
   }
 
   #sortDate {
+    color:  rgb(255, 245, 220);
     margin-left: 1rem;
+  }
+
+  #sortDate:focus,
+  #sortDate:hover {
+    color:  rgb(118, 118, 118);
     cursor: pointer;
   }
 
@@ -151,7 +158,7 @@ textarea{
 
   /* Button to add a new Message or Avenue on the message manager tab */
   #addMess {
-    color: rgb(118, 118, 118);
+    color: rgb(255, 245, 220);
     font-size: 2.7rem;
     font-weight: bold;
     vertical-align: middle;
@@ -160,22 +167,22 @@ textarea{
     
   #addMess:hover,
   #addMess:focus {
-    color:  rgb(255, 255, 255);
+    color:  rgb(118, 118, 118);
     text-decoration: none;
     cursor: pointer;
   }
 
   #addAve {
-    color: rgb(118, 118, 118);
-    font-size: 2.7rem;
+    color:  rgb(255, 245, 220);
+    font-size: 28px;
     font-weight: bold;
-    vertical-align: middle;
+    vertical-align: top;
     text-shadow: 2px 2px rgb( 100, 100, 100, 0.2)
   }
     
   #addAve:hover,
   #addAve:focus {
-    color:  rgb(255, 255, 255);
+    color: rgb(118, 118, 118);
     text-decoration: none;
     cursor: pointer;
   }
@@ -899,7 +906,7 @@ textarea{
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr 1.4rem;
     grid-template-rows: 1fr 1fr 1fr;
-    background-color: #fefefe;
+    background-image: linear-gradient(to right, rgb(100, 100, 100) 0%, rgb(108, 108, 108) 70%, rgb(118, 118, 118) 100%);
     margin: 15% auto; /* 15% from the top and centered */
     padding: 15px;
     border: 1px solid rgb(118, 118, 118);
@@ -1033,10 +1040,10 @@ textarea{
     display: grid;
     grid-template-columns: 1fr 3fr 1fr 1.4rem;
     grid-template-rows: 1fr 1fr 1fr 1fr;
-    background-color: #fefefe;
+    background-image: linear-gradient(to right, rgb(100, 100, 100) 0%, rgb(108, 108, 108) 70%, rgb(118, 118, 118) 100%);
     margin: 15% auto; /* 15% from the top and centered */
     padding: 15px;
-    border: 1px solid rgb(118, 118, 118);
+    border: 1px solid rgb(90, 90, 90);
     width: 80%; /* Could be more or less, depending on screen size */
     border-radius: 5px; /* Round corners */
   }
@@ -1158,15 +1165,15 @@ textarea{
 /* - Common rules for Close Buttons - */
 .close {
   margin: auto;
-  color: #aaa;
+  color: white;
   float: right;
-  font-size: 28px;
+  font-size: 32px;
   font-weight: bold;
 }
 
 .close:hover,
 .close:focus {
-  color: black;
+  color: rgb(139, 203, 224);
   text-decoration: none;
   cursor: pointer;
 }
