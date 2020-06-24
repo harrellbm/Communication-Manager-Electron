@@ -1838,6 +1838,40 @@ dragDrop.on('drop', function (ave, target, source) {
       }
 });
 
+// Sort Avenues in avenueIn according to date
+let sortDate = document.getElementById('sortDate');
+sortDate.addEventListener("toggle", function () {
+  if (sortDate.open){
+    sortByDate();
+  } else {
+    console.log('not sorting')
+  };
+});
+
+function sortByDate () {
+  // Get all of the avenues in the avenueIn to sort 
+  let aves = document.getElementById('avenueIn').children;
+  let sortedAves = [...aves];
+  for (let i=0; i < aves.length; i++){
+    console.log('ave to sort', aves[i].children[7].value)
+  };
+  sortedAves.sort(function(a, b) {
+    let aDate = moment(a.children[7].value, 'YYYY-MM-DD', true);
+    let bDate = moment(b.children[7].value, 'YYYY-MM-DD', true);
+    if ( aDate.isBefore(bDate) ){
+      return -1;
+    } else {
+      return 1;
+    };
+  });
+  // Clear avenueIn
+  let aveIn = document.getElementById('avenueIn');
+  aveIn.innerHTML = '';
+  // Add avenues to dom in new order 
+  sortedAves.forEach( function ( ave ) {
+    aveIn.appendChild(ave);
+  });
+};
 
 /* ---- Initiative Tab specific functions ---- */
 const themeConfig = {

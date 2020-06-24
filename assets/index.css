@@ -10,7 +10,8 @@ p{
     background-color: rgb(139, 203, 224);
     margin: 0px;
     font-size: 1.15rem;
-}
+    text-shadow: 2px 2px rgb( 100, 100, 100, 0.2);
+  }
 
 textarea{
   resize: none;
@@ -81,14 +82,18 @@ textarea{
   #messWrapper{
     display: grid;
     grid-template-columns: 1.25fr 1fr;
-    grid-template-rows: 12vh 69vh 10.5vh;
+    grid-template-rows: 8vh 4vh 69vh 10.5vh;
     background-color: rgb(139, 203, 224);
   }
   
   /* Top container */
+  .messInTitle{
+    font-size: 1.9rem;
+  }
+
   #messTitle{
     grid-row-start: 1;
-    grid-row-end: 2;
+    grid-row-end: 3;
     grid-column-start: 1;
     grid-column-end: 2;
   }
@@ -100,12 +105,27 @@ textarea{
     grid-column-end: 3;
   }
   
+  #aveOptions{
+    grid-row-start: 2;
+    grid-row-end: 3;
+    grid-column-start: 2;
+    grid-column-end: 3;
+    display:flex;
+  }
+
+  #sortDate {
+    margin-left: 1rem;
+    cursor: pointer;
+  }
+
   /* Containers for adding messages and avenues */
   .messIn{
     max-height: 85vh;
     vertical-align: top;
     overflow-y: scroll;
     background-color: rgb(255, 255, 255);
+    background-image: linear-gradient(to right, rgb(90, 90, 90) 0%, rgb(100, 100, 100) 70%, rgb(110, 110, 110) 100%);
+    border-width: 1px;
     border-width: 1px;
     border-style: solid;
     border-color: rgb(118, 118, 118);
@@ -115,22 +135,18 @@ textarea{
 
   #messageIn{
     max-width: 45.7rem;
-    grid-row-start: 2;
-    grid-row-end: 3;
+    grid-row-start: 3;
+    grid-row-end: 4;
     grid-column-start: 1;
     grid-column-end: 2;
     }
 
   #avenueIn{
     max-width: 36.4rem;
-    grid-row-start: 2;
-    grid-row-end: 3;
+    grid-row-start: 3;
+    grid-row-end: 4;
     grid-column-start: 2;
     grid-column-end: 3;
-  }
-
-  .messInTitle{
-    font-size: 1.9rem;
   }
 
   /* Button to add a new Message or Avenue on the message manager tab */
@@ -493,7 +509,7 @@ textarea{
     height:76%;
     vertical-align: top;
     overflow-y: scroll;
-    background-color: rgb(255, 255, 255);
+    background-image: linear-gradient(to right, rgb(100, 100, 100) 0%, rgb(110, 110, 110) 100%);
     border-width: 1px;
     border-style: solid;
     border-color: rgb(118, 118, 118);
@@ -645,7 +661,7 @@ textarea{
     grid-column-start: 1;
     grid-column-end: 4;
     overflow-y: scroll;
-    background-color: rgb(255, 255, 255);
+    background-image: linear-gradient(to right, rgb(90, 90, 90) 0%, rgb(100, 100, 100) 70%, rgb(110, 110, 110) 100%);
     border-width: 1px;
     border-style: solid;
     border-color: rgb(118, 118, 118);
