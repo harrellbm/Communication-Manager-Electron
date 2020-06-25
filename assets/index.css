@@ -25,6 +25,7 @@ textarea{
   display: flex;
   justify-content: center;
   align-items: center;
+  font-size: 1.9rem;
 }
 
 /* Common class button elements */
@@ -88,13 +89,9 @@ textarea{
   }
   
   /* Top container */
-  .messInTitle{
-    font-size: 1.9rem;
-  }
-
   #messTitle{
     grid-row-start: 1;
-    grid-row-end: 3;
+    grid-row-end: 2;
     grid-column-start: 1;
     grid-column-end: 2;
   }
@@ -105,7 +102,42 @@ textarea{
     grid-column-start: 2;
     grid-column-end: 3;
   }
+
+  /* Tool bar above messIn */
+  #messOptions{
+    grid-row-start: 2;
+    grid-row-end: 3;
+    grid-column-start: 1;
+    grid-column-end: 2;
+    display:flex;
+    justify-content: flex-end;
+    align-items: center;
+  }
+
+  #messSep {
+    font-size: 1.5rem;
+    margin-right: 1rem;
+    margin-bottom: 0.4rem;
+    text-shadow: 2px 2px rgb( 100, 100, 100, 0.2);
+  }
+
+  #addMess {
+    color: rgb(255, 245, 220);
+    font-size: 2rem;
+    font-weight: bold;
+    margin-right: 3rem;
+    text-shadow: 2px 2px rgb( 100, 100, 100, 0.2)
+  }
+    
+  #addMess:hover,
+  #addMess:focus {
+    color:  rgb(118, 118, 118);
+    text-decoration: none;
+    cursor: pointer;
+  }
   
+
+  /* Tool bar above avenueIn */
   #aveOptions{
     grid-row-start: 2;
     grid-row-end: 3;
@@ -118,13 +150,27 @@ textarea{
 
   #sortOptions {
     display:flex;
-    justify-content: space-around;
+    justify-content: flex-start;
     align-items: center;
-    flex: 0.25 0 25%;
+    flex: 0.5 0 25%;
   }
 
+  #sortTitle{
+    margin-left: 1rem;
+    text-shadow: 2px 2px rgb( 100, 100, 100, 0.2);
+  }
+
+  #sortSep {
+    font-size: 1.5rem;
+    margin-left: 1rem;
+    margin-bottom: 0.4rem;
+    text-shadow: 2px 2px rgb( 100, 100, 100, 0.2);
+  }
+  
   #sortDate {
     color:  rgb(255, 245, 220);
+    text-shadow: 2px 2px rgb( 100, 100, 100, 0.2);
+    margin-left: 1rem;
   }
 
   #sortDate:focus,
@@ -135,15 +181,23 @@ textarea{
 
   #btnOptions {
     display:flex;
-    justify-content: space-evenly;
+    justify-content: flex-end;
     align-items: center;
     flex-basis: 20%;
+  }
+
+  #btnSep {
+    font-size: 1.5rem;
+    margin-right: 1rem;
+    margin-bottom: 0.4rem;
+    text-shadow: 2px 2px rgb( 100, 100, 100, 0.2);
   }
 
   #addAve {
     color:  rgb(255, 245, 220);
     font-size: 2rem;
     font-weight: bold;
+    margin-right: 3rem;
     text-shadow: 2px 2px rgb( 100, 100, 100, 0.2);
   }
     
@@ -185,22 +239,6 @@ textarea{
     grid-column-end: 3;
   }
 
-  /* Button to add a new Message or Avenue on the message manager tab */
-  #addMess {
-    color: rgb(255, 245, 220);
-    font-size: 2.7rem;
-    font-weight: bold;
-    vertical-align: middle;
-    text-shadow: 2px 2px rgb( 100, 100, 100, 0.2)
-  }
-    
-  #addMess:hover,
-  #addMess:focus {
-    color:  rgb(118, 118, 118);
-    text-decoration: none;
-    cursor: pointer;
-  }
-  
   /* Bottom Container */
   #messBottom{
     grid-column-start: 1;
