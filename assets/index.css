@@ -548,7 +548,7 @@ textarea{
 
   /* Button to add new group */
   #addGroup {
-    color: rgb(118, 118, 118);
+    color: rgb(255, 245, 220);
     font-size: 1.8rem;
     font-weight: bold;
     vertical-align: middle;
@@ -558,7 +558,7 @@ textarea{
     
   #addGroup:hover,
   #addGgroup:focus {
-    color:  rgb(255, 255, 255);
+    color:  rgb(118, 118, 118);
     text-decoration: none;
     cursor: pointer;
   }
@@ -605,16 +605,44 @@ textarea{
   }
   
   /* Buttons for group manipulation */
-  .addContact{
-    height: 1.4rem;
+  .addContact{ 
+    color:  rgb(255, 255, 255);
+    font-size: 27px;
+    font-weight: bold;
+    line-height: 0.9rem;
+    vertical-align: middle;
+    margin-left: 1.3rem;
+  }
+      
+  .addContact:hover,
+  .addContact:focus {
+    color: rgb(139, 203, 224);
+    text-decoration: none;
+    cursor: pointer;
   }
 
   .copyEmails{
-    height: 1.4rem;
+    line-height: 0.9rem;
+    vertical-align: middle;
+    margin-left: 1.3rem;
+  }
+      
+  .copyEmails:hover,
+  .copyEmails:focus {
+    fill: rgb(139, 203, 224);
+    cursor: pointer;
   }
 
   .copyPhones{
-    height: 1.4rem;
+    line-height: 0.9rem;
+    vertical-align: middle;
+    margin-left: 1.3rem;
+  }
+
+  .copyPhones:hover,
+  .copyPhones:focus {
+    fill: rgb(139, 203, 224);
+    cursor: pointer;
   }
 
   /* Delete button for group elements */
@@ -622,7 +650,7 @@ textarea{
     color: #fff;
     font-size: 27px;
     font-weight: bold;
-    margin-left: 3px;
+    margin-left: 2.6rem;
     line-height: 0.9rem;
     vertical-align: middle;
   }
@@ -696,7 +724,7 @@ textarea{
   }
 
   #addGoal {
-    color: rgb(118, 118, 118);
+    color: rgb(255, 245, 220);
     font-size: 1.8rem;
     font-weight: bold;
     vertical-align: middle;
@@ -706,7 +734,7 @@ textarea{
     
   #addGoal:hover,
   #addGoal:focus {
-    color:  rgb(255, 255, 255);
+    color:  rgb(118, 118, 118);
     text-decoration: none;
     cursor: pointer;
   }

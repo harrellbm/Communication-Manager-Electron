@@ -549,19 +549,19 @@ function addAve (event='', aveId='', location='avenueIn', modalAddSent=false, mo
     let description_title = document.createElement("p");// Title for Description 
     description_title.setAttribute("class", "aveDescription_title");
     description_title.setAttribute("id", "aveDescription_title");
-    description_title.innerHTML = "Description:";
+    description_title.innerHTML = "Description";
     ave.appendChild(description_title);//add the title to the avenue
   
     let person_title = document.createElement("p");// Title for Persons responsible 
     person_title.setAttribute("class", "avePersons_title");
     person_title.setAttribute("id", "avePersons_title");
-    person_title.innerHTML = "Person:";
+    person_title.innerHTML = "Person";
     ave.appendChild(person_title);//add the title to the avenue
   
     let date_title = document.createElement("p");// Title for Date 
     date_title.setAttribute("class", "aveDate_title");
     date_title.setAttribute("id", "aveDate_title");
-    date_title.innerHTML = "Date:";
+    date_title.innerHTML = "Date";
     ave.appendChild(date_title);//add the title to the avenue
   
     // Creates sent box
@@ -961,7 +961,7 @@ function addMess (event='', messId='') {// If message id is passed in it will lo
   let title_heading = document.createElement("p");
   title_heading.setAttribute("class", "messTitle_heading");
   title_heading.setAttribute("id", "messTitle_heading");
-  title_heading.innerHTML = "Title:";
+  title_heading.innerHTML = "Title";
   mess.appendChild(title_heading);// Add the heading to the message
  
   // Title display
@@ -1147,19 +1147,19 @@ function addGoal (event='', goalId='', start='', freq='', denomination='', until
   let freq_heading = document.createElement("p");// Title for Goal Frequency  
   freq_heading.setAttribute("class", "goal_title");
   freq_heading.setAttribute("id", "goalFreq_title");
-  freq_heading.innerHTML = "Frequency:";
+  freq_heading.innerHTML = "Frequency";
   goal.appendChild(freq_heading);// Add the title to the goal
  
   let Desc_title = document.createElement("p");// Title for Goal Type 
   Desc_title.setAttribute("class", "goal_title");
   Desc_title.setAttribute("id", "goalDesc_title");
-  Desc_title.innerHTML = "Description:";
+  Desc_title.innerHTML = "Description";
   goal.appendChild(Desc_title);// Add the title to the goal
 
   let reminder_title = document.createElement("p");// Title for Goal Reminder 
   reminder_title.setAttribute("class", "goal_title");
   reminder_title.setAttribute("id", "goalReminder_title");
-  reminder_title.innerHTML = "Reminder:";
+  reminder_title.innerHTML = "Reminder";
   goal.appendChild(reminder_title);// Add the title to the goal
   
   // Textarea for Goal Description
@@ -1529,13 +1529,13 @@ function addGroup (event='', groupId='') {// If group id is passed in it will lo
   let name_title = document.createElement("p");// Title for Group 
   name_title.setAttribute("class", "group_title");
   name_title.setAttribute("id", "groupName_title");
-  name_title.innerHTML = "Name:";
+  name_title.innerHTML = "Name";
   group.appendChild(name_title);// Add the title to the group
 
   let contacts_title = document.createElement("p");// Title for Group 
   contacts_title.setAttribute("class", "group_title");
   contacts_title.setAttribute("id", "groupContacts_title");
-  contacts_title.innerHTML = "Contacts:";
+  contacts_title.innerHTML = "Contacts";
   group.appendChild(contacts_title);// Add the title to the group
   
   // Div to hold all buttons
@@ -1544,31 +1544,26 @@ function addGroup (event='', groupId='') {// If group id is passed in it will lo
   btnArray.setAttribute("id", `grpBtnArray${id}`);
 
   // Button to add a new contact 
-  let addContactBtn = document.createElement("input");
+  let addContactBtn = document.createElement("span");
   addContactBtn.setAttribute("class", "addContact");
   addContactBtn.setAttribute("id", `addContact${id}`);
-  addContactBtn.setAttribute("type", "button");
-  addContactBtn.setAttribute("value", "Add");
+  addContactBtn.innerHTML = '&plus;';
   addContactBtn.addEventListener("click", function () {addContact('Add', id)}) ;
   btnArray.appendChild(addContactBtn);// Add the button to the array
 
   // Button to copy all group emails 
-  let emailBtn = document.createElement("input");
-  emailBtn.setAttribute("class", "copyEmails");
-  emailBtn.setAttribute("id", `copyEmails${id}`);
-  emailBtn.setAttribute("type", "button");
-  emailBtn.setAttribute("value", "Emails");
-  emailBtn.addEventListener("click", function () {copyEmails('copy', id)}) ;
+  let emailBtn = document.createElement("svg");
+  btnArray.appendChild(emailBtn);// Add the button to the array
+  emailBtn.outerHTML = `<svg class="copyEmails" id="copyEmails${id}" width="20" height="20" viewBox="0 0 20 20" fill="#fff" xmlns="http://www.w3.org/2000/svg"><path d="M2.00333 5.88355L9.99995 9.88186L17.9967 5.8835C17.9363 4.83315 17.0655 4 16 4H4C2.93452 4 2.06363 4.83318 2.00333 5.88355Z"/><path d="M18 8.1179L9.99995 12.1179L2 8.11796V14C2 15.1046 2.89543 16 4 16H16C17.1046 16 18 15.1046 18 14V8.1179Z"/></svg>`
+  emailBtn.addEventListener("click", function () {copyEmails('copy', id)});
   btnArray.appendChild(emailBtn);// Add the button to the array
   
   // Button to copy all group phone numbers 
-  let phoneBtn = document.createElement("input");
-  phoneBtn.setAttribute("class", "copyPhones");
-  phoneBtn.setAttribute("id", `copyPhones${id}`);
-  phoneBtn.setAttribute("type", "button");
-  phoneBtn.setAttribute("value", "Phones");
-  phoneBtn.addEventListener("click", function () {copyPhones('copy', id)}) ;
+  let phoneBtn = document.createElement("svg");
   btnArray.appendChild(phoneBtn);// Add the button to the array
+  phoneBtn.outerHTML = `<svg class="copyPhones" id="copyPhones${id}" width="20" height="20" viewBox="0 0 20 20" fill="#fff" xmlns="http://www.w3.org/2000/svg"><path d="M2 3C2 2.44772 2.44772 2 3 2H5.15287C5.64171 2 6.0589 2.35341 6.13927 2.8356L6.87858 7.27147C6.95075 7.70451 6.73206 8.13397 6.3394 8.3303L4.79126 9.10437C5.90756 11.8783 8.12168 14.0924 10.8956 15.2087L11.6697 13.6606C11.866 13.2679 12.2955 13.0492 12.7285 13.1214L17.1644 13.8607C17.6466 13.9411 18 14.3583 18 14.8471V17C18 17.5523 17.5523 18 17 18H15C7.8203 18 2 12.1797 2 5V3Z"/></svg>`
+  phoneBtn.addEventListener("click", function () {copyPhones('copy', id)}) ;
+  
 
   // Creates and adds dynamic event listener to delete button
   let deleteBtn = document.createElement("span");
@@ -1714,19 +1709,19 @@ function addContact (event='', groupId='', contactId='') {// Takes in a group id
   let name_title = document.createElement("p");// Title for Group 
   name_title.setAttribute("class", "cont_title");
   name_title.setAttribute("id", "contName_title");
-  name_title.innerHTML = "Name:";
+  name_title.innerHTML = "Name";
   contactUi.appendChild(name_title);// Add the title to the group
 
   let email_title = document.createElement("p");// Title for Group 
   email_title.setAttribute("class", "cont_title");
   email_title.setAttribute("id", "contactEmail_title");
-  email_title.innerHTML = "Email:";
+  email_title.innerHTML = "Email";
   contactUi.appendChild(email_title);// Add the title to the group
 
 let phone_title = document.createElement("p");// Title for Group 
   phone_title.setAttribute("class", "cont_title");
   phone_title.setAttribute("id", "contactPhone_title");
-  phone_title.innerHTML = "Phone:";
+  phone_title.innerHTML = "Phone";
   contactUi.appendChild(phone_title);// Add the title to the group
 
   // Textareas for name  
