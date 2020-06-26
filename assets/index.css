@@ -143,19 +143,25 @@ textarea{
   }
 
   #addMess {
-    color: rgb(255, 245, 220);
-    font-size: 2rem;
-    font-weight: bold;
     margin-right: 3rem;
-    text-shadow: 2px 2px rgb( 100, 100, 100, 0.2)
+    fill: rgb(255, 245, 220);
+    vertical-align: middle;
+    margin-bottom: 0.1rem;
+    border-radius: 50%;
+    transition: background-color 0.1s;
   }
     
-  #addMess:hover,
-  #addMess:focus {
-    color:  rgb(118, 118, 118);
+  #addMess:hover {
+    fill: rgb(139, 203, 224);
+    background-color: rgb( 118, 118, 118);
     text-decoration: none;
     cursor: pointer;
   }
+
+  #addMess:active {
+    fill:  rgb(255, 255, 255);
+  }
+
   
 
   /* Tool bar above avenueIn */
@@ -215,18 +221,23 @@ textarea{
   }
 
   #addAve {
-    color:  rgb(255, 245, 220);
-    font-size: 2rem;
-    font-weight: bold;
     margin-right: 3rem;
-    text-shadow: 2px 2px rgb( 100, 100, 100, 0.2);
+    fill: rgb(255, 245, 220);
+    vertical-align: middle;
+    margin-bottom: 0.1rem;
+    border-radius: 50%;
+    transition: background-color 0.1s;
   }
     
-  #addAve:hover,
-  #addAve:focus {
-    color: rgb(118, 118, 118);
+  #addAve:hover {
+    fill:  rgb(139, 203, 224);
+    background-color: rgb( 118, 118, 118);
     text-decoration: none;
     cursor: pointer;
+  }
+
+  #addAve:active {
+    fill:  rgb(255, 255, 255);
   }
 
   /* Containers for adding messages and avenues */
@@ -333,9 +344,21 @@ textarea{
     /* Copy button */
     .messCopy{
       width: 2.5rem;
-      height: 1.4rem;
-      padding-left: 2.5px;
+      height: 1.3rem;
+      fill: rgb(255, 255, 255);
+      line-height: 0.9rem;
+      vertical-align: middle;
     }
+
+      .messCopy:hover {
+        fill: rgb(139, 203, 224);
+        cursor: pointer;
+      }
+
+      .messCopy:active {
+        fill:  rgb(255, 255, 255);
+        cursor: pointer;
+      }
 
     /* Delete button */
     .messDelete {
@@ -569,19 +592,22 @@ textarea{
 
   /* Button to add new group */
   #addGroup {
-    color: rgb(255, 245, 220);
-    font-size: 1.8rem;
-    font-weight: bold;
+    fill: rgb(255, 245, 220);
     vertical-align: middle;
-    text-shadow: 2px 2px rgb( 100, 100, 100, 0.2);
-    margin-left: 0.1rem;
+    margin-bottom: 0.1rem;
+    border-radius: 50%;
+    transition: background-color 0.1s;
   }
     
-  #addGroup:hover,
-  #addGgroup:focus {
-    color:  rgb(118, 118, 118);
+  #addGroup:hover {
+    fill:  rgb(139, 203, 224);
+    background-color: rgb( 118, 118, 118);
     text-decoration: none;
     cursor: pointer;
+  }
+
+  #addGroup:active {
+    fill:  rgb(255, 255, 255);
   }
 
   /* Container for adding groups */
@@ -607,6 +633,11 @@ textarea{
     border-style: solid;
     background-image: linear-gradient( rgb( 118, 118, 118), rgb( 95, 95, 95));
     }
+
+    #groupHeader{
+      font-size: 1.3rem;
+      margin-bottom: 0.1rem;
+    }
   
   /* Textarea for Group name*/
   .name{
@@ -628,9 +659,9 @@ textarea{
   /* Buttons for group manipulation */
   .addContact{ 
     color:  rgb(255, 255, 255);
-    font-size: 27px;
+    font-size: 25px;
     font-weight: bold;
-    line-height: 0.9rem;
+    line-height: 0.8rem;
     vertical-align: middle;
     margin-left: 1.3rem;
   }
@@ -742,22 +773,26 @@ textarea{
     grid-row-end: 3;
     grid-column-start: 1;
     grid-column-end: 4;
+    font-size: 1.3rem;
   }
 
   #addGoal {
-    color: rgb(255, 245, 220);
-    font-size: 1.8rem;
-    font-weight: bold;
+    fill: rgb(255, 245, 220);
     vertical-align: middle;
-    text-shadow: 2px 2px rgb( 100, 100, 100, 0.2);
-    margin-left: 0.1rem;
+    margin-bottom: 0.1rem;
+    border-radius: 50%;
+    transition: background-color 0.1s;
   }
     
-  #addGoal:hover,
-  #addGoal:focus {
-    color:  rgb(118, 118, 118);
+  #addGoal:hover {
+    fill:  rgb(139, 203, 224);
+    background-color: rgb( 118, 118, 118);
     text-decoration: none;
     cursor: pointer;
+  }
+
+  #addGoal:active {
+    fill:  rgb(255, 255, 255);
   }
 
   /* Container for adding goals */
@@ -932,6 +967,33 @@ textarea{
     flex-grow: 0.1;
     flex-shrink: 1;
     vertical-align: text-bottom;
+    user-select: none;
+  }
+
+  #next,
+  #prev,
+  #today {
+    fill: #fff;
+    vertical-align: middle;
+    margin-left: 0.1rem;
+    margin-right: 0.1rem;
+    margin-bottom: 6px;
+    border-radius: 50%;
+    transition: background-color 0.1s;
+  }
+
+  #next:hover,
+  #prev:hover,
+  #today:hover {
+    fill: rgb(139, 203, 224);
+    cursor: pointer;
+    background-color: rgb( 118, 118, 118);
+  }
+
+  #next:active,
+  #prev:active,
+  #today:active {
+    fill: rgb(255, 255, 255);
   }
 
   /* Displays current date range of Calendar */
@@ -940,19 +1002,25 @@ textarea{
     background: none;
     color: white;
     font-size: 1.35rem;
-    text-align: center;
-    border-width: 1px;
-    border-style: solid;
-    border-color: rgb(118, 118, 118);
-    border-radius: 4px;
+    border-width: 0px;
+    text-shadow: 2px 2px rgb( 100, 100, 100, 0.2)
   }
 
   #year{
     width: 4rem;
+    text-align: right;
+  }
+
+  #dateSep{
+    font-size: 1.5rem;
+    margin-left: 0.2rem;
+    margin-bottom: 0.4rem;
+    text-shadow: 2px 2px rgb( 100, 100, 100, 0.2);
   }
 
   #month{
     width: 8.5rem;
+    text-align: left;
   }
 
   /* rules for calendar wrapper and container divs */
