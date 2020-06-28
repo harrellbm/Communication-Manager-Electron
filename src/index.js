@@ -330,8 +330,8 @@ function saveToMain () {
       return 
     };
     // If everything is okay make sure background is white
-    guiGoal.children[5].children[0].style.backgroundColor = 'white';
-    guiGoal.children[5].children[5].style.backgroundColor = 'white';
+    guiGoal.children[5].children[0].style.backgroundColor = 'rgb(245, 245,230)';
+    guiGoal.children[5].children[5].style.backgroundColor = 'rgb(245, 245,230)';
   }; 
   // Send alert to let user know that they have saves successfully 
   swal({ title: 'Saved!', icon: 'success', buttons: false });
@@ -437,7 +437,6 @@ function openPage(pageName, elmnt) { // linked to directly from html
   // Remove the background color of all tablinks/buttons and set bottom border
   tablinks = document.getElementsByClassName("tablink");
   for (i = 0; i < tablinks.length; i++) {
-    //tablinks[i].style.backgroundImage =  'linear-gradient(-50deg, rgb(118,118,118), rgb(95, 95, 95))';
     tablinks[i].style.backgroundImage =  'linear-gradient(to right, rgb(108, 108, 108) 0%, rgb(118, 118, 118) 60%, rgb(139, 203, 224) 100%)';
   };
 
@@ -801,8 +800,8 @@ function deleteAveMess (ave) {
       person.value = '';
       aveId.value = '';
       // Reset backgroup of date and description incase they had been changed on unfilled attempt to save
-      date.style.backgroundColor = 'white';
-      description.style.backgroundColor = 'white';
+      date.style.backgroundColor = 'rgb(245, 245,230)';
+      description.style.backgroundColor = 'rgb(245, 245,230)';
       // Reset modal if it was opened from an avenue connected with a goal 
       type.disabled = false;
       description.readOnly = false;
@@ -863,8 +862,8 @@ function deleteAveMess (ave) {
         document.getElementById('aveDateModal').value = ''; // Date Value
         document.getElementById('aveDescModal').value = ''; // Description Value
         // Reset backgroup of date and description incase they had been changed on unfilled attempt to save
-        document.getElementById('aveDateModal').style.backgroundColor = 'white'; // Date Style
-        document.getElementById('aveDescModal').style.backgroundColor = 'white'; // Description Style
+        document.getElementById('aveDateModal').style.backgroundColor = 'rgb(245, 245,230)'; // Date Style
+        document.getElementById('aveDescModal').style.backgroundColor = 'rgb(245, 245,230)'; // Description Style
         return
       }; 
     });
@@ -892,8 +891,8 @@ function deleteAveMess (ave) {
     person.value = '';
     aveId.value = '';
     // Reset backgroup of date and description incase they had been changed on unfilled attempt to save
-    date.style.backgroundColor = 'white';
-    description.style.backgroundColor = 'white';
+    date.style.backgroundColor = 'rgb(245, 245,230)';
+    description.style.backgroundColor = 'rgb(245, 245,230)';
     // Reset modal if it was opened from an avenue connected with a goal 
     type.disabled = false;
     description.readOnly = false;
@@ -925,8 +924,8 @@ function deleteAveMess (ave) {
       person.value = '';
       aveId.value = '';
       // Reset backgroup of date and description incase they had been changed on unfilled attempt to save
-      date.style.backgroundColor = 'white';
-      description.style.backgroundColor = 'white';
+      date.style.backgroundColor = 'rgb(245, 245,230)';
+      description.style.backgroundColor = 'rgb(245, 245,230)';
       // Reset modal if it was opened from an avenue connected with a goal 
       type.disabled = false;
       description.readOnly = false;
@@ -990,19 +989,16 @@ function addMess (event='', messId='') {// If message id is passed in it will lo
   btnArray.setAttribute("id", `aveBtnArray${id}`);
 
     // Creates and adds dynamic event listener to edit button
-    let editBtn = document.createElement("input");
-    editBtn.setAttribute("class", "messEdit");
-    editBtn.setAttribute("id", `messEdit${id}`);
-    editBtn.setAttribute("type", "button");
-    editBtn.setAttribute("value", "Edit");
-    editBtn.addEventListener("click", function () {editMess(mess)}) ;
+    let editBtn = document.createElement("svg");
     btnArray.appendChild(editBtn);
+    editBtn.outerHTML = `<svg class="messEdit" id="messEdit${id}" width="20" height="20" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"> <path d="M17.4142 2.58579C16.6332 1.80474 15.3668 1.80474 14.5858 2.58579L7 10.1716V13H9.82842L17.4142 5.41421C18.1953 4.63316 18.1953 3.36683 17.4142 2.58579Z"/> <path fill-rule="evenodd" clip-rule="evenodd" d="M2 6C2 4.89543 2.89543 4 4 4H8C8.55228 4 9 4.44772 9 5C9 5.55228 8.55228 6 8 6H4V16H14V12C14 11.4477 14.4477 11 15 11C15.5523 11 16 11.4477 16 12V16C16 17.1046 15.1046 18 14 18H4C2.89543 18 2 17.1046 2 16V6Z"/></svg>`;
+    btnArray.children[0].addEventListener("click", function () {editMess(mess)});
 
     // Creates and adds dynamic event listener to copy button
     let copyBtn = document.createElement("svg");
     btnArray.appendChild(copyBtn);
     copyBtn.outerHTML = `<svg class="messCopy" id="messCopy${id}" width="20" height="20" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"> <path d="M8 2C7.44772 2 7 2.44772 7 3C7 3.55228 7.44772 4 8 4H10C10.5523 4 11 3.55228 11 3C11 2.44772 10.5523 2 10 2H8Z"/> <path d="M3 5C3 3.89543 3.89543 3 5 3C5 4.65685 6.34315 6 8 6H10C11.6569 6 13 4.65685 13 3C14.1046 3 15 3.89543 15 5V11H10.4142L11.7071 9.70711C12.0976 9.31658 12.0976 8.68342 11.7071 8.29289C11.3166 7.90237 10.6834 7.90237 10.2929 8.29289L7.29289 11.2929C6.90237 11.6834 6.90237 12.3166 7.29289 12.7071L10.2929 15.7071C10.6834 16.0976 11.3166 16.0976 11.7071 15.7071C12.0976 15.3166 12.0976 14.6834 11.7071 14.2929L10.4142 13H15V16C15 17.1046 14.1046 18 13 18H5C3.89543 18 3 17.1046 3 16V5Z"/> <path d="M15 11H17C17.5523 11 18 11.4477 18 12C18 12.5523 17.5523 13 17 13H15V11Z"/> </svg>`;
-    copyBtn.addEventListener("click", function () {copyMess(mess)}) ;
+    btnArray.children[1].addEventListener("click", function () {copyMess(mess)});
      
     // Creates and adds dynamic event listener to delete button
     let deleteBtn = document.createElement("span");
@@ -1413,9 +1409,9 @@ function deleteGoal (goal) {
             };
             reminder.value = '';
             // Reset backgroup of date until incase they had been changed on unfilled attempt to save
-            description.style.backgroundColor = 'white';
-            start.style.backgroundColor = 'white';
-            until.style.backgroundColor = 'white';
+            description.style.backgroundColor = 'rgb(245, 245,230)';
+            start.style.backgroundColor = 'rgb(245, 245,230)';
+            until.style.backgroundColor = 'rgb(245, 245,230)';
           } else { // If date until is before start date change backgrounds
             until.style.backgroundColor = 'rgb(225, 160, 140)';
             start.style.backgroundColor = 'rgb(225, 160, 140)';
@@ -1461,9 +1457,9 @@ function deleteGoal (goal) {
         };
         reminder.value = '';
         // Reset backgroup of date until incase they had been changed on unfilled attempt to save
-        description.style.backgroundColor = 'white';
-        start.style.backgroundColor = 'white';
-        until.style.backgroundColor = 'white';
+        description.style.backgroundColor = 'rgb(245, 245,230)';
+        start.style.backgroundColor = 'rgb(245, 245,230)';
+        until.style.backgroundColor = 'rgb(245, 245,230)';
       });
       
       // When the user clicks anywhere outside of the modal, close it
@@ -1495,9 +1491,9 @@ function deleteGoal (goal) {
           };
           reminder.value = '';
           // Reset backgroup of date until incase they had been changed on unfilled attempt to save
-          description.style.backgroundColor = 'white';
-          start.style.backgroundColor = 'white';
-          until.style.backgroundColor = 'white';
+          description.style.backgroundColor = 'rgb(245, 245,230)';
+          start.style.backgroundColor = 'rgb(245, 245,230)';
+          until.style.backgroundColor = 'rgb(245, 245,230)';
         };
       });  
     
@@ -1540,35 +1536,34 @@ function addGroup (event='', groupId='') {// If group id is passed in it will lo
   btnArray.setAttribute("class", "grpBtnArray");
   btnArray.setAttribute("id", `grpBtnArray${id}`);
 
-  // Button to add a new contact 
-  let addContactBtn = document.createElement("span");
-  addContactBtn.setAttribute("class", "addContact");
-  addContactBtn.setAttribute("id", `addContact${id}`);
-  addContactBtn.innerHTML = '&plus;';
-  addContactBtn.addEventListener("click", function () {addContact('Add', id)}) ;
-  btnArray.appendChild(addContactBtn);// Add the button to the array
+    // Button to add a new contact 
+    let addContactBtn = document.createElement("span");
+    addContactBtn.setAttribute("class", "addContact");
+    addContactBtn.setAttribute("id", `addContact${id}`);
+    addContactBtn.innerHTML = '&plus;';
+    addContactBtn.addEventListener("click", function () {addContact('Add', id)});
+    btnArray.appendChild(addContactBtn);// Add the button to the array
 
-  // Button to copy all group emails 
-  let emailBtn = document.createElement("svg");
-  btnArray.appendChild(emailBtn);// Add the button to the array
-  emailBtn.outerHTML = `<svg class="copyEmails" id="copyEmails${id}" width="20" height="20" viewBox="0 0 20 20" fill="#fff" xmlns="http://www.w3.org/2000/svg"><path d="M2.00333 5.88355L9.99995 9.88186L17.9967 5.8835C17.9363 4.83315 17.0655 4 16 4H4C2.93452 4 2.06363 4.83318 2.00333 5.88355Z"/><path d="M18 8.1179L9.99995 12.1179L2 8.11796V14C2 15.1046 2.89543 16 4 16H16C17.1046 16 18 15.1046 18 14V8.1179Z"/></svg>`
-  emailBtn.addEventListener("click", function () {copyEmails('copy', id)});
-  btnArray.appendChild(emailBtn);// Add the button to the array
+    // Button to copy all group emails 
+    let emailBtn = document.createElement("svg");
+    btnArray.appendChild(emailBtn);// Add the button to the array
+    emailBtn.outerHTML = `<svg class="copyEmails" id="copyEmails${id}" width="20" height="20" viewBox="0 0 20 20" fill="#fff" xmlns="http://www.w3.org/2000/svg"><path d="M2.00333 5.88355L9.99995 9.88186L17.9967 5.8835C17.9363 4.83315 17.0655 4 16 4H4C2.93452 4 2.06363 4.83318 2.00333 5.88355Z"/><path d="M18 8.1179L9.99995 12.1179L2 8.11796V14C2 15.1046 2.89543 16 4 16H16C17.1046 16 18 15.1046 18 14V8.1179Z"/></svg>`
+    btnArray.children[1].addEventListener("click", function () {copyEmails('copy', id)});
   
-  // Button to copy all group phone numbers 
-  let phoneBtn = document.createElement("svg");
-  btnArray.appendChild(phoneBtn);// Add the button to the array
-  phoneBtn.outerHTML = `<svg class="copyPhones" id="copyPhones${id}" width="20" height="20" viewBox="0 0 20 20" fill="#fff" xmlns="http://www.w3.org/2000/svg"><path d="M2 3C2 2.44772 2.44772 2 3 2H5.15287C5.64171 2 6.0589 2.35341 6.13927 2.8356L6.87858 7.27147C6.95075 7.70451 6.73206 8.13397 6.3394 8.3303L4.79126 9.10437C5.90756 11.8783 8.12168 14.0924 10.8956 15.2087L11.6697 13.6606C11.866 13.2679 12.2955 13.0492 12.7285 13.1214L17.1644 13.8607C17.6466 13.9411 18 14.3583 18 14.8471V17C18 17.5523 17.5523 18 17 18H15C7.8203 18 2 12.1797 2 5V3Z"/></svg>`
-  phoneBtn.addEventListener("click", function () {copyPhones('copy', id)}) ;
+    // Button to copy all group phone numbers 
+    let phoneBtn = document.createElement("svg");
+    btnArray.appendChild(phoneBtn);// Add the button to the array
+    phoneBtn.outerHTML = `<svg class="copyPhones" id="copyPhones${id}" width="20" height="20" viewBox="0 0 20 20" fill="#fff" xmlns="http://www.w3.org/2000/svg"><path d="M2 3C2 2.44772 2.44772 2 3 2H5.15287C5.64171 2 6.0589 2.35341 6.13927 2.8356L6.87858 7.27147C6.95075 7.70451 6.73206 8.13397 6.3394 8.3303L4.79126 9.10437C5.90756 11.8783 8.12168 14.0924 10.8956 15.2087L11.6697 13.6606C11.866 13.2679 12.2955 13.0492 12.7285 13.1214L17.1644 13.8607C17.6466 13.9411 18 14.3583 18 14.8471V17C18 17.5523 17.5523 18 17 18H15C7.8203 18 2 12.1797 2 5V3Z"/></svg>`
+    btnArray.children[2].addEventListener("click", function () {copyPhones('copy', id)});
   
 
-  // Creates and adds dynamic event listener to delete button
-  let deleteBtn = document.createElement("span");
-  deleteBtn.setAttribute("class", "groupDelete");
-  deleteBtn.setAttribute("id", `groupDelete${id}`);
-  deleteBtn.innerHTML = '&times;';
-  deleteBtn.addEventListener("click", function () {deleteGroup(group)});
-  btnArray.appendChild(deleteBtn); // Add the button to the array
+    // Creates and adds dynamic event listener to delete button
+    let deleteBtn = document.createElement("span");
+    deleteBtn.setAttribute("class", "groupDelete");
+    deleteBtn.setAttribute("id", `groupDelete${id}`);
+    deleteBtn.innerHTML = '&times;';
+    deleteBtn.addEventListener("click", function () {deleteGroup(group)});
+    btnArray.appendChild(deleteBtn); // Add the button to the array
 
   group.appendChild(btnArray) // Append all buttons to the group
 

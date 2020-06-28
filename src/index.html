@@ -37,22 +37,26 @@
                   <textarea class="text" type="text" id="initDescription"></textarea>
                 </div>
                 <div id="groups">
-                  <p id="groupHeader">
+                  <div id="groupHeader">
                     <text>Groups </text>
                     <span id="grouSep">|</span>
-                    <svg  id="addGroup" width="20" height="20" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                      <path fill-rule="evenodd" clip-rule="evenodd" d="M10 3C10.5523 3 11 3.44772 11 4V9H16C16.5523 9 17 9.44772 17 10C17 10.5523 16.5523 11 16 11H11V16C11 16.5523 10.5523 17 10 17C9.44772 17 9 16.5523 9 16V11H4C3.44772 11 3 10.5523 3 10C3 9.44771 3.44772 9 4 9L9 9V4C9 3.44772 9.44772 3 10 3Z"/>
-                    </svg>
-                  </p>
+                    <div style="width: 25px; height: 25px;">
+                      <svg  id="addGroup" width="100%" height="100%" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" clip-rule="evenodd" d="M10 3C10.5523 3 11 3.44772 11 4V9H16C16.5523 9 17 9.44772 17 10C17 10.5523 16.5523 11 16 11H11V16C11 16.5523 10.5523 17 10 17C9.44772 17 9 16.5523 9 16V11H4C3.44772 11 3 10.5523 3 10C3 9.44771 3.44772 9 4 9L9 9V4C9 3.44772 9.44772 3 10 3Z"/>
+                      </svg>
+                    </div>
+                  </div>
                   <div id="groupIn"></div> 
                 </div>
-                <p id="goalHeader">
+                <div id="goalHeader">
                   <text>Goals </text>
                   <span id="goalSep">|</span>
-                  <svg  id="addGoal" width="20" height="20" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                    <path fill-rule="evenodd" clip-rule="evenodd" d="M10 3C10.5523 3 11 3.44772 11 4V9H16C16.5523 9 17 9.44772 17 10C17 10.5523 16.5523 11 16 11H11V16C11 16.5523 10.5523 17 10 17C9.44772 17 9 16.5523 9 16V11H4C3.44772 11 3 10.5523 3 10C3 9.44771 3.44772 9 4 9L9 9V4C9 3.44772 9.44772 3 10 3Z"/>
-                  </svg>
-                </p>
+                  <div style="width: 25px; height: 25px;">
+                    <svg  id="addGoal" width="100%" height="100%" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                      <path fill-rule="evenodd" clip-rule="evenodd" d="M10 3C10.5523 3 11 3.44772 11 4V9H16C16.5523 9 17 9.44772 17 10C17 10.5523 16.5523 11 16 11H11V16C11 16.5523 10.5523 17 10 17C9.44772 17 9 16.5523 9 16V11H4C3.44772 11 3 10.5523 3 10C3 9.44771 3.44772 9 4 9L9 9V4C9 3.44772 9.44772 3 10 3Z"/>
+                    </svg>
+                  </div>
+                </div>
                 <div id="goalIn"></div>
                 <div id="initMid">
                   <svg class="initMidBtn" id="prev" width="20" height="20" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
@@ -84,9 +88,11 @@
                 <p id="messTitle" class="tag">Messages</p>
                 <div id="messOptions">
                   <span id="messSep">|</span>
-                  <svg  id="addMess" width="20" height="20" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                    <path fill-rule="evenodd" clip-rule="evenodd" d="M10 3C10.5523 3 11 3.44772 11 4V9H16C16.5523 9 17 9.44772 17 10C17 10.5523 16.5523 11 16 11H11V16C11 16.5523 10.5523 17 10 17C9.44772 17 9 16.5523 9 16V11H4C3.44772 11 3 10.5523 3 10C3 9.44771 3.44772 9 4 9L9 9V4C9 3.44772 9.44772 3 10 3Z"/>
-                  </svg>
+                  <div style="width: 25px; height: 25px; margin-right: 3rem; vertical-align: middle; margin-bottom: 0.1rem;">
+                    <svg  id="addMess" width="100%" height="100%" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                      <path fill-rule="evenodd" clip-rule="evenodd" d="M10 3C10.5523 3 11 3.44772 11 4V9H16C16.5523 9 17 9.44772 17 10C17 10.5523 16.5523 11 16 11H11V16C11 16.5523 10.5523 17 10 17C9.44772 17 9 16.5523 9 16V11H4C3.44772 11 3 10.5523 3 10C3 9.44771 3.44772 9 4 9L9 9V4C9 3.44772 9.44772 3 10 3Z"/>
+                    </svg>
+                  </div>
                 </div>
                 <p id="aveTitle" class="tag">Unassigned Slots</p>
                 <div id="aveOptions">
@@ -95,12 +101,14 @@
                     <span id="sortSep">|</span>
                     <details id="sortDate"><summary>Date</summary></details>
                   </div>
-                  <p id="btnOptions">
+                  <div id="btnOptions">
                     <span id="btnSep">|</span>
-                    <svg  id="addAve" width="20" height="20" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                      <path fill-rule="evenodd" clip-rule="evenodd" d="M10 3C10.5523 3 11 3.44772 11 4V9H16C16.5523 9 17 9.44772 17 10C17 10.5523 16.5523 11 16 11H11V16C11 16.5523 10.5523 17 10 17C9.44772 17 9 16.5523 9 16V11H4C3.44772 11 3 10.5523 3 10C3 9.44771 3.44772 9 4 9L9 9V4C9 3.44772 9.44772 3 10 3Z"/>
-                    </svg>
-                  </p>
+                    <div style="width: 25px; height: 25px; margin-right: 3rem; vertical-align: middle; margin-bottom: 0.1rem;">
+                      <svg  id="addAve" width="100%" height="100%" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" clip-rule="evenodd" d="M10 3C10.5523 3 11 3.44772 11 4V9H16C16.5523 9 17 9.44772 17 10C17 10.5523 16.5523 11 16 11H11V16C11 16.5523 10.5523 17 10 17C9.44772 17 9 16.5523 9 16V11H4C3.44772 11 3 10.5523 3 10C3 9.44771 3.44772 9 4 9L9 9V4C9 3.44772 9.44772 3 10 3Z"/>
+                      </svg>
+                    </div>
+                  </div>
                 </div>
                 <div id="messageIn" class="messIn"></div>
                 <div id="avenueIn" class="messIn"></div>
