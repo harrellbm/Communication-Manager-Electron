@@ -16,88 +16,12 @@ The Communication Manager is aimed at Small to medium sized organizations or lea
 
 
 ![Processes Flowchart](https://github.com/harrellbm/Communication-Manager-Electron/blob/master/docs/Processes%20Flowchart.PNG)
-# Potential Features
-Set up schedule with multiple dates and locations to send
 
-Calendar view of all messages coming up
+# Current Features 
 
-Notify me when message is empty for an upcoming communication
-
-Set up way to keep track of multiple events and recruitment at once
-
-Notify me when last scheduled message is sent
-
-Way to send out modified messages to certain people
-
-Drag and drop functionally
-
-Recipient management with accurate names
-
-Recipient search and insert
-
-Piggyback off of email groups
-
-Certify sending to right people with right name
-
-Need a simple and intuitive campaign editor
-
-Automate Facebook and Instagram posts
-
-default messages, individual parts of the message 
-
-Keep track of how many times a default message has been used, suggested when to change it up
-
-Make a rotation of default messages
-
-File stream integration
-
-Text notifications and communication
-
-Daily digest of incoming things
-
-Daily digest of out going things
-
-Auto format for printing
-
-Gimp api? Photo editing/ arranging
-
-attachment handeling
-
-Power point/ g slides/ pro presenter integration formatting
-
-saving Images along side main JSON file 
-
-Possible storage with Mongo
-
-If use mongo then MongoEngine on top for easier access
-
-Automate a google drive creation for each instance of application
-
-App integration
-  possibly though restructure to Beeware suite
-
-Ways to share campaigns with others 
-  Export as excel or google sheet 
-  Print 
-  Some kind of team share potentially 
-
-Insert pictures and graphics 
-
-autocorrect
-
-scrolling columns for dynamically added rows (waiting on pysimplegui enhancment)
-
-The 0.3.0 milestone
-Auto send email on date
-
-The 0.3.1 milestone
-Notify me with auto send
-
-The 0.3.2 milestone
-Send out email to individual from list
-
-The 0.3.3 milestone
-Insert personalized name
-
-The 1.0.0 mile stone
-Fully working app with basic functionality
+- Create time slots called Avenues to keep track of and organize communication destinations (i.e. email, Facebook, Phone call, etc.).
+- Set Goals to schedule regular recurring Avenue time slots.
+- Editor to pre-write messages.
+- Message Manager interface to organize and link messages to one or multiple Avenues, as well as track sent status.
+- Calendar view to see and edit all upcoming Avenues.
+- Basic contact book
