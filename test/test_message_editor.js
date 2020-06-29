@@ -8,14 +8,13 @@ const templates = require('../src/objectTemplate.js');
 
 describe('Test Message Editor Functionality', function () {
   this.slow(12000);
-  this.timeout(16000);
+  this.timeout(30000);
   let app;
 
   beforeEach(function () {
     app = new Application({
       path: electronPath,
-      args: [path.join(__dirname, '..', 'main.js')],
-      startTimeout: 10000
+      args: [path.join(__dirname, '..')]
     });
     //console.log(app)
     return app.start();
