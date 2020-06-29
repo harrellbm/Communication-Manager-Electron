@@ -18,7 +18,8 @@ describe('Test Index process', function () {
   beforeEach( async () => {
     app = new Application({
       path: electronPath,
-      args: [path.join(__dirname, '..')]
+      args: [path.join(__dirname, '..')],
+      chromeDriverLogPath: [path.join(__dirname, './logs/chromeDriverlog')]
       });
     await app.start()
       .catch(console.error)
