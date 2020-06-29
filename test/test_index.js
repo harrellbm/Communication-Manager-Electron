@@ -21,6 +21,7 @@ describe('Test Index process', function () {
       args: [path.join(__dirname, '..')],
       chromeDriverLogPath: [path.join(__dirname, './logs/chromeDriverlog')]
       });
+    console.log (app.getSettings());
     await app.start()
       .catch(console.error)
     });
