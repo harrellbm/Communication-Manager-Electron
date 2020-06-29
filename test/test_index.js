@@ -19,7 +19,8 @@ describe('Test Index process', function () {
     app = new Application({
       path: electronPath,
       args: [path.join(__dirname, '..')],
-      chromeDriverLogPath: [path.join(__dirname, './logs/chromeDriverlog')]
+      chromeDriverLogPath: [path.join(__dirname, './logs/chromeDriverlog')],
+      startTimeout: 10000
       });
     console.log (app.getSettings());
     await app.start()
