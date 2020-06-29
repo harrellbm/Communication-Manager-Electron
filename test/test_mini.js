@@ -1,47 +1,110 @@
-const Application = require('spectron').Application
-const assert = require('assert')
-const electronPath = require('electron') // Require Electron from the binaries included in node_modules.
-const path = require('path')
+const Application = require("spectron").Application;
+const path = require('path');
+const chai = require('chai');
+const should = chai.should();
+const chaiAsPromised = require('chai-as-promised');
+const testPage = require('./test.page.js');
 
-describe('Application launch', function () {
-  this.timeout(10000)
+var page = new testPage();
 
-  beforeEach(function () {
-    this.app = new Application({
-      // Your electron path can be any binary
-      // i.e for OSX an example path could be '/Applications/MyApp.app/Contents/MacOS/MyApp'
-      // But for the sake of the example we fetch it from our node_modules.
-      path: electronPath,
+var electronPath = path.join(__dirname, '..', 'node_modules', '.bin', 'electron');
 
-      // Assuming you have the following directory structure
+if (process.platform === 'win32') {
+    electronPath += '.cmd';
+}
 
-      //  |__ my project
-      //     |__ ...
-      //     |__ main.js
-      //     |__ package.json
-      //     |__ index.html
-      //     |__ ...
-      //     |__ test
-      //        |__ spec.js  <- You are here! ~ Well you should be.
+// Path to your application
+var appPath = path.join(__dirname, '..');
 
-      // The following line tells spectron to look and use the main.js file
-      // and the package.json located 1 level above.
-      args: [path.join(__dirname, '..')]
-    })
-    return this.app.start()
-  })
+var app = new Application({
+            path: electronPath,
+            args: [appPath]
+        });
 
-  afterEach(function () {
-    if (this.app && this.app.isRunning()) {
-      return this.app.stop()
-    }
-  })
+global.before(function () {
+    //chai.should();
+    chai.use(chaiAsPromised);
+    page.setApp(app);
+});
 
-  it('shows an initial window', function () {
-    return this.app.client.getWindowCount().then(function (count) {
-      assert.equal(count, 1)
-      // Please note that getWindowCount() will return 2 if `dev tools` are opened.
-      // assert.equal(count, 2)
-    })
-  })
-})
+describe('Test Example', function () {
+    beforeEach(function () {
+        return app.start();
+    });
+
+    afterEach(function () {
+        return app.stop();
+    });
+
+    it('should fail, yes == no ', function () {
+        chai.expect("yes").to.equal("no");
+    });
+
+    it('should succeed, yes == yes', function () {
+        chai.expect("yes").to.equal("yes");
+    });
+
+    it('should fail, yes != no', function () {
+        function fn() {
+            var yes = 'yes';
+            yes.should.equal('no');
+        }
+        fn();
+    });
+
+    it('should fail, pass in text', function () {
+        function fn(txt) {
+            var yes = 'yes';
+            yes.should.equal(txt);
+        }
+        fn("no");
+    });
+
+    it('should fail, waitUntilWindowLoaded, yes != no', function () {
+        app.client.waitUntilWindowLoaded().getTitle().then(
+            function (txt) {
+                console.log('txt = ' + txt);
+                var yes = 'yes';
+                yes.should.equal('no');
+            }
+        );
+    });
+
+    it('should succeed, tests the not NOT title', function () {
+        return app.client.waitUntilWindowLoaded().getTitle().then(function (txt) { chai.expect(txt).to.not.equal("NOT" + page.pageTitle); });
+    });
+
+    it('should fail, tests the NOT title', function () {
+        return app.client.waitUntilWindowLoaded().getTitle().then(function (txt) { chai.expect(txt).to.equal("NOT" + page.pageTitle); });
+    });
+
+    it('should succeed, tests the page title', function () {
+        return page.getApplicationTitle().should.eventually.equal(page.pageTitle);
+    });
+
+    it('should fail, tests the NOT page title', function () {
+        return page.getApplicationTitle().should.eventually.not.equal("NOT" + page.pageTitle);
+    });
+
+    it('should fail, tests the NOT page title', function () {
+        return page.getApplicationTitle().should.eventually.equal("NOT" + page.pageTitle);
+    });
+
+    it('should succeed, tests window open count', function () {
+        app.client.debug();
+        return page.getWindowCount().should.eventually.equal(page.windowCount);
+    });
+
+    it('should fail, tests window open count', function () {
+        app.client.debug();
+        return page.getWindowCount().should.eventually.equal(page.windowCount + 1);
+    });
+
+    it('should succeed, clicks the button', function () {
+        return page.clickButtonAndGetText().should.eventually.equal(page.helloText);
+    });
+
+    it('should fail, clicks the button', function () {
+        return page.clickButtonAndGetText().should.eventually.equal("NOT" + page.helloText);
+    });
+});
