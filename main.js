@@ -10,12 +10,13 @@ if(require('electron-squirrel-startup')) app.quit();
 
 const windows = new Map(); // Object to hold references to the webcontents for all windows 
 var collection = new templates.initiativeCollection(); // Object to hold all of the initiatives 
-collection.add_initiative(); // For now just add a single initiative 
+
 
 function createIndex (name, tag, html) {
   // Create Message editor window
   let newWindow = new BrowserWindow({
     show: false,
+    icon: './assets/Message-Manager.ico',
     webPreferences: {
       nodeIntegration: true,
       spellcheck: true
@@ -66,17 +67,10 @@ function createIndex (name, tag, html) {
   });
 
   /* need to handle multiple initiatives */
-  // When loaded show 
+  // Load from file on creation then show 
   newWindow.once('ready-to-show', () => {
-    // For now just initiate with blank initiative
-    let temp = new templates.Initiative;
-    let initiativeObj = temp.pack_for_ipc();
-    let initiativeId = '0'
-    let ipcPack = {};
-    ipcPack.initId = initiativeId;
-    ipcPack.initObj = initiativeObj;
-    //console.log('initiative on initiatization: ', ipcPack)
-    newWindow.webContents.send('load', ipcPack);
+    let ipcPack = load();
+    newWindow.webContents.send('load', ipcPack); // Send loaded content to browser window
     newWindow.maximize(); // maximize to full screen // Possibly move this to webpreferences with fullscreen option
     newWindow.show();
   });
@@ -99,6 +93,7 @@ function createEditor (name, tag, html, initativeId, messageId, messageObj) {
     width: 1000,
     height: 600,
     show: false,
+    icon: './assets/Message-Manager.ico',
     webPreferences: {
       nodeIntegration: true,
       spellcheck: true
@@ -260,28 +255,56 @@ function saveToFile (file) {
 
 // Open the initative saved in file 
 ipc.on('open-file', function (event, args) { 
-  let fileData = openFromFile(); // Get raw Json 
-  collection.unpack_from_file(fileData); // Unpack into active Collection object
-
-  // For now just return the first initiative until better initative handleing is implemented
-  let initId = '0';
-  let initiative = collection.initiatives.get(initId);
-  let ipcInit = initiative.pack_for_ipc();
-  // Pack initiative id and packed initiative into one object for returning by ipc
-  let ipcPack = {};
-  ipcPack.initId = initId;
-  ipcPack.ipcInit = ipcInit;
+  let ipcPack = load();
   event.returnValue = ipcPack; // Return packed initiative 
 });
 
 // Function to open from data.json file
 function openFromFile () {
-  let rawData = fs.readFileSync('data.json');
-  let fileData = JSON.parse(rawData);
-  //console.log(fileData);
-  return fileData;
+  try {
+    if (fs.existsSync('data.json')){
+      let rawData = fs.readFileSync('data.json');
+      if (rawData.length != 0) { // verify that file is not empty 
+        let fileData = JSON.parse(rawData);
+        //console.log('loading parsed file: ', fileData);
+        return fileData;
+      } else { // else if buffer is empty return undefined 
+        //console.log('empty file')
+        return undefined
+      } 
+    };
+  } catch (err) {
+    console.error(err);
   };
+};
 
+function load (){
+  let initiativeId;
+  let initiativeObj 
+  let fileData = openFromFile(); // Get raw Json 
+  //console.log('file before if statment:', fileData);
+  if (fileData != undefined) { 
+    console.log('loading old file')
+    // Make sure previous collection exists 
+    collection.unpack_from_file(fileData); // Unpack into active Collection object
+    initiativeId = '0'; // for now just load first initiative in collection
+    let initiative = collection.initiatives.get(initiativeId);
+    initiativeObj = initiative.pack_for_ipc();
+  } else { 
+    console.log('starting fresh')
+    // else pass in empty initative to get us started 
+    collection.add_initiative();       
+    initiativeId = '0';
+    let initiative = collection.initiatives.get(initiativeId);
+    initiativeObj = initiative.pack_for_ipc();
+  }
+
+  let ipcPack = {};
+  ipcPack.initId = initiativeId;
+  ipcPack.initObj = initiativeObj;
+  //console.log('initiative on initiatization: ', ipcPack)
+  return ipcPack
+};
 // Message Manager ipcs
 // Pass the message id and content to the newly created editor
 ipc.on('edit', function (event, initId, messageId, messageObj) { 

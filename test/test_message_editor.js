@@ -3,6 +3,7 @@ const electronPath = require('electron'); // Require Electron from the binaries 
 const path = require('path');
 const expect = require('chai').expect;
 const fs = require('fs').promises; // For verifying file saves 
+const templates = require('../src/objectTemplate.js');
 
 
 describe('Test Message Editor Functionality', function () {
@@ -50,6 +51,14 @@ describe('Test Message Editor Functionality', function () {
   // Verify manual save  
   it('should launch editor and save manually', async () => {
     await app.client.waitUntilWindowLoaded();
+    // Clean out Initiative of any old objects in file 
+      let testInit = new templates.Initiative();
+      // Pack for ipc
+      let ipcInit = await testInit.pack_for_ipc();
+      // Send
+      await app.electron.ipcRenderer.send('save', '0', ipcInit);
+      // Open initiative from file 
+      await app.client.click('#initOpen');
     // Switch to message manager tab 
     await app.client.click('#messageTab');
     // Add a message 
@@ -89,6 +98,14 @@ describe('Test Message Editor Functionality', function () {
   // Verify save on editor close 
   it('should save everything from editor on close', async () => {
     await app.client.waitUntilWindowLoaded();
+    // Clean out Initiative of any old objects in file 
+      let testInit = new templates.Initiative();
+      // Pack for ipc
+      let ipcInit = await testInit.pack_for_ipc();
+      // Send
+      await app.electron.ipcRenderer.send('save', '0', ipcInit);
+      // Open initiative from file 
+      await app.client.click('#initOpen');
     // Switch to message manager tab 
     await app.client.click('#messageTab');
     // Add a message 
@@ -128,6 +145,14 @@ describe('Test Message Editor Functionality', function () {
   // Verify load title from index with new message on editor launch  
   it('should load title from index on editor launch', async () => {
     await app.client.waitUntilWindowLoaded();
+    // Clean out Initiative of any old objects in file 
+      let testInit = new templates.Initiative();
+      // Pack for ipc
+      let ipcInit = await testInit.pack_for_ipc();
+      // Send
+      await app.electron.ipcRenderer.send('save', '0', ipcInit);
+      // Open initiative from file 
+      await app.client.click('#initOpen');
     // Switch to message manager tab 
     await app.client.click('#messageTab');
     // Add a message and title 
@@ -144,6 +169,14 @@ describe('Test Message Editor Functionality', function () {
   // Verify old message load on editor launch 
   it('should load an active message on editor launch', async () => {
     await app.client.waitUntilWindowLoaded();
+    // Clean out Initiative of any old objects in file 
+      let testInit = new templates.Initiative();
+      // Pack for ipc
+      let ipcInit = await testInit.pack_for_ipc();
+      // Send
+      await app.electron.ipcRenderer.send('save', '0', ipcInit);
+      // Open initiative from file 
+      await app.client.click('#initOpen');
     // Switch to message manager tab 
     await app.client.click('#messageTab');
     // Add a message 
@@ -230,6 +263,14 @@ describe('Test Message Editor Functionality', function () {
   // Verify editor copy button sents all contents to clipboard 
   it('should copy to clipboard', async () => {
     await app.client.waitUntilWindowLoaded();
+    // Clean out Initiative of any old objects in file 
+      let testInit = new templates.Initiative();
+      // Pack for ipc
+      let ipcInit = await testInit.pack_for_ipc();
+      // Send
+      await app.electron.ipcRenderer.send('save', '0', ipcInit);
+      // Open initiative from file 
+      await app.client.click('#initOpen');
     // Switch to message manager tab 
     await app.client.click('#messageTab');
     // Add a message 
