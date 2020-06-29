@@ -18,7 +18,8 @@ describe('Test Index process', function () {
   beforeEach( async () => {
     app = new Application({
       path: electronPath,
-      args: [path.join(__dirname, '..')],
+      //args: [path.join(__dirname, '..')],
+      args: [ '/home/runner/work/Communication-Manager-Electron/'],
       chromeDriverLogPath: [path.join(__dirname, './logs/chromeDriverlog')],
       startTimeout: 10000
       });
