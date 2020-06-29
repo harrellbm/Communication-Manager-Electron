@@ -11,13 +11,14 @@ describe('Test Message Editor Functionality', function () {
   this.timeout(30000);
   let app;
 
-  beforeEach(function () {
+  beforeEach( async () => {
     app = new Application({
       path: electronPath,
       args: [path.join(__dirname, '..')]
     });
     //console.log(app)
-    return app.start();
+    await app.start()
+      .catch(console.error);
   });
 
   afterEach(function () {

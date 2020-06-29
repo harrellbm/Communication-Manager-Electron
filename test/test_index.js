@@ -12,15 +12,16 @@ const moment = require('moment'); // For date handling
 
 describe('Test Index process', function () {
   this.slow(10000);
-  this.timeout(30000);
+  this.timeout(15000);
   let app;
   
-  beforeEach(function () {
+  beforeEach( async () => {
     app = new Application({
       path: electronPath,
       args: [path.join(__dirname, '..')]
       });
-    return app.start();
+    await app.start()
+      .catch(console.error)
     });
   
   afterEach( function () {
