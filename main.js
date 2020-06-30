@@ -16,7 +16,7 @@ function createIndex (name, tag, html) {
   // Create Message editor window
   let newWindow = new BrowserWindow({
     show: false,
-    icon: './assets/Message-Manager.ico',
+    icon: './assets/Message-Manager.png',
     webPreferences: {
       nodeIntegration: true,
       spellcheck: true
@@ -93,7 +93,7 @@ function createEditor (name, tag, html, initativeId, messageId, messageObj) {
     width: 1000,
     height: 600,
     show: false,
-    icon: './assets/Message-Manager.ico',
+    icon: './assets/Message-Manager.png',
     webPreferences: {
       nodeIntegration: true,
       spellcheck: true
