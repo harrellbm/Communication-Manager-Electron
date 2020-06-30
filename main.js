@@ -3,6 +3,7 @@ const {app, BrowserWindow, Menu, MenuItem} = require('electron');
 const ipc = require('electron').ipcMain;
 const fs = require('fs');
 const templates = require('./src/objectTemplate.js');
+const path = require('path');
 // Handle installation by squirrel
 if(require('electron-squirrel-startup')) app.quit();
 // Keep a global reference of the window object, if you don't, the window will
@@ -16,7 +17,7 @@ function createIndex (name, tag, html) {
   // Create Message editor window
   let newWindow = new BrowserWindow({
     show: false,
-    icon: path.join(__dirname, '/assets/Message-Manager.ico'),
+    icon: path.join(__dirname, './assets/Message-Manager.ico'),
     webPreferences: {
       nodeIntegration: true,
       spellcheck: true
