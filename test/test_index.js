@@ -19,11 +19,9 @@ describe('Test Index process', function () {
     app = new Application({
       path: electronPath,
       args: [path.join(__dirname, '..')],
-      //args: [ '/home/runner/work/Communication-Manager-Electron/'],
-      chromeDriverLogPath: [path.join(__dirname, './logs/chromeDriverlog')],
-      startTimeout: 10000
+      //startTimeout: 10000
       });
-    console.log (app.getSettings());
+    //console.log (app.getSettings());
     await app.start()
       .catch(console.error)
     });
