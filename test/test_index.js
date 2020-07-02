@@ -110,7 +110,7 @@ describe('Test Index process', function () {
     //console.log(fileData.initiatives['0'].avenues['0']);
     let ave = fileData.initiatives['0'].avenues['0'];
     expect(ave, 'Avenue does not exist').to.be.an('object').with.keys('sent', 'avenue_type', 'description', 'person', 'message_id', 'date', 'goal_id');
-    expect(ave.date, 'Incorrect Date').to.be.a('string').that.equals('Wed Nov 30 2022 00:00:00 GMT-0700');
+    expect(ave.date, 'Incorrect Date').to.be.a('string').that.includes('Wed Nov 30 2022 00:00:00');
     expect(ave.description, 'Incorrect description').to.be.a('string').that.equals('This is an new avenue');
     // Verify message was added in ui 
     expect(app.client.$('#avenue0'), 'Avenue does not exist').to.eventually.exist;
