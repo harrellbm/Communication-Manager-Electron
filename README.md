@@ -1,6 +1,6 @@
 # Communication-Manager-Electron
 
-![Test Status](https://github.com/harrellbm/Communication-Manager-Electron/workflows/Test%20Status/badge.svg) Note: Test automation temporarily off line
+![Test Status](https://github.com/harrellbm/Communication-Manager-Electron/workflows/Test%20Status/badge.svg) 
 
 ## Communication-Manager
 Lightweight way to keep track of and send your communications
