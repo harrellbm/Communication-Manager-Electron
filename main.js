@@ -19,7 +19,7 @@ let icon;
 if (process.platform === 'linux') {
   icon = './assets/Message-Manager.png';
 } else {
-  icon = './assets/Message-Manager.ico';
+  icon = './assets/Manager-Icon.ico';
 }
 
 function createIndex (name, tag, html) {

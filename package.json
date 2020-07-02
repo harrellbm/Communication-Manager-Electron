@@ -62,7 +62,7 @@
     "forge": {
       "packagerConfig": {
         "asar": true,
-        "icon": "assets/Message-Manager.ico"
+        "icon": "assets/Manager-Icon.ico"
       },
       "makers": [
         {
