@@ -13,11 +13,20 @@ const windows = new Map(); // Object to hold references to the webcontents for a
 var collection = new templates.initiativeCollection(); // Object to hold all of the initiatives 
 
 
+// Use proper icon for current os platform 
+  //console.log(process.platform);
+let icon;
+if (process.platform === 'linux') {
+  icon = './assets/Message-Manager.png';
+} else {
+  icon = './assets/Message-Manager.ico';
+}
+
 function createIndex (name, tag, html) {
   // Create Message editor window
   let newWindow = new BrowserWindow({
     show: false,
-    icon: path.join(__dirname, './assets/Message-Manager.ico'),
+    icon: path.join(__dirname, icon),
     webPreferences: {
       nodeIntegration: true,
       spellcheck: true
@@ -94,7 +103,7 @@ function createEditor (name, tag, html, initativeId, messageId, messageObj) {
     width: 1000,
     height: 600,
     show: false,
-    icon: path.join(__dirname, '/assets/Message-Manager.ico'),
+    icon: path.join(__dirname, icon),
     webPreferences: {
       nodeIntegration: true,
       spellcheck: true
