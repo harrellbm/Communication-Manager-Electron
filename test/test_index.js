@@ -131,6 +131,41 @@ describe('Test Index process', function () {
     expect(container, 'Avenue exists').to.equal('<div id="avenueIn" class="messIn"></div>');
   });
 
+  // Add and remove group in ui  
+  it('should add group, then delete it', async () => {
+    await app.client.waitUntilWindowLoaded();
+    // Clean out Initiative for any old objects in file 
+      let testInit = new templates.Initiative();
+      // Pack for ipc
+      let ipcInit = await testInit.pack_for_ipc();
+      // Send
+      await app.electron.ipcRenderer.send('save', '0', ipcInit);
+      // Open initiative from file 
+      await app.client.click('#initOpen');
+    await app.client.waitUntilWindowLoaded();
+    // Add group
+    await app.client.click('#addGroup');
+    // Verify avenue was added in ui 
+    let container = await app.client.$('#groupIn').getHTML();
+    //console.log(container);
+    expect(container, 'Group does not exist').to.equal('<div id="groupIn"><div class="group" id="group0"><p class="group_title" id="groupName_title">Name</p><p class="group_title" id="groupContacts_title">Contacts</p><div class="grpBtnArray" id="grpBtnArray0"><span class="addContact" id="addContact0">+</span><svg class="copyEmails" id="copyEmails0" width="20" height="20" viewBox="0 0 20 20" fill="#fff" xmlns="http://www.w3.org/2000/svg"><path d="M2.00333 5.88355L9.99995 9.88186L17.9967 5.8835C17.9363 4.83315 17.0655 4 16 4H4C2.93452 4 2.06363 4.83318 2.00333 5.88355Z"></path><path d="M18 8.1179L9.99995 12.1179L2 8.11796V14C2 15.1046 2.89543 16 4 16H16C17.1046 16 18 15.1046 18 14V8.1179Z"></path></svg><svg class="copyPhones" id="copyPhones0" width="20" height="20" viewBox="0 0 20 20" fill="#fff" xmlns="http://www.w3.org/2000/svg"><path d="M2 3C2 2.44772 2.44772 2 3 2H5.15287C5.64171 2 6.0589 2.35341 6.13927 2.8356L6.87858 7.27147C6.95075 7.70451 6.73206 8.13397 6.3394 8.3303L4.79126 9.10437C5.90756 11.8783 8.12168 14.0924 10.8956 15.2087L11.6697 13.6606C11.866 13.2679 12.2955 13.0492 12.7285 13.1214L17.1644 13.8607C17.6466 13.9411 18 14.3583 18 14.8471V17C18 17.5523 17.5523 18 17 18H15C7.8203 18 2 12.1797 2 5V3Z"></path></svg><span class="groupDelete" id="groupDelete0">×</span></div><textarea class="name" id="name0"></textarea><div class="contacts" id="contacts0"></div></div></div>');
+    // Delete group  
+    await app.client.click('#groupDelete0');
+    // Click confirm on popup
+    await app.client.execute(function () {
+      let elem = document.getElementsByClassName("swal-button swal-button--confirm swal-button--danger");
+      elem[0].click();
+    });
+
+    // Open initiative from file 
+    await app.client.click('#initOpen');
+    await app.client.waitUntilWindowLoaded();
+    // Verify elements are deleted in ui
+    container = await app.client.$('#groupIn').getHTML();
+    //console.log(container);
+    expect(container, 'Group exists').to.equal('<div id="groupIn"></div>');
+  });
+
   // Manual save 
   it('should save initiative name and description from index on manual save', async () => {
     await app.client.waitUntilWindowLoaded();
@@ -181,8 +216,8 @@ describe('Test Index process', function () {
     await app.stop();
     await app.start();
     // Open initiative from file 
-    await app.client.waitUntilWindowLoaded();
     await app.client.click('#initOpen');
+    await app.client.waitUntilWindowLoaded();
     // Verify initiative title and description
     let title = await app.client.$('#initName').getValue();
     expect(title, 'Initiative title incorrect').to.be.a('string').that.equals('New Initiative');
@@ -265,6 +300,7 @@ describe('Test Index process', function () {
     await app.client.waitUntilWindowLoaded();
     await app.client.click('#initOpen');
     await app.client.click('#messageTab');
+    await app.client.waitUntilWindowLoaded();
     // Verify message title
     let messTitle = await app.client.$('#messTitle0').getValue();
     expect(messTitle, 'Message title incorrect').to.be.a('string').that.equals('This is a test Title');
