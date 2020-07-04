@@ -83,8 +83,8 @@ describe('Test Index process', function () {
     expect(container, 'Message exists').to.equal('<div id="messageIn" class="messIn"></div>');
   });
 
-    // Add and remove avenue in ui  
- it('should add avenue, then delete it', async () => {
+  // Add and remove avenue in ui  
+  it('should add avenue, then delete it', async () => {
     await app.client.waitUntilWindowLoaded();
     // Clean out Initiative for any old objects in file 
       let testInit = new templates.Initiative();
@@ -131,8 +131,67 @@ describe('Test Index process', function () {
     expect(container, 'Avenue exists').to.equal('<div id="avenueIn" class="messIn"></div>');
   });
 
+  // Manual save 
+  it('should save initiative name and description from index on manual save', async () => {
+    await app.client.waitUntilWindowLoaded();
+    // Clean out Initiative of any old objects in file 
+      let testInit = new templates.Initiative();
+      // Pack for ipc
+      let ipcInit = await testInit.pack_for_ipc();
+      // Send
+      await app.electron.ipcRenderer.send('save', '0', ipcInit);
+      // Open initiative from file 
+      await app.client.click('#initOpen');
+      await app.client.waitUntilWindowLoaded();
+    // Add new initiative title and description 
+    await app.client.$('#initName').setValue('New Initiative');
+    await app.client.$('#initDescription').setValue('This is a test description');
+    // Manually Save to fileSave
+    await app.client.click('#initSave');
+    // Dismiss popup
+    await app.client.execute(function () {
+      let elem = document.getElementsByClassName('swal-overlay swal-overlay--show-modal');
+      elem[0].click();
+    });
+    // Open initiative from file 
+    await app.client.click('#initOpen');
+    await app.client.waitUntilWindowLoaded();
+    // Verify initiative title and description
+    let title = await app.client.$('#initName').getValue();
+    expect(title, 'Initiative title incorrect').to.be.a('string').that.equals('New Initiative');
+    let desc = await app.client.$('#initDescription').getValue();
+    expect(desc, 'Initiative desctription incorrect').to.be.a('string').that.equals('This is a test description');
+  });
+
+  // save from initiative tab on index close
+  it('should save initiative name and description on app close', async () => {
+    await app.client.waitUntilWindowLoaded();
+    // Clean out Initiative of any old objects in file 
+      let testInit = new templates.Initiative();
+      // Pack for ipc
+      let ipcInit = await testInit.pack_for_ipc();
+      // Send
+      await app.electron.ipcRenderer.send('save', '0', ipcInit);
+      // Open initiative from file 
+      await app.client.click('#initOpen');
+    // Add new initiative title and description 
+    await app.client.$('#initName').setValue('New Initiative');
+    await app.client.$('#initDescription').setValue('This is a test description');
+    // Quit the app
+    await app.stop();
+    await app.start();
+    // Open initiative from file 
+    await app.client.waitUntilWindowLoaded();
+    await app.client.click('#initOpen');
+    // Verify initiative title and description
+    let title = await app.client.$('#initName').getValue();
+    expect(title, 'Initiative title incorrect').to.be.a('string').that.equals('New Initiative');
+    let desc = await app.client.$('#initDescription').getValue();
+    expect(desc, 'Initiative desctription incorrect').to.be.a('string').that.equals('This is a test description');
+  });
+
   // save on manual save 
- it('should save from index on manual save', async () => {
+ it('should save message manager tab from index on manual save', async () => {
     await app.client.waitUntilWindowLoaded();
     // Clean out Initiative of any old objects in file 
       let testInit = new templates.Initiative();
@@ -177,7 +236,7 @@ describe('Test Index process', function () {
   });
 
   // save from index on index close
-  it('should save from index on app close', async () => {
+  it('should save message manager tab on app close', async () => {
     await app.client.waitUntilWindowLoaded();
     // Clean out Initiative of any old objects in file 
       let testInit = new templates.Initiative();
