@@ -78,10 +78,13 @@ describe('Test Message Editor Functionality', function () {
     await app.client.click('#save');
 
     // Read the file and verify things saved 
-    //await function () { new Promise(resolve => setTimeout(console.log(resolve), 5))};
-    let rawData = await fs.readFile('data.json');
-    //await function () { new Promise(resolve => setTimeout(console.log(resolve), 5))};
-    let fileData = await JSON.parse(rawData);
+    let rawData, fileData;
+    try {
+      rawData = await fs.readFile('data.json');
+      fileData = await JSON.parse(rawData);
+    } catch (err) {
+      console.log(err);
+    }
     //console.log(fileData.initiatives['0'].messages['0'].greeting);
     // Pull out message values 
     let messTitle = fileData.initiatives['0'].messages['0'].title;
@@ -124,11 +127,14 @@ describe('Test Message Editor Functionality', function () {
     // Quit the app
     await app.browserWindow.close(); // Close editor
     await app.stop();
-    //await function () { new Promise(resolve => setTimeout(console.log(resolve), 5))};
-    // Read the file and verify things saved 
-    let rawData = await fs.readFile('data.json');
-    //await function () { new Promise(resolve => setTimeout(console.log(resolve), 5))};
-    let fileData = await JSON.parse(rawData);
+    // Read file to make sure things saved 
+    let rawData, fileData;
+    try {
+      rawData = await fs.readFile('data.json');
+      fileData = await JSON.parse(rawData);
+    } catch (err) {
+      console.log(err);
+    }
     //console.log(fileData.initiatives['0'].messages['0'].greeting);
     // Pull out message values 
     let messTitle = fileData.initiatives['0'].messages['0'].title;
@@ -242,10 +248,13 @@ describe('Test Message Editor Functionality', function () {
     await app.browserWindow.close(); // Close editor
     await app.stop();
     // Read the file and verify things saved 
-    //await function () { new Promise(resolve => setTimeout(console.log(resolve), 5))};
-    let rawData = await fs.readFile('data.json');
-    //await function () { new Promise(resolve => setTimeout(console.log(resolve), 5))};
-    let fileData = await JSON.parse(rawData);
+    let rawData, fileData;
+    try {
+      rawData = await fs.readFile('data.json');
+      fileData = await JSON.parse(rawData);
+    } catch (err) {
+      console.log(err);
+    }
     //console.log(fileData.initiatives['0'].messages['0'].greeting);
     // Pull out message values 
     let messTitle = fileData.initiatives['0'].messages['0'].title;

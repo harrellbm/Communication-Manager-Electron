@@ -4,6 +4,7 @@ const ipc = require('electron').ipcMain;
 const fs = require('fs');
 const templates = require('./src/objectTemplate.js');
 const path = require('path');
+const { R_OK } = require('constants');
 // Handle installation by squirrel
 if(require('electron-squirrel-startup')) app.quit();
 // Keep a global reference of the window object, if you don't, the window will
@@ -254,13 +255,13 @@ ipc.on('save', function(event, initId, ipc) {
 });
 
 // Function to save to file from packed Collection object 
-function saveToFile (file) {
+function saveToFile  (file) {
   file = JSON.stringify(file);
   console.log("made it to main save function", file);
   fs.writeFile('data.json', file, function (err) {
-    if (err) throw err;
-    console.log('Saved successfully!');
+    console.error(err);
   });
+  console.log('Saved successfully!');
 };
 
 // Open the initative saved in file 
@@ -276,10 +277,10 @@ function openFromFile () {
       let rawData = fs.readFileSync('data.json');
       if (rawData.length != 0) { // verify that file is not empty 
         let fileData = JSON.parse(rawData);
-        //console.log('loading parsed file: ', fileData);
+        console.log('loading parsed file: ', fileData);
         return fileData;
       } else { // else if buffer is empty return undefined 
-        //console.log('empty file')
+        console.log('empty file')
         return undefined
       } 
     };
@@ -287,6 +288,7 @@ function openFromFile () {
     console.error(err);
   };
 };
+
 
 function load (){
   let initiativeId;
@@ -315,6 +317,8 @@ function load (){
   //console.log('initiative on initiatization: ', ipcPack)
   return ipcPack
 };
+
+
 // Message Manager ipcs
 // Pass the message id and content to the newly created editor
 ipc.on('edit', function (event, initId, messageId, messageObj) { 
