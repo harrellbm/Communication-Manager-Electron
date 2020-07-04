@@ -96,32 +96,8 @@ describe('Test Message Editor Functionality', function () {
     expect(messSignature, 'Message signature incorrect').to.be.a('string').that.equals('Testing that I can Sign it');
   });
 
-  // Verify load title from index with new message on editor launch  
-  it('should load title from index on editor launch', async () => {
-    await app.client.waitUntilWindowLoaded();
-    // Clean out Initiative of any old objects in file 
-      let testInit = new templates.Initiative();
-      // Pack for ipc
-      let ipcInit = await testInit.pack_for_ipc();
-      // Send
-      await app.electron.ipcRenderer.send('save', '0', ipcInit);
-      // Open initiative from file 
-      await app.client.click('#initOpen');
-    // Switch to message manager tab 
-    await app.client.click('#messageTab');
-    // Add a message and title 
-    await app.client.click('#addMess');
-    await app.client.$('#messTitle0').setValue('This is a message Title');
-    // Click to open editor
-    await app.client.click('#messEdit0');
-    await app.client.switchWindow('Message Editor');
-    await app.client.waitUntilWindowLoaded();
-    let title = await app.client.$('#title').getValue();                   
-    expect(title, 'Loaded message title incorrect').to.be.a('string').that.equals('This is a message Title');
-  }); 
-
   // Verify old message load on editor launch 
-  it('should load an active message on editor launch', async () => {
+  it( 'should save everything from editor on close and load on editor launch', async () => {
     await app.client.waitUntilWindowLoaded();
     // Clean out Initiative of any old objects in file 
       let testInit = new templates.Initiative();
@@ -174,10 +150,10 @@ describe('Test Message Editor Functionality', function () {
     expect(signature, 'Message signature incorrect').to.be.a('string').that.equals('Testing that I can Sign it');
   }); 
 
-  // Verify save on editor close 
-  it('should save everything from editor on close', async () => {
+  // Verify load title from index with new message on editor launch  
+  it('should load title from index on editor launch', async () => {
     await app.client.waitUntilWindowLoaded();
-      // Clean out Initiative of any old objects in file 
+    // Clean out Initiative of any old objects in file 
       let testInit = new templates.Initiative();
       // Pack for ipc
       let ipcInit = await testInit.pack_for_ipc();
@@ -187,38 +163,16 @@ describe('Test Message Editor Functionality', function () {
       await app.client.click('#initOpen');
     // Switch to message manager tab 
     await app.client.click('#messageTab');
-    // Add a message 
+    // Add a message and title 
     await app.client.click('#addMess');
+    await app.client.$('#messTitle0').setValue('This is a message Title');
     // Click to open editor
     await app.client.click('#messEdit0');
     await app.client.switchWindow('Message Editor');
     await app.client.waitUntilWindowLoaded();
-    // Set message values in editor
-    await Promise.all([ app.client.$('#title').setValue('This is a test Title'), 
-                        app.client.$('#greeting').$('div').setValue('This is a test greeting'), 
-                        app.client.$('#content').$('div').setValue('This is test content.  Blah Blah Blah.'), 
-                        app.client.$('#signature').$('div').setValue('Testing that I can Sign it')
-                      ]);
-    
-    // Quit the app
-    await app.browserWindow.close(); // Close editor
-    await app.client.switchWindow('Message Manager');
-    // Click to re-open editor
-    await app.client.click('#messEdit0');
-    await app.client.switchWindow('Message Editor');
-    await app.client.waitUntilWindowLoaded();
-    // Pull out message values 
-    let messTitle = await app.client.$('#title').getValue();
-    let messGreeting = await app.client.$('#greeting').$('div').getText();
-    let messContent = await app.client.$('#content').$('div').getText();
-    let messSignature = await app.client.$('#signature').$('div').getText();
-    //console.log(messTitle, messGreeting, messContent, messSignature)
-    // Verify message values are saved correctly 
-    expect(messTitle, 'Message title incorrect').to.be.a('string').that.equals('This is a test Title');
-    expect(messGreeting, 'Message greeting incorrect').to.be.a('string').that.equals('This is a test greeting');
-    expect(messContent, 'Message content incorrect').to.be.a('string').that.equals('This is test content.  Blah Blah Blah.');
-    expect(messSignature, 'Message signature incorrect').to.be.a('string').that.equals('Testing that I can Sign it');
-  });
+    let title = await app.client.$('#title').getValue();                   
+    expect(title, 'Loaded message title incorrect').to.be.a('string').that.equals('This is a message Title');
+  }); 
 
   // Verify editor copy button sents all contents to clipboard 
   it('should copy to clipboard', async () => {
