@@ -2,7 +2,6 @@ const Application = require('spectron').Application;
 const electronPath = require('electron'); // Require Electron from the binaries included in node_modules.
 const path = require('path');
 const expect = require('chai').expect;
-const fs = require('fs').promises; // For verifying file saves 
 const templates = require('../src/objectTemplate.js');
 
 
@@ -77,75 +76,24 @@ describe('Test Message Editor Functionality', function () {
     // Save Ui
     await app.client.click('#save');
 
-    // Read the file and verify things saved 
-    let rawData, fileData;
-    try {
-      rawData = await fs.readFile('data.json');
-      fileData = await JSON.parse(rawData);
-    } catch (err) {
-      console.log(err);
-    }
-    //console.log(fileData.initiatives['0'].messages['0'].greeting);
-    // Pull out message values 
-    let messTitle = fileData.initiatives['0'].messages['0'].title;
-    let messGreeting = fileData.initiatives['0'].messages['0'].greeting;
-    let messContent = fileData.initiatives['0'].messages['0'].content;
-    let messSignature = fileData.initiatives['0'].messages['0'].signature;
-    // Verify message values are saved correctly 
-    expect(messTitle, 'Message title incorrect').to.be.a('string').that.equals('This is a test Title');
-    expect(messGreeting.ops[0].insert, 'Message greeting incorrect').to.be.a('string').that.equals('This is a test greeting\n');
-    expect(messContent.ops[0].insert, 'Message content incorrect').to.be.a('string').that.equals('This is test content.  Blah Blah Blah.\n');
-    expect(messSignature.ops[0].insert, 'Message signature incorrect').to.be.a('string').that.equals('Testing that I can Sign it\n');
-  });
-
-  // Verify save on editor close 
-  it('should save everything from editor on close', async () => {
-    await app.client.waitUntilWindowLoaded();
-    // Clean out Initiative of any old objects in file 
-      let testInit = new templates.Initiative();
-      // Pack for ipc
-      let ipcInit = await testInit.pack_for_ipc();
-      // Send
-      await app.electron.ipcRenderer.send('save', '0', ipcInit);
-      // Open initiative from file 
-      await app.client.click('#initOpen');
-    // Switch to message manager tab 
-    await app.client.click('#messageTab');
-    // Add a message 
-    await app.client.click('#addMess');
-    // Click to open editor
+    // Quit the app
+    await app.browserWindow.close(); // Close editor
+    await app.client.switchWindow('Message Manager');
+    // Click to re-open editor
     await app.client.click('#messEdit0');
     await app.client.switchWindow('Message Editor');
     await app.client.waitUntilWindowLoaded();
-    // Set message values in editor
-    await Promise.all([ app.client.$('#title').setValue('This is a test Title'), 
-                        app.client.$('#greeting').$('div').setValue('This is a test greeting'), 
-                        app.client.$('#content').$('div').setValue('This is test content.  Blah Blah Blah.'), 
-                        app.client.$('#signature').$('div').setValue('Testing that I can Sign it')
-                      ]);
-    
-    // Quit the app
-    await app.browserWindow.close(); // Close editor
-    await app.stop();
-    // Read file to make sure things saved 
-    let rawData, fileData;
-    try {
-      rawData = await fs.readFile('data.json');
-      fileData = await JSON.parse(rawData);
-    } catch (err) {
-      console.log(err);
-    }
-    //console.log(fileData.initiatives['0'].messages['0'].greeting);
     // Pull out message values 
-    let messTitle = fileData.initiatives['0'].messages['0'].title;
-    let messGreeting = fileData.initiatives['0'].messages['0'].greeting;
-    let messContent = fileData.initiatives['0'].messages['0'].content;
-    let messSignature = fileData.initiatives['0'].messages['0'].signature;
+    let messTitle = await app.client.$('#title').getValue();
+    let messGreeting = await app.client.$('#greeting').$('div').getText();
+    let messContent = await app.client.$('#content').$('div').getText();
+    let messSignature = await app.client.$('#signature').$('div').getText();
+    //console.log(messTitle, messGreeting, messContent, messSignature)
     // Verify message values are saved correctly 
     expect(messTitle, 'Message title incorrect').to.be.a('string').that.equals('This is a test Title');
-    expect(messGreeting.ops[0].insert, 'Message greeting incorrect').to.be.a('string').that.equals('This is a test greeting\n');
-    expect(messContent.ops[0].insert, 'Message content incorrect').to.be.a('string').that.equals('This is test content.  Blah Blah Blah.\n');
-    expect(messSignature.ops[0].insert, 'Message signature incorrect').to.be.a('string').that.equals('Testing that I can Sign it\n');
+    expect(messGreeting, 'Message greeting incorrect').to.be.a('string').that.equals('This is a test greeting');
+    expect(messContent, 'Message content incorrect').to.be.a('string').that.equals('This is test content.  Blah Blah Blah.');
+    expect(messSignature, 'Message signature incorrect').to.be.a('string').that.equals('Testing that I can Sign it');
   });
 
   // Verify load title from index with new message on editor launch  
@@ -226,9 +174,17 @@ describe('Test Message Editor Functionality', function () {
     expect(signature, 'Message signature incorrect').to.be.a('string').that.equals('Testing that I can Sign it');
   }); 
 
-   // Verify save on editor close 
-   it('should save everything from editor on close', async () => {
+  // Verify save on editor close 
+  it('should save everything from editor on close', async () => {
     await app.client.waitUntilWindowLoaded();
+      // Clean out Initiative of any old objects in file 
+      let testInit = new templates.Initiative();
+      // Pack for ipc
+      let ipcInit = await testInit.pack_for_ipc();
+      // Send
+      await app.electron.ipcRenderer.send('save', '0', ipcInit);
+      // Open initiative from file 
+      await app.client.click('#initOpen');
     // Switch to message manager tab 
     await app.client.click('#messageTab');
     // Add a message 
@@ -246,27 +202,22 @@ describe('Test Message Editor Functionality', function () {
     
     // Quit the app
     await app.browserWindow.close(); // Close editor
-    await app.stop();
-    // Read the file and verify things saved 
-    let rawData, fileData;
-    try {
-      rawData = await fs.readFile('data.json');
-      fileData = await JSON.parse(rawData);
-    } catch (err) {
-      console.log(err);
-    }
-    //console.log(fileData.initiatives['0'].messages['0'].greeting);
+    await app.client.switchWindow('Message Manager');
+    // Click to re-open editor
+    await app.client.click('#messEdit0');
+    await app.client.switchWindow('Message Editor');
+    await app.client.waitUntilWindowLoaded();
     // Pull out message values 
-    let messTitle = fileData.initiatives['0'].messages['0'].title;
-    let messGreeting = fileData.initiatives['0'].messages['0'].greeting;
-    let messContent = fileData.initiatives['0'].messages['0'].content;
-    let messSignature = fileData.initiatives['0'].messages['0'].signature;
-    
+    let messTitle = await app.client.$('#title').getValue();
+    let messGreeting = await app.client.$('#greeting').$('div').getText();
+    let messContent = await app.client.$('#content').$('div').getText();
+    let messSignature = await app.client.$('#signature').$('div').getText();
+    //console.log(messTitle, messGreeting, messContent, messSignature)
     // Verify message values are saved correctly 
     expect(messTitle, 'Message title incorrect').to.be.a('string').that.equals('This is a test Title');
-    expect(messGreeting.ops[0].insert, 'Message greeting incorrect').to.be.a('string').that.equals('This is a test greeting\n');
-    expect(messContent.ops[0].insert, 'Message content incorrect').to.be.a('string').that.equals('This is test content.  Blah Blah Blah.\n');
-    expect(messSignature.ops[0].insert, 'Message signature incorrect').to.be.a('string').that.equals('Testing that I can Sign it\n');
+    expect(messGreeting, 'Message greeting incorrect').to.be.a('string').that.equals('This is a test greeting');
+    expect(messContent, 'Message content incorrect').to.be.a('string').that.equals('This is test content.  Blah Blah Blah.');
+    expect(messSignature, 'Message signature incorrect').to.be.a('string').that.equals('Testing that I can Sign it');
   });
 
   // Verify editor copy button sents all contents to clipboard 
