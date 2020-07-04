@@ -7,7 +7,6 @@ chai.use(require('chai-datetime'));
 chai.use(require('chai-as-promised'));
 const expect = require('chai').expect;
 const templates = require('../src/objectTemplate.js');
-const fs = require('fs').promises; // For verifying file saves 
 const moment = require('moment'); // For date handling 
 
 describe('Test Index process', function () {
@@ -57,17 +56,6 @@ describe('Test Index process', function () {
       let elem = document.getElementsByClassName('swal-overlay swal-overlay--show-modal');
       elem[0].click();
     });
-    // Verify message was added in file
-    let rawData, fileData;
-    try {
-      rawData = await fs.readFile('data.json');
-      fileData = await JSON.parse(rawData);
-    } catch (err) {
-      console.log(err);
-    }
-    //console.log(fileData.initiatives['0']);
-    let mess = fileData.initiatives['0'].messages['0'];
-    expect(mess, 'Message does not exist').to.be.an('object').with.keys('title', 'greeting', 'content', 'signature', 'avenue_ids');
     // Verify message was added in ui 
     expect(app.client.$('#message0'), 'Message does not exist').to.eventually.exist;    
     // Delete message 
@@ -77,20 +65,15 @@ describe('Test Index process', function () {
       let elem = document.getElementsByClassName("swal-button swal-button--confirm swal-button--danger");
       elem[0].click();
     });
+    // Open initiative from file 
+    await app.client.click('#defaultOpen');
+    await app.client.click('#initOpen');
+    await app.client.click('#messageTab');
+    await app.client.waitUntilWindowLoaded();
     // Verify elements are deleted in ui
     let container = await app.client.$('#messageIn').getHTML();
     //console.log(container);
     expect(container, 'Message exists').to.equal('<div id="messageIn" class="messIn"></div>');
-    // Read the file and verify deleted in file
-    try {
-      rawData = await fs.readFile('data.json');
-      fileData = await JSON.parse(rawData);
-    } catch (err) {
-      console.log(err);
-    }
-    //console.log(fileData.initiatives['0']);
-    messTitle = fileData.initiatives['0'].messages['0']
-    expect(messTitle, 'Message title incorrect').to.be.undefined;
   });
 
     // Add and remove avenue in ui  
@@ -113,19 +96,6 @@ describe('Test Index process', function () {
     await app.client.$('#aveDescModal').setValue('This is an new avenue');
     // Save from Popup
     await app.client.click('#aveSaveModal');
-    // Verify avenue was added in file
-    let rawData, fileData;
-    try {
-      rawData = await fs.readFile('data.json');
-      fileData = await JSON.parse(rawData);
-    } catch (err) {
-      console.log(err);
-    }
-    //console.log(fileData.initiatives['0'].avenues['0']);
-    let ave = fileData.initiatives['0'].avenues['0'];
-    expect(ave, 'Avenue does not exist').to.be.an('object').with.keys('sent', 'avenue_type', 'description', 'person', 'message_id', 'date', 'goal_id');
-    expect(ave.date, 'Incorrect Date').to.be.a('string').that.includes('Wed Nov 30 2022 00:00:00');
-    expect(ave.description, 'Incorrect description').to.be.a('string').that.equals('This is an new avenue');
     // Verify message was added in ui 
     expect(app.client.$('#avenue0'), 'Avenue does not exist').to.eventually.exist;
     // Delete avenue 
@@ -135,21 +105,16 @@ describe('Test Index process', function () {
       let elem = document.getElementsByClassName("swal-button swal-button--confirm swal-button--danger");
       elem[0].click();
     });
+
+    // Open initiative from file 
+    await app.client.click('#defaultOpen');
+    await app.client.click('#initOpen');
+    await app.client.click('#messageTab');
+    await app.client.waitUntilWindowLoaded();
     // Verify elements are deleted in ui
     let container = await app.client.$('#avenueIn').getHTML();
     //console.log(container);
     expect(container, 'Avenue exists').to.equal('<div id="avenueIn" class="messIn"></div>');
-    // Read the file and verify deleted in file 
-    try {
-      rawData = await fs.readFile('data.json');
-      fileData = await JSON.parse(rawData);
-    } catch (err) {
-      console.log(err);
-    }
-    //console.log(fileData.initiatives['0']);
-    // Verify avenue deleted in file message title
-    ave = fileData.initiatives['0'].avenues['0'];
-    expect(ave, 'Avenue not deleted').to.be.undefined;
   });
 
   // save on manual save 
@@ -182,20 +147,16 @@ describe('Test Index process', function () {
       let elem = document.getElementsByClassName('swal-overlay swal-overlay--show-modal');
       elem[0].click();
     });
-    // Read the file and verify things saved 
-    let rawData, fileData;
-    try {
-      rawData = await fs.readFile('data.json');
-      fileData = await JSON.parse(rawData);
-    } catch (err) {
-      console.log(err);
-    }
-    //console.log(fileData.initiatives['0']);
+    // Open initiative from file 
+    await app.client.click('#defaultOpen');
+    await app.client.click('#initOpen');
+    await app.client.click('#messageTab');
+    await app.client.waitUntilWindowLoaded();
     // Verify message title
-    let messTitle = fileData.initiatives['0'].messages['0'].title;
+    let messTitle = await app.client.$('#messTitle0').getValue();
     expect(messTitle, 'Message title incorrect').to.be.a('string').that.equals('This is a test Title');
     // Verify avenue description
-    let aveDescription = fileData.initiatives['0'].avenues['0'].description;
+    let aveDescription = await app.client.$('#aveDescription0').getValue();
     expect(aveDescription, 'Avenue desctription incorrect').to.be.a('string').that.equals('Test Avenue Description');
   });
 
@@ -224,20 +185,16 @@ describe('Test Index process', function () {
     await app.client.click('#aveSaveModal');
     // Quit the app
     await app.stop();
-    // Read the file and verify things saved 
-    let rawData, fileData;
-    try {
-      rawData = await fs.readFile('data.json');
-      fileData = await JSON.parse(rawData);
-    } catch (err) {
-      console.log(err);
-    }
-    //console.log(fileData.initiatives['0']);
+    await app.start();
+    // Open initiative from file 
+    await app.client.waitUntilWindowLoaded();
+    await app.client.click('#initOpen');
+    await app.client.click('#messageTab');
     // Verify message title
-    let messTitle = fileData.initiatives['0'].messages['0'].title
+    let messTitle = await app.client.$('#messTitle0').getValue();
     expect(messTitle, 'Message title incorrect').to.be.a('string').that.equals('This is a test Title');
-    // Verify avenue description;
-    let aveDescription = fileData.initiatives['0'].avenues['0'].description;
+    // Verify avenue description
+    let aveDescription = await app.client.$('#aveDescription0').getValue();
     expect(aveDescription, 'Avenue desctription incorrect').to.be.a('string').that.equals('Test Avenue Description');
   });
 
