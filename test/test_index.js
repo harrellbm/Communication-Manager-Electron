@@ -166,6 +166,102 @@ describe('Test Index process', function () {
     expect(container, 'Group exists').to.equal('<div id="groupIn"></div>');
   });
 
+  // Add and remove contact in ui  
+  it('should add contact, then delete it', async () => {
+    await app.client.waitUntilWindowLoaded();
+    // Clean out Initiative for any old objects in file 
+      let testInit = new templates.Initiative();
+      // Pack for ipc
+      let ipcInit = await testInit.pack_for_ipc();
+      // Send
+      await app.electron.ipcRenderer.send('save', '0', ipcInit);
+      // Open initiative from file 
+      await app.client.click('#initOpen');
+    await app.client.waitUntilWindowLoaded();
+    // Add group and then contact
+    await app.client.click('#addGroup');
+    await app.client.click('#addContact0');
+    // Verify avenue was added in ui 
+    let container = await app.client.$('#contacts0').getHTML();
+    //console.log(container);
+    expect(container, 'Contact does not exist').to.equal('<div class="contacts" id="contacts0"><div class="contact" id="contact00"><p class="cont_title" id="contName_title">Name</p><p class="cont_title" id="contactEmail_title">Email</p><p class="cont_title" id="contactPhone_title">Phone</p><textarea class="contactIn" id="name00"></textarea><textarea class="contactIn" id="email00"></textarea><textarea class="contactIn" id="phone00"></textarea><span class="contactDelete" id="contactDelete00">×</span></div></div>');
+    // Delete group  
+    await app.client.click('#contactDelete00');
+    // Click confirm on popup
+    await app.client.execute(function () {
+      let elem = document.getElementsByClassName("swal-button swal-button--confirm swal-button--danger");
+      elem[0].click();
+    });
+
+    // Open initiative from file 
+    await app.client.click('#initOpen');
+    await app.client.waitUntilWindowLoaded();
+    // Verify elements are deleted in ui
+    container = await app.client.$('#contacts0').getHTML();
+    //console.log(container);
+    expect(container, 'Contacts exists').to.equal('<div class="contacts" id="contacts0"></div>');
+  });
+
+  // Copy emails  
+  it('should copy emails', async () => {
+    await app.client.waitUntilWindowLoaded();
+    // Clean out Initiative for any old objects in file 
+      let testInit = new templates.Initiative();
+      // Pack for ipc
+      let ipcInit = await testInit.pack_for_ipc();
+      // Send
+      await app.electron.ipcRenderer.send('save', '0', ipcInit);
+      // Open initiative from file 
+      await app.client.click('#initOpen');
+    await app.client.waitUntilWindowLoaded();
+    // Add group and then contact
+    
+    await app.client.click('#addGroup');
+    await app.client.click('#addContact0');
+    await app.client.$('#email00').setValue('john245@email.com');
+    await app.client.click('#addContact0');
+    await app.client.$('#email01').setValue('phil375@email.com');
+    await app.client.click('#addContact0');
+    await app.client.$('#email02').setValue('bill612@email.com');
+    
+    // Copy emails to clipboard
+    await app.client.click('#copyEmails0');
+    // Verify content on clipboard 
+    let content = await app.electron.clipboard.readText();
+    //console.log(content);
+    expect(content, 'Content on clipboard incorrect').to.be.a('string').that.includes('john245@email.com').and.includes('phil375@email.com').and.includes('bill612@email.com');
+  });
+
+  // Copy phone numbers  
+  it('should copy phone numbers', async () => {
+    await app.client.waitUntilWindowLoaded();
+    // Clean out Initiative for any old objects in file 
+      let testInit = new templates.Initiative();
+      // Pack for ipc
+      let ipcInit = await testInit.pack_for_ipc();
+      // Send
+      await app.electron.ipcRenderer.send('save', '0', ipcInit);
+      // Open initiative from file 
+      await app.client.click('#initOpen');
+    await app.client.waitUntilWindowLoaded();
+    // Add group and then contact
+    
+    await app.client.click('#addGroup');
+    await app.client.click('#addContact0');
+    await app.client.$('#phone00').setValue('543-542-4556');
+    await app.client.click('#addContact0');
+    await app.client.$('#phone01').setValue('775-234-5634');
+    await app.client.click('#addContact0');
+    await app.client.$('#phone02').setValue('876-453-5455');
+    
+    // Copy emails to clipboard
+    await app.client.click('#copyPhones0');
+    // Verify content on clipboard 
+    let content = await app.electron.clipboard.readText();
+    //console.log(content);
+    expect(content, 'Content on clipboard incorrect').to.be.a('string').that.includes('543-542-4556').and.includes('775-234-5634').and.includes('876-453-5455');
+  });
+
   // Manual save 
   it('should save initiative name and description from index on manual save', async () => {
     await app.client.waitUntilWindowLoaded();
@@ -215,6 +311,7 @@ describe('Test Index process', function () {
     // Quit the app
     await app.stop();
     await app.start();
+    await app.client.waitUntilWindowLoaded();
     // Open initiative from file 
     await app.client.click('#initOpen');
     await app.client.waitUntilWindowLoaded();
