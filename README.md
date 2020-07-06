@@ -24,8 +24,8 @@ The organizing concept behind this application is the initiative.  An initiative
 - Calendar view to see and edit all upcoming Avenues.
 - Basic contact book
 
-![Initiative Tab](https://github.com/harrellbm/Communication-Manager-Electron/blob/0.1.6/docs/raw/Initiative%20tab%200.1.6%20beta%202.PNG)
-![Message Manager Tab](https://github.com/harrellbm/Communication-Manager-Electron/blob/0.1.6/docs/raw/Message%20Manger%20tab%200.1.6%20beta%202.PNG)
+![Initiative Tab](https://github.com/harrellbm/Communication-Manager-Electron/blob/master/docs/raw/Initiative-Tab-0.1.6-beta.3.PNG)
+![Message Manager Tab](https://github.com/harrellbm/Communication-Manager-Electron/blob/master/docs/raw/Message-Manager-Tab-0.1.6-beta.3.PNG)
 
 
 ### Basic Overview of Architecture
