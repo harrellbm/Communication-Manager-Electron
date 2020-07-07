@@ -262,6 +262,53 @@ describe('Test Index process', function () {
     expect(content, 'Content on clipboard incorrect').to.be.a('string').that.includes('543-542-4556').and.includes('775-234-5634').and.includes('876-453-5455');
   });
 
+  // Add and remove goal in ui  
+  it('should add goal, then delete it', async () => {
+    await app.client.waitUntilWindowLoaded();
+    // Clean out Initiative for any old objects in file 
+      let testInit = new templates.Initiative();
+      // Pack for ipc
+      let ipcInit = await testInit.pack_for_ipc();
+      // Send
+      await app.electron.ipcRenderer.send('save', '0', ipcInit);
+      // Open initiative from file 
+      await app.client.click('#initOpen');
+      await app.client.waitUntilWindowLoaded();
+    // Add avenue
+    await app.client.click('#addGoal');
+    await app.client.$('#goalDescModal').setValue('This is a new goal');
+    await app.client.$('#goalStartModal').setValue('10-02-2022');
+    await app.client.$('#goalUntilModal').setValue('10-07-2022');
+    // Save from Popup
+    await app.client.click('#goalSaveModal');
+    // Verify avenue was added in ui 
+    let container = await app.client.$('#goalIn').getHTML();
+    //console.log(container);
+    expect(container, 'Goal does not exist').to.equal('<div id="goalIn"><div class="goal" id="goal0"><p class="goal_title" id="goalFreq_title">Frequency</p><p class="goal_title" id="goalDesc_title">Description</p><p class="goal_title" id="goalReminder_title">Reminder</p><textarea class="goalDescription" id="goalDesc0"></textarea><select class="typeDropdown" id="goal_type0"><option value="Email">Email</option><option value="Text">Text</option><option value="Phone Call">Phone Call</option><option value="Facebook">Facebook</option><option value="Instagram">Instagram</option><option value="Card">Card</option><option value="Handout">Handout</option><option value="Poster">Poster</option><option value="Other">Other</option></select><div class="frequency" id="frequency0"><input class="startDate" id="startDate0" type="date"><p class="everyTitle">Every</p><input class="freqNum" id="freqNum0" type="number" value="1" min="1" max="30"><select class="freqDropdown" id="freq_type0"><option value="days">days</option><option value="weeks">weeks</option><option value="months">months</option><option value="years">years</option></select><p class="untilTitle">Until</p><input class="freqDate" id="freqDate0" type="date"></div><textarea class="reminder" id="reminder0"></textarea><span class="goalDelete" id="goalDelete0">×</span></div></div>');
+    // Verify dates and description are correct 
+    let desc = await app.client.$('#goalDesc0').getValue()
+    expect( desc, 'Incorrect avenue description').to.be.a('string').that.equals('This is a new goal');    
+    let startDate = await app.client.$('#startDate0').getValue()
+    expect( startDate, 'Incorrect avenue date').to.be.a('string').that.equals('2022-10-02'); 
+    let untilDate = await app.client.$('#freqDate0').getValue()
+    expect( untilDate, 'Incorrect avenue date').to.be.a('string').that.equals('2022-10-07');   
+    // Delete avenue 
+    await app.client.click('#goalDelete0');
+    // Click confirm on popup
+    await app.client.execute(function () {
+      let elem = document.getElementsByClassName("swal-button swal-button--confirm swal-button--danger");
+      elem[0].click();
+    });
+  
+    // Open initiative from file 
+    await app.client.click('#initOpen');
+    await app.client.waitUntilWindowLoaded();
+    // Verify elements are deleted in ui
+    container = await app.client.$('#goalIn').getHTML();
+    //console.log(container);
+    expect(container, 'Goal exists').to.equal('<div id="goalIn"></div>');
+  });
+  
   // Manual save 
   it('should save initiative name and description from index on manual save', async () => {
     await app.client.waitUntilWindowLoaded();
