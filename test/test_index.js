@@ -262,8 +262,86 @@ describe('Test Index process', function () {
     expect(content, 'Content on clipboard incorrect').to.be.a('string').that.includes('543-542-4556').and.includes('775-234-5634').and.includes('876-453-5455');
   });
 
-  // Add and remove goal in ui  
-  it('should add goal, then delete it', async () => {
+  // Navigate calendar  
+  it('should navigate calendar', async () => {
+    await app.client.waitUntilWindowLoaded();
+    // Clean out Initiative for any old objects in file 
+      let testInit = new templates.Initiative();
+      // Pack for ipc
+      let ipcInit = await testInit.pack_for_ipc();
+      // Send
+      await app.electron.ipcRenderer.send('save', '0', ipcInit);
+      // Open initiative from file 
+      await app.client.click('#initOpen');
+      await app.client.waitUntilWindowLoaded();
+    // Get starting dates
+    let yearStart = await app.client.$('#year').getValue();
+    let monthStart = await app.client.$('#month').getValue();
+    let monthSplit = monthStart.split(' - ');
+    let s1 = [yearStart, monthSplit[0]].join('.');
+    let s2 = [yearStart, monthSplit[1]].join('.');
+    //console.log('start and end date of date range: ', s1, s2);
+      // Convert dates to moment objects for easier comparision 
+      let dateStart1 = moment(s1, ['YYYY.MM.DD', 'YYYY.M.D']);
+      let dateStart2 = moment(s2, ['YYYY.MM.DD', 'YYYY.M.D']);
+
+    // Navigate forward
+    await app.client.click('#next');
+    // Split out each individual date and join with year
+    let year = await app.client.$('#year').getValue();
+    let month = await app.client.$('#month').getValue();
+    monthSplit = month.split(' - ');
+    let d1 = [year, monthSplit[0]].join('.');
+    let d2 = [year, monthSplit[1]].join('.');
+    //console.log('start and end date of date range: ', d1, d2);
+      // Convert dates to moment objects for easier comparision 
+      let date1 = moment(d1, ['YYYY.MM.DD', 'YYYY.M.D']);
+      let date2 = moment(d2, ['YYYY.MM.DD', 'YYYY.M.D']);
+      // Verify date changed correctly
+      let n1 = dateStart1.clone();
+      n1.add(1, 'M');
+      let n2 = dateStart2.clone();
+      n2.add(1, 'M');
+      expect(date1.isSame(n1, 'month'), 'Beginning date incorrect').to.be.true;
+      expect(date2.isSame(n2, 'month'), 'Ending date incorrect').to.be.true;
+    // Navigate to today 
+    await app.client.click('#today');
+    // Split out each individual date and join with year
+    year = await app.client.$('#year').getValue();
+    month = await app.client.$('#month').getValue();
+    monthSplit = month.split(' - ');
+    d1 = [year, monthSplit[0]].join('.');
+    d2 = [year, monthSplit[1]].join('.');
+    //console.log('start and end date of date range: ', d1, d2);
+      // Convert dates to moment objects for easier comparision 
+      date1 = moment(d1, ['YYYY.MM.DD', 'YYYY.M.D']);
+      date2 = moment(d2, ['YYYY.MM.DD', 'YYYY.M.D']);
+      // Verify date changed correctly
+      expect(date1.isSame(dateStart1, 'month'), 'Beginning date incorrect').to.be.true;
+      expect(date2.isSame(dateStart2, 'month'), 'Ending date incorrect').to.be.true;
+    // Navigate backward 
+    await app.client.click('#prev');
+    // Split out each individual date and join with year
+    year = await app.client.$('#year').getValue();
+    month = await app.client.$('#month').getValue();
+    monthSplit = month.split(' - ');
+    d1 = [year, monthSplit[0]].join('.');
+    d2 = [year, monthSplit[1]].join('.');
+    //console.log('start and end date of date range: ', d1, d2);
+      // Convert dates to moment objects for easier comparision 
+      date1 = moment(d1, ['YYYY.MM.DD', 'YYYY.M.D']);
+      date2 = moment(d2, ['YYYY.MM.DD', 'YYYY.M.D']);
+      // Verify date changed correctly
+      n1 = dateStart1.clone();
+      n1.subtract(1, 'M');
+      n2 = dateStart2.clone();
+      n2.subtract(1, 'M');
+      expect(date1.isSame(n1, 'month'), 'Beginning date incorrect').to.be.true;
+      expect(date2.isSame(n2, 'month'), 'Ending date incorrect').to.be.true;
+  });
+
+   // Add and remove goal in ui  
+   it('should add goal, then delete it', async () => {
     await app.client.waitUntilWindowLoaded();
     // Clean out Initiative for any old objects in file 
       let testInit = new templates.Initiative();
