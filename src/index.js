@@ -1862,11 +1862,13 @@ function sortByDate () {
 
 /* ---- Initiative Tab specific functions ---- */
 const themeConfig = {
+  'common.backgroundColor': 'rgb(245, 245, 230)',
   };
 
 // Calendar object for initiative tab
 var calendar = new Calendar('#calendar', {
   defaultView: 'month',
+  theme: themeConfig,
   taskView: true,    // Can be also ['milestone', 'task']
   scheduleView: true,  // Can be also ['allday', 'time']
   useCreationPopup: false,
