@@ -341,7 +341,7 @@ describe('Test Index process', function () {
   });
 
    // Add and remove goal in ui  
-   it('should add goal, then delete it', async () => {
+  it('should add goal, then delete it', async () => {
     await app.client.waitUntilWindowLoaded();
     // Clean out Initiative for any old objects in file 
       let testInit = new templates.Initiative();
@@ -352,7 +352,7 @@ describe('Test Index process', function () {
       // Open initiative from file 
       await app.client.click('#initOpen');
       await app.client.waitUntilWindowLoaded();
-    // Add avenue
+    // Add Goal
     await app.client.click('#addGoal');
     await app.client.$('#goalDescModal').setValue('This is a new goal');
     await app.client.$('#goalStartModal').setValue('10-02-2022');
@@ -388,7 +388,7 @@ describe('Test Index process', function () {
   });
   
   // Manual save 
-  it('should save initiative name and description from index on manual save', async () => {
+  it('should save initiative tab on manual save', async () => {
     await app.client.waitUntilWindowLoaded();
     // Clean out Initiative of any old objects in file 
       let testInit = new templates.Initiative();
@@ -402,6 +402,18 @@ describe('Test Index process', function () {
     // Add new initiative title and description 
     await app.client.$('#initName').setValue('New Initiative');
     await app.client.$('#initDescription').setValue('This is a test description');
+    // Add a goal
+    await app.client.click('#addGoal');
+    await app.client.$('#goalDescModal').setValue('This is a new goal');
+    await app.client.$('#goalStartModal').setValue('10-02-2022');
+    await app.client.$('#goalUntilModal').setValue('10-07-2022');
+    await app.client.$('#goalTypeModal').selectByVisibleText('Text');
+      // Save from Popup
+      await app.client.click('#goalSaveModal');
+    // Add group and then contact
+    await app.client.click('#addGroup');
+    await app.client.click('#addContact0');
+    await app.client.$('#name00').setValue('Bob Phisher');
     // Manually Save to fileSave
     await app.client.click('#initSave');
     // Dismiss popup
@@ -417,10 +429,22 @@ describe('Test Index process', function () {
     expect(title, 'Initiative title incorrect').to.be.a('string').that.equals('New Initiative');
     let desc = await app.client.$('#initDescription').getValue();
     expect(desc, 'Initiative desctription incorrect').to.be.a('string').that.equals('This is a test description');
+    // Verify initiative goal
+    let goalDesc = await app.client.$('#goalDesc0').getValue();
+    expect( goalDesc, 'Incorrect avenue description').to.be.a('string').that.equals('This is a new goal');    
+    let startDate = await app.client.$('#startDate0').getValue();
+    expect( startDate, 'Incorrect avenue date').to.be.a('string').that.equals('2022-10-02'); 
+    let untilDate = await app.client.$('#freqDate0').getValue();
+    expect( untilDate, 'Incorrect avenue date').to.be.a('string').that.equals('2022-10-07');
+    let type = await app.client.$('#goal_type0').getValue();
+    expect( type, 'Incorrect goal type').to.be.a('string').that.equals('Text');
+    // Verify Group 
+    let contName = await app.client.$('#name00').getValue();
+    expect( contName, 'Incorrect contact name').to.be.a('string').that.equals('Bob Phisher');
   });
 
   // save from initiative tab on index close
-  it('should save initiative name and description on app close', async () => {
+  it('should save initiative tab on app close', async () => {
     await app.client.waitUntilWindowLoaded();
     // Clean out Initiative of any old objects in file 
       let testInit = new templates.Initiative();
@@ -433,18 +457,41 @@ describe('Test Index process', function () {
     // Add new initiative title and description 
     await app.client.$('#initName').setValue('New Initiative');
     await app.client.$('#initDescription').setValue('This is a test description');
+    // Add a goal
+    await app.client.click('#addGoal');
+    await app.client.$('#goalDescModal').setValue('This is a new goal');
+    await app.client.$('#goalStartModal').setValue('10-02-2022');
+    await app.client.$('#goalUntilModal').setValue('10-07-2022');
+    await app.client.$('#goalTypeModal').selectByVisibleText('Text');
+      // Save from Popup
+      await app.client.click('#goalSaveModal');
+    // Add group and then contact
+    await app.client.click('#addGroup');
+    await app.client.click('#addContact0');
+    await app.client.$('#name00').setValue('Bob Phisher');
     // Quit the app
     await app.stop();
     await app.start();
     await app.client.waitUntilWindowLoaded();
-    // Open initiative from file 
-    await app.client.click('#initOpen');
+    await app.client.click('#defaultOpen');
     await app.client.waitUntilWindowLoaded();
     // Verify initiative title and description
     let title = await app.client.$('#initName').getValue();
     expect(title, 'Initiative title incorrect').to.be.a('string').that.equals('New Initiative');
     let desc = await app.client.$('#initDescription').getValue();
     expect(desc, 'Initiative desctription incorrect').to.be.a('string').that.equals('This is a test description');
+    // Verify initiative goal
+    let goalDesc = await app.client.$('#goalDesc0').getValue();
+    expect( goalDesc, 'Incorrect avenue description').to.be.a('string').that.equals('This is a new goal');    
+    let startDate = await app.client.$('#startDate0').getValue();
+    expect( startDate, 'Incorrect avenue date').to.be.a('string').that.equals('2022-10-02'); 
+    let untilDate = await app.client.$('#freqDate0').getValue();
+    expect( untilDate, 'Incorrect avenue date').to.be.a('string').that.equals('2022-10-07');
+    let type = await app.client.$('#goal_type0').getValue();
+    expect( type, 'Incorrect goal type').to.be.a('string').that.equals('Text');
+    // Verify Group 
+    let contName = await app.client.$('#name00').getValue();
+    expect( contName, 'Incorrect contact name').to.be.a('string').that.equals('Bob Phisher');
   });
 
   // save on manual save 
@@ -520,7 +567,6 @@ describe('Test Index process', function () {
     await app.start();
     // Open initiative from file 
     await app.client.waitUntilWindowLoaded();
-    await app.client.click('#initOpen');
     await app.client.click('#messageTab');
     await app.client.waitUntilWindowLoaded();
     // Verify message title
