@@ -67,7 +67,7 @@ describe('Test Message Editor Functionality', function () {
     await app.client.switchWindow('Message Editor');
     await app.client.waitUntilWindowLoaded();
     // Set message values
-    await Promise.all([ app.client.$('#title').setValue('This is a test Title'), 
+    await Promise.all([ app.client.$('#title-input').setValue('This is a test Title'), 
                         app.client.$('#greeting').$('div').setValue('This is a test greeting'), 
                         app.client.$('#content').$('div').setValue('This is test content.  Blah Blah Blah.'), 
                         app.client.$('#signature').$('div').setValue('Testing that I can Sign it')
@@ -84,7 +84,7 @@ describe('Test Message Editor Functionality', function () {
     await app.client.switchWindow('Message Editor');
     await app.client.waitUntilWindowLoaded();
     // Pull out message values 
-    let messTitle = await app.client.$('#title').getValue();
+    let messTitle = await app.client.$('#title-input').getValue();
     let messGreeting = await app.client.$('#greeting').$('div').getText();
     let messContent = await app.client.$('#content').$('div').getText();
     let messSignature = await app.client.$('#signature').$('div').getText();
@@ -116,7 +116,7 @@ describe('Test Message Editor Functionality', function () {
     await app.client.switchWindow('Message Editor');
     await app.client.waitUntilWindowLoaded();
     // Set message values in editor
-    await Promise.all([ app.client.$('#title').setValue('This is a test Title'), 
+    await Promise.all([ app.client.$('#title-input').setValue('This is a test Title'), 
                         app.client.$('#greeting').$('div').setValue('This is a test greeting'), 
                         app.client.$('#content').$('div').setValue('This is test content.  Blah Blah Blah.'), 
                         app.client.$('#signature').$('div').setValue('Testing that I can Sign it')
@@ -133,7 +133,7 @@ describe('Test Message Editor Functionality', function () {
     let greeting;
     let content;
     let signature;
-    await Promise.all([ app.client.$('#title').getValue(), 
+    await Promise.all([ app.client.$('#title-input').getValue(), 
                         app.client.$('#greeting').getText(), 
                         app.client.$('#content').getText(),
                         app.client.$('#signature').getText()
@@ -170,7 +170,7 @@ describe('Test Message Editor Functionality', function () {
     await app.client.click('#messEdit0');
     await app.client.switchWindow('Message Editor');
     await app.client.waitUntilWindowLoaded();
-    let title = await app.client.$('#title').getValue();                   
+    let title = await app.client.$('#title-input').getValue();                   
     expect(title, 'Loaded message title incorrect').to.be.a('string').that.equals('This is a message Title');
   }); 
 

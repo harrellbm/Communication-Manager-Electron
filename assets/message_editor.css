@@ -1,90 +1,123 @@
-/* Container for full grid */
-.wrapper{
-  display: grid;
-  grid-template-columns: 1fr;
-  grid-template-rows: 8vh 8vh 9vh 11vh 35vh 8vh 11vh 10vh;
-  background-color: rgb(139, 203, 224);
+/* global css variables */
+:root {
+  /* Base variables */
+  --base-bg-color:  rgb(139, 203, 224);
+  --base-text-color: white;
+  --base-text-shadow: 2px 2px rgb( 100, 100, 100, 0.2);
+  --base-margin: 0;
+  --base-font-family: Helvetica, Arial, sans-serif;
+
+  /* Text editor specific variables */
+  --editor-bg-color: rgb(252, 252, 252);
+  --editor-text-color: black;
+  --editor-margin: 3%;
+  --editor-width: 94%;
 }
 
 /* global styles for element types */
-body{
-  margin: 0;
-  background-color: rgb(139, 203, 224)
+body {
+  margin: var(--base-margin);
+  background-color: var(--base-bg-color);
+  font-family: var(--base-font-family);
 }
 
-/* Common class for text titles */
-.title{
+/* Container for full grid */
+.wrapper {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 8vh 8vh 9vh 11vh 35vh 8vh 11vh 10vh;
+  background-color: var(--base-bg-color);
+  color: var(--base-text-color);
+  text-shadow: var(--base-text-shadow);
+  margin: var(--base-margin);
+}
+
+/* container for top title label and title input */
+#top-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#title-label {
   text-align: center;
-  margin: 0;
   margin-top: 0.1rem;
-}
- 
-/* Common class button elements */ 
-.button{
-padding-top: 0.3rem;
-padding-bottom: 0.3rem;
-padding-left: 0.5rem;
-padding-right: 0.5rem;
-margin-left: 0.5rem;
-flex-grow: 0.1;
-flex-shrink: 1;
+  font-size: 1.8rem;
 }
 
- /* Common class for message textareas */ 
-.message{
-  /* height: 23vh; */
-  width: 90%;
-  margin: auto;
-  background-color: rgb(252, 252, 252);
-}
-
-/* input for title */ 
-#title{
+#title-input {
   margin-left: 0.5rem;
-  font-size: 14pt;
-  font-family: Helvetica, Arial, sans-serif;
+  font-size: 1.15rem;
   width: 35rem;
+  border: 1px solid rgb(204, 204, 204); /* To match with will editor boaders */
+  text-shadow: var(--base-text-shadow);
 }
 
-/* tool bar formatting */
+/* Common class for button elements */ 
+.button {
+  font-size: 1rem;
+  padding: 0.3rem 0.5rem 0.3rem 0.5rem;
+  margin-left: 0.5rem;
+  flex-grow: 0.3;
+  flex-shrink: 1;
+  border-radius: 7px;
+  border-width: 0px;
+  color: white;
+  background-color: rgb(90, 90, 90);
+  transition: box-shadow 0.4s, transform 0.4s, color 0.1s ease-out, background-color 0.1s ease-out;
+}
+
+  .button:hover {
+    transform: scale(1.05, 1.05);
+    box-shadow: 3px 3px rgb( 85, 85, 85, 0.4);
+    cursor: pointer;
+  }
+  
+  .button:active {
+    background-color: rgb(255, 245, 222);
+    color: black;
+  } 
+  
+  .button:focus {
+    outline: none;
+  }
+
+/* QUill tool bar formatting */
 .ql-toolbar.ql-snow {
-    margin-left: 3%;
-    margin-right: 3%;
+    margin-left: var(--editor-margin);
+    margin-right: var(--editor-margin);
     margin-top: 1vh;
 }
 
 /*  for greeting */
-#greeting{
-  margin-left: 3%;
-  margin-right: 3%;
-  width: 94%;
+#greeting {
+  margin-left: var(--editor-margin);
+  margin-right: var(--editor-margin);
+  width: var(--editor-width);
+  background-color: var(--editor-bg-color);
+  color: var(--editor-text-color);
 }
 
 /* Textarea for content */ 
-#content{
-  margin-left: 3%;
-  margin-right: 3%;
-  width: 94%;
+#content {
+  margin-left: var(--editor-margin);
+  margin-right: var(--editor-margin);
+  width: var(--editor-width);
+  background-color: var(--editor-bg-color);
+  color: var(--editor-text-color);
 }
 
 /* Textarea for signature */
-#signature{
-  margin-left: 3%;
-  margin-right: 3%;
-  width: 94%;
-}
-
-/* container for top title and title input */
-#tag{
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-family: Helvetica, Arial, sans-serif;
-  font-size: 16pt;
+#signature {
+  margin-left: var(--editor-margin);
+  margin-right: var(--editor-margin);
+  width: var(--editor-width);
+  background-color: var(--editor-bg-color);
+  color: var(--editor-text-color);
 }
 
 /* container on the bottom */
-#bottom{
+#bottom-container {
   display: flex;
   justify-content: center;
   align-items: center;
