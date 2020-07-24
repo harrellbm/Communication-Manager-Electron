@@ -474,8 +474,8 @@ describe('Test Index process', function () {
     await app.start();
     await app.client.waitUntilWindowLoaded();
     await app.client.click('#defaultOpen');
-    await app.client.waitUntilWindowLoaded();
     // Verify initiative title and description
+    await app.client.waitUntilTextExists('#initNameTitle', 'Initiative', 10000); // Make sure that the input's label has loaded before checking for loaded title
     let title = await app.client.$('#initName').getValue();
     expect(title, 'Initiative title incorrect').to.be.a('string').that.equals('New Initiative');
     let desc = await app.client.$('#initDescription').getValue();
@@ -562,9 +562,11 @@ describe('Test Index process', function () {
     await app.client.$('#aveDescModal').setValue('Test Avenue Description');
     // Save from Popup
     await app.client.click('#aveSaveModal');
+    
     // Quit the app
     await app.stop();
     await app.start();
+    
     // Open initiative from file 
     await app.client.waitUntilWindowLoaded();
     await app.client.click('#messageTab');
@@ -572,6 +574,7 @@ describe('Test Index process', function () {
     // Verify message title
     let messTitle = await app.client.$('#messTitle0').getValue();
     expect(messTitle, 'Message title incorrect').to.be.a('string').that.equals('This is a test Title');
+    
     // Verify avenue description
     let date = await app.client.$('#aveDate0').getValue()
     expect( date, 'Incorrect avenue date').to.be.a('string').that.equals('2022-11-30'); 
@@ -635,7 +638,7 @@ describe('Test Index process', function () {
     await app.client.switchWindow('Message Editor');
     await app.client.waitUntilWindowLoaded();
     // Set message values
-    await app.client.$('#title').setValue('This is a test Title'); 
+    await app.client.$('#title-input').setValue('This is a test Title'); 
                       
     // Save Ui
     await app.client.click('#save');
