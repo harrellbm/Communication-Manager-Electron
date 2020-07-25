@@ -62,7 +62,7 @@ body {
   flex-shrink: 1;
   border-radius: 7px;
   border-width: 0px;
-  color: white;
+  color: var(--base-text-color);
   background-color: rgb(90, 90, 90);
   transition: box-shadow 0.4s, transform 0.4s, color 0.1s ease-out, background-color 0.1s ease-out;
 }
