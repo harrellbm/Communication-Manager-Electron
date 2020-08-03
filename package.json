@@ -62,7 +62,8 @@
     "forge": {
       "packagerConfig": {
         "asar": true,
-        "icon": "assets/Manager-Icon.ico"
+        "icon": "assets/Manager-Icon.ico",
+        "executableName": "message-manager"
       },
       "makers": [
         {
@@ -78,7 +79,13 @@
         },
         {
           "name": "@electron-forge/maker-deb",
-          "config": {}
+          "config": {
+            "options": {
+              "maintainer": "Brenden Harrell",
+              "description": "Keep your communication organized",
+              "icon": "./assets/Message-Manager.png"
+            }
+          }
         },
         {
           "name": "@electron-forge/maker-rpm",
