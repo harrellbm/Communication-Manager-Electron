@@ -9,7 +9,7 @@
     "todoapp"
   ],
   "main": "./main.js",
-  "version": "0.1.6-beta",
+  "version": "0.1.6",
   "author": "Brenden Harrell",
   "repository": {
     "type": "git",
