@@ -3,14 +3,16 @@
 ![Test Status](https://github.com/harrellbm/Communication-Manager-Electron/workflows/Test%20Status/badge.svg) 
 
 ## Communication-Manager
-Lightweight way to keep track of and send your communications
+Lightweight organizational tool to plan and keep track of communication surrounding initiatives and events.  Make sure everyone knows what is going on when they need to know and avoid holes in the flow of communication by having a convenient place to plan emails, phone calls, facebook post, etc. and track when they have happened.
 
 ### Goal
 **To increase the capacity and organization of each individual and team's communication.**
 
-Nonprofit organizations often have to settle for the tools that are made for big for profit corporations. This puts smaller nonprofit organizations at a disadvantage when having to pay for these kinds of software. In my experience, the solution for these organizations is to do things by hand or the old fashion way because there is no affordable alternative.
+Nonprofit organizations often have to settle for the tools that are made for big for profit corporations. This puts smaller nonprofit organizations at a disadvantage when having to pay for these kinds of software. In my experience, these small organizations simply cannot afford these big ticket price solutions and end up doing things by hand or the old fashion way because there is no affordable alternative.
 
-The Communication Manager is aimed at small to medium sized organizations or leaders who need to keep track of many emails, texts, social media, etc. and need a way to organize and make sure that communication flows smoothly and effectivly.  This Communication Manager offers a tool to organize communication campaigns to make communicating to many people and sub-groups in your organization easier and more consistent.
+Almost all organizations have regular mass communicatio.  When these communications need to be edited or sent out through a number of different avenues the work of keeping track can quickly get our of hand.  The Communication Manager aims to help make jobs like this easier.  By offering a quick and easy way to schedule regular communications so that adminstrators no longer need to tend large spreadsheets or endless sticky notes to rememeber to send out these regurlar communications.  In addition, the Communicaiton manager is also designed to be able to help make lauching campaignes and other communication initiatives less complex and overwhelming.  
+
+Need to send out bi-weekly emails, weekly facebook posts, call your main volunteers and remember to print off accompanying posters?  Rather than spend your time creating another spreadsheet or pile of notes the Communication Manager offers one convenient place to store and generate your needed schedule and keep track as things unfold. 
 
 The organizing concept behind this application is the initiative.  An initiative is a way to organize a chunk of communication whether it be relating to a certain group, or campaign.  Each initiative can be set up to hold contacts for the groups involved, goals for how often and what type of communication should happen, and a schedule to keep track of it all.  In addition, specific messages can be prewritten and handled with the message manager and linked to a slot in the schedule. 
 
