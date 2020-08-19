@@ -832,6 +832,7 @@ describe('Test Index process', function () {
 
   // Should drag and drop avenue into message drop 
   it('should drag and drop avenue', async () => {
+    await app.browserWindow.setAspectRatio(1299/688);
     await app.client.waitUntilWindowLoaded();
     // Clean out Initiative of any old objects in file 
       let testInit = new templates.Initiative();
@@ -867,10 +868,11 @@ describe('Test Index process', function () {
           "actions": [
             {"type": "pointerMove", "duration": 0, "x": 835, "y": 140},
             {"type": "pointerDown", "button": 0},
-            {"type": "pointerMove", "duration": 0, "origin": "pointer", "x":  -500, "y": 0},
+            {"type": "pointerMove", "duration": 0, "origin": "pointer", "x":  -300, "y": 0},
             {"type": "pointerUp", "button": 0},
           ]
     }]);
+    //xvfb 1024 by 768 pixels.  normal window width: 1299, height: 688
     // Make sure avenue is in message dropbox
     const avenueIn = await app.client.$('#avenueIn');
     let container = await avenueIn.getHTML();
@@ -889,7 +891,7 @@ describe('Test Index process', function () {
         {"type": "pointerMove", "duration": 0, "x": 243, "y": 142},
         {"type": "pointerDown", "button": 0},
         {"type": "pointerMove", "duration": 0, "origin": "pointer", "x": 500, "y": 0},
-        {"type": "pointerUp", "button": 0},
+        {"type": "pointerUp", "button": 0}
       ]
     }]);
     // Make sure avenue is in message dropbox
