@@ -860,8 +860,8 @@ describe('Test Index process', function () {
     await aveSaveModal.click();
     // Drag avenue to message 
     const size = await app.browserWindow.getSize();
-    console.log(size[0], size[1]);
-    if (size[0] >= 1299) {
+    console.log("x:", size[0], "y:", size[1]);
+    if (size[0] >= 1299) { // Conditional to adjust for screen resolution in local tests and xvfb headless tests
       await app.client.performActions([{
         "type": "pointer",
         "id": "mouse",
@@ -873,20 +873,20 @@ describe('Test Index process', function () {
           {"type": "pointerUp", "button": 0},
         ]
     }]);
-    } else if (size[0] <= 1024) {
+    } else if (size[0] <= 639) {
       await app.client.performActions([{
         "type": "pointer",
         "id": "mouse",
         "parameters": {"pointerType": "mouse"},
         "actions": [
-          {"type": "pointerMove", "duration": 0, "x": 683, "y": 140},
+          {"type": "pointerMove", "duration": 0, "x": 469, "y": 140},
           {"type": "pointerDown", "button": 0},
           {"type": "pointerMove", "duration": 0, "origin": "pointer", "x":  -200, "y": 0},
           {"type": "pointerUp", "button": 0},
         ]
       }]);
     };
-    //xvfb 1024 by 768 pixels.  normal window width: 1299, height: 688
+    //xvfb 639 by 479 pixels.  normal window width: 1299, height: 688
     // Make sure avenue is in message dropbox
     const avenueIn = await app.client.$('#avenueIn');
     let container = await avenueIn.getHTML();
@@ -897,7 +897,7 @@ describe('Test Index process', function () {
     //console.log(container);
     expect(container, 'Avenue not in message dropbox').to.equal('<div id="messageIn" class="messIn"><div class="message" id="message0"><p class="messTitle_heading" id="messTitle_heading">Title</p><textarea class="messTitle" id="messTitle0"></textarea><div class="aveDrop" id="aveDrop0"><div class="avenue" id="avenue0"><select class="aveDropdown" id="avenue_type0"><option value="Email">Email</option><option value="Text">Text</option><option value="Phone Call">Phone Call</option><option value="Facebook">Facebook</option><option value="Instagram">Instagram</option><option value="Card">Card</option><option value="Handout">Handout</option><option value="Poster">Poster</option><option value="Other">Other</option></select><p class="aveDescription_title" id="aveDescription_title">Description</p><p class="avePersons_title" id="avePersons_title">Person</p><p class="aveDate_title" id="aveDate_title">Date</p><p class="aveSent_box" id="aveSent_box0"><input class="aveSent_checkbox" id="aveSent_checkbox0" type="checkbox"><label class="aveSent_label" id="aveSent_label" for="aveSent_checkbox">Sent</label></p><textarea class="aveDescription" id="aveDescription0"></textarea><textarea class="avePersons" id="avePersons0"></textarea><input class="aveDate" id="aveDate0" type="date"><span class="aveDelete" id="aveDelete0">×</span></div></div><div class="aveBtnArray" id="aveBtnArray0"><svg class="messEdit" id="messEdit0" width="20" height="20" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"> <path d="M17.4142 2.58579C16.6332 1.80474 15.3668 1.80474 14.5858 2.58579L7 10.1716V13H9.82842L17.4142 5.41421C18.1953 4.63316 18.1953 3.36683 17.4142 2.58579Z"></path> <path fill-rule="evenodd" clip-rule="evenodd" d="M2 6C2 4.89543 2.89543 4 4 4H8C8.55228 4 9 4.44772 9 5C9 5.55228 8.55228 6 8 6H4V16H14V12C14 11.4477 14.4477 11 15 11C15.5523 11 16 11.4477 16 12V16C16 17.1046 15.1046 18 14 18H4C2.89543 18 2 17.1046 2 16V6Z"></path></svg><svg class="messCopy" id="messCopy0" width="20" height="20" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"> <path d="M8 2C7.44772 2 7 2.44772 7 3C7 3.55228 7.44772 4 8 4H10C10.5523 4 11 3.55228 11 3C11 2.44772 10.5523 2 10 2H8Z"></path> <path d="M3 5C3 3.89543 3.89543 3 5 3C5 4.65685 6.34315 6 8 6H10C11.6569 6 13 4.65685 13 3C14.1046 3 15 3.89543 15 5V11H10.4142L11.7071 9.70711C12.0976 9.31658 12.0976 8.68342 11.7071 8.29289C11.3166 7.90237 10.6834 7.90237 10.2929 8.29289L7.29289 11.2929C6.90237 11.6834 6.90237 12.3166 7.29289 12.7071L10.2929 15.7071C10.6834 16.0976 11.3166 16.0976 11.7071 15.7071C12.0976 15.3166 12.0976 14.6834 11.7071 14.2929L10.4142 13H15V16C15 17.1046 14.1046 18 13 18H5C3.89543 18 3 17.1046 3 16V5Z"></path> <path d="M15 11H17C17.5523 11 18 11.4477 18 12C18 12.5523 17.5523 13 17 13H15V11Z"></path> </svg><span class="messDelete" id="messDelete0">×</span></div></div></div>');
     // Drag back to avenueIn
-    if (size[0] >= 1299) {
+    if (size[0] >= 1299) {  // Conditional to adjust for screen resolution in local tests and xvfb headless tests
       await app.client.performActions([{
         "type": "pointer",
         "id": "mouse",
@@ -917,7 +917,7 @@ describe('Test Index process', function () {
         "actions": [
           {"type": "pointerMove", "duration": 0, "x": 243, "y": 142},
           {"type": "pointerDown", "button": 0},
-          {"type": "pointerMove", "duration": 0, "origin": "pointer", "x": 300, "y": 0},
+          {"type": "pointerMove", "duration": 0, "origin": "pointer", "x": 200, "y": 0},
           {"type": "pointerUp", "button": 0}
         ]
       }]);
