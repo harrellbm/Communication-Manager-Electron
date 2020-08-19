@@ -3,6 +3,7 @@ const electronPath = require('electron'); // Require Electron from the binaries 
 const path = require('path');
 const expect = require('chai').expect;
 const templates = require('../src/objectTemplate.js');
+const { constants } = require('fs');
 
 
 describe('Test Message Editor Functionality', function () {
@@ -57,37 +58,55 @@ describe('Test Message Editor Functionality', function () {
       // Send
       await app.electron.ipcRenderer.send('save', '0', ipcInit);
       // Open initiative from file 
-      await app.client.click('#initOpen');
+      const initOpen = await app.client.$('#initOpen');
+      await initOpen.click();
     // Switch to message manager tab 
-    await app.client.click('#messageTab');
+    const messageTab = await app.client.$('#messageTab');
+    await messageTab.click();
     // Add a message 
-    await app.client.click('#addMess');
+    const addMess = await app.client.$('#addMess');
+    await addMess.click();
     // Click to open editor
-    await app.client.click('#messEdit0');
+    const messEdit0 = await app.client.$('#messEdit0');
+    await messEdit0.click();
     await app.client.switchWindow('Message Editor');
     await app.client.waitUntilWindowLoaded();
     // Set message values
-    await Promise.all([ app.client.$('#title-input').setValue('This is a test Title'), 
-                        app.client.$('#greeting').$('div').setValue('This is a test greeting'), 
-                        app.client.$('#content').$('div').setValue('This is test content.  Blah Blah Blah.'), 
-                        app.client.$('#signature').$('div').setValue('Testing that I can Sign it')
-                        ]);
+    const titleInput = await app.client.$('#title-input');
+    await titleInput.setValue('This is a test Title'); 
+    const greetingWrap = await app.client.$('#greeting');
+    const greeting = await greetingWrap.$('div');
+    await greeting.setValue('This is a test greeting');
+    const contentWrap = await app.client.$('#content');
+    const content = await contentWrap.$('div');
+    await content.setValue('This is test content.  Blah Blah Blah.'); 
+    const signatureWrap = await app.client.$('#signature');
+    const signature = await signatureWrap.$('div');
+    await signature.setValue('Testing that I can Sign it');
 
     // Save Ui
-    await app.client.click('#save');
+    const save = await app.client.$('#save');
+    await save.click();
 
     // Quit the app
     await app.browserWindow.close(); // Close editor
     await app.client.switchWindow('Message Manager');
     // Click to re-open editor
-    await app.client.click('#messEdit0');
+    await messEdit0.click();
     await app.client.switchWindow('Message Editor');
     await app.client.waitUntilWindowLoaded();
     // Pull out message values 
-    let messTitle = await app.client.$('#title-input').getValue();
-    let messGreeting = await app.client.$('#greeting').$('div').getText();
-    let messContent = await app.client.$('#content').$('div').getText();
-    let messSignature = await app.client.$('#signature').$('div').getText();
+    const messTitleElem = await app.client.$('#title-input');
+    const messTitle = await messTitleElem.getValue();
+    const messGreetingWrap= await app.client.$('#greeting');
+    const messGreetingElem = await messGreetingWrap.$('div');
+    const messGreeting = await messGreetingElem.getText();
+    const messContentWrap= await app.client.$('#content');
+    const messContentElem = await messContentWrap.$('div');
+    const messContent = await messContentElem.getText();
+    const messSignatureWrap = await app.client.$('#signature');
+    const messSignatureElem = await messSignatureWrap.$('div');
+    const messSignature = await messSignatureElem.getText();
     //console.log(messTitle, messGreeting, messContent, messSignature)
     // Verify message values are saved correctly 
     expect(messTitle, 'Message title incorrect').to.be.a('string').that.equals('This is a test Title');
@@ -97,7 +116,7 @@ describe('Test Message Editor Functionality', function () {
   });
 
   // Verify old message load on editor launch 
-  it( 'should save everything from editor on close and load on editor launch', async () => {
+  it('should save everything from editor on close and load on editor launch', async () => {
     await app.client.waitUntilWindowLoaded();
     // Clean out Initiative of any old objects in file 
       let testInit = new templates.Initiative();
@@ -106,44 +125,44 @@ describe('Test Message Editor Functionality', function () {
       // Send
       await app.electron.ipcRenderer.send('save', '0', ipcInit);
       // Open initiative from file 
-      await app.client.click('#initOpen');
+      const initOpen = await app.client.$('#initOpen');
+      await initOpen.click();
     // Switch to message manager tab 
-    await app.client.click('#messageTab');
+    const messageTab = await app.client.$('#messageTab');
+    await messageTab.click();
     // Add a message 
-    await app.client.click('#addMess');
+    const addMess = await app.client.$('#addMess');
+    await addMess.click();
     // Click to open editor
-    await app.client.click('#messEdit0');
+    const messEdit0 = await app.client.$('#messEdit0');
+    await messEdit0.click();
     await app.client.switchWindow('Message Editor');
     await app.client.waitUntilWindowLoaded();
-    // Set message values in editor
-    await Promise.all([ app.client.$('#title-input').setValue('This is a test Title'), 
-                        app.client.$('#greeting').$('div').setValue('This is a test greeting'), 
-                        app.client.$('#content').$('div').setValue('This is test content.  Blah Blah Blah.'), 
-                        app.client.$('#signature').$('div').setValue('Testing that I can Sign it')
-                      ]);
+    // Set message values
+    const titleInput = await app.client.$('#title-input');
+    await titleInput.setValue('This is a test Title'); 
+    const greetingWrap = await app.client.$('#greeting');
+    const greetingElem = await greetingWrap.$('div');
+    await greetingElem.setValue('This is a test greeting');
+    const contentWrap = await app.client.$('#content');
+    const contentElem = await contentWrap.$('div');
+    await contentElem.setValue('This is test content.  Blah Blah Blah.'); 
+    const signatureWrap = await app.client.$('#signature');
+    const signatureElem = await signatureWrap.$('div');
+    await signatureElem.setValue('Testing that I can Sign it');
     // Close editor
     await app.browserWindow.close();
     // Relaunch editor
     await app.client.switchWindow('Message Manager');
-    await app.client.click('#messEdit0');
+    await messEdit0.click();
     await app.client.switchWindow('Message Editor');
     await app.client.waitUntilWindowLoaded();
     // Verify load on editor launch 
-    let title;
-    let greeting;
-    let content;
-    let signature;
-    await Promise.all([ app.client.$('#title-input').getValue(), 
-                        app.client.$('#greeting').getText(), 
-                        app.client.$('#content').getText(),
-                        app.client.$('#signature').getText()
-                  ]).then(function (values) {
-                        //console.log(values)
-                        title = values[0]
-                        greeting = values[1]
-                        content = values[2]
-                        signature = values[3]
-                        });
+    const titleWrap = await app.client.$('#title-input');
+    const title = await titleWrap.getValue();
+    const greeting = await greetingWrap.getText();
+    const content = await contentWrap.getText();
+    const signature = await signatureWrap.getText();
     expect(title, 'Message title incorrect').to.be.a('string').that.equals('This is a test Title');
     expect(greeting, 'Message greeting incorrect').to.be.a('string').that.equals('This is a test greeting');
     expect(content, 'Message content incorrect').to.be.a('string').that.equals('This is test content.  Blah Blah Blah.');
@@ -160,17 +179,23 @@ describe('Test Message Editor Functionality', function () {
       // Send
       await app.electron.ipcRenderer.send('save', '0', ipcInit);
       // Open initiative from file 
-      await app.client.click('#initOpen');
+      const initOpen = await app.client.$('#initOpen');
+      await initOpen.click();
     // Switch to message manager tab 
-    await app.client.click('#messageTab');
+    const messageTab = await app.client.$('#messageTab');
+    await messageTab.click();
     // Add a message and title 
-    await app.client.click('#addMess');
-    await app.client.$('#messTitle0').setValue('This is a message Title');
+    const addMess = await app.client.$('#addMess');
+    await addMess.click();
+    const messTitle0 = await app.client.$('#messTitle0');
+    await messTitle0.setValue('This is a message Title');
     // Click to open editor
-    await app.client.click('#messEdit0');
+    const messEdit0 = await app.client.$('#messEdit0');
+    await messEdit0.click();
     await app.client.switchWindow('Message Editor');
     await app.client.waitUntilWindowLoaded();
-    let title = await app.client.$('#title-input').getValue();                   
+    const titleInput = await app.client.$('#title-input');
+    let title = await titleInput.getValue();                   
     expect(title, 'Loaded message title incorrect').to.be.a('string').that.equals('This is a message Title');
   }); 
 
@@ -184,22 +209,32 @@ describe('Test Message Editor Functionality', function () {
       // Send
       await app.electron.ipcRenderer.send('save', '0', ipcInit);
       // Open initiative from file 
-      await app.client.click('#initOpen');
+      const initOpen = await app.client.$('#initOpen');
+      await initOpen.click();
     // Switch to message manager tab 
-    await app.client.click('#messageTab');
+    const messageTab = await app.client.$('#messageTab');
+    await messageTab.click();
     // Add a message 
-    await app.client.click('#addMess');
+    const addMess = await app.client.$('#addMess');
+    await addMess.click();
     // Click to open editor
-    await app.client.click('#messEdit0');
+    const messEdit0 = await app.client.$('#messEdit0');
+    await messEdit0.click();
     await app.client.switchWindow('Message Editor');
     await app.client.waitUntilWindowLoaded();
     // Set message values in editor
-    await Promise.all([ app.client.$('#greeting').$('div').setValue('This is a test greeting'), 
-                        app.client.$('#content').$('div').setValue('This is test content.  Blah Blah Blah.'), 
-                        app.client.$('#signature').$('div').setValue('Testing that I can Sign it')
-                      ]);
+    const greetingWrap = await app.client.$('#greeting');
+    const greetingElem = await greetingWrap.$('div');
+    await greetingElem.setValue('This is a test greeting');
+    const contentWrap = await app.client.$('#content');
+    const contentElem = await contentWrap.$('div');
+    await contentElem.setValue('This is test content.  Blah Blah Blah.'); 
+    const signatureWrap = await app.client.$('#signature');
+    const signatureElem = await signatureWrap.$('div');
+    await signatureElem.setValue('Testing that I can Sign it');
     // Copy to clipboard  
-    await app.client.click('#copy');
+    const copy = await app.client.$('#copy');
+    await copy.click();
     // Verify content on clipboard 
     let content = await app.electron.clipboard.readHTML();
     //console.log(content);
