@@ -885,7 +885,7 @@ describe('Test Index process', function () {
           {"type": "pointerUp", "button": 0},
         ]
       }]);
-    };
+    } else { console.error("unhandled screen resolution")};
     //xvfb 639 by 479 pixels.  normal window width: 1299, height: 688
     // Make sure avenue is in message dropbox
     const avenueIn = await app.client.$('#avenueIn');
@@ -921,7 +921,7 @@ describe('Test Index process', function () {
           {"type": "pointerUp", "button": 0}
         ]
       }]);
-    };
+    } else { console.error("unhandled screen resolution")};
     // Make sure avenue is in message dropbox
     container = await avenueIn.getHTML();
     //console.log(container);
